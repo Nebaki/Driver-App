@@ -1,4 +1,4 @@
-import 'package:driverapp/widgets/onlinnemode.dart';
+import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -45,9 +45,9 @@ class OfflineMode extends StatelessWidget {
                     topRight: Radius.circular(20))),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: const Center(
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Center(
                     child: Text(
                       "You're Offline",
                       style: TextStyle(fontSize: 20.0),
@@ -96,7 +96,7 @@ class OfflineMode extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(100),
             child: Container(
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               color: Colors.red,
               child: Icon(
                 icon,
@@ -107,11 +107,11 @@ class OfflineMode extends StatelessWidget {
           ),
           Text(
             num,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
           Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.black38,
                 fontSize: 16,
                 fontWeight: FontWeight.w300),

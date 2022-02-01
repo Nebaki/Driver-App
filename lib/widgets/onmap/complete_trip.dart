@@ -1,3 +1,4 @@
+import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +44,9 @@ class CompleteTrip extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 30, right: 30, top: 10, bottom: 10),
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, CollectedCash.routeName);
+                    },
                     child: Text(
                       "Complete",
                       style: TextStyle(color: Colors.white),

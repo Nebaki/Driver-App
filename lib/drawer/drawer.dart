@@ -84,8 +84,20 @@ class NavDrawer extends StatelessWidget {
                     divider: true,
                     context: context,
                     icon: Icons.favorite,
-                    routename: "SavedAddress.routeName",
-                    text: "Saved Addreses"),
+                    routename: Walet.routeName,
+                    text: "Wallet"),
+                _menuItem(
+                    divider: true,
+                    context: context,
+                    icon: Icons.money,
+                    routename: Earning.routeName,
+                    text: "Earning"),
+                _menuItem(
+                    divider: true,
+                    context: context,
+                    icon: Icons.money,
+                    routename: Summary.routeName,
+                    text: "Summary"),
 
                 const SizedBox(height: 20),
                 //Divider(color: Colors.grey.shade500),
@@ -131,10 +143,7 @@ class NavDrawer extends StatelessWidget {
           hoverColor: hoverColor,
           onLongPress: () {},
           onTap: () {
-            // routename == HomeScreen.routeName
-            //     ? Navigator.pushNamed(context, routename,
-            //         arguments: HomeScreenArgument(isSelected: false))
-            //     : Navigator.pushNamed(context, routename);
+            Navigator.pushNamed(context, routename);
           },
         ),
         divider

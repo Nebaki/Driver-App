@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
               button: const TextStyle(
                 color: Color.fromRGBO(254, 79, 5, 1),
               ),
-              subtitle1: const TextStyle(color: Colors.black38, fontSize: 14),
+              subtitle1: const TextStyle(color: Colors.grey, fontSize: 14),
               headline5: const TextStyle(fontWeight: FontWeight.bold),
               bodyText2: TextStyle(color: Colors.grey.shade700)),
           iconTheme: const IconThemeData(

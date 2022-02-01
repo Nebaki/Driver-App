@@ -30,6 +30,18 @@ class AppRoute {
     if (settings.name == CancelReason.routeName) {
       return MaterialPageRoute(builder: (context) => CancelReason());
     }
+    if (settings.name == CollectedCash.routeName) {
+      return MaterialPageRoute(builder: (context) => CollectedCash());
+    }
+    if (settings.name == Walet.routeName) {
+      return MaterialPageRoute(builder: (context) => Walet());
+    }
+    if (settings.name == Earning.routeName) {
+      return MaterialPageRoute(builder: (context) => Earning());
+    }
+    if (settings.name == Summary.routeName) {
+      return MaterialPageRoute(builder: (context) => Summary());
+    }
     return MaterialPageRoute(builder: (context) => const SigninScreen());
   }
 }
