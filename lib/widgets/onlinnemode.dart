@@ -1,6 +1,9 @@
+import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class OnlinMode extends StatelessWidget {
+  Function? callback;
+  OnlinMode(this.callback);
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -16,7 +19,9 @@ class OnlinMode extends StatelessWidget {
               child: Container(
                 child: FloatingActionButton(
                   backgroundColor: Colors.red,
-                  onPressed: () {},
+                  onPressed: () {
+                    callback!(IncomingRequest(callback));
+                  },
                   child: Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(

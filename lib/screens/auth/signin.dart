@@ -89,6 +89,7 @@ class _SigninScreenState extends State<SigninScreen> {
                         },
                         child: const Text(
                           "Sign In",
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ),

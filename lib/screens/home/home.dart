@@ -73,10 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   // ignore: must_call_super
   void initState() {
-    // widget.args.isSelected
-    //     ? _currentWidget = Service(callback)
-    //     : _currentWidget =
-    //         WhereTo(currentLocation: "Meskel Flower,Addis Ababa");
+    _currentWidget = OfflineMode(callback);
   }
 
   void callback(Widget nextwidget) {
@@ -124,11 +121,35 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+
+          // Positioned(
+          //     bottom: 0,
+          //     right: 0,
+          //     left: 0,
+          //     child: Container(
+          //       decoration: const BoxDecoration(
+          //           color: Colors.white,
+          //           boxShadow: [
+          //             BoxShadow(
+          //                 blurRadius: 3,
+          //                 color: Colors.grey,
+          //                 blurStyle: BlurStyle.outer,
+          //                 spreadRadius: 2)
+          //           ],
+          //           borderRadius: BorderRadius.only(
+          //               topLeft: Radius.circular(20),
+          //               topRight: Radius.circular(20))),
+          //       child: OfflineMode(),
+          //     ))
           //OfflineMode(),
           //OnlinMode()
-          IncomingRequest(),
+          //IncomingRequest(),
+          //TapToAccept()
+          //Arrived()
+          //CompleteTrip()
+          //WaitingPassenger()
 
-          //_currentWidget,
+          _currentWidget,
         ],
       ),
     );

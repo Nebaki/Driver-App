@@ -1,7 +1,10 @@
+import 'package:driverapp/widgets/onlinnemode.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 class OfflineMode extends StatelessWidget {
+  Function? callback;
+  OfflineMode(this.callback);
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -15,7 +18,9 @@ class OfflineMode extends StatelessWidget {
             child: Container(
               child: FloatingActionButton(
                 backgroundColor: Colors.red,
-                onPressed: () {},
+                onPressed: () {
+                  callback!(OnlinMode(callback));
+                },
                 child: Container(
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(

@@ -7,3 +7,5 @@ export 'canceltrip.dart';
 export 'waiting_passenger.dart';
 export 'tap_toaccept.dart';
 export 'incoming_requests.dart';
+export 'rider_detail.dart';
+export 'arrived.dart';

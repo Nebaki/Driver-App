@@ -1,4 +1,5 @@
 import 'package:driverapp/screens/screens.dart';
+import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class CancelTrip extends StatelessWidget {
@@ -58,7 +59,7 @@ class CancelTrip extends StatelessWidget {
                       )),
                     ),
                     onPressed: () {
-                      //callback!(DriverOnTheWay(callback));
+                      callback!(Arrived(callback));
                     },
                     child: const Text(
                       "No",

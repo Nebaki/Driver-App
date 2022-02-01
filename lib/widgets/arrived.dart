@@ -1,9 +1,9 @@
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-class CompleteTrip extends StatelessWidget {
+class Arrived extends StatelessWidget {
   Function? callback;
-  CompleteTrip(this.callback);
+  Arrived(this.callback);
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -43,9 +43,13 @@ class CompleteTrip extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 30, right: 30, top: 10, bottom: 10),
                 child: ElevatedButton(
-                    onPressed: () {},
+                    style: TextButton.styleFrom(
+                        backgroundColor: Colors.indigo.shade900),
+                    onPressed: () {
+                      callback!(WaitingPassenger(callback));
+                    },
                     child: Text(
-                      "Complete",
+                      "Arrived",
                       style: TextStyle(color: Colors.white),
                     )))
           ],
@@ -62,16 +66,12 @@ class CompleteTrip extends StatelessWidget {
           borderRadius: BorderRadius.circular(100),
           child: Container(
             color: Colors.grey.shade100,
-            padding: const EdgeInsets.all(3),
-            child: IconButton(
-                onPressed: () {
-                  callback!(CancelTrip(callback));
-                },
-                icon: Icon(
-                  icon,
-                  color: Colors.indigo.shade900,
-                  size: 22,
-                )),
+            padding: const EdgeInsets.all(10),
+            child: Icon(
+              icon,
+              color: Colors.indigo.shade900,
+              size: 22,
+            ),
           ),
         ),
         Padding(
