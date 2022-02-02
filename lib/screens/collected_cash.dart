@@ -6,17 +6,19 @@ class CollectedCash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF5F6F9),
       appBar: AppBar(
+        elevation: 0.5,
         leading: Container(),
         backgroundColor: Colors.white,
         title: const Text(
           "Trip #0001",
-          style: TextStyle(fontWeight: FontWeight.w300),
+          style: TextStyle(fontWeight: FontWeight.normal),
         ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10, bottom: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -65,7 +67,7 @@ class CollectedCash extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: ElevatedButton(
                     onPressed: () {
-                      //Navigator.pushNamed(context, Walet.routeName);
+                      Navigator.pushNamed(context, HomeScreen.routeName);
                     },
                     child: const Text(
                       "Done",

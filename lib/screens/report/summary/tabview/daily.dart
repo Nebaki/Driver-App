@@ -54,9 +54,9 @@ class DailySummaryTab extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 40),
-          child: const Text("Trips"),
+        const Padding(
+          padding: EdgeInsets.only(left: 40),
+          child: Text("Trips"),
         ),
         Column(
           children: List.generate(

@@ -42,6 +42,22 @@ class AppRoute {
     if (settings.name == Summary.routeName) {
       return MaterialPageRoute(builder: (context) => Summary());
     }
+    if (settings.name == PersonalDocument.routeName) {
+      return MaterialPageRoute(builder: (context) => PersonalDocument());
+    }
+    if (settings.name == VehicleDocument.routeName) {
+      return MaterialPageRoute(builder: (context) => VehicleDocument());
+    }
+    if (settings.name == CheckPhoneNumber.routeName) {
+      return MaterialPageRoute(builder: (context) => CheckPhoneNumber());
+    }
+    if (settings.name == SettingScreen.routeName) {
+      return MaterialPageRoute(builder: (context) => SettingScreen());
+    }
+    if (settings.name == HistoryPage.routeName) {
+      return MaterialPageRoute(builder: (context) => HistoryPage());
+    }
+
     return MaterialPageRoute(builder: (context) => const SigninScreen());
   }
 }

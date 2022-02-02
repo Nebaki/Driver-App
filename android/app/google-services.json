@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "176908248309",
+    "project_id": "safe-way-cce47",
+    "storage_bucket": "safe-way-cce47.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176908248309:android:cbb9b1461bb310acbb91bc",
+        "android_client_info": {
+          "package_name": "com.example.passengerapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "176908248309-iahi6am8j45olau5fe8c38glugl8is6r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.passengerapp",
+            "certificate_hash": "619339c4b919d1961fab17971379d6adfc65501d"
+          }
+        },
+        {
+          "client_id": "176908248309-trfe55h5atu2121c53l39o19m0o4msoj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0bhPe056gyJDV3DFEuF4Olf7cC1tzV2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "176908248309-trfe55h5atu2121c53l39o19m0o4msoj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

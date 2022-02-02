@@ -9,7 +9,7 @@ class VerificationCode extends StatelessWidget {
   final otp4Controller = TextEditingController();
   final otp5Controller = TextEditingController();
   final otp6Controller = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  //final FirebaseAuth _auth = FirebaseAuth.instance;
 
   String verificationId;
 
@@ -170,12 +170,13 @@ class VerificationCode extends StatelessWidget {
                     print(code);
                     print(
                         "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    PhoneAuthCredential credential =
-                        PhoneAuthProvider.credential(
-                            verificationId: verificationId, smsCode: code);
-                    _auth.signInWithCredential(credential).then((value) {
-                      Navigator.pushNamed(context, ResetPassword.routeName);
-                    });
+                    // PhoneAuthCredential credential =
+                    //     PhoneAuthProvider.credential(
+                    //         verificationId: verificationId, smsCode: code);
+                    // _auth.signInWithCredential(credential).then((value) {
+                    //   Navigator.pushNamed(context, ResetPassword.routeName);
+                    // });
+                    Navigator.pushNamed(context, ResetPassword.routeName);
                   },
                   child: const Text(
                     'Verify',

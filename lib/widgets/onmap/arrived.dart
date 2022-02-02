@@ -1,3 +1,4 @@
+import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -31,10 +32,25 @@ class Arrived extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildItems(
-                    text: "Chat", icon: Icons.chat_bubble_outline_rounded),
-                _buildItems(text: "Message", icon: Icons.message_outlined),
-                _buildItems(text: "Cancel Trip", icon: Icons.clear_outlined)
+                GestureDetector(
+                    onTap: () {
+                      makePhoneCall("+241934540217");
+                    },
+                    child: _buildItems(
+                        text: "Call", icon: Icons.call_end_outlined)),
+                GestureDetector(
+                  onTap: () {
+                    sendTextMessage("+251934540217");
+                  },
+                  child: _buildItems(
+                      text: "Message", icon: Icons.chat_bubble_outline_rounded),
+                ),
+                GestureDetector(
+                    onTap: () {
+                      callback!(CancelTrip(callback));
+                    },
+                    child: _buildItems(
+                        text: "Cancel Trip", icon: Icons.clear_outlined))
               ],
             ),
             Container(
@@ -48,7 +64,7 @@ class Arrived extends StatelessWidget {
                     onPressed: () {
                       callback!(WaitingPassenger(callback));
                     },
-                    child: Text(
+                    child: const Text(
                       "Arrived",
                       style: TextStyle(color: Colors.white),
                     )))

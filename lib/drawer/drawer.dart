@@ -13,9 +13,9 @@ class NavDrawer extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 40),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               height: 110,
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+              decoration: const BoxDecoration(color: Colors.white, boxShadow: [
                 BoxShadow(color: Colors.black26, blurRadius: 7, spreadRadius: 3)
               ]),
               child: Row(
@@ -57,28 +57,28 @@ class NavDrawer extends StatelessWidget {
                     divider: true,
                     context: context,
                     icon: Icons.home,
-                    routename: "HomeScreen.routeName",
+                    routename: HomeScreen.routeName,
                     text: "Home"),
                 //const Divider(color: Colors.grey),
                 _menuItem(
                     divider: true,
                     context: context,
                     icon: Icons.person,
-                    routename: "ProfileDetail.routeName",
+                    routename: ProfileDetail.routeName,
                     text: "Profile"),
                 //const Divider(color: Colors.grey),
                 _menuItem(
                     divider: true,
                     context: context,
                     icon: Icons.settings,
-                    routename: "SettingScreen.routeName",
+                    routename: SettingScreen.routeName,
                     text: "Settings"),
                 //const Divider(color: Colors.grey),
                 _menuItem(
                     divider: true,
                     context: context,
                     icon: Icons.history,
-                    routename: "HistoryPage.routeName",
+                    routename: HistoryPage.routeName,
                     text: "History"),
                 _menuItem(
                     divider: true,
@@ -101,12 +101,23 @@ class NavDrawer extends StatelessWidget {
 
                 const SizedBox(height: 20),
                 //Divider(color: Colors.grey.shade500),
-
                 _menuItem(
                     divider: false,
                     context: context,
                     icon: Icons.logout,
-                    routename: "ProfileDetail.routeName",
+                    routename: VehicleDocument.routeName,
+                    text: "Vehicle Document"),
+                _menuItem(
+                    divider: false,
+                    context: context,
+                    icon: Icons.logout,
+                    routename: PersonalDocument.routeName,
+                    text: "Personal Document"),
+                _menuItem(
+                    divider: false,
+                    context: context,
+                    icon: Icons.logout,
+                    routename: SigninScreen.routeName,
                     text: "Logout"),
               ],
             ),

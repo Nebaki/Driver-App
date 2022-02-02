@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           //F48221
 
-          floatingActionButtonTheme: FloatingActionButtonThemeData(
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
               sizeConstraints: BoxConstraints(minWidth: 80, minHeight: 80),
               extendedPadding: EdgeInsets.all(50),
               foregroundColor: Colors.white,

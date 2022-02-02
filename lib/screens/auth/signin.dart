@@ -100,7 +100,7 @@ class _SigninScreenState extends State<SigninScreen> {
                       child: InkWell(
                           onTap: () {
                             Navigator.pushNamed(
-                                context, CollectedCash.routeName);
+                                context, CheckPhoneNumber.routeName);
                           },
                           child: const Text(
                             "Forgot Password",
