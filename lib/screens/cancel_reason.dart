@@ -1,3 +1,5 @@
+import 'package:driverapp/route.dart';
+import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 
 class CancelReason extends StatelessWidget {
@@ -49,7 +51,11 @@ class CancelReason extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         )),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                            context, HomeScreen.routeName,
+                            arguments: HomeScreenArgument(isSelected: false));
+                      },
                       child: const Text(
                         "Confirm",
                         style: TextStyle(color: Colors.white),

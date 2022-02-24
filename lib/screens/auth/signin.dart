@@ -1,27 +1,71 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:driverapp/bloc/bloc.dart';
+import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
-import 'package:flutter/material.dart';
+import 'package:driverapp/widgets/widgets.dart';
 
 class SigninScreen extends StatefulWidget {
   static const routeName = '/signin';
-
-  const SigninScreen({Key? key}) : super(key: key);
   @override
   _SigninScreenState createState() => _SigninScreenState();
 }
 
 class _SigninScreenState extends State<SigninScreen> {
+  String number = "+251934540217";
+  String password = "1111";
+  late String phoneNumber;
+  late String pass;
+
+  final Map<String, dynamic> _auth = {};
+
   final _formkey = GlobalKey<FormState>();
+
+  bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        // CustomeBackArrow(),
-        Form(
-          key: _formkey,
-          child: Container(
-            height: 600,
-            child: Padding(
+        body: BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
+      return _buildSigninForm();
+    }, listener: (_, state) {
+      if (state is AuthSigningIn) {
+        _isLoading = true;
+      }
+      if (state is AuthLoginSuccess) {
+        Navigator.pushNamed(context, HomeScreen.routeName,
+            arguments: HomeScreenArgument(isSelected: false));
+      }
+      if (state is AuthOperationFailure) {
+        _isLoading = false;
+
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text("Incorrect Phone Number or Password"),
+          backgroundColor: Colors.red.shade900,
+        ));
+      }
+    }));
+  }
+
+  void signIn() {
+    _isLoading = true;
+    AuthEvent event = AuthLogin(
+        Auth(phoneNumber: _auth["phoneNumber"], password: _auth["password"]));
+
+    BlocProvider.of<AuthBloc>(context).add(event);
+    BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
+  }
+
+  Widget _buildSigninForm() {
+    return Stack(children: [
+      Form(
+        key: _formkey,
+        child: Container(
+          height: 600,
+          child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
               child: ListView(
                 children: [
@@ -31,32 +75,47 @@ class _SigninScreenState extends State<SigninScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
-                    child: TextFormField(
-                      decoration: const InputDecoration(
+                    child: InternationalPhoneNumberInput(
+                      onSaved: (value) {
+                        print("Valllllllllllllllllllllllllllllllll");
+                        print(value);
+                        _auth["phoneNumber"] = value.toString();
+                      },
+                      onInputChanged: (PhoneNumber number) {
+                        print(number.phoneNumber);
+                      },
+                      onInputValidated: (bool value) {
+                        print(value);
+                      },
+                      selectorConfig: const SelectorConfig(
+                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                          trailingSpace: false),
+                      ignoreBlank: false,
+                      autoValidateMode: AutovalidateMode.onUserInteraction,
+                      selectorTextStyle: const TextStyle(color: Colors.black),
+                      initialValue: PhoneNumber(isoCode: "ET"),
+                      formatInput: true,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          signed: true, decimal: true),
+                      inputBorder:
+                          const OutlineInputBorder(borderSide: BorderSide.none),
+                      spaceBetweenSelectorAndTextField: 0,
+                      inputDecoration: const InputDecoration(
                           hintText: "Phone Number",
                           hintStyle: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black45),
-                          prefixIcon: Icon(
-                            Icons.phone,
-                            size: 19,
-                          ),
                           fillColor: Colors.white,
                           filled: true,
                           border:
                               OutlineInputBorder(borderSide: BorderSide.none)),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter Your phone number';
-                        }
-                        return null;
-                      },
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: TextFormField(
                       decoration: const InputDecoration(
+                          alignLabelWithHint: true,
                           hintText: "Password",
                           hintStyle: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -72,8 +131,15 @@ class _SigninScreenState extends State<SigninScreen> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter Your Password';
+                        } else if (value.length < 4) {
+                          return 'Password length must not be less than 4';
+                        } else if (value.length > 25) {
+                          return 'Password length must not be greater than 25';
                         }
                         return null;
+                      },
+                      onSaved: (value) {
+                        _auth["password"] = value;
                       },
                     ),
                   ),
@@ -83,13 +149,35 @@ class _SigninScreenState extends State<SigninScreen> {
                       height: 40,
                       width: MediaQuery.of(context).size.width,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, HomeScreen.routeName,
-                              arguments: HomeScreenArgument(isSelected: false));
-                        },
-                        child: const Text(
-                          "Sign In",
-                          style: TextStyle(color: Colors.white),
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                final form = _formkey.currentState;
+                                if (form!.validate()) {
+                                  form.save();
+                                  signIn();
+                                }
+                              },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Spacer(),
+                            const Text("Sign In",
+                                style: TextStyle(color: Colors.white)),
+                            const Spacer(),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : Container(),
+                            )
+                          ],
                         ),
                       ),
                     ),
@@ -111,11 +199,9 @@ class _SigninScreenState extends State<SigninScreen> {
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
-        )
-      ]),
-    );
+              )),
+        ),
+      )
+    ]);
   }
 }

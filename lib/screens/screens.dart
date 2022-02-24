@@ -19,3 +19,6 @@ export 'resetpassword/phonenumber.dart';
 export 'resetpassword/reset_password.dart';
 export 'history/history.dart';
 export 'settings/settings.dart';
+export 'splash/splashscreen.dart';
+export 'settings/preference.dart';
+export 'resetpassword/changepassword.dart';

@@ -1,9 +1,14 @@
+import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 
 class OnlinMode extends StatelessWidget {
   Function? callback;
-  OnlinMode(this.callback);
+  Function setDriverStatus;
+  Function getLiveUpdate;
+  OnlinMode(this.callback, this.setDriverStatus, this.getLiveUpdate);
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -16,20 +21,29 @@ class OnlinMode extends StatelessWidget {
           Center(
             child: Padding(
               padding: const EdgeInsets.only(bottom: 15),
-              child: Container(
-                child: FloatingActionButton(
-                  backgroundColor: Colors.red,
-                  onPressed: () {
-                    callback!(IncomingRequest(callback));
-                  },
-                  child: Container(
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white, width: 1.5),
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Text("Go")),
-                ),
-              ),
+              child: BlocBuilder<AuthBloc, AuthState>(builder: (_, state) {
+                if (state is AuthDataLoadSuccess) {
+                  return Container(
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.red,
+                      onPressed: () async {
+                        setDriverStatus(false);
+                        callback!(OfflineMode(
+                            setDriverStatus, callback, getLiveUpdate));
+                      },
+                      child: Container(
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 1.5),
+                              borderRadius: BorderRadius.circular(100)),
+                          child: Text("Off")),
+                    ),
+                  );
+                }
+
+                return Container();
+              }),
             ),
           ),
           Container(
@@ -56,9 +70,12 @@ class OnlinMode extends StatelessWidget {
                     ),
                   ),
                 ),
+                const LinearProgressIndicator(
+                  minHeight: 1.5,
+                ),
                 Container(
                   height: 90,
-                  padding: EdgeInsets.only(left: 20, top: 15, bottom: 15),
+                  padding: const EdgeInsets.only(left: 20, top: 15, bottom: 15),
                   width: MediaQuery.of(context).size.width,
                   color: Colors.black26.withOpacity(0.05),
                   child: Column(

@@ -1,6 +1,8 @@
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 
+import 'models/models.dart';
+
 class AppRoute {
   static Route generateRoute(RouteSettings settings) {
     if (settings.name == PhoneVerification.routeName) {
@@ -22,7 +24,11 @@ class AppRoute {
       return MaterialPageRoute(builder: (context) => ResetPassword());
     }
     if (settings.name == EditProfile.routeName) {
-      return MaterialPageRoute(builder: (context) => EditProfile());
+      EditProfileArgument argumnet = settings.arguments as EditProfileArgument;
+      return MaterialPageRoute(
+          builder: (context) => EditProfile(
+                args: argumnet,
+              ));
     }
     if (settings.name == ProfileDetail.routeName) {
       return MaterialPageRoute(builder: (context) => ProfileDetail());
@@ -58,7 +64,22 @@ class AppRoute {
       return MaterialPageRoute(builder: (context) => HistoryPage());
     }
 
-    return MaterialPageRoute(builder: (context) => const SigninScreen());
+    if (settings.name == SigninScreen.routeName) {
+      return MaterialPageRoute(builder: (context) => SigninScreen());
+    }
+
+    if (settings.name == PreferenceScreen.routeNAme) {
+      PreferenceArgument argument = settings.arguments as PreferenceArgument;
+      return MaterialPageRoute(
+          builder: (context) => PreferenceScreen(
+                args: argument,
+              ));
+    }
+    if (settings.name == ChangePassword.routeName) {
+      return MaterialPageRoute(builder: (context) => ChangePassword());
+    }
+
+    return MaterialPageRoute(builder: (context) => CustomSplashScreen());
   }
 }
 
@@ -72,4 +93,18 @@ class HomeScreenArgument {
   bool isSelected = false;
 
   HomeScreenArgument({required this.isSelected});
+}
+
+class EditProfileArgument {
+  Auth auth;
+  EditProfileArgument({required this.auth});
+}
+
+class PreferenceArgument {
+  String gender;
+  double min_rate;
+  String carType;
+
+  PreferenceArgument(
+      {required this.gender, required this.min_rate, required this.carType});
 }

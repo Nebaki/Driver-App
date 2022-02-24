@@ -1,10 +1,13 @@
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 
 class OfflineMode extends StatelessWidget {
   Function? callback;
-  OfflineMode(this.callback);
+  Function getLiveLocation;
+  Function setDriverStatus;
+  OfflineMode(this.setDriverStatus, this.callback, this.getLiveLocation);
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -19,14 +22,17 @@ class OfflineMode extends StatelessWidget {
               child: FloatingActionButton(
                 backgroundColor: Colors.red,
                 onPressed: () {
-                  callback!(OnlinMode(callback));
+                  setDriverStatus(true);
+                  getLiveLocation();
+                  callback!(
+                      OnlinMode(callback, setDriverStatus, getLiveLocation));
                 },
                 child: Container(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.white, width: 1.5),
                         borderRadius: BorderRadius.circular(100)),
-                    child: Text("Go")),
+                    child: const Text("Go")),
               ),
             ),
           ),

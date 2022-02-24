@@ -1,10 +1,48 @@
 {
   "project_info": {
     "project_number": "176908248309",
+    "firebase_url": "https://safe-way-cce47-default-rtdb.firebaseio.com",
     "project_id": "safe-way-cce47",
     "storage_bucket": "safe-way-cce47.appspot.com"
   },
   "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176908248309:android:81081fea49a7c91bbb91bc",
+        "android_client_info": {
+          "package_name": "com.example.driverapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "176908248309-49ji5pt7rga1c2qrqar87f7140cju27f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.driverapp",
+            "certificate_hash": "619339c4b919d1961fab17971379d6adfc65501d"
+          }
+        },
+        {
+          "client_id": "176908248309-trfe55h5atu2121c53l39o19m0o4msoj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0bhPe056gyJDV3DFEuF4Olf7cC1tzV2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "176908248309-trfe55h5atu2121c53l39o19m0o4msoj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:176908248309:android:cbb9b1461bb310acbb91bc",
