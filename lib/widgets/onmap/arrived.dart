@@ -1,10 +1,19 @@
+import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class Arrived extends StatelessWidget {
+class Arrived extends StatefulWidget {
   Function? callback;
   Arrived(this.callback);
+
+  @override
+  State<Arrived> createState() => _ArrivedState();
+}
+
+class _ArrivedState extends State<Arrived> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -47,7 +56,7 @@ class Arrived extends StatelessWidget {
                 ),
                 GestureDetector(
                     onTap: () {
-                      callback!(CancelTrip(callback));
+                      widget.callback!(CancelTrip(widget.callback));
                     },
                     child: _buildItems(
                         text: "Cancel Trip", icon: Icons.clear_outlined))
@@ -62,7 +71,7 @@ class Arrived extends StatelessWidget {
                     style: TextButton.styleFrom(
                         backgroundColor: Colors.indigo.shade900),
                     onPressed: () {
-                      callback!(WaitingPassenger(callback));
+                      widget.callback!(WaitingPassenger(widget.callback));
                     },
                     child: const Text(
                       "Arrived",

@@ -49,6 +49,7 @@ class PushNotificationService {
 
   void showNotification(context, callback, setDestination, setIsArrivedWidget) {
     showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return NotificationDialog(
@@ -58,5 +59,6 @@ class PushNotificationService {
 
   void seubscribeTopic() async {
     await FirebaseMessaging.instance.subscribeToTopic('driver');
+    final token = await FirebaseMessaging.instance.getToken();
   }
 }

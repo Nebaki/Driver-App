@@ -12,3 +12,11 @@ class DirectionLoad extends DirectionEvent {
   @override
   List<Object> get props => [];
 }
+
+class DirectionDistanceDurationLoad extends DirectionEvent {
+  final LatLng destination;
+  const DirectionDistanceDurationLoad({required this.destination});
+
+  @override
+  List<Object> get props => [];
+}

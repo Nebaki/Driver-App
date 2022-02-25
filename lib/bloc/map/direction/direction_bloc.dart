@@ -23,5 +23,16 @@ class DirectionBloc extends Bloc<DirectionEvent, DirectionState> {
         yield DirectionOperationFailure();
       }
     }
+
+    if (event is DirectionDistanceDurationLoad) {
+      yield DirectionDistanceDurationLoading();
+      try {
+        final direction =
+            await directionRepository.getDirection(event.destination);
+        yield DirectionDistanceDurationLoadSuccess(direction: direction);
+      } catch (_) {
+        yield DirectionDistanceDurationOperationFailur();
+      }
+    }
   }
 }

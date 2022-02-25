@@ -13,6 +13,7 @@ import 'package:driverapp/route.dart';
 import 'dart:async';
 
 import 'package:driverapp/widgets/widgets.dart';
+import 'package:maps_toolkit/maps_toolkit.dart' as toolkit;
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -47,6 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late LatLngBounds latLngBounds;
   late StreamSubscription driverStreamSubscription;
   BitmapDescriptor? carMarkerIcon;
+  late Position myPosition;
+  bool isRequestingDirection = false;
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -79,9 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   // ignore: must_call_super
   void initState() {
+    setState(() {});
     pushNotificationService.initialize(
         context, callback, setDestination, setIsArrivedWidget);
     pushNotificationService.seubscribeTopic();
+
     _currentWidget = OfflineMode(setDriverStatus, callback, getLiveLocation);
   }
 
@@ -115,6 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  bool loadPoly = true;
+
   @override
   Widget build(BuildContext context) {
     createMarkerIcon();
@@ -125,7 +132,23 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           isArrivedwidget
               ? BlocBuilder<DirectionBloc, DirectionState>(
-                  builder: (context, state) {
+                  buildWhen: (prevstate, state) {
+                  bool isDirectionLoading = true;
+                  print("here is the state---------------------");
+                  print(prevstate);
+                  print("The state ende");
+                  if (state is DirectionDistanceDurationLoading ||
+                      state is DirectionDistanceDurationLoadSuccess) {
+                    isDirectionLoading = false;
+                  }
+
+                  if (state is DirectionLoadSuccess) {
+                    isDirectionLoading = true;
+                  }
+
+                  print(isDirectionLoading);
+                  return isDirectionLoading;
+                }, builder: (context, state) {
                   bool isDialog = true;
 
                   if (state is DirectionLoadSuccess) {
@@ -141,8 +164,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     return GoogleMap(
                       mapType: MapType.normal,
                       myLocationButtonEnabled: true,
-                      myLocationEnabled: true,
+                      //myLocationEnabled: true,
                       zoomControlsEnabled: false,
+                      zoomGesturesEnabled: false,
+                      rotateGesturesEnabled: false,
+                      scrollGesturesEnabled: false,
                       initialCameraPosition: _addissAbaba,
                       polylines: Set<Polyline>.of(polylines.values),
                       markers: Set<Marker>.of(markers.values),
@@ -345,13 +371,20 @@ class _HomeScreenState extends State<HomeScreen> {
     Map<MarkerId, Marker> newMarker = {};
 
     MarkerId markerId = MarkerId("driver");
+    LatLng initialDriverPosition = LatLng(0, 0);
 
     driverStreamSubscription = Geolocator.getPositionStream(
-            locationSettings: LocationSettings(accuracy: LocationAccuracy.best))
+            locationSettings: LocationSettings(distanceFilter: 5))
         .listen((event) {
+      myPosition = event;
       LatLng driverPosition = LatLng(event.latitude, event.longitude);
       Marker marker = Marker(
-          markerId: markerId, position: driverPosition, icon: carMarkerIcon!);
+          rotation: getMarkerRotation(initialDriverPosition.latitude,
+              initialDriverPosition.longitude, event.latitude, event.longitude),
+          markerId: markerId,
+          position: driverPosition,
+          icon: carMarkerIcon!);
+
       setState(() {
         CameraPosition cameraPosition =
             new CameraPosition(target: driverPosition, zoom: 14.4746);
@@ -362,6 +395,29 @@ class _HomeScreenState extends State<HomeScreen> {
         markers.removeWhere((key, value) => key == markerId);
         markers[markerId] = marker;
       });
+
+      initialDriverPosition = driverPosition;
+      updateRideDetails();
     });
+  }
+
+  double getMarkerRotation(driverLat, driverLng, dropoffLat, dropOffLng) {
+    var rotation = toolkit.SphericalUtil.computeHeading(
+        toolkit.LatLng(driverLat, driverLng),
+        toolkit.LatLng(dropoffLat, dropOffLng)) as double;
+    return rotation;
+  }
+
+  bool isRequestigDirection = false;
+  void updateRideDetails() {
+    if (isRequestigDirection == false) {
+      isRequestigDirection = true;
+      print("Asked to load the duration");
+      DirectionEvent event = DirectionDistanceDurationLoad(
+          destination: LatLng(8.9211232, 38.7663361));
+      BlocProvider.of<DirectionBloc>(context).add(event);
+
+      isRequestigDirection = false;
+    }
   }
 }

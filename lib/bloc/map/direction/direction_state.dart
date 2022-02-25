@@ -10,6 +10,8 @@ class DirectionState extends Equatable {
 
 class DirectionLoading extends DirectionState {}
 
+class DirectionDistanceDurationLoading extends DirectionState {}
+
 class DirectionLoadSuccess extends DirectionState {
   final Direction direction;
 
@@ -20,3 +22,14 @@ class DirectionLoadSuccess extends DirectionState {
 }
 
 class DirectionOperationFailure extends DirectionState {}
+
+class DirectionDistanceDurationLoadSuccess extends DirectionState {
+  final Direction direction;
+
+  const DirectionDistanceDurationLoadSuccess({required this.direction});
+
+  @override
+  List<Object> get props => [direction];
+}
+
+class DirectionDistanceDurationOperationFailur extends DirectionState {}

@@ -67,7 +67,8 @@ class CollectedCash extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, HomeScreen.routeName);
+                      Navigator.pushReplacementNamed(
+                          context, HomeScreen.routeName);
                     },
                     child: const Text(
                       "Done",

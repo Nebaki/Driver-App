@@ -34,7 +34,11 @@ void main() async {
 
   final DirectionRepository directionRepository = DirectionRepository(
       dataProvider: DirectionDataProvider(httpClient: http.Client()));
+
+  final PlaceDetailRepository placeDetailRepository = PlaceDetailRepository(
+      dataProvider: PlaceDetailDataProvider(httpClient: http.Client()));
   runApp(MyApp(
+    placeDetailRepository: placeDetailRepository,
     directionRepository: directionRepository,
     authRepository: authRepository,
     userRepository: userRepository,
@@ -75,9 +79,11 @@ class MyApp extends StatelessWidget {
   final UserRepository userRepository;
   final AuthRepository authRepository;
   final DirectionRepository directionRepository;
+  final PlaceDetailRepository placeDetailRepository;
 
   const MyApp({
     Key? key,
+    required this.placeDetailRepository,
     required this.directionRepository,
     required this.userRepository,
     required this.authRepository,
@@ -88,6 +94,7 @@ class MyApp extends StatelessWidget {
 
     return MultiRepositoryProvider(
         providers: [
+          RepositoryProvider.value(value: placeDetailRepository),
           RepositoryProvider.value(value: userRepository),
           RepositoryProvider.value(value: authRepository),
           RepositoryProvider.value(value: directionRepository)
@@ -103,6 +110,9 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                   create: (context) =>
                       DirectionBloc(directionRepository: directionRepository)),
+              BlocProvider(
+                  create: (context) => PlaceDetailBloc(
+                      placeDetailRepository: placeDetailRepository)),
             ],
             child: MaterialApp(
               title: 'SafeWay',

@@ -68,8 +68,6 @@ class NotificationDialog extends StatelessWidget {
                       const Color.fromRGBO(244, 201, 60, 1)),
                 ),
                 onPressed: () {
-                  callback(Arrived(callback));
-
                   DirectionEvent event =
                       DirectionLoad(destination: LatLng(8.9211232, 38.7663361));
 
@@ -77,6 +75,7 @@ class NotificationDialog extends StatelessWidget {
 
                   setIsArrivedWidget(true);
                   setDestination(LatLng(8.9211232, 38.7663361));
+                  callback(Arrived(callback));
 
                   Navigator.pop(context);
                 },
