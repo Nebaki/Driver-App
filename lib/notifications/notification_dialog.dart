@@ -8,8 +8,16 @@ class NotificationDialog extends StatelessWidget {
   final Function callback;
   final Function setDestination;
   final Function setIsArrivedWidget;
+  final String pickup;
+  final String droppOff;
+  final LatLng passengerPosition;
+  final String passengerName;
 
   NotificationDialog(
+    this.passengerName,
+    this.passengerPosition,
+    this.pickup,
+    this.droppOff,
     this.callback,
     this.setDestination,
     this.setIsArrivedWidget,
@@ -23,7 +31,7 @@ class NotificationDialog extends StatelessWidget {
         style: TextStyle(fontSize: 14),
       ),
       content: SizedBox(
-        height: 150,
+        height: 180,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -34,14 +42,18 @@ class NotificationDialog extends StatelessWidget {
                 color: Colors.indigo.shade900,
               ),
             ),
-            const SizedBox(
-              height: 15,
-            ),
-            const Text("Pickup : MeskelFlower"),
+            Text("Passenger: $passengerName"),
             const SizedBox(
               height: 10,
             ),
-            const Text("Drop Off: Bole"),
+            const SizedBox(
+              height: 15,
+            ),
+            Text("Pickup: $pickup"),
+            const SizedBox(
+              height: 10,
+            ),
+            Text("Drop Off: $droppOff "),
             const SizedBox(
               height: 30,
             ),
@@ -69,12 +81,12 @@ class NotificationDialog extends StatelessWidget {
                 ),
                 onPressed: () {
                   DirectionEvent event =
-                      DirectionLoad(destination: LatLng(8.9211232, 38.7663361));
+                      DirectionLoad(destination: passengerPosition);
 
                   BlocProvider.of<DirectionBloc>(context).add(event);
 
                   setIsArrivedWidget(true);
-                  setDestination(LatLng(8.9211232, 38.7663361));
+                  setDestination(passengerPosition);
                   callback(Arrived(callback));
 
                   Navigator.pop(context);

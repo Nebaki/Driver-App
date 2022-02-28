@@ -32,10 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isDriverOn = false;
   Completer<GoogleMapController> _controller = Completer();
   late GoogleMapController _myController;
-  static final CameraPosition _addissAbaba = CameraPosition(
-    target: LatLng(8.9806, 38.7578),
-    zoom: 14.4746,
-  );
   late Position currentPosition;
   late StreamSubscription<Position> homeScreenStreamSubscription;
   late String id;
@@ -50,6 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
   BitmapDescriptor? carMarkerIcon;
   late Position myPosition;
   bool isRequestingDirection = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PushNotificationService pushNotificationService = PushNotificationService();
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -76,13 +74,14 @@ class _HomeScreenState extends State<HomeScreen> {
         desiredAccuracy: LocationAccuracy.lowest);
   }
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  PushNotificationService pushNotificationService = PushNotificationService();
+  static final CameraPosition _addissAbaba = CameraPosition(
+    target: LatLng(8.9806, 38.7578),
+    zoom: 14.4746,
+  );
 
   @override
   // ignore: must_call_super
   void initState() {
-    setState(() {});
     pushNotificationService.initialize(
         context, callback, setDestination, setIsArrivedWidget);
     pushNotificationService.seubscribeTopic();
@@ -210,6 +209,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   myLocationButtonEnabled: true,
                   myLocationEnabled: true,
                   zoomControlsEnabled: false,
+                  zoomGesturesEnabled: false,
+                  scrollGesturesEnabled: false,
+                  rotateGesturesEnabled: false,
                   initialCameraPosition: _addissAbaba,
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
@@ -218,6 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _determinePosition().then((value) {
                       controller.animateCamera(CameraUpdate.newCameraPosition(
                           CameraPosition(
+                              bearing: 90,
                               zoom: 14.4746,
                               target:
                                   LatLng(value.latitude, value.longitude))));
@@ -261,15 +264,15 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           _currentWidget,
-          Positioned(
-              top: 10,
-              right: 10,
-              child: ElevatedButton(
-                  onPressed: () {
-                    pushNotificationService.showNotification(
-                        context, callback, setDestination, setIsArrivedWidget);
-                  },
-                  child: Text("Maintenance")))
+          // Positioned(
+          //     top: 10,
+          //     right: 10,
+          //     child: ElevatedButton(
+          //         onPressed: () {
+          //           pushNotificationService.showNotification(
+          //               context, callback, setDestination, setIsArrivedWidget);
+          //         },
+          //         child: Text("Maintenance")))
         ],
       ),
     );
@@ -374,7 +377,7 @@ class _HomeScreenState extends State<HomeScreen> {
     LatLng initialDriverPosition = LatLng(0, 0);
 
     driverStreamSubscription = Geolocator.getPositionStream(
-            locationSettings: LocationSettings(distanceFilter: 5))
+            locationSettings: LocationSettings(distanceFilter: 0))
         .listen((event) {
       myPosition = event;
       LatLng driverPosition = LatLng(event.latitude, event.longitude);
@@ -386,8 +389,8 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: carMarkerIcon!);
 
       setState(() {
-        CameraPosition cameraPosition =
-            new CameraPosition(target: driverPosition, zoom: 14.4746);
+        CameraPosition cameraPosition = new CameraPosition(
+            bearing: 90, target: driverPosition, zoom: 14.4746);
 
         _myController
             .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
@@ -397,7 +400,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
 
       initialDriverPosition = driverPosition;
-      updateRideDetails();
+      //updateRideDetails();
     });
   }
 
@@ -405,19 +408,27 @@ class _HomeScreenState extends State<HomeScreen> {
     var rotation = toolkit.SphericalUtil.computeHeading(
         toolkit.LatLng(driverLat, driverLng),
         toolkit.LatLng(dropoffLat, dropOffLng)) as double;
+
+    print("Rotation is :: ");
+    print(rotation);
+
+    if (rotation <= 180 && rotation >= 0) {
+      rotation = 90;
+    } else {
+      rotation = 270;
+    }
     return rotation;
   }
 
-  bool isRequestigDirection = false;
   void updateRideDetails() {
-    if (isRequestigDirection == false) {
-      isRequestigDirection = true;
+    if (isRequestingDirection == false) {
+      isRequestingDirection = true;
       print("Asked to load the duration");
       DirectionEvent event = DirectionDistanceDurationLoad(
           destination: LatLng(8.9211232, 38.7663361));
       BlocProvider.of<DirectionBloc>(context).add(event);
 
-      isRequestigDirection = false;
+      isRequestingDirection = false;
     }
   }
 }
