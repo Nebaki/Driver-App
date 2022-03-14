@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/models/models.dart';
@@ -15,15 +16,17 @@ class AuthDataProvider {
   Future<void> loginUser(Auth user) async {
     print(user.phoneNumber);
     print(user.password);
+    final fcm_id = await FirebaseMessaging.instance.getToken();
     final response = await http.post(
       Uri.parse('$_baseUrl/driver-login'),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: json.encode({
         'phone_number': user.phoneNumber,
         'password': user.password,
+        'fcm_id': fcm_id
       }),
     );
-    print(response.body);
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       Map<String, dynamic> output = jsonDecode(response.body);

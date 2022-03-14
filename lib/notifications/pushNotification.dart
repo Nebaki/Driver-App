@@ -20,6 +20,8 @@ class PushNotificationService {
           context: context,
           builder: (BuildContext context) {
             return NotificationDialog(
+              message.data['passengerFcm'],
+                message.data['requestId'],
                 message.data['passengerName'],
                 passengerPosition,
                 message.data['pickupAddress'],

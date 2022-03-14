@@ -37,11 +37,14 @@ void main() async {
 
   final PlaceDetailRepository placeDetailRepository = PlaceDetailRepository(
       dataProvider: PlaceDetailDataProvider(httpClient: http.Client()));
+  final RideRequestRepository rideRequestRepository = RideRequestRepository(
+      dataProvider: RideRequestDataProvider(httpClient: http.Client()));
   runApp(MyApp(
     placeDetailRepository: placeDetailRepository,
     directionRepository: directionRepository,
     authRepository: authRepository,
     userRepository: userRepository,
+    rideRequestRepository: rideRequestRepository,
   ));
 }
 
@@ -81,12 +84,15 @@ class MyApp extends StatelessWidget {
   final DirectionRepository directionRepository;
   final PlaceDetailRepository placeDetailRepository;
 
+  final RideRequestRepository rideRequestRepository;
+
   const MyApp({
     Key? key,
     required this.placeDetailRepository,
     required this.directionRepository,
     required this.userRepository,
     required this.authRepository,
+    required this.rideRequestRepository,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -97,7 +103,8 @@ class MyApp extends StatelessWidget {
           RepositoryProvider.value(value: placeDetailRepository),
           RepositoryProvider.value(value: userRepository),
           RepositoryProvider.value(value: authRepository),
-          RepositoryProvider.value(value: directionRepository)
+          RepositoryProvider.value(value: directionRepository),
+          RepositoryProvider.value(value: rideRequestRepository),
         ],
         child: MultiBlocProvider(
             providers: [
@@ -113,6 +120,9 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                   create: (context) => PlaceDetailBloc(
                       placeDetailRepository: placeDetailRepository)),
+              BlocProvider(
+                  create: (context) => RideRequestBloc(
+                      rideRequestRepository: rideRequestRepository)),
             ],
             child: MaterialApp(
               title: 'SafeWay',

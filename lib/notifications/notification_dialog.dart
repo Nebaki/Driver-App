@@ -10,10 +10,14 @@ class NotificationDialog extends StatelessWidget {
   final Function setIsArrivedWidget;
   final String pickup;
   final String droppOff;
+  final String requestId;
   final LatLng passengerPosition;
   final String passengerName;
+  final String passengerFcm;
 
   NotificationDialog(
+    this.passengerFcm,
+    this.requestId,
     this.passengerName,
     this.passengerPosition,
     this.pickup,
@@ -80,16 +84,23 @@ class NotificationDialog extends StatelessWidget {
                       const Color.fromRGBO(244, 201, 60, 1)),
                 ),
                 onPressed: () {
-                  DirectionEvent event =
-                      DirectionLoad(destination: passengerPosition);
+                  // setIsArrivedWidget(true);
+                  // setDestination(passengerPosition);
+                  // callback(Arrived(callback));
+                  RideRequestEvent requestEvent = RideRequestChangeStatus(
+                      requestId, "Accepted", passengerFcm);
+                  BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
 
-                  BlocProvider.of<DirectionBloc>(context).add(event);
+                  // BlocListener<RideRequestBloc, RideRequestState>(
+                  //     listener: (_, state) {
+                  //   if (state is RideRequesChanged) {
+                  //     DirectionEvent event =
+                  //         DirectionLoad(destination: passengerPosition);
 
-                  setIsArrivedWidget(true);
-                  setDestination(passengerPosition);
-                  callback(Arrived(callback));
-
-                  Navigator.pop(context);
+                  //     BlocProvider.of<DirectionBloc>(context).add(event);
+                  //     Navigator.pop(context);
+                  //   }
+                  // });
                 },
                 child: const Text(
                   "Accept",
