@@ -28,6 +28,8 @@ class NotificationDialog extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
+    bool isLoading = false;
+
     return BlocConsumer<RideRequestBloc, RideRequestState>(
         builder: (context, state) {
       return AlertDialog(
@@ -63,7 +65,8 @@ class NotificationDialog extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              const Divider()
+              const Divider(),
+              isLoading ? LinearProgressIndicator() : Container()
             ],
           ),
         ),
@@ -75,7 +78,12 @@ class NotificationDialog extends StatelessWidget {
                   style: ButtonStyle(
                       side: MaterialStateProperty.all<BorderSide>(
                           const BorderSide(width: 1, color: Colors.red))),
-                  onPressed: () {},
+                  onPressed: () {
+                    RideRequestEvent requestEvent = RideRequestChangeStatus(
+                        requestId, "Cancelled", passengerFcm);
+                    BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
+                    // Navigator.pop(context);
+                  },
                   child: const Text("Cancel")),
               ElevatedButton(
                   style: ButtonStyle(
@@ -86,12 +94,18 @@ class NotificationDialog extends StatelessWidget {
                         const Color.fromRGBO(244, 201, 60, 1)),
                   ),
                   onPressed: () {
+                    isLoading = true;
+
                     // setIsArrivedWidget(true);
                     // setDestination(passengerPosition);
                     // callback(Arrived(callback));
-                    RideRequestEvent requestEvent = RideRequestChangeStatus(
-                        requestId, "Accepted", passengerFcm);
+
+                    RideRequestEvent requestEvent =
+                        RideRequestAccept(requestId, passengerFcm);
                     BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
+                    // RideRequestEvent requestEvent = RideRequestChangeStatus(
+                    //     requestId, "Accepted", passengerFcm);
+                    // BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
 
                     // BlocListener<RideRequestBloc, RideRequestState>(
                     //     );
@@ -106,7 +120,8 @@ class NotificationDialog extends StatelessWidget {
         ],
       );
     }, listener: (_, state) {
-      if (state is RideRequesChanged) {
+      if (state is RideRequestAccepted) {
+        isLoading = false;
         print("Yeah yeah yeah it's Changedd");
         DirectionEvent event = DirectionLoad(destination: passengerPosition);
 
@@ -117,8 +132,15 @@ class NotificationDialog extends StatelessWidget {
         callback(Arrived(callback));
         Navigator.pop(context);
       }
+      if (state is RideRequesChanged) {
+        Navigator.pop(context);
+      }
       if (state is RideRequestOperationFailur) {
-        print("Failed failedfailed");
+        isLoading = false;
+
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: const Text("Operation Failure please try again"),
+            backgroundColor: Colors.red.shade900));
       }
     });
   }

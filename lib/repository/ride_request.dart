@@ -18,4 +18,8 @@ class RideRequestRepository {
       String id, String status, String passengerFcm) async {
     return await dataProvider.changeRequestStatus(id, status, passengerFcm);
   }
+
+  Future acceptRequest(String id, String passengerFcm) async {
+    return await dataProvider.acceptRequest(id, passengerFcm);
+  }
 }

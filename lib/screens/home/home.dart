@@ -219,6 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _myController = controller;
 
                     _determinePosition().then((value) {
+                      print('this is the value $value');
                       controller.animateCamera(CameraUpdate.newCameraPosition(
                           CameraPosition(
                               bearing: 90,
@@ -265,27 +266,27 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           _currentWidget,
-          Positioned(
-              top: 10,
-              right: 10,
-              child: ElevatedButton(
-                  onPressed: () {
-                    // showDialog(
-                    //     barrierDismissible: false,
-                    //     context: context,
-                    //     builder: (BuildContext context) {
-                    //       return NotificationDialog(
-                    //           "6228b3887ec0795442431d67",
-                    //           "message.data['passengerName']",
-                    //           LatLng(324.678, 234.67),
-                    //           "message.data['pickupAddress']",
-                    //           "message.data['dropOffAddress']",
-                    //           callback,
-                    //           setDestination,
-                    //           setIsArrivedWidget);
-                    //     });
-                  },
-                  child: Text("Maintenance")))
+          // Positioned(
+          //     top: 10,
+          //     right: 10,
+          //     child: ElevatedButton(
+          //         onPressed: () {
+          //           // showDialog(
+          //           //     barrierDismissible: false,
+          //           //     context: context,
+          //           //     builder: (BuildContext context) {
+          //           //       return NotificationDialog(
+          //           //           "6228b3887ec0795442431d67",
+          //           //           "message.data['passengerName']",
+          //           //           LatLng(324.678, 234.67),
+          //           //           "message.data['pickupAddress']",
+          //           //           "message.data['dropOffAddress']",
+          //           //           callback,
+          //           //           setDestination,
+          //           //           setIsArrivedWidget);
+          //           //     });
+          //         },
+          //         child: Text("Maintenance")))
         ],
       ),
     );

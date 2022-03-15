@@ -68,13 +68,37 @@ class RideRequestDataProvider {
 
     print("this is the status code: ${response.statusCode}");
     if (response.statusCode == 200) {
-      sendNotification(passengerFcm);
+      if (status == "Cancelled" || status == "Arrived") {
+        sendNotification(passengerFcm, status);
+      }
     } else {
       throw Exception('Failed to respond to the request.');
     }
   }
 
-  Future sendNotification(String fcmToken) async {
+  Future<void> acceptRequest(String id, String passengerFcm) async {
+    print("we Are hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!!!!!!!!!!!!");
+    print(id);
+
+    // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
+    final response = await http.post(
+      Uri.parse('$_baseUrl/accept-rideRequest/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        "x-access-token":
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjEzN2M5NzhjZDlhYmI4NjQwNmI4ODciLCJuYW1lIjoiTWlja3kgRHJpdmVyIiwiZW1haWwiOiJzaGFuYmVsa2Fzc2ExMkBnbWFpbC5jb20iLCJwaG9uZV9udW1iZXIiOiIrMjUxOTM0NTQwMjE3Iiwicm9sZSI6WyJEcml2ZXIiXSwiZmNtX2lkIjoiZm9PUnRNenNSWjJ1MHZacnVObVpnTzpBUEE5MWJFZnlhSGVYRTRtRzBzb1YzQlJnWnVwdjg4OGdyMDU2ZWhKUFpsUXd3RVliN0FndVN6M2s3R3R0Zk5MeU1JWnM1Z01Sd0RUSnBKd2hOWmNEZ1VpSk8xTWU1eThrSW5rNDNFekVWdl92SEhQd2ZmRFN4TGk0d0Iwc0ZTZmYwaGJ1UGN5WmdiVSIsInRvcGljcyI6W10sImlhdCI6MTY0NzI1NDExOSwiZXhwIjoxNjQ3MzQwNTE5fQ.FNKa-DwmHUvLqswa7RTgxxMKaaR674MGfDEJ3cQ_izU"
+      },
+    );
+
+    print("this is the status code: ${response.statusCode}");
+    if (response.statusCode == 200) {
+      sendNotification(passengerFcm, "Accepted");
+    } else {
+      throw Exception('Failed to respond to the request.');
+    }
+  }
+
+  Future sendNotification(String fcmToken, String status) async {
     final response = await http.post(
       Uri.parse(_fcmUrl),
       headers: <String, String>{
@@ -82,7 +106,7 @@ class RideRequestDataProvider {
         'Authorization': 'key=$token'
       },
       body: json.encode({
-        "data": {'response': "Accepted"},
+        "data": {'response': status},
         "to": fcmToken,
         //request.driverToken,
         // "dIZJlO16S6aIiFoGPAg9qf:APA91bHjrxQ0I5vRqyrBFHqbYBM90rYZfmb2llmtA6q8Ps6LmIS9WwoO3ENnBGUDaax7l1eTpzh71RK9YS4fyDdPdowyalVhZXbjWxq337ZEtDvOSGihA5pyuTJeS0dqQl0I9H5MfnFp",

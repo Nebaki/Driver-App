@@ -1,4 +1,5 @@
 import 'package:driverapp/bloc/bloc.dart';
+import 'package:driverapp/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,6 +16,7 @@ class RiderDetail extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BlocConsumer<DirectionBloc, DirectionState>(listener: (_, state) {
+              print('here is your state bruh $state');
               if (state is DirectionDistanceDurationLoadSuccess) {
                 duration =
                     '${(state.direction.durationValue / 60).truncate()} min';
@@ -24,10 +26,14 @@ class RiderDetail extends StatelessWidget {
                     '${(state.direction.durationValue / 60).truncate()} min';
               }
             }, builder: (_, state) {
-              return Text(
-                duration,
-                style: _textStyle,
-              );
+              if (state is DirectionLoadSuccess) {
+                return Text(
+                  '${(state.direction.durationValue / 60).truncate()} min',
+                  style: _textStyle,
+                );
+              }
+              return Text(duration, style: _textStyle);
+
               // Padding(
               //   padding: const EdgeInsets.only(right: 15),
               //   child: SizedBox(
@@ -75,7 +81,7 @@ class RiderDetail extends StatelessWidget {
           ],
         ),
         Text(
-          "Picking up Eyob Tilahun",
+          "Picking up $passengerName",
           style: TextStyle(color: Colors.indigo.shade900, fontSize: 16),
         ),
       ],

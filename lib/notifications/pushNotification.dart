@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -12,10 +15,17 @@ class PushNotificationService {
       AndroidNotification? android = message.notification?.android;
       print("Notification data is ::");
       print(message.data);
-      double passengerLat = double.parse(message.data['pickupLocation']);
-      double passengerLng = double.parse(message.data['dropOffLocation']);
-      LatLng passengerPosition = LatLng(passengerLat, passengerLng);
 
+      final d = json.decode(message.data['pickupLocation']);
+      final dp = json.decode(message.data['droppoffLocation']);
+
+      print('this is d: ${d[0]}');
+      LatLng passengerPosition = LatLng(d[0], d[1]);
+      LatLng droppOffPosition = LatLng(dp[0], dp[1]);
+      passengerName = message.data['passengerName'];
+      passengerPhoneNumber = message.data['passengerPhoneNumber'];
+      requestId = message.data['requestId'];
+      passengerFcm = message.data['passengerFcm'];
       showDialog(
           barrierDismissible: false,
           context: context,
