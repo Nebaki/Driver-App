@@ -15,12 +15,13 @@ class PushNotificationService {
       double passengerLat = double.parse(message.data['pickupLocation']);
       double passengerLng = double.parse(message.data['dropOffLocation']);
       LatLng passengerPosition = LatLng(passengerLat, passengerLng);
+
       showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
             return NotificationDialog(
-              message.data['passengerFcm'],
+                message.data['passengerFcm'],
                 message.data['requestId'],
                 message.data['passengerName'],
                 passengerPosition,

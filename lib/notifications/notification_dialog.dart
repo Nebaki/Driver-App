@@ -28,88 +28,98 @@ class NotificationDialog extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Text(
-        "New Ride Request",
-        style: TextStyle(fontSize: 14),
-      ),
-      content: SizedBox(
-        height: 180,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Icon(
-                Icons.request_page,
-                size: 50,
-                color: Colors.indigo.shade900,
-              ),
-            ),
-            Text("Passenger: $passengerName"),
-            const SizedBox(
-              height: 10,
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Text("Pickup: $pickup"),
-            const SizedBox(
-              height: 10,
-            ),
-            Text("Drop Off: $droppOff "),
-            const SizedBox(
-              height: 30,
-            ),
-            const Divider()
-          ],
+    return BlocConsumer<RideRequestBloc, RideRequestState>(
+        builder: (context, state) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          "New Ride Request",
+          style: TextStyle(fontSize: 14),
         ),
-      ),
-      actions: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            TextButton(
-                style: ButtonStyle(
-                    side: MaterialStateProperty.all<BorderSide>(
-                        const BorderSide(width: 1, color: Colors.red))),
-                onPressed: () {},
-                child: const Text("Cancel")),
-            ElevatedButton(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color.fromRGBO(244, 201, 60, 1)),
+        content: SizedBox(
+          height: 180,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Icon(
+                  Icons.request_page,
+                  size: 50,
+                  color: Colors.indigo.shade900,
                 ),
-                onPressed: () {
-                  // setIsArrivedWidget(true);
-                  // setDestination(passengerPosition);
-                  // callback(Arrived(callback));
-                  RideRequestEvent requestEvent = RideRequestChangeStatus(
-                      requestId, "Accepted", passengerFcm);
-                  BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
+              ),
+              Text("Passenger: $passengerName"),
+              const SizedBox(
+                height: 10,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text("Pickup: $pickup"),
+              const SizedBox(
+                height: 10,
+              ),
+              Text("Drop Off: $droppOff "),
+              const SizedBox(
+                height: 30,
+              ),
+              const Divider()
+            ],
+          ),
+        ),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              TextButton(
+                  style: ButtonStyle(
+                      side: MaterialStateProperty.all<BorderSide>(
+                          const BorderSide(width: 1, color: Colors.red))),
+                  onPressed: () {},
+                  child: const Text("Cancel")),
+              ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10))),
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color.fromRGBO(244, 201, 60, 1)),
+                  ),
+                  onPressed: () {
+                    // setIsArrivedWidget(true);
+                    // setDestination(passengerPosition);
+                    // callback(Arrived(callback));
+                    RideRequestEvent requestEvent = RideRequestChangeStatus(
+                        requestId, "Accepted", passengerFcm);
+                    BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
 
-                  // BlocListener<RideRequestBloc, RideRequestState>(
-                  //     listener: (_, state) {
-                  //   if (state is RideRequesChanged) {
-                  //     DirectionEvent event =
-                  //         DirectionLoad(destination: passengerPosition);
+                    // BlocListener<RideRequestBloc, RideRequestState>(
+                    //     );
+                  },
+                  child: const Text(
+                    "Accept",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.normal),
+                  ))
+            ],
+          )
+        ],
+      );
+    }, listener: (_, state) {
+      if (state is RideRequesChanged) {
+        print("Yeah yeah yeah it's Changedd");
+        DirectionEvent event = DirectionLoad(destination: passengerPosition);
 
-                  //     BlocProvider.of<DirectionBloc>(context).add(event);
-                  //     Navigator.pop(context);
-                  //   }
-                  // });
-                },
-                child: const Text(
-                  "Accept",
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
-                ))
-          ],
-        )
-      ],
-    );
+        BlocProvider.of<DirectionBloc>(context).add(event);
+
+        setIsArrivedWidget(true);
+        setDestination(passengerPosition);
+        callback(Arrived(callback));
+        Navigator.pop(context);
+      }
+      if (state is RideRequestOperationFailur) {
+        print("Failed failedfailed");
+      }
+    });
   }
 }
