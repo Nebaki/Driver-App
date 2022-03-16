@@ -1,11 +1,31 @@
+
+import 'package:driverapp/dataprovider/credit/credit.dart';
+import 'package:driverapp/screens/credit/dialog_box.dart';
+import 'package:driverapp/screens/credit/list_builder.dart';
+import 'package:driverapp/screens/credit/toast_message.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-class Walet extends StatelessWidget {
-  static const routeName = "/wallet";
+import '../../models/credit/credit.dart';
+
+class Walet extends StatefulWidget {
+  static const routeName = "/credit";
+
+  @override
+  State<Walet> createState() => _WaletState();
+}
+
+class _WaletState extends State<Walet> {
   final _inkweltextStyle = const TextStyle(
     color: Colors.red,
     fontWeight: FontWeight.bold,
   );
+  @override
+  void initState() {
+    _isLoading = true;
+    prepareRequest(context);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +85,14 @@ class Walet extends StatelessWidget {
                           const VerticalDivider(),
                           Center(
                               child: InkWell(
+                                onTap: (){
+                                  showDialog(
+                                    context:context,
+                                    builder: (_) => PaymentBox(),
+                                      barrierDismissible: false
+                                  );
+                                  PaymentBox();
+                                },
                                   child: Text(
                             "ADD MONEY",
                             style: _inkweltextStyle,
@@ -78,61 +106,22 @@ class Walet extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.only(top: 20, left: 20, bottom: 10),
-              child: Text("APRIL 2019"),
+              child: Text("Recent Messages"),
             ),
             Container(
               color: Colors.white,
               height: MediaQuery.of(context).size.height - 330,
-              child: ListView(children: [
-                _buildeListItems(
-                    icon: Icons.wallet_giftcard,
-                    action: "Added to Wallet",
-                    date: "1 Feb'19",
-                    tripid: "123467",
-                    price: "40"),
-                _buildeListItems(
-                    icon: Icons.car_repair_outlined,
-                    action: "Trip Deducted",
-                    date: "1 Feb'19",
-                    tripid: "123467",
-                    price: "40"),
-                _buildeListItems(
-                    icon: Icons.home_max_outlined,
-                    action: "Withdraw to Wallet",
-                    date: "1 Feb'19",
-                    tripid: "123467",
-                    price: "40"),
-                _buildeListItems(
-                    icon: Icons.wallet_giftcard,
-                    action: "Added to Wallet",
-                    date: "1 Feb'19",
-                    tripid: "123467",
-                    price: "40"),
-                _buildeListItems(
-                    icon: Icons.car_repair_outlined,
-                    action: "Trip Deducted",
-                    date: "1 Feb'19",
-                    tripid: "123467",
-                    price: "40"),
-                _buildeListItems(
-                    icon: Icons.home_max_outlined,
-                    action: "Withdraw to Wallet",
-                    date: "1 Feb'19",
-                    tripid: "123467",
-                    price: "40"),
-                _buildeListItems(
-                    icon: Icons.car_repair_outlined,
-                    action: "Trip Deducted",
-                    date: "1 Feb'19",
-                    tripid: "123467",
-                    price: "40"),
-                _buildeListItems(
-                    icon: Icons.home_max_outlined,
-                    action: "Withdraw to Wallet",
-                    date: "1 Feb'19",
-                    tripid: "123467",
-                    price: "40"),
-              ]),
+              child: _isLoading ? const Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.red,
+                  ),
+                )
+              ) :ListBuilder(_items!),
             ),
           ],
         ),
@@ -140,31 +129,22 @@ class Walet extends StatelessWidget {
     );
   }
 
-  Widget _buildeListItems(
-      {required IconData icon,
-      required String action,
-      required String date,
-      required String tripid,
-      required String price}) {
-    return Column(
-      children: [
-        ListTile(
-          leading: Icon(
-            icon,
-            size: 25,
-          ),
-          title: Text(
-            action,
-            style: const TextStyle(color: Colors.black, fontSize: 16),
-          ),
-          subtitle: Text('$date . $tripid'),
-          trailing: Text('\$$price'),
-        ),
-        const Padding(
-          padding: EdgeInsets.only(left: 50, right: 20),
-          child: Divider(),
-        )
-      ],
-    );
+  List<Credit>? _items;
+  var _isLoading = false;
+  void prepareRequest(BuildContext context) {
+    var sender = CreditDataProvider(httpClient: http.Client());
+    var res = sender.loadCreditHistory("0922877115");
+    res.then((value) => {
+      setState(() {
+        _isLoading = false;
+        _items = value.trips!;
+      })
+    });
   }
+
+  void showMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
 }
