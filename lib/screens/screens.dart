@@ -6,7 +6,7 @@ export 'profile/edit_profile.dart';
 export 'profile/profile_detail.dart';
 export 'cancel_reason.dart';
 export 'collected_cash.dart';
-export 'wallet.dart';
+export 'credit/credit.dart';
 export 'report/earning/earning.dart';
 export 'report/earning/tabview/daily.dart';
 export 'report/earning/tabview/weekly.dart';
