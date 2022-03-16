@@ -117,50 +117,59 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
 
     return Scaffold(
         backgroundColor: Colors.red,
-        body: BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
-          // if (state is AuthDataLoading) {
-          //   print("Loadloadloadloadloadload");
-          //   return const Align(
-          //     alignment: Alignment.bottomCenter,
-          //     child: LinearProgressIndicator(),
-          //   );
-          // }
-          return const Center(
-            child: Image(
-              height: 150,
-              image: AssetImage("assets/icons/logo.png"),
-            ),
-          );
-        }, listener: (_, state) {
-          if (state is AuthDataLoading) {
-            print("Loadloadloadloadloadload");
-            const Align(
-              alignment: Alignment.bottomCenter,
-              child: LinearProgressIndicator(),
-            );
-          }
-          if (state is AuthDataLoadSuccess) {
-            if (_connectionStatus == ConnectivityResult.none) {
-              ScaffoldMessenger.of(context).showSnackBar(_snackBar);
-            } else if (_connectionStatus == ConnectivityResult.wifi ||
-                _connectionStatus == ConnectivityResult.mobile) {
-              requestLocationPermission();
+        body: _connectionStatus == ConnectivityResult.none
+            ? const Center(
+                child: Image(
+                  height: 150,
+                  image: AssetImage("assets/icons/logo.png"),
+                ),
+              )
+            // ScaffoldMessenger.of(context).showSnackBar(_snackBar);
+            : BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
+                // if (state is AuthDataLoading) {
+                //   print("Loadloadloadloadloadload");
+                //   return const Align(
+                //     alignment: Alignment.bottomCenter,
+                //     child: LinearProgressIndicator(),
+                //   );
+                // }
+                return const Center(
+                  child: Image(
+                    height: 150,
+                    image: AssetImage("assets/icons/logo.png"),
+                  ),
+                );
+              }, listener: (_, state) {
+                if (state is AuthDataLoading) {
+                  print("Loadloadloadloadloadload");
+                  const Align(
+                    alignment: Alignment.bottomCenter,
+                    child: LinearProgressIndicator(),
+                  );
+                }
+                if (state is AuthDataLoadSuccess) {
+                  if (_connectionStatus == ConnectivityResult.none) {
+                    ScaffoldMessenger.of(context).showSnackBar(_snackBar);
+                  } else if (_connectionStatus == ConnectivityResult.wifi ||
+                      _connectionStatus == ConnectivityResult.mobile) {
+                    requestLocationPermission();
 
-              print("teststst");
-              print(state.auth.token);
-              Navigator.pushReplacementNamed(context, SigninScreen.routeName);
+                    print("teststst");
+                    print(state.auth.token);
+                    Navigator.pushReplacementNamed(
+                        context, SigninScreen.routeName);
 
-              state.auth.token != null
-                  ? Navigator.pushReplacementNamed(
-                      context, HomeScreen.routeName,
-                      arguments: HomeScreenArgument(isSelected: false))
-                  : Navigator.pushReplacementNamed(
-                      context, SigninScreen.routeName);
+                    state.auth.token != null
+                        ? Navigator.pushReplacementNamed(
+                            context, HomeScreen.routeName,
+                            arguments: HomeScreenArgument(isSelected: false))
+                        : Navigator.pushReplacementNamed(
+                            context, SigninScreen.routeName);
 
-              //0967543215
-            }
-          }
-          if (state is AuthOperationFailure) {}
-        }));
+                    //0967543215
+                  }
+                }
+                if (state is AuthOperationFailure) {}
+              }));
   }
 }

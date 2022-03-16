@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:driverapp/dataprovider/dataproviders.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/models/models.dart';
 
@@ -8,6 +9,8 @@ class RideRequestDataProvider {
   final token =
       "AAAAKTCNpPU:APA91bHPscWDa8pPO5MGRj11FWo6NZkpK5tRPodi_2wuMdHhDNwlTO3l4jF50tFGiU55EWMyNss0St0l_kk2H1YmKH1z4yzWPVL25xGTt-GqOFWUdh7BgjJmiNo55eVzzJgHeEOBvHtH";
   final http.Client httpClient;
+  AuthDataProvider authDataProvider =
+      AuthDataProvider(httpClient: http.Client());
 
   RideRequestDataProvider({required this.httpClient});
 
@@ -16,8 +19,7 @@ class RideRequestDataProvider {
       Uri.parse('$_baseUrl/create-rideRequest'),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        "x-access-token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjJiMGE3MGM3OWY2MjZiODZhMmU2NTEiLCJuYW1lIjoibWlraSIsInBob25lX251bWJlciI6IisyNTE5MzQ1NDAyMTciLCJyb2xlIjpbIlBhc3NlbmdlciJdLCJpYXQiOjE2NDY5ODc4ODgsImV4cCI6MTY0NzA3NDI4OH0.wGZrmWayn6ZGmm8YgL5bGHC8fMxj7mIRZ6sNOyc-aX8"
+        "x-access-token": '${await authDataProvider.getToken()}'
       },
       body: json.encode({
         'driverId': 'waiting',
@@ -61,8 +63,7 @@ class RideRequestDataProvider {
         await http.post(Uri.parse('$_baseUrl/set-rideRequestStatus/$id'),
             headers: <String, String>{
               'Content-Type': 'application/json',
-              "x-access-token":
-                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjJiMGE3MGM3OWY2MjZiODZhMmU2NTEiLCJuYW1lIjoibWlraSIsInBob25lX251bWJlciI6IisyNTE5MzQ1NDAyMTciLCJyb2xlIjpbIlBhc3NlbmdlciJdLCJpYXQiOjE2NDY5ODc4ODgsImV4cCI6MTY0NzA3NDI4OH0.wGZrmWayn6ZGmm8YgL5bGHC8fMxj7mIRZ6sNOyc-aX8"
+              "x-access-token": '${await authDataProvider.getToken()}'
             },
             body: json.encode({'status': status}));
 
@@ -85,8 +86,7 @@ class RideRequestDataProvider {
       Uri.parse('$_baseUrl/accept-rideRequest/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        "x-access-token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjEzN2M5NzhjZDlhYmI4NjQwNmI4ODciLCJuYW1lIjoiTWlja3kgRHJpdmVyIiwiZW1haWwiOiJzaGFuYmVsa2Fzc2ExMkBnbWFpbC5jb20iLCJwaG9uZV9udW1iZXIiOiIrMjUxOTM0NTQwMjE3Iiwicm9sZSI6WyJEcml2ZXIiXSwiZmNtX2lkIjoiZm9PUnRNenNSWjJ1MHZacnVObVpnTzpBUEE5MWJFZnlhSGVYRTRtRzBzb1YzQlJnWnVwdjg4OGdyMDU2ZWhKUFpsUXd3RVliN0FndVN6M2s3R3R0Zk5MeU1JWnM1Z01Sd0RUSnBKd2hOWmNEZ1VpSk8xTWU1eThrSW5rNDNFekVWdl92SEhQd2ZmRFN4TGk0d0Iwc0ZTZmYwaGJ1UGN5WmdiVSIsInRvcGljcyI6W10sImlhdCI6MTY0NzI1NDExOSwiZXhwIjoxNjQ3MzQwNTE5fQ.FNKa-DwmHUvLqswa7RTgxxMKaaR674MGfDEJ3cQ_izU"
+        "x-access-token": '${await authDataProvider.getToken()}'
       },
     );
 
