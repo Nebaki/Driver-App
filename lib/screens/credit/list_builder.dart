@@ -1,0 +1,77 @@
+import 'package:driverapp/screens/credit/toast_message.dart';
+import 'package:flutter/material.dart';
+
+import '../../models/credit/credit.dart';
+
+class ListBuilder extends StatelessWidget {
+  List<Credit> items;
+
+  ListBuilder(this.items, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return items.isNotEmpty
+        ? ListView.builder(
+            itemCount: items.length,
+            padding: const EdgeInsets.all(5.0),
+            itemBuilder: (context, item) {
+              return _buildListItems(context, items[item], item);
+            })
+        : const Center(child: Text('No Message'));
+  }
+
+  Widget _buildListItems(BuildContext context, Credit credit, int item) {
+    return Card(
+        elevation: 4,
+        child: Column(
+          children: [
+            ListTile(
+              onTap: () {
+                //ShowToast(context, items[item].amount!).show();
+                showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return _showBottomMessage(context,credit);
+                    });
+              },
+              leading: Icon(
+                credit.type == "Gift" ? Icons.wallet_giftcard : Icons.email,
+                size: 25,
+              ),
+              title: Text(
+                credit.title!,
+                style: const TextStyle(color: Colors.black, fontSize: 16),
+              ),
+              subtitle: Text('${credit.type} . ${credit.date}'),
+              trailing: Text('${credit.amount}',
+                  style: const TextStyle(color: Colors.red)),
+            ),
+          ],
+        ));
+  }
+
+  Widget _showBottomMessage(BuildContext context, Credit credit) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.3,
+      color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          /*ElevatedButton(
+            style: const ButtonStyle(alignment: Alignment.topRight),
+            child: const Center(child: Text('Close')),
+            onPressed: () => Navigator.pop(context),
+          ),*/
+          Text(credit.title!, textAlign:TextAlign.start ,style: const TextStyle(
+            fontSize: 22,
+            color: Colors.red
+          ),),
+          Text(credit.message!,style: const TextStyle(
+            color: Colors.black
+          ),),
+        ],
+      ),
+    );
+  }
+}
