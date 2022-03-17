@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 // import 'package:dio/dio.dart';
+import 'package:driverapp/screens/credit/telebirr.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'dart:io';
@@ -17,17 +18,18 @@ class TeleBirrDataProvider {
       AuthDataProvider(httpClient: http.Client());
   TeleBirrDataProvider({required this.httpClient});
 
-  Future<User> initTelebirr(User user) async {
+  Future<TelePack> initTelebirr(String user) async {
     final response = await http.get(
-      Uri.parse('$_baseUrl/init-telebirr'),
-      headers: <String, String>{'Content-Type': 'application/json',
-        'x-access-token': '${await authDataProvider.getToken()}'}
+      //Uri.parse('$_baseUrl/init-telebirr'),
+      Uri.parse('https://app.hellotena.com/api/telebirr/confirmPayment/01245890-9dd9-4abd-a5d3-9fe1e9d39b2b/covid/covid'),
+      /*headers: <String, String>{'Content-Type': 'application/json',
+        'x-access-token': '${await authDataProvider.getToken()}'}*/
     );
 
     if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body));
+      return TelePack.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to create user.');
+      throw Exception('Failed to load telebirr data. ${response.statusCode}');
     }
   }
 

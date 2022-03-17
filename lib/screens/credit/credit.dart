@@ -1,8 +1,6 @@
-
 import 'package:driverapp/dataprovider/credit/credit.dart';
 import 'package:driverapp/screens/credit/dialog_box.dart';
 import 'package:driverapp/screens/credit/list_builder.dart';
-import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -20,16 +18,18 @@ class _WaletState extends State<Walet> {
     color: Colors.red,
     fontWeight: FontWeight.bold,
   );
+
   @override
   void initState() {
     _isLoading = true;
     prepareRequest(context);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F6F9),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.5,
         backgroundColor: Colors.white,
@@ -40,14 +40,23 @@ class _WaletState extends State<Walet> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 7),
+        padding: const EdgeInsets.all(7),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Card(
+              elevation: 3,
               child: Container(
-                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                color: Colors.white,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    /*boxShadow: [
+                      BoxShadow(
+                          blurRadius: 3,
+                          color: Colors.grey,
+                          blurStyle: BlurStyle.outer,
+                          spreadRadius: 2)
+                    ],*/
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   children: [
@@ -70,58 +79,74 @@ class _WaletState extends State<Walet> {
                       padding: EdgeInsets.only(top: 10),
                       child: Divider(),
                     ),
-                    Container(
-                      height: 40,
-                      padding: const EdgeInsets.all(0.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Center(
-                              child: InkWell(
-                                  child: Text(
-                            "WITHDRAW",
-                            style: _inkweltextStyle,
-                          ))),
-                          const VerticalDivider(),
-                          Center(
-                              child: InkWell(
-                                onTap: (){
-                                  showDialog(
-                                    context:context,
-                                    builder: (_) => PaymentBox(),
-                                      barrierDismissible: false
-                                  );
-                                  PaymentBox();
-                                },
-                                  child: Text(
-                            "ADD MONEY",
-                            style: _inkweltextStyle,
-                          ))),
-                        ],
-                      ),
-                    ),
+                    Card(
+                        elevation: 1,
+                        child: Container(
+                          height: 40,
+                          padding: const EdgeInsets.all(5.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Center(
+                                  child: InkWell(
+                                      child: Text(
+                                "WITHDRAW",
+                                style: _inkweltextStyle,
+                              ))),
+                              const VerticalDivider(),
+                              Center(
+                                  child: InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => PaymentBox(),
+                                            barrierDismissible: false);
+                                        PaymentBox();
+                                      },
+                                      child: Text(
+                                        "ADD MONEY",
+                                        style: _inkweltextStyle,
+                                      ))),
+                            ],
+                          ),
+                        )),
                   ],
                 ),
               ),
             ),
             const Padding(
               padding: EdgeInsets.only(top: 20, left: 20, bottom: 10),
-              child: Text("Recent Messages"),
+              child: Text(
+                "Recent Messages",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
             Container(
-              color: Colors.white,
-              height: MediaQuery.of(context).size.height - 330,
-              child: _isLoading ? const Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.red,
-                  ),
-                )
-              ) :ListBuilder(_items!),
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        blurRadius: 3,
+                        color: Colors.grey,
+                        blurStyle: BlurStyle.outer,
+                        spreadRadius: 2)
+                  ],
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10))),
+              height: MediaQuery.of(context).size.height - 322,
+              child: _isLoading
+                  ? const Align(
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        height: 50,
+                        width: 50,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.red,
+                        ),
+                      ))
+                  : ListBuilder(_items!),
             ),
           ],
         ),
@@ -131,20 +156,20 @@ class _WaletState extends State<Walet> {
 
   List<Credit>? _items;
   var _isLoading = false;
+
   void prepareRequest(BuildContext context) {
     var sender = CreditDataProvider(httpClient: http.Client());
     var res = sender.loadCreditHistory("0922877115");
     res.then((value) => {
-      setState(() {
-        _isLoading = false;
-        _items = value.trips!;
-      })
-    });
+          setState(() {
+            _isLoading = false;
+            _items = value.trips!;
+          })
+        });
   }
 
   void showMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message)));
   }
-
 }

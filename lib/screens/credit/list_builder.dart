@@ -29,14 +29,20 @@ class ListBuilder extends StatelessWidget {
               onTap: () {
                 //ShowToast(context, items[item].amount!).show();
                 showModalBottomSheet<void>(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0),
+                          topRight: Radius.circular(20.0)
+                      ),
+                    ),
                     context: context,
                     builder: (BuildContext context) {
-                      return _showBottomMessage(context,credit);
+                      return _showBottomMessage(context, credit);
                     });
               },
               leading: Icon(
                 credit.type == "Gift" ? Icons.wallet_giftcard : Icons.email,
-                size: 25,
+                size: 40,
               ),
               title: Text(
                 credit.title!,
@@ -53,23 +59,25 @@ class ListBuilder extends StatelessWidget {
   Widget _showBottomMessage(BuildContext context, Credit credit) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.3,
-      color: Colors.white,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          /*ElevatedButton(
-            style: const ButtonStyle(alignment: Alignment.topRight),
-            child: const Center(child: Text('Close')),
-            onPressed: () => Navigator.pop(context),
-          ),*/
-          Text(credit.title!, textAlign:TextAlign.start ,style: const TextStyle(
-            fontSize: 22,
-            color: Colors.red
-          ),),
-          Text(credit.message!,style: const TextStyle(
-            color: Colors.black
-          ),),
+          ListTile(
+            leading: Icon(
+              credit.type == "Gift" ? Icons.wallet_giftcard : Icons.email,
+              size: 50,
+            ),
+            title: Text(
+              credit.title!,
+              style: const TextStyle(fontSize: 22, color: Colors.red),
+            ),
+            subtitle: Text(credit.date!),
+            trailing:
+                Text(credit.amount!, style: const TextStyle(color: Colors.red)),
+          ),
+          Text(
+            credit.message!,
+            style: const TextStyle(color: Colors.black),
+          ),
         ],
       ),
     );

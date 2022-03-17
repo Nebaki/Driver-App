@@ -39,7 +39,7 @@ class Credit {
       'id: $id,'
       ' }';
 
-   Credit.fromString(List<dynamic> parsedJson){
+   Credit.fromStringObject(List<dynamic> parsedJson){
     parsedJson.map((i) => Credit.fromJson(i)).toList();
   }
 }
@@ -49,7 +49,7 @@ class CreditStore{
   CreditStore({required this.trips});
 
   CreditStore.fromJson(List<dynamic> parsedJson){
-    trips = parsedJson.map((i) => Credit.fromString(i)).toList();
+    trips = parsedJson.map((i) => Credit.fromStringObject(i)).toList();
   }
   CreditStore.getList(){
     trips;
