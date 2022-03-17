@@ -1,15 +1,21 @@
+import 'package:driverapp/dataprovider/telebir/telebirr.dart';
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:flutter/material.dart';
 
-class PaymentBox extends StatelessWidget{
+import 'telebirr.dart';
+
+
+class PaymentBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       elevation: 5,
       content: Container(
-        child: Image.asset("assets/icons/car.png",height: 100),
+        child: Image.asset("assets/icons/car.png", height: 100),
       ),
-      title: const Text("Continue",),
+      title: const Text(
+        "Continue",
+      ),
       actions: [
         ElevatedButton(
           onPressed: () {
@@ -21,6 +27,7 @@ class PaymentBox extends StatelessWidget{
         ElevatedButton(
           onPressed: () {
             Navigator.pop(context);
+            startTelebirr(context);
             ShowToast(context, "Next Clicked").show();
           },
           child: const Text("Next"),
@@ -28,4 +35,5 @@ class PaymentBox extends StatelessWidget{
       ],
     );
   }
+
 }
