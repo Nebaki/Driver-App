@@ -1,4 +1,5 @@
 import 'package:driverapp/dataprovider/credit/credit.dart';
+import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/credit/dialog_box.dart';
 import 'package:driverapp/screens/credit/list_builder.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +16,7 @@ class Walet extends StatefulWidget {
 
 class _WaletState extends State<Walet> {
   final _inkweltextStyle = const TextStyle(
-    color: Colors.red,
+    color: Colors.white,
     fontWeight: FontWeight.bold,
   );
 
@@ -80,8 +81,12 @@ class _WaletState extends State<Walet> {
                       child: Divider(),
                     ),
                     Card(
-                        elevation: 1,
+                        elevation: 0,
                         child: Container(
+                          decoration: const BoxDecoration(
+                              color: Colors.deepOrange,
+                              borderRadius: BorderRadius.all(Radius.circular(10))),
+                          //color: Colors.deepOrange,
                           height: 40,
                           padding: const EdgeInsets.all(5.0),
                           child: Row(
@@ -92,15 +97,20 @@ class _WaletState extends State<Walet> {
                                       child: Text(
                                 "WITHDRAW",
                                 style: _inkweltextStyle,
-                              ))),
-                              const VerticalDivider(),
+                              ),)),
+                              const VerticalDivider(
+                                color: Colors.white,
+                                thickness: 3,
+                              ),
                               Center(
                                   child: InkWell(
                                       onTap: () {
-                                        showDialog(
+                                        Navigator.pushNamed(
+                                            context, TeleBirrData.routeName);
+                                        /*showDialog(
                                             context: context,
                                             builder: (_) => PaymentBox(),
-                                            barrierDismissible: false);
+                                            barrierDismissible: false);*/
                                         PaymentBox();
                                       },
                                       child: Text(
@@ -118,7 +128,7 @@ class _WaletState extends State<Walet> {
               padding: EdgeInsets.only(top: 20, left: 20, bottom: 10),
               child: Text(
                 "Recent Messages",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.deepOrange),
               ),
             ),
             Container(
