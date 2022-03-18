@@ -1,4 +1,3 @@
-import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/credit/credit.dart';
@@ -13,7 +12,7 @@ class ListBuilder extends StatelessWidget {
     return items.isNotEmpty
         ? ListView.builder(
             itemCount: items.length,
-            padding: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(0.0),
             itemBuilder: (context, item) {
               return _buildListItems(context, items[item], item);
             })

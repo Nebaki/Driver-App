@@ -1,3 +1,4 @@
+import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +43,10 @@ class AppRoute {
     if (settings.name == Walet.routeName) {
       return MaterialPageRoute(builder: (context) => Walet());
     }
+    if (settings.name == TeleBirrData.routeName) {
+      return MaterialPageRoute(builder: (context) => TeleBirrData());
+    }
+
     if (settings.name == Earning.routeName) {
       return MaterialPageRoute(builder: (context) => Earning());
     }

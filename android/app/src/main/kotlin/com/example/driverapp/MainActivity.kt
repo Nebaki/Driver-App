@@ -60,7 +60,7 @@ class MainActivity: FlutterActivity(),PaymentResultListener {
         tBirr.appKey = data["appKey"] as String
         tBirr.publicKey = data["publicKey"] as String?
         tBirr.message = data["message"] as String?
-        tBirr.totalAmount = data["totalAmount"] as Double
+        tBirr.entityId = data["totalAmount"] as String?
         return tBirr
     }
     fun initTeleBirr(payData: TeleBirrPack?) {
@@ -74,7 +74,7 @@ class MainActivity: FlutterActivity(),PaymentResultListener {
             request.setShortCode(payData.shortCode)
             request.setSubject(payData.subject)
             request.setTimeoutExpress(payData.timeoutExpress)
-            request.setTotalAmount(payData.totalAmount.toString())
+            request.setTotalAmount(payData.entityId)
             if (payData.appKey != null && payData.publicKey != null) {
                 AngolaPayUtil.getInstance().startPayment(
                     request, this, payData.appKey, payData.publicKey
