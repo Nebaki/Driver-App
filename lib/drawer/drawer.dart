@@ -200,27 +200,27 @@ class NavDrawer extends StatelessWidget {
                         text: "Summary"),
                   ),
 
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, VehicleDocument.routeName);
-                    },
-                    child: _menuItem(
-                        divider: true,
-                        context: context,
-                        icon: Icons.settings,
-                        text: "Vehicle Document"),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      print("sdfasdfa");
-                      Navigator.pushNamed(context, PersonalDocument.routeName);
-                    },
-                    child: _menuItem(
-                        divider: true,
-                        context: context,
-                        icon: Icons.settings,
-                        text: "Personal Document"),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.pushNamed(context, VehicleDocument.routeName);
+                  //   },
+                  //   child: _menuItem(
+                  //       divider: true,
+                  //       context: context,
+                  //       icon: Icons.settings,
+                  //       text: "Vehicle Document"),
+                  // ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     print("sdfasdfa");
+                  //     Navigator.pushNamed(context, PersonalDocument.routeName);
+                  //   },
+                  //   child: _menuItem(
+                  //       divider: true,
+                  //       context: context,
+                  //       icon: Icons.settings,
+                  //       text: "Personal Document"),
+                  // ),
 
                   //const Divider(color: Colors.grey),
                   GestureDetector(

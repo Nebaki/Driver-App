@@ -143,40 +143,40 @@ class SettingScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Card(
-                elevation: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, left: 5),
-                      child: Text(
-                        "Legal",
-                        style: _textStyle,
-                      ),
-                    ),
-                    const Divider(
-                      color: Colors.red,
-                      thickness: 1.5,
-                    ),
-                    Container(
-                      padding:
-                          const EdgeInsets.only(left: 10, bottom: 20, top: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Contact Us",
-                            style: _textStyle,
-                          ),
-                          Text("Privacy Policy", style: _textStyle),
-                          Text("Terms & Conditions", style: _textStyle),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Card(
+              //   elevation: 3,
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Padding(
+              //         padding: const EdgeInsets.only(top: 8, left: 5),
+              //         child: Text(
+              //           "Legal",
+              //           style: _textStyle,
+              //         ),
+              //       ),
+              //       const Divider(
+              //         color: Colors.red,
+              //         thickness: 1.5,
+              //       ),
+              //       Container(
+              //         padding:
+              //             const EdgeInsets.only(left: 10, bottom: 20, top: 10),
+              //         child: Column(
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             Text(
+              //               "Contact Us",
+              //               style: _textStyle,
+              //             ),
+              //             Text("Privacy Policy", style: _textStyle),
+              //             Text("Terms & Conditions", style: _textStyle),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               Card(
                 elevation: 3,
                 child: Column(
@@ -253,64 +253,64 @@ class SettingScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Card(
-                elevation: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, left: 5),
-                      child: Text(
-                        "App Info",
-                        style: _textStyle,
-                      ),
-                    ),
-                    const Divider(
-                      color: Colors.red,
-                      thickness: 1.5,
-                    ),
-                    Container(
-                      padding:
-                          const EdgeInsets.only(left: 10, bottom: 20, top: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text.rich(TextSpan(
-                              text: "Build Name: ",
-                              style: _textStyle,
-                              children: const [
-                                TextSpan(
-                                    text: " SafeWay",
-                                    style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontWeight: FontWeight.w300))
-                              ])),
-                          Text.rich(TextSpan(
-                              text: "App Version: ",
-                              style: _textStyle,
-                              children: const [
-                                TextSpan(
-                                    text: " 1.0",
-                                    style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontWeight: FontWeight.w300))
-                              ])),
-                          Text.rich(TextSpan(
-                              text: "Build Number: ",
-                              style: _textStyle,
-                              children: const [
-                                TextSpan(
-                                    text: " 102034",
-                                    style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontWeight: FontWeight.w300))
-                              ])),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Card(
+              //   elevation: 3,
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Padding(
+              //         padding: const EdgeInsets.only(top: 8, left: 5),
+              //         child: Text(
+              //           "App Info",
+              //           style: _textStyle,
+              //         ),
+              //       ),
+              //       const Divider(
+              //         color: Colors.red,
+              //         thickness: 1.5,
+              //       ),
+              //       Container(
+              //         padding:
+              //             const EdgeInsets.only(left: 10, bottom: 20, top: 10),
+              //         child: Column(
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             Text.rich(TextSpan(
+              //                 text: "Build Name: ",
+              //                 style: _textStyle,
+              //                 children: const [
+              //                   TextSpan(
+              //                       text: " SafeWay",
+              //                       style: TextStyle(
+              //                           fontStyle: FontStyle.italic,
+              //                           fontWeight: FontWeight.w300))
+              //                 ])),
+              //             Text.rich(TextSpan(
+              //                 text: "App Version: ",
+              //                 style: _textStyle,
+              //                 children: const [
+              //                   TextSpan(
+              //                       text: " 1.0",
+              //                       style: TextStyle(
+              //                           fontStyle: FontStyle.italic,
+              //                           fontWeight: FontWeight.w300))
+              //                 ])),
+              //             Text.rich(TextSpan(
+              //                 text: "Build Number: ",
+              //                 style: _textStyle,
+              //                 children: const [
+              //                   TextSpan(
+              //                       text: " 102034",
+              //                       style: TextStyle(
+              //                           fontStyle: FontStyle.italic,
+              //                           fontWeight: FontWeight.w300))
+              //                 ])),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               Card(
                 elevation: 3,
                 child: Column(

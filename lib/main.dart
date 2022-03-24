@@ -146,8 +146,12 @@ class MyApp extends StatelessWidget {
                       ),
                       subtitle1:
                           const TextStyle(color: Colors.black38, fontSize: 14),
-                      headline5: const TextStyle(fontWeight: FontWeight.bold),
-                      bodyText2: TextStyle(color: Colors.grey.shade700)),
+                      headline5: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 24),
+                      bodyText2: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal)),
                   iconTheme: const IconThemeData(
                     color: Colors.white,
                   ),
@@ -163,10 +167,12 @@ class MyApp extends StatelessWidget {
                         textStyle: MaterialStateProperty.all<TextStyle>(
                             const TextStyle(
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.normal,
                                 fontSize: 20)),
                         backgroundColor: MaterialStateProperty.all<Color>(
                             const Color.fromRGBO(254, 79, 5, 1)),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(

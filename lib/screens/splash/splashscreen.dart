@@ -80,7 +80,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
   Widget build(BuildContext context) {
     final _snackBar = SnackBar(
       content: const Text("No Internet Connection"),
-      duration: const Duration(seconds: 3),
+      duration: const Duration(days: 1),
       action: SnackBarAction(
         label: "Try Again",
         onPressed: () {
@@ -90,18 +90,37 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
       ),
     );
     print(_connectionStatus);
-    // WidgetsBinding.instance!.addPostFrameCallback((_) {
-    //   print(_connectionStatus);
-    //   if (_connectionStatus == ConnectivityResult.none) {
-    //     print("false");
-    //     ScaffoldMessenger.of(context).showSnackBar(_snackBar);
+    if (_connectionStatus == ConnectivityResult.mobile ||
+        _connectionStatus == ConnectivityResult.wifi) {
+      print('Yow We are Here');
+      ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
 
-    //     //initConnectivity();
-    //   } else if (_connectionStatus == ConnectivityResult.wifi ||
-    //       _connectionStatus == ConnectivityResult.mobile) {
-    //     Navigator.pushReplacementNamed(context, SigninScreen.routeName);
-    //   }
-    // });
+      //initConnectivity();
+    } else {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        Future.delayed(Duration(seconds: 3), () {
+          ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+              contentTextStyle: const TextStyle(color: Colors.white),
+              backgroundColor: const Color.fromRGBO(0, 0, 0, 1),
+              content: Center(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.signal_wifi_statusbar_connected_no_internet_4,
+                    size: 12,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text("No Internet Connection"),
+                ],
+              )),
+              actions: [Container()]));
+        });
+      });
+    }
 
     // Future.delayed(Duration(seconds: 3), () {the
     //   if (_connectionStatus == ConnectivityResult.none) {
@@ -116,42 +135,61 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     // });
 
     return Scaffold(
-        backgroundColor: Colors.red,
-        body: _connectionStatus == ConnectivityResult.none
-            ? const Center(
-                child: Image(
-                  height: 150,
-                  image: AssetImage("assets/icons/logo.png"),
-                ),
-              )
-            // ScaffoldMessenger.of(context).showSnackBar(_snackBar);
-            : BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
-                // if (state is AuthDataLoading) {
-                //   print("Loadloadloadloadloadload");
-                //   return const Align(
-                //     alignment: Alignment.bottomCenter,
-                //     child: LinearProgressIndicator(),
-                //   );
-                // }
-                return const Center(
-                  child: Image(
-                    height: 150,
-                    image: AssetImage("assets/icons/logo.png"),
-                  ),
-                );
-              }, listener: (_, state) {
-                if (state is AuthDataLoading) {
-                  print("Loadloadloadloadloadload");
-                  const Align(
+      backgroundColor: Colors.red,
+      body: Stack(
+        children: [
+          const Align(
+            alignment: Alignment.center,
+            child: Center(
+              child: Image(
+                height: 150,
+                image: AssetImage("assets/icons/logo.png"),
+              ),
+            ),
+          ),
+          _connectionStatus == ConnectivityResult.none
+              ? const Padding(
+                  padding: EdgeInsets.only(bottom: 15),
+                  child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: LinearProgressIndicator(),
+                    child: LinearProgressIndicator(
+                      minHeight: 1,
+                      color: Colors.black,
+                      backgroundColor: Colors.red,
+                    ),
+                  ),
+                )
+              // ScaffoldMessenger.of(context).showSnackBar(_snackBar);
+              : BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
+                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+//
+                  // if (state is AuthDataLoading) {
+                  //   print("Loadloadloadloadloadload");
+                  //   return const Align(
+                  //     alignment: Alignment.bottomCenter,
+                  //     child: LinearProgressIndicator(),
+                  //   );
+                  // }
+                  return const Padding(
+                    padding: EdgeInsets.only(bottom: 15),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: LinearProgressIndicator(
+                        minHeight: 1,
+                        color: Colors.black,
+                        backgroundColor: Colors.red,
+                      ),
+                    ),
                   );
-                }
-                if (state is AuthDataLoadSuccess) {
-                  if (_connectionStatus == ConnectivityResult.none) {
-                    ScaffoldMessenger.of(context).showSnackBar(_snackBar);
-                  } else if (_connectionStatus == ConnectivityResult.wifi ||
-                      _connectionStatus == ConnectivityResult.mobile) {
+                }, listener: (_, state) {
+                  if (state is AuthDataLoading) {
+                    print("Loadloadloadloadloadload");
+                    const Align(
+                      alignment: Alignment.bottomCenter,
+                      child: LinearProgressIndicator(),
+                    );
+                  }
+                  if (state is AuthDataLoadSuccess) {
                     requestLocationPermission();
 
                     print("teststst");
@@ -159,17 +197,25 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                     Navigator.pushReplacementNamed(
                         context, SigninScreen.routeName);
 
-                    state.auth.token != null
-                        ? Navigator.pushReplacementNamed(
-                            context, HomeScreen.routeName,
-                            arguments: HomeScreenArgument(isSelected: false))
-                        : Navigator.pushReplacementNamed(
-                            context, SigninScreen.routeName);
+                    if (state.auth.token != null) {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      Navigator.pushReplacementNamed(
+                          context, HomeScreen.routeName,
+                          arguments: HomeScreenArgument(isSelected: false));
+                    } else {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+                      Navigator.pushReplacementNamed(
+                          context, SigninScreen.routeName);
+                    }
 
                     //0967543215
+
                   }
-                }
-                if (state is AuthOperationFailure) {}
-              }));
+                  if (state is AuthOperationFailure) {}
+                })
+        ],
+      ),
+    );
   }
 }

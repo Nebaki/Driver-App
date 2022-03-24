@@ -4,6 +4,7 @@ import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:slider_button/slider_button.dart';
 
 class CompleteTrip extends StatelessWidget {
   Function? callback;
@@ -54,22 +55,46 @@ class CompleteTrip extends StatelessWidget {
                     height: 65,
                     padding: const EdgeInsets.only(
                         left: 30, right: 30, top: 10, bottom: 10),
-                    child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.indigo.shade900)),
-                        onPressed: () {
+                    child: SliderButton(
+                        icon: const Center(
+                            child: Icon(
+                          Icons.done,
+                          color: Colors.white,
+                          size: 40.0,
+                          semanticLabel:
+                              'Text to announce in accessibility modes',
+                        )),
+                        label: const Text(
+                          "Slide to cancel !",
+                          style: TextStyle(
+                              color: Color(0xff4a4a4a),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 17),
+                        ),
+                        action: () {
                           RideRequestEvent requestEvent =
                               RideRequestChangeStatus(
                                   requestId, "Completed", passengerFcm);
                           BlocProvider.of<RideRequestBloc>(context)
                               .add(requestEvent);
-                          // Navigator.pushNamed(context, CollectedCash.routeName);
-                        },
-                        child: Text(
-                          "Complete",
-                          style: TextStyle(color: Colors.white),
-                        )))
+                        })
+                    // ElevatedButton(
+                    //     style: ButtonStyle(
+                    //         backgroundColor: MaterialStateProperty.all<Color>(
+                    //             Colors.indigo.shade900)),
+                    //     onPressed: () {
+                    //       RideRequestEvent requestEvent =
+                    //           RideRequestChangeStatus(
+                    //               requestId, "Completed", passengerFcm);
+                    //       BlocProvider.of<RideRequestBloc>(context)
+                    //           .add(requestEvent);
+                    //       // Navigator.pushNamed(context, CollectedCash.routeName);
+                    //     },
+                    //     child: Text(
+                    //       "Complete",
+                    //       style: TextStyle(color: Colors.white),
+                    //     ))
+                    )
               ],
             ),
           ),

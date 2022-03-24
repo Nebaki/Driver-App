@@ -3,6 +3,7 @@ import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:slider_button/slider_button.dart';
 
 class WaitingPassenger extends StatelessWidget {
   Function? callback;
@@ -44,21 +45,45 @@ class WaitingPassenger extends StatelessWidget {
                     height: 65,
                     padding: const EdgeInsets.only(
                         left: 30, right: 30, top: 10, bottom: 10),
-                    child: ElevatedButton(
-                        style: TextButton.styleFrom(
-                            backgroundColor: Colors.indigo.shade900),
-                        onPressed: () {
+                    child: SliderButton(
+                        icon: const Center(
+                            child: Icon(
+                          Icons.start,
+                          color: Colors.white,
+                          size: 40.0,
+                          semanticLabel:
+                              'Text to announce in accessibility modes',
+                        )),
+                        label: const Text(
+                          "Slide to Start !",
+                          style: TextStyle(
+                              color: Color(0xff4a4a4a),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 17),
+                        ),
+                        action: () {
                           RideRequestEvent requestEvent =
                               RideRequestChangeStatus(
                                   requestId, "Started", passengerFcm);
                           BlocProvider.of<RideRequestBloc>(context)
                               .add(requestEvent);
-                          // callback!(CompleteTrip(callback));
-                        },
-                        child: const Text(
-                          "Start",
-                          style: TextStyle(color: Colors.white),
-                        )))
+                        })
+                    // ElevatedButton(
+                    //     style: TextButton.styleFrom(
+                    //         backgroundColor: Colors.indigo.shade900),
+                    //     onPressed: () {
+                    //       RideRequestEvent requestEvent =
+                    //           RideRequestChangeStatus(
+                    //               requestId, "Started", passengerFcm);
+                    //       BlocProvider.of<RideRequestBloc>(context)
+                    //           .add(requestEvent);
+                    //       // callback!(CompleteTrip(callback));
+                    //     },
+                    //     child: const Text(
+                    //       "Start",
+                    //       style: TextStyle(color: Colors.white),
+                    //     ))
+                    )
               ],
             ),
           ),

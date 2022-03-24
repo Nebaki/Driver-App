@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/bloc/auth/bloc.dart';
 import 'package:driverapp/bloc/bloc.dart';
+import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:driverapp/notifications/pushNotification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -49,13 +52,55 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isRequestingDirection = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   PushNotificationService pushNotificationService = PushNotificationService();
+  final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
+  StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  ConnectivityResult _connectionStatus = ConnectivityResult.bluetooth;
+  final Connectivity _connectivity = Connectivity();
+
+  bool? isLocationOn;
+  bool isModal = false;
+  bool isConModal = false;
+
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      // developer.log('Couldn\'t check connectivity status', error: e);
+      return;
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      _connectionStatus = result;
+    });
+  }
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      setState(() {
+        isLocationOn = false;
+      });
+      // return Future.error('Location services are disabled.');
+    } else if (serviceEnabled) {
+      setState(() {
+        isLocationOn = true;
+      });
     }
 
     permission = await Geolocator.checkPermission();
@@ -83,6 +128,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   // ignore: must_call_super
   void initState() {
+    initConnectivity();
+
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    _toggleServiceStatusStream();
     pushNotificationService.initialize(
         context, callback, setDestination, setIsArrivedWidget);
     pushNotificationService.seubscribeTopic();
@@ -124,6 +174,139 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLocationOn != null) {
+      if (isLocationOn! && isModal) {
+        setState(() {
+          isModal = false;
+        });
+
+        Navigator.pop(context);
+      }
+    }
+    if (isLocationOn != null) {
+      if (isLocationOn == false && isModal == false) {
+        WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+          setState(() {
+            isModal = true;
+          });
+          showModalBottomSheet(
+              enableDrag: false,
+              isDismissible: false,
+              context: context,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10))),
+              builder: (BuildContext ctx) {
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  padding: const EdgeInsets.fromLTRB(30, 30, 20, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text("Location Services are off",
+                            style: Theme.of(context).textTheme.headline5),
+                      ),
+                      Expanded(
+                          child: Text(
+                              "Please enable Location Service to allow us finding your location.",
+                              style: Theme.of(context).textTheme.bodyText2)),
+                      Expanded(
+                          child: Text(
+                              "For better accuracy,please turn on both GPS and WIFI location services",
+                              style: Theme.of(context).textTheme.bodyText2)),
+                      Expanded(
+                          child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              await Geolocator.openLocationSettings();
+                            },
+                            child: Text("Go to Location Services")),
+                      )),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Expanded(
+                          child: SizedBox(
+                        width: double.infinity,
+                        child: TextButton(
+                            onPressed: () async {
+                              SystemNavigator.pop();
+                            },
+                            child: Text("Close App")),
+                      ))
+                    ],
+                  ),
+                );
+              });
+        });
+      }
+    }
+
+    if (_connectionStatus == ConnectivityResult.wifi && isConModal == true ||
+        _connectionStatus == ConnectivityResult.mobile && isConModal == true) {
+      // setState(() {
+      isConModal = false;
+      // });
+      Navigator.pop(context);
+    }
+
+    if (_connectionStatus == ConnectivityResult.none) {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        // setState(() {
+        isConModal = true;
+        // });
+        showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.4,
+                padding: const EdgeInsets.fromLTRB(30, 30, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text("No Internet Connection",
+                          style: Theme.of(context).textTheme.headline5),
+                    ),
+                    Expanded(
+                        child: Text(
+                            "Please enable WIFI or Mobile Data to allow us finding your location.",
+                            style: Theme.of(context).textTheme.bodyText2)),
+                    Expanded(
+                        child: Text(
+                            "For better accuracy,please turn on both GPS and WIFI location services",
+                            style: Theme.of(context).textTheme.bodyText2)),
+                    Expanded(
+                        child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            await Geolocator.openAppSettings();
+                          },
+                          child: Text("Go to Settings")),
+                    )),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
+                        child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            SystemNavigator.pop();
+                          },
+                          child: Text("Close App")),
+                    ))
+                  ],
+                ),
+              );
+            });
+      });
+    }
+
     createMarkerIcon();
     return Scaffold(
       key: _scaffoldKey,
@@ -222,8 +405,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       print('this is the value $value');
                       controller.animateCamera(CameraUpdate.newCameraPosition(
                           CameraPosition(
-                              bearing: 90,
-                              zoom: 14.4746,
+                              zoom: 16.4746,
                               target:
                                   LatLng(value.latitude, value.longitude))));
                     });
@@ -266,6 +448,32 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           _currentWidget,
+          Positioned(
+            top: 40,
+            left: 20,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: Container(
+                color: Colors.grey.shade100,
+                child: IconButton(
+                    onPressed: () {
+                      // callback!(CancelTrip(callback));
+                      makePhoneCall("+251934540217");
+                    },
+                    icon: Icon(
+                      Icons.call,
+                      color: Colors.indigo.shade900,
+                      size: 20,
+                    )),
+              ),
+            ),
+          )
+
+          // isLocationOn
+          //     ? AlertDialog(
+          //         content: Text("Trying"),
+          //       )
+          //     : Container(),
           // Positioned(
           //     top: 10,
           //     right: 10,
@@ -443,6 +651,41 @@ class _HomeScreenState extends State<HomeScreen> {
       BlocProvider.of<DirectionBloc>(context).add(event);
 
       isRequestingDirection = false;
+    }
+  }
+
+  void _toggleServiceStatusStream() {
+    if (_serviceStatusStreamSubscription == null) {
+      print("yeah it's enabled");
+
+      final serviceStatusStream = _geolocatorPlatform.getServiceStatusStream();
+      _serviceStatusStreamSubscription =
+          serviceStatusStream.handleError((error) {
+        print("yeah it's the error bruhh $error");
+
+        _serviceStatusStreamSubscription?.cancel();
+        _serviceStatusStreamSubscription = null;
+      }).listen((serviceStatus) {
+        String serviceStatusValue;
+        if (serviceStatus == ServiceStatus.enabled) {
+          print("yeah it's enabled");
+          setState(() {
+            isLocationOn = true;
+          });
+          // if (positionStreamStarted) {
+          //   _toggleListening();
+          // }
+          serviceStatusValue = 'enabled';
+        } else {
+          setState(() {
+            isLocationOn = false;
+          });
+
+          print("nope ist's disabled");
+
+          serviceStatusValue = 'disabled';
+        }
+      });
     }
   }
 }
