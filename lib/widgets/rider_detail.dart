@@ -81,7 +81,7 @@ class RiderDetail extends StatelessWidget {
           ],
         ),
         Text(
-          "Picking up $passengerName",
+          "Picking up ${passengerName ?? "Customer"}",
           style: TextStyle(color: Colors.indigo.shade900, fontSize: 16),
         ),
       ],

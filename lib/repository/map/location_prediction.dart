@@ -8,6 +8,7 @@ class LocationPredictionRepository {
   LocationPredictionRepository({required this.dataProvider});
 
   Future<List<LocationPrediction>> getPrediction(String placeName) async {
+    print("here we go");
     return await dataProvider.predictLocation(placeName);
   }
 }

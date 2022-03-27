@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:driverapp/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -20,7 +21,7 @@ class CustomSplashScreen extends StatefulWidget {
 }
 
 class _CustomSplashScreenState extends State<CustomSplashScreen> {
-  ConnectivityResult _connectionStatus = ConnectivityResult.none;
+  ConnectivityResult? _connectionStatus;
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
@@ -39,10 +40,8 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     super.dispose();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
-    // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await _connectivity.checkConnectivity();
     } on PlatformException catch (e) {
@@ -50,9 +49,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
       return;
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) {
       return Future.value(null);
     }
@@ -78,61 +74,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _snackBar = SnackBar(
-      content: const Text("No Internet Connection"),
-      duration: const Duration(days: 1),
-      action: SnackBarAction(
-        label: "Try Again",
-        onPressed: () {
-          initConnectivity();
-        },
-        textColor: Colors.white,
-      ),
-    );
-    print(_connectionStatus);
-    if (_connectionStatus == ConnectivityResult.mobile ||
-        _connectionStatus == ConnectivityResult.wifi) {
-      print('Yow We are Here');
-      ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-
-      //initConnectivity();
-    } else {
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        Future.delayed(Duration(seconds: 3), () {
-          ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-              contentTextStyle: const TextStyle(color: Colors.white),
-              backgroundColor: const Color.fromRGBO(0, 0, 0, 1),
-              content: Center(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.signal_wifi_statusbar_connected_no_internet_4,
-                    size: 12,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text("No Internet Connection"),
-                ],
-              )),
-              actions: [Container()]));
-        });
-      });
-    }
-
-    // Future.delayed(Duration(seconds: 3), () {the
-    //   if (_connectionStatus == ConnectivityResult.none) {
-    //     print("false");
-    //     ScaffoldMessenger.of(context).showSnackBar(_snackBar);
-
-    //     //initConnectivity();
-    //   } else if (_connectionStatus == ConnectivityResult.wifi ||
-    //       _connectionStatus == ConnectivityResult.mobile) {
-    //     Navigator.pushReplacementNamed(context, SigninScreen.routeName);
-    //   }
-    // });
+    WidgetsFlutterBinding.ensureInitialized();
 
     return Scaffold(
       backgroundColor: Colors.red,
@@ -148,72 +90,90 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
             ),
           ),
           _connectionStatus == ConnectivityResult.none
-              ? const Padding(
-                  padding: EdgeInsets.only(bottom: 15),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: LinearProgressIndicator(
-                      minHeight: 1,
-                      color: Colors.black,
-                      backgroundColor: Colors.red,
-                    ),
-                  ),
-                )
-              // ScaffoldMessenger.of(context).showSnackBar(_snackBar);
-              : BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
-                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-//
-                  // if (state is AuthDataLoading) {
-                  //   print("Loadloadloadloadloadload");
-                  //   return const Align(
-                  //     alignment: Alignment.bottomCenter,
-                  //     child: LinearProgressIndicator(),
-                  //   );
-                  // }
-                  return const Padding(
-                    padding: EdgeInsets.only(bottom: 15),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: LinearProgressIndicator(
-                        minHeight: 1,
-                        color: Colors.black,
-                        backgroundColor: Colors.red,
+              ? Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Container(
+                          height: 20,
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.black,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.signal_wifi_connected_no_internet_4,
+                                size: 13,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "No Internet Connection",
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  );
-                }, listener: (_, state) {
-                  if (state is AuthDataLoading) {
-                    print("Loadloadloadloadloadload");
                     const Align(
                       alignment: Alignment.bottomCenter,
-                      child: LinearProgressIndicator(),
-                    );
-                  }
-                  if (state is AuthDataLoadSuccess) {
-                    requestLocationPermission();
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 15),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: LinearProgressIndicator(
+                            minHeight: 1,
+                            color: Colors.black,
+                            backgroundColor: Colors.red,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              : _connectionStatus == null
+                  ? Container()
+                  : BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
+                      return const Padding(
+                        padding: EdgeInsets.only(bottom: 15),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: LinearProgressIndicator(
+                            minHeight: 1,
+                            color: Colors.black,
+                            backgroundColor: Colors.red,
+                          ),
+                        ),
+                      );
+                    }, listener: (_, state) {
+                      if (state is AuthDataLoadSuccess) {
+                        print("teststst");
+                        print(state.auth.token);
 
-                    print("teststst");
-                    print(state.auth.token);
-                    Navigator.pushReplacementNamed(
-                        context, SigninScreen.routeName);
+                        if (state.auth.token != null) {
+                          myId = state.auth.id!;
+                          myPictureUrl = state.auth.profilePicture!;
+                          myName = state.auth.name!;
+                          Navigator.pushReplacementNamed(
+                              context, HomeScreen.routeName,
+                              arguments: HomeScreenArgument(isSelected: false));
+                        } else {
+                          Navigator.pushReplacementNamed(
+                              context, SigninScreen.routeName);
+                        }
 
-                    if (state.auth.token != null) {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      Navigator.pushReplacementNamed(
-                          context, HomeScreen.routeName,
-                          arguments: HomeScreenArgument(isSelected: false));
-                    } else {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        //0967543215
 
-                      Navigator.pushReplacementNamed(
-                          context, SigninScreen.routeName);
-                    }
-
-                    //0967543215
-
-                  }
-                  if (state is AuthOperationFailure) {}
-                })
+                      }
+                      if (state is AuthOperationFailure) {}
+                    })
         ],
       ),
     );

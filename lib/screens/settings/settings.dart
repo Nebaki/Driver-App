@@ -60,6 +60,7 @@ class SettingScreen extends StatelessWidget {
                     ),
                     Center(
                       child: CircleAvatar(
+                        backgroundColor: Colors.grey.shade300,
                         radius: 50,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
@@ -76,7 +77,7 @@ class SettingScreen extends StatelessWidget {
                             placeholder: (context, url) =>
                                 const CircularProgressIndicator(),
                             errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                                Image.asset('assets/icons/avatar-icon.png'),
                           ),
                         ),
 
@@ -209,26 +210,6 @@ class SettingScreen extends StatelessWidget {
                                         fontStyle: FontStyle.italic,
                                         fontWeight: FontWeight.w300))
                               ])),
-                          Text.rich(TextSpan(
-                              text: "Minimum Driver Rating: ",
-                              style: _textStyle,
-                              children: [
-                                TextSpan(
-                                    text: state.auth.pref!["min_rate"],
-                                    style: const TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontWeight: FontWeight.w300))
-                              ])),
-                          Text.rich(TextSpan(
-                              text: "Car Type: ",
-                              style: _textStyle,
-                              children: [
-                                TextSpan(
-                                    text: state.auth.pref!["car_type"],
-                                    style: const TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontWeight: FontWeight.w300))
-                              ])),
                         ],
                       ),
                     ),
@@ -311,54 +292,54 @@ class SettingScreen extends StatelessWidget {
               //     ],
               //   ),
               // ),
-              Card(
-                elevation: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, left: 5),
-                      child: Text(
-                        "About us",
-                        style: _textStyle,
-                      ),
-                    ),
-                    const Divider(
-                      color: Colors.red,
-                      thickness: 1.5,
-                    ),
-                    Container(
-                      padding:
-                          const EdgeInsets.only(left: 10, bottom: 20, top: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text.rich(TextSpan(
-                              text: "Owned by:\n  ",
-                              style: _textStyle,
-                              children: const [
-                                TextSpan(
-                                    text: " Safeway Transport",
-                                    style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontWeight: FontWeight.w300))
-                              ])),
-                          Text.rich(TextSpan(
-                              text: "Developed by:\n  ",
-                              style: _textStyle,
-                              children: const [
-                                TextSpan(
-                                    text: " Vintage Technologies",
-                                    style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontWeight: FontWeight.w300))
-                              ])),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Card(
+              //   elevation: 3,
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Padding(
+              //         padding: const EdgeInsets.only(top: 8, left: 5),
+              //         child: Text(
+              //           "About us",
+              //           style: _textStyle,
+              //         ),
+              //       ),
+              //       const Divider(
+              //         color: Colors.red,
+              //         thickness: 1.5,
+              //       ),
+              //       Container(
+              //         padding:
+              //             const EdgeInsets.only(left: 10, bottom: 20, top: 10),
+              //         child: Column(
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             Text.rich(TextSpan(
+              //                 text: "Owned by:\n  ",
+              //                 style: _textStyle,
+              //                 children: const [
+              //                   TextSpan(
+              //                       text: " Safeway Transport",
+              //                       style: TextStyle(
+              //                           fontStyle: FontStyle.italic,
+              //                           fontWeight: FontWeight.w300))
+              //                 ])),
+              //             Text.rich(TextSpan(
+              //                 text: "Developed by:\n  ",
+              //                 style: _textStyle,
+              //                 children: const [
+              //                   TextSpan(
+              //                       text: " Vintage Technologies",
+              //                       style: TextStyle(
+              //                           fontStyle: FontStyle.italic,
+              //                           fontWeight: FontWeight.w300))
+              //                 ])),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           );
         }

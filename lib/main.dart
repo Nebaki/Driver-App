@@ -11,6 +11,7 @@ import 'package:driverapp/dataprovider/dataproviders.dart';
 import 'package:driverapp/repository/repositories.dart';
 import 'package:driverapp/route.dart';
 import 'package:http/http.dart' as http;
+import 'package:wakelock/wakelock.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
@@ -25,6 +26,7 @@ void main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   Bloc.observer = SimpleBlocObserver();
+  Wakelock.enable();
 
   final UserRepository userRepository =
       UserRepository(dataProvider: UserDataProvider(httpClient: http.Client()));
@@ -39,12 +41,23 @@ void main() async {
       dataProvider: PlaceDetailDataProvider(httpClient: http.Client()));
   final RideRequestRepository rideRequestRepository = RideRequestRepository(
       dataProvider: RideRequestDataProvider(httpClient: http.Client()));
+
+  final LocationPredictionRepository locationPredictionRepository =
+      LocationPredictionRepository(
+          dataProvider:
+              LocationPredictionDataProvider(httpClient: http.Client()));
+  final EmergencyReportRepository emergencyReportRepository =
+      EmergencyReportRepository(
+          dataProvider: EmergencyReportDataProvider(httpClient: http.Client()));
+
   runApp(MyApp(
     placeDetailRepository: placeDetailRepository,
     directionRepository: directionRepository,
     authRepository: authRepository,
     userRepository: userRepository,
     rideRequestRepository: rideRequestRepository,
+    locationPredictionRepository: locationPredictionRepository,
+    emergencyReportRepository: emergencyReportRepository,
   ));
 }
 
@@ -83,17 +96,21 @@ class MyApp extends StatelessWidget {
   final AuthRepository authRepository;
   final DirectionRepository directionRepository;
   final PlaceDetailRepository placeDetailRepository;
+  final LocationPredictionRepository locationPredictionRepository;
 
   final RideRequestRepository rideRequestRepository;
+  final EmergencyReportRepository emergencyReportRepository;
 
-  const MyApp({
-    Key? key,
-    required this.placeDetailRepository,
-    required this.directionRepository,
-    required this.userRepository,
-    required this.authRepository,
-    required this.rideRequestRepository,
-  }) : super(key: key);
+  const MyApp(
+      {Key? key,
+      required this.placeDetailRepository,
+      required this.directionRepository,
+      required this.userRepository,
+      required this.authRepository,
+      required this.rideRequestRepository,
+      required this.locationPredictionRepository,
+      required this.emergencyReportRepository})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     //Firebase.initializeApp();
@@ -105,6 +122,8 @@ class MyApp extends StatelessWidget {
           RepositoryProvider.value(value: authRepository),
           RepositoryProvider.value(value: directionRepository),
           RepositoryProvider.value(value: rideRequestRepository),
+          RepositoryProvider.value(value: locationPredictionRepository),
+          RepositoryProvider.value(value: emergencyReportRepository)
         ],
         child: MultiBlocProvider(
             providers: [
@@ -123,6 +142,13 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                   create: (context) => RideRequestBloc(
                       rideRequestRepository: rideRequestRepository)),
+              BlocProvider(
+                  create: (context) => LocationPredictionBloc(
+                      locationPredictionRepository:
+                          locationPredictionRepository)),
+              BlocProvider(
+                  create: (context) => EmergencyReportBloc(
+                      emergencyReportRepository: emergencyReportRepository)),
             ],
             child: MaterialApp(
               title: 'SafeWay',

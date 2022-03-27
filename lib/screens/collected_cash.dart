@@ -1,8 +1,21 @@
+import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 
-class CollectedCash extends StatelessWidget {
+class CollectedCash extends StatefulWidget {
   static const routeName = "/collectedcash";
+
+  @override
+  State<CollectedCash> createState() => _CollectedCashState();
+}
+
+class _CollectedCashState extends State<CollectedCash> {
+  @override
+  void dispose() {
+    driverStreamSubscription.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

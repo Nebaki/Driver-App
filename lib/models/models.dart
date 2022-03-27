@@ -5,3 +5,4 @@ export 'map/direction.dart';
 export 'user/user.dart';
 export 'auth/auth.dart';
 export 'rideRequest/ride_request.dart';
+export 'emergencyReport/emergency_report.dart';

@@ -1,13 +1,33 @@
+import 'dart:async';
+
+import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class OfflineMode extends StatelessWidget {
+  late StreamSubscription<Position> homeScreenStreamSubscription;
+
   Function? callback;
-  Function getLiveLocation;
+  // Function getLiveLocation;
   Function setDriverStatus;
-  OfflineMode(this.setDriverStatus, this.callback, this.getLiveLocation);
+  bool isDriverOn = false;
+  OfflineMode(this.setDriverStatus, this.callback);
+  void getLiveLocation() async {
+    homeScreenStreamSubscription =
+        Geolocator.getPositionStream().listen((event) {
+      isDriverOnline
+          ? Geofire.setLocation(myId, event.latitude, event.longitude)
+          : Geofire.removeLocation(myId);
+
+      if (!isDriverOnline) {
+        homeScreenStreamSubscription.cancel();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -22,10 +42,10 @@ class OfflineMode extends StatelessWidget {
               child: FloatingActionButton(
                 backgroundColor: Colors.red,
                 onPressed: () {
-                  setDriverStatus(true);
+                  isDriverOnline = true;
+                  // setDriverStatus(true);
                   getLiveLocation();
-                  callback!(
-                      OnlinMode(callback, setDriverStatus, getLiveLocation));
+                  callback!(OnlinMode(callback, setDriverStatus));
                 },
                 child: Container(
                     padding: const EdgeInsets.all(20),
@@ -69,9 +89,9 @@ class OfflineMode extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _items(
-                          num: "95.0%",
-                          text: "Acceptance",
-                          icon: Icons.ac_unit),
+                          num: "\$95",
+                          text: "Earning",
+                          icon: Icons.monetization_on),
                       VerticalDivider(
                         color: Colors.grey.shade300,
                       ),
@@ -80,7 +100,9 @@ class OfflineMode extends StatelessWidget {
                         color: Colors.grey.shade300,
                       ),
                       _items(
-                          num: "2.0%", text: "Cancellation", icon: Icons.clear),
+                          num: "\$342",
+                          text: "Wallet",
+                          icon: Icons.wallet_giftcard),
                     ],
                   ),
                 )

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:driverapp/dataprovider/dataproviders.dart';
+import 'package:driverapp/helper/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/models/models.dart';
 
@@ -16,21 +17,28 @@ class RideRequestDataProvider {
 
   Future<RideRequest> createRequest(RideRequest request) async {
     final response = await http.post(
-      Uri.parse('$_baseUrl/create-rideRequest'),
+      Uri.parse('$_baseUrl/create-ride-request'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         "x-access-token": '${await authDataProvider.getToken()}'
       },
       body: json.encode({
-        'driverId': 'waiting',
+        'driverId': myId,
         'passengerName': request.passengerName,
         'passengerPhoneNumber': "+251987654321",
         "pickupAddress": "meskel flower",
-        'pickupLocation': request.pickupLocation,
-        'droppoffLocation': request.dropOffLocation,
+        'pickupLocation': [
+          request.pickupLocation!.latitude,
+          request.pickupLocation!.longitude
+        ],
+        // 'droppoffLocation': [
+        //   request.dropOffLocation!.longitude,
+        //   request.dropOffLocation!.latitude
+        // ],
       }),
     );
-    print(' this is the response Status coed: ${response.body}');
+    print(
+        ' this is the response Status coed: ${response.body} ${response.statusCode}');
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -54,7 +62,7 @@ class RideRequestDataProvider {
   }
 
   Future<void> changeRequestStatus(
-      String id, String status, String passengerFcm) async {
+      String id, String status, String? passengerFcm) async {
     print("we Are hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!!!!!!!!!!!!");
     print(id);
 
@@ -69,10 +77,12 @@ class RideRequestDataProvider {
 
     print("this is the status code: ${response.statusCode}");
     if (response.statusCode == 200) {
-      if (status == "Cancelled" ||
-          status == "Arrived" ||
-          status == "Completed") {
-        sendNotification(passengerFcm, status);
+      if (passengerFcm != null) {
+        if (status == "Cancelled" ||
+            status == "Arrived" ||
+            status == "Completed") {
+          sendNotification(passengerFcm, status);
+        }
       }
     } else {
       throw Exception('Failed to respond to the request.');
@@ -92,7 +102,8 @@ class RideRequestDataProvider {
       },
     );
 
-    print("this is the status code: ${response.statusCode}");
+    print(
+        "this is the status code: ${response.statusCode}  and ${response.body}");
     if (response.statusCode == 200) {
       sendNotification(passengerFcm, "Accepted");
     } else {

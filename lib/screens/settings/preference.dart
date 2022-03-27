@@ -99,7 +99,7 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
                     const Padding(
                       padding: EdgeInsets.only(top: 120, bottom: 20),
                       child: Text(
-                        "Driver Gender",
+                        "Passenger Gender",
                         style: TextStyle(
                             color: Colors.white24,
                             fontWeight: FontWeight.bold,
@@ -168,43 +168,43 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
                         // ),
                       ],
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 20, bottom: 20),
-                      child: Text(
-                        "Minimum Rating",
-                        style: TextStyle(
-                            color: Colors.white24,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                    ),
-                    RatingBar.builder(
-                        initialRating: widget.args.min_rate,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) =>
-                            Icon(Icons.star, color: Colors.white),
-                        onRatingUpdate: (rating) {
-                          min_rate = rating;
-                          print(rating);
-                        }),
-                    //_buildVihcleTypeList(),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 40, bottom: 20),
-                      child: Text(
-                        "Services",
-                        style: TextStyle(
-                            color: Colors.white24,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                    ),
-                    //row
+                    // const Padding(
+                    //   padding: EdgeInsets.only(top: 20, bottom: 20),
+                    //   child: Text(
+                    //     "Minimum Rating",
+                    //     style: TextStyle(
+                    //         color: Colors.white24,
+                    //         fontWeight: FontWeight.bold,
+                    //         fontSize: 16),
+                    //   ),
+                    // ),
+                    // RatingBar.builder(
+                    //     initialRating: widget.args.min_rate,
+                    //     minRating: 1,
+                    //     direction: Axis.horizontal,
+                    //     allowHalfRating: true,
+                    //     itemCount: 5,
+                    //     //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                    //     itemBuilder: (context, _) =>
+                    //         Icon(Icons.star, color: Colors.white),
+                    //     onRatingUpdate: (rating) {
+                    //       min_rate = rating;
+                    //       print(rating);
+                    //     }),
+                    // //_buildVihcleTypeList(),
+                    // const Padding(
+                    //   padding: EdgeInsets.only(top: 40, bottom: 20),
+                    //   child: Text(
+                    //     "Services",
+                    //     style: TextStyle(
+                    //         color: Colors.white24,
+                    //         fontWeight: FontWeight.bold,
+                    //         fontSize: 16),
+                    //   ),
+                    // ),
+                    // //row
 
-                    _buildServiceTypeItems(),
+                    // _buildServiceTypeItems(),
                   ],
                 ),
               ),

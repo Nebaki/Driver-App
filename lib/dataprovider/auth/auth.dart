@@ -77,8 +77,7 @@ class AuthDataProvider {
 
   Future updateUserData(User user) async {
     await secure_storage.write(key: 'phone_number', value: user.phoneNumber);
-    await secure_storage.write(
-        key: 'name', value: user.firstName! + " " + user.lastName!);
+
     await secure_storage.write(key: "email", value: user.email ?? "");
     await secure_storage.write(
         key: "emergency_contact", value: user.emergencyContact ?? "");
