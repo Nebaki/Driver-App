@@ -30,11 +30,14 @@ class RideRequestDelete extends RideRequestEvent {
 class RideRequestChangeStatus extends RideRequestEvent {
   final String id;
   final String status;
-  final String passengerFcm;
+  final String? passengerFcm;
 
   const RideRequestChangeStatus(this.id, this.status, this.passengerFcm);
   @override
-  List<Object> get props => [id, status, passengerFcm];
+  List<Object> get props => [
+        id,
+        status,
+      ];
 }
 
 class RideRequestAccept extends RideRequestEvent {

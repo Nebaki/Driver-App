@@ -17,6 +17,7 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
             await rideRequestRepository.createRequest(event.rideRequest);
         yield RideRequestSuccess(request);
       } catch (_) {
+        print("the error is $_");
         yield RideRequestOperationFailur();
       }
     }

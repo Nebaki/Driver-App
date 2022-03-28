@@ -4,8 +4,7 @@ import 'package:driverapp/repository/repositories.dart';
 
 class DirectionBloc extends Bloc<DirectionEvent, DirectionState> {
   final DirectionRepository directionRepository;
-  DirectionBloc({required this.directionRepository})
-      : super(DirectionLoading());
+  DirectionBloc({required this.directionRepository}) : super(null);
 
   @override
   Stream<DirectionState> mapEventToState(DirectionEvent event) async* {

@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:driverapp/dataprovider/dataproviders.dart';
+import 'package:driverapp/helper/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/models/models.dart';
 
 class RideRequestDataProvider {
-  final _baseUrl = 'http://192.168.1.9:5000/api/rideRequests';
+  final _baseUrl = 'https://safeway-api.herokuapp.com/api/ride-requests';
   final _fcmUrl = 'https://fcm.googleapis.com/fcm/send';
   final token =
       "AAAAKTCNpPU:APA91bHPscWDa8pPO5MGRj11FWo6NZkpK5tRPodi_2wuMdHhDNwlTO3l4jF50tFGiU55EWMyNss0St0l_kk2H1YmKH1z4yzWPVL25xGTt-GqOFWUdh7BgjJmiNo55eVzzJgHeEOBvHtH";
@@ -16,21 +17,28 @@ class RideRequestDataProvider {
 
   Future<RideRequest> createRequest(RideRequest request) async {
     final response = await http.post(
-      Uri.parse('$_baseUrl/create-rideRequest'),
+      Uri.parse('$_baseUrl/create-ride-request'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         "x-access-token": '${await authDataProvider.getToken()}'
       },
       body: json.encode({
-        'driverId': 'waiting',
+        'driverId': myId,
         'passengerName': request.passengerName,
         'passengerPhoneNumber': "+251987654321",
         "pickupAddress": "meskel flower",
-        'pickupLocation': request.pickupLocation,
-        'droppoffLocation': request.dropOffLocation,
+        'pickupLocation': [
+          request.pickupLocation!.latitude,
+          request.pickupLocation!.longitude
+        ],
+        // 'droppoffLocation': [
+        //   request.dropOffLocation!.longitude,
+        //   request.dropOffLocation!.latitude
+        // ],
       }),
     );
-    print(' this is the response Status coed: ${response.body}');
+    print(
+        ' this is the response Status coed: ${response.body} ${response.statusCode}');
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -54,13 +62,13 @@ class RideRequestDataProvider {
   }
 
   Future<void> changeRequestStatus(
-      String id, String status, String passengerFcm) async {
+      String id, String status, String? passengerFcm) async {
     print("we Are hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!!!!!!!!!!!!");
     print(id);
 
     // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
     final response =
-        await http.post(Uri.parse('$_baseUrl/set-rideRequestStatus/$id'),
+        await http.post(Uri.parse('$_baseUrl/set-ride-request-status/$id'),
             headers: <String, String>{
               'Content-Type': 'application/json',
               "x-access-token": '${await authDataProvider.getToken()}'
@@ -69,8 +77,12 @@ class RideRequestDataProvider {
 
     print("this is the status code: ${response.statusCode}");
     if (response.statusCode == 200) {
-      if (status == "Cancelled" || status == "Arrived") {
-        sendNotification(passengerFcm, status);
+      if (passengerFcm != null) {
+        if (status == "Cancelled" ||
+            status == "Arrived" ||
+            status == "Completed") {
+          sendNotification(passengerFcm, status);
+        }
       }
     } else {
       throw Exception('Failed to respond to the request.');
@@ -83,14 +95,15 @@ class RideRequestDataProvider {
 
     // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
     final response = await http.post(
-      Uri.parse('$_baseUrl/accept-rideRequest/$id'),
+      Uri.parse('$_baseUrl/accept-ride-request/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         "x-access-token": '${await authDataProvider.getToken()}'
       },
     );
 
-    print("this is the status code: ${response.statusCode}");
+    print(
+        "this is the status code: ${response.statusCode}  and ${response.body}");
     if (response.statusCode == 200) {
       sendNotification(passengerFcm, "Accepted");
     } else {

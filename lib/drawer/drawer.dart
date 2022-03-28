@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/drawer/custome_paint.dart';
+import 'package:driverapp/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
@@ -18,55 +19,97 @@ class NavDrawer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 40, left: 40),
-              child: BlocBuilder<AuthBloc, AuthState>(
-                builder: (_, state) {
-                  if (state is AuthDataLoadSuccess) {
-                    return Column(
-                      // mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Colors.grey.shade800,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: CachedNetworkImage(
-                                  imageUrl: state.auth.profilePicture!,
-                                  imageBuilder: (context, imageProvider) =>
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover,
-                                            //colorFilter:
-                                            //     const ColorFilter.mode(
-                                            //   Colors.red,
-                                            //   BlendMode.colorBurn,
-                                            // ),
-                                          ),
-                                        ),
+                padding: const EdgeInsets.only(top: 40, left: 40),
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.grey.shade300,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: CachedNetworkImage(
+                              imageUrl: myPictureUrl,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                        //colorFilter:
+                                        //     const ColorFilter.mode(
+                                        //   Colors.red,
+                                        //   BlendMode.colorBurn,
+                                        // ),
                                       ),
-                                  placeholder: (context, url) =>
-                                      const CircularProgressIndicator(),
-                                  errorWidget: (context, url, error) {
-                                    return const Icon(Icons.error);
-                                  }),
-                            )),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          state.auth.name!,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        )
-                      ],
-                    );
-                  }
-                  return Container();
-                },
-              ),
-            ),
+                                    ),
+                                  ),
+                              placeholder: (context, url) =>
+                                  const CircularProgressIndicator(),
+                              errorWidget: (context, url, error) {
+                                return Image.asset(
+                                    'assets/icons/avatar-icon.png');
+                              }),
+                        )),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      myName,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    )
+                  ],
+                )
+                //  BlocBuilder<AuthBloc, AuthState>(
+                //   builder: (_, state) {
+                //     if (state is AuthDataLoadSuccess) {
+                //       return Column(
+                //         // mainAxisAlignment: MainAxisAlignment.start,
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           CircleAvatar(
+                //               radius: 40,
+                //               backgroundColor: Colors.grey.shade300,
+                //               child: ClipRRect(
+                //                 borderRadius: BorderRadius.circular(100),
+                //                 child: CachedNetworkImage(
+                //                     imageUrl: state.auth.profilePicture!,
+                //                     imageBuilder: (context, imageProvider) =>
+                //                         Container(
+                //                           decoration: BoxDecoration(
+                //                             image: DecorationImage(
+                //                               image: imageProvider,
+                //                               fit: BoxFit.cover,
+                //                               //colorFilter:
+                //                               //     const ColorFilter.mode(
+                //                               //   Colors.red,
+                //                               //   BlendMode.colorBurn,
+                //                               // ),
+                //                             ),
+                //                           ),
+                //                         ),
+                //                     placeholder: (context, url) =>
+                //                         const CircularProgressIndicator(),
+                //                     errorWidget: (context, url, error) {
+                //                       return Image.asset(
+                //                           'assets/icons/avatar-icon.png');
+                //                     }),
+                //               )),
+                //           const SizedBox(
+                //             height: 15,
+                //           ),
+                //           Text(
+                //             myName,
+                //             style: Theme.of(context).textTheme.headlineSmall,
+                //           )
+                //         ],
+                //       );
+                //     }
+                //     return Container();
+                //   },
+                // ),
+                ),
             SizedBox(
               height: 20,
             ),
@@ -151,7 +194,11 @@ class NavDrawer extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 children: [
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, HomeScreen.routeName,
+                          arguments: HomeScreenArgument(isSelected: false));
+                    },
                     child: _menuItem(
                         divider: true,
                         context: context,
@@ -200,27 +247,27 @@ class NavDrawer extends StatelessWidget {
                         text: "Summary"),
                   ),
 
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, VehicleDocument.routeName);
-                    },
-                    child: _menuItem(
-                        divider: true,
-                        context: context,
-                        icon: Icons.settings,
-                        text: "Vehicle Document"),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      print("sdfasdfa");
-                      Navigator.pushNamed(context, PersonalDocument.routeName);
-                    },
-                    child: _menuItem(
-                        divider: true,
-                        context: context,
-                        icon: Icons.settings,
-                        text: "Personal Document"),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.pushNamed(context, VehicleDocument.routeName);
+                  //   },
+                  //   child: _menuItem(
+                  //       divider: true,
+                  //       context: context,
+                  //       icon: Icons.settings,
+                  //       text: "Vehicle Document"),
+                  // ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     print("sdfasdfa");
+                  //     Navigator.pushNamed(context, PersonalDocument.routeName);
+                  //   },
+                  //   child: _menuItem(
+                  //       divider: true,
+                  //       context: context,
+                  //       icon: Icons.settings,
+                  //       text: "Personal Document"),
+                  // ),
 
                   //const Divider(color: Colors.grey),
                   GestureDetector(

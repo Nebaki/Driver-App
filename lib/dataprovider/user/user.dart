@@ -99,6 +99,8 @@ class UserDataProvider {
       }),
     );
 
+    print("yow here is the status code ${response.statusCode}");
+
     if (response.statusCode == 200) {
       authDataProvider.updateUserData(user);
       return User.fromJson(jsonDecode(response.body));

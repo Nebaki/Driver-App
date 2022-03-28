@@ -53,6 +53,9 @@ dependencies:
   flutter_geofire: ^2.0.1
   firebase_messaging: ^11.2.6
   maps_toolkit: ^2.0.0
+  slider_button: ^2.0.0
+  wakelock: ^0.6.1+2
+  flutter_animarker: ^3.3.1-beta.4
   
 
 

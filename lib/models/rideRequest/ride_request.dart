@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 @immutable
 class RideRequest extends Equatable {
   String? id;
   String? driverId;
-  double? pickupLocation;
-  double? dropOffLocation;
+  LatLng? pickupLocation;
+  LatLng? dropOffLocation;
   String passengerName;
 
   RideRequest({

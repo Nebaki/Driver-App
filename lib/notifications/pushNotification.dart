@@ -16,37 +16,34 @@ class PushNotificationService {
       print("Notification data is ::");
       print(message.data);
 
-      final d = json.decode(message.data['pickupLocation']);
-      final dp = json.decode(message.data['droppoffLocation']);
+      final pickupList = json.decode(message.data['pickupLocation']);
+      final droppOffList = json.decode(message.data['droppOffLocation']);
 
-      print('this is d: ${d[0]}');
-      LatLng passengerPosition = LatLng(d[0], d[1]);
-      LatLng droppOffPosition = LatLng(dp[0], dp[1]);
+      pickupLocation = LatLng(pickupList[0], pickupList[1]);
+      droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
       passengerName = message.data['passengerName'];
       passengerPhoneNumber = message.data['passengerPhoneNumber'];
       requestId = message.data['requestId'];
       passengerFcm = message.data['passengerFcm'];
+      distance = message.data['distance'];
+      duration = message.data['duration'];
+      price = message.data['price'];
+      droppOffAddress = message.data['droppOffAddress'];
+      pickUpAddress = message.data['pickupAddress'];
+      passengerProfilePictureUrl = message.data['profilePictureUrl'];
       showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
             return NotificationDialog(
-                message.data['passengerFcm'],
-                message.data['requestId'],
-                message.data['passengerName'],
-                passengerPosition,
-                message.data['pickupAddress'],
-                message.data['dropOffAddress'],
-                callback,
-                setDestination,
-                setIsArrivedWidget);
+                callback, setDestination, setIsArrivedWidget);
           });
 
       // if (notification != null && android != null && !kIsWeb) {
       //   flutterLocalNotificationsPlugin.show(
       //     notification.hashCode,
       //     notification.title,
-      //     notification.body,
+      //     notification.body,dxGQlHGETnWjGYmlVy8Utn:APA91bErJaqPmsqfQOcStX6MYcBxfIAMr9kofXqF7bOBhftlZ3qo327e3PQ1jinm6o7FmtTy1LX4e0SE-dCUc2NwcyL6OJqKW7dagp6uTs8k-m6ynhp7NBotpPMaioTNxBuJFPz_RUif
       //     NotificationDetails(
       //       android: AndroidNotificationDetails(
       //         channel.id,
@@ -62,7 +59,29 @@ class PushNotificationService {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      final pickupList = json.decode(message.data['pickupLocation']);
+      final droppOffList = json.decode(message.data['droppOffLocation']);
+
+      pickupLocation = LatLng(pickupList[0], pickupList[1]);
+      droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
+      passengerName = message.data['passengerName'];
+      passengerPhoneNumber = message.data['passengerPhoneNumber'];
+      requestId = message.data['requestId'];
+      passengerFcm = message.data['passengerFcm'];
+      distance = message.data['distance'];
+      duration = message.data['duration'];
+      price = message.data['price'];
+      droppOffAddress = message.data['droppOffAddress'];
+      pickUpAddress = message.data['pickupAddress'];
+      passengerProfilePictureUrl = message.data['profilePictureUrl'];
       print('A new onMessageOpenedApp event was published!');
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return NotificationDialog(
+                callback, setDestination, setIsArrivedWidget);
+          });
       // Navigator.pushNamed(
       //   context,
       //   '/message',

@@ -1,14 +1,26 @@
 import 'package:driverapp/bloc/bloc.dart';
+import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 
-class OnlinMode extends StatelessWidget {
+class OnlinMode extends StatefulWidget {
   Function? callback;
   Function setDriverStatus;
-  Function getLiveUpdate;
-  OnlinMode(this.callback, this.setDriverStatus, this.getLiveUpdate);
+  OnlinMode(this.callback, this.setDriverStatus);
+
+  @override
+  State<OnlinMode> createState() => _OnlinModeState();
+}
+
+class _OnlinModeState extends State<OnlinMode> {
+  @override
+  void dispose() {
+    homeScreenStreamSubscription.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -25,11 +37,12 @@ class OnlinMode extends StatelessWidget {
                 if (state is AuthDataLoadSuccess) {
                   return Container(
                     child: FloatingActionButton(
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.green,
                       onPressed: () async {
-                        setDriverStatus(false);
-                        callback!(OfflineMode(
-                            setDriverStatus, callback, getLiveUpdate));
+                        // setDriverStatus(false);
+                        isDriverOnline = false;
+                        widget.callback!(OfflineMode(
+                            widget.setDriverStatus, widget.callback));
                       },
                       child: Container(
                           padding: EdgeInsets.all(20),
@@ -65,7 +78,7 @@ class OnlinMode extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: Text(
-                      "Finding Trips",
+                      "You Are Online",
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
@@ -87,7 +100,7 @@ class OnlinMode extends StatelessWidget {
                         style: TextStyle(color: Colors.red, fontSize: 24),
                       ),
                       Text(
-                        "More requests than usual",
+                        "Waiting for Ridders request",
                         style: TextStyle(color: Colors.grey, fontSize: 16),
                       )
                     ],

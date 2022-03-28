@@ -15,7 +15,7 @@ class RideRequestRepository {
   }
 
   Future changeRequestStatus(
-      String id, String status, String passengerFcm) async {
+      String id, String status, String? passengerFcm) async {
     return await dataProvider.changeRequestStatus(id, status, passengerFcm);
   }
 
