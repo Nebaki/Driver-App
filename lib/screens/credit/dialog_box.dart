@@ -8,9 +8,7 @@ class PaymentBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       elevation: 5,
-      content: Container(
-        child: Image.asset("assets/icons/car.png", height: 100),
-      ),
+      content: Image.asset("assets/icons/car.png", height: 100),
       title: const Text(
         "Continue",
       ),

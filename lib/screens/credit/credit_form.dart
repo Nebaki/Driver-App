@@ -128,17 +128,28 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                 _isLoading = false;
               }),
               value.totalAmount = amount,
-              initTeleBirr(value)
+              print(value.toString()),
+              ShowToast(context, value.toString()).show(),
+              validateTeleBirr(value)
             })
         .onError((error, stackTrace) => {
-              ShowToast(context, "Error happened"),
+              ShowToast(context, "Error happened: $error").show(),
               setState(() {
                 _isLoading = false;
               })
             });
   }
 
-  void showMessage(String message){
+  void validateTeleBirr(TelePack value) {
+    if (value.code == 200) {
+      initTeleBirr(value);
+    } else {
+      print(value.message);
+      ShowToast(context, value.message!).show();
+    }
+  }
+
+  void showMessage(String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -160,15 +171,14 @@ class _TeleBirrDataState extends State<TeleBirrData> {
       },
     );
   }
+
   void paymentProcess(Result result) {
-    if(result.code == "0"){
+    if (result.code == "0") {
       var confirm = sender.confirmTransaction("otn");
-      confirm.then((value) => {
-        showMessage(value.message)
-      }).onError((error, stackTrace) => {
-        showMessage(error.toString())
-      });
-    }else{
+      confirm
+          .then((value) => {showMessage(value.message)})
+          .onError((error, stackTrace) => {showMessage(error.toString())});
+    } else {
       showMessage('${result.code} : ${result.message}');
     }
   }
@@ -235,10 +245,10 @@ class TelePack {
       this.publicKey,
       this.outTradeNo});
 
-  factory TelePack.fromJson(Map<String, dynamic> json) {
-    return TelePack(
-      message: json["message"],
-      code: json["code"],
+  factory TelePack.fromJson(Map<String, dynamic> json)
+    => TelePack(
+      message: json["message"] == null ? null : "Hopeless",
+      code: json["code"] == null ? null: 200,
       totalAmount: json["totalAmount"].toString(),
       appId: json["appId"],
       receiverName: json["receiverName"],
@@ -251,7 +261,7 @@ class TelePack {
       publicKey: json["publicKey"],
       outTradeNo: json["outTradeNo"],
     );
-  }
+
 
   @override
   String toString() => ' TelePack {'
