@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import '../../dataprovider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
 
+import 'telebirr_data.dart';
+
 class TeleBirrData extends StatefulWidget {
   static const routeName = "/telebirrForm";
 
@@ -46,6 +48,8 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                   Padding(
                     padding: const EdgeInsets.only(left: 40, right: 40, top: 5),
                     child: TextFormField(
+                      keyboardType: const TextInputType.numberWithOptions(
+                          signed: true, decimal: true),
                       controller: amountController,
                       decoration: const InputDecoration(
                           alignLabelWithHint: true,
@@ -121,19 +125,22 @@ class _TeleBirrDataState extends State<TeleBirrData> {
   }
 
   var sender = TeleBirrDataProvider(httpClient: http.Client());
+
   void startTelebirr(String amount) {
     var res = sender.initTelebirr("0922877115");
-    res.then((value) => {
+    res
+        .then((value) => {
               setState(() {
                 _isLoading = false;
               }),
               value.totalAmount = amount,
-              print(value.toString()),
-              ShowToast(context, value.toString()).show(),
-              validateTeleBirr(value)
+              if (value.code == 200)
+                validateTeleBirr(value)
+              else
+                ShowMessage(context, "Recharge", value.message)
             })
         .onError((error, stackTrace) => {
-              ShowToast(context, "Error happened: $error").show(),
+              ShowMessage(context, "Recharge", "Error happened: $error"),
               setState(() {
                 _isLoading = false;
               })
@@ -149,37 +156,15 @@ class _TeleBirrDataState extends State<TeleBirrData> {
     }
   }
 
-  void showMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Payment Process'),
-          // To display the title it is optional
-          content: Text(message),
-          // Message which will be pop up on the screen
-          // Action widget which will provide the user to acknowledge the choice
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void paymentProcess(Result result) {
     if (result.code == "0") {
       var confirm = sender.confirmTransaction("otn");
       confirm
-          .then((value) => {showMessage(value.message)})
-          .onError((error, stackTrace) => {showMessage(error.toString())});
+          .then((value) => {ShowMessage(context, "Recharge", value.message)})
+          .onError((error, stackTrace) =>
+              {ShowMessage(context, "Recharge", error.toString())});
     } else {
-      showMessage('${result.code} : ${result.message}');
+      ShowMessage(context, "Recharge", '${result.code} : ${result.message}');
     }
   }
 
@@ -206,92 +191,4 @@ class _TeleBirrDataState extends State<TeleBirrData> {
     var result = Result(code, message);
     return result;
   }
-}
-
-class Result {
-  final String code;
-  final String message;
-
-  Result(this.code, this.message);
-}
-
-class TelePack {
-  String? message;
-  int? code;
-  String? totalAmount;
-  String? appId;
-  String? receiverName;
-  String? shortCode;
-  String? subject;
-  String? returnUrl;
-  String? notifyUrl;
-  String? timeoutExpress;
-  String? appKey;
-  String? publicKey;
-  String? outTradeNo;
-
-  TelePack(
-      {this.message,
-      this.code,
-      this.totalAmount,
-      this.appId,
-      this.receiverName,
-      this.shortCode,
-      this.subject,
-      this.returnUrl,
-      this.notifyUrl,
-      this.timeoutExpress,
-      this.appKey,
-      this.publicKey,
-      this.outTradeNo});
-
-  factory TelePack.fromJson(Map<String, dynamic> json)
-    => TelePack(
-      message: json["message"] == null ? null : "Hopeless",
-      code: json["code"] == null ? null: 200,
-      totalAmount: json["totalAmount"].toString(),
-      appId: json["appId"],
-      receiverName: json["receiverName"],
-      shortCode: json["shortCode"],
-      subject: json["subject"],
-      returnUrl: json["returnUrl"],
-      notifyUrl: json["notifyUrl"],
-      timeoutExpress: json["timeoutExpress"],
-      appKey: json["appKey"],
-      publicKey: json["publicKey"],
-      outTradeNo: json["outTradeNo"],
-    );
-
-
-  @override
-  String toString() => ' TelePack {'
-      'code: $code,'
-      'message: $message,'
-      'totalAmount: $totalAmount,'
-      'appId: $appId,'
-      'receiverName: $receiverName,'
-      'shortCode: $shortCode,'
-      'subject: $subject,'
-      'returnUrl: $returnUrl,'
-      'notifyUrl: $notifyUrl,'
-      'timeoutExpress: $timeoutExpress,'
-      'appKey: $appKey,'
-      'publicKey: $publicKey,'
-      'outTradeNo: $outTradeNo}';
-
-  Map<String, dynamic> toJson() => {
-        'code': '$code',
-        'message': '$message',
-        'totalAmount': '$totalAmount',
-        'appId': '$appId',
-        'receiverName': '$receiverName',
-        'shortCode': '$shortCode',
-        'subject': '$subject',
-        'returnUrl': '$returnUrl',
-        'notifyUrl': '$notifyUrl',
-        'timeoutExpress': '$timeoutExpress',
-        'appKey': '$appKey',
-        'publicKey': '$publicKey',
-        'outTradeNo': '$outTradeNo'
-      };
 }

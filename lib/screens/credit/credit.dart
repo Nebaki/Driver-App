@@ -1,7 +1,7 @@
 import 'package:driverapp/dataprovider/credit/credit.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
-import 'package:driverapp/screens/credit/dialog_box.dart';
 import 'package:driverapp/screens/credit/list_builder.dart';
+import 'package:driverapp/screens/credit/transfer_form.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -85,7 +85,8 @@ class _WaletState extends State<Walet> {
                         child: Container(
                           decoration: const BoxDecoration(
                               color: Colors.deepOrange,
-                              borderRadius: BorderRadius.all(Radius.circular(10))),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
                           //color: Colors.deepOrange,
                           height: 40,
                           padding: const EdgeInsets.all(5.0),
@@ -94,10 +95,15 @@ class _WaletState extends State<Walet> {
                             children: [
                               Center(
                                   child: InkWell(
-                                      child: Text(
-                                "WITHDRAW",
-                                style: _inkweltextStyle,
-                              ),)),
+                                child: Text(
+                                  "TRANSFER",
+                                  style: _inkweltextStyle,
+                                ),
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, TransferMoney.routeName);
+                                },
+                              )),
                               const VerticalDivider(
                                 color: Colors.white,
                                 thickness: 3,
@@ -111,7 +117,7 @@ class _WaletState extends State<Walet> {
                                             context: context,
                                             builder: (_) => PaymentBox(),
                                             barrierDismissible: false);*/
-                                        PaymentBox();
+                                        //PaymentBox();
                                       },
                                       child: Text(
                                         "ADD MONEY",
@@ -144,7 +150,7 @@ class _WaletState extends State<Walet> {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10))),
-              height: MediaQuery.of(context).size.height - 322,
+              height: MediaQuery.of(context).size.height - 324,
               child: _isLoading
                   ? const Align(
                       alignment: Alignment.center,
