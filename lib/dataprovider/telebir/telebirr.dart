@@ -1,9 +1,7 @@
 import 'dart:convert';
 
-import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/dataprovider/auth/auth.dart';
-import '../../screens/credit/credit_form.dart';
 import '../../screens/credit/telebirr_data.dart';
 
 class TeleBirrDataProvider {
@@ -25,7 +23,7 @@ class TeleBirrDataProvider {
       var data = TelePack.fromJson(jsonDecode(response.body));
       data.code = response.statusCode;
       data.message = "Success";
-      return TelePack.fromJson(jsonDecode(response.body));
+      return data;
     } else {
       print("init-telebirr ${response.statusCode}");
       String data = "{\"code\":${response.statusCode},\"message\":\"Failed to initiate telebirr\"}";

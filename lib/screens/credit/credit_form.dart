@@ -20,20 +20,75 @@ class _TeleBirrDataState extends State<TeleBirrData> {
 
   TextEditingController amountController = TextEditingController();
   bool _isLoading = false;
-
+  final String title = "Wallet";
+  Widget _amountBox() => TextFormField(
+      keyboardType: const TextInputType.numberWithOptions(
+          signed: true, decimal: true),
+      controller: amountController,
+      decoration: const InputDecoration(
+          alignLabelWithHint: true,
+          hintText: "Amount",
+          hintStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black45),
+          prefixIcon: Icon(
+            Icons.money,
+            size: 19,
+          ),
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(
+              borderSide:
+              BorderSide(style: BorderStyle.solid))),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter Amount';
+        } else if (int.parse(value) < 100) {
+          return 'Minimum Amount is 100.ETB';
+        }
+        return null;
+      },
+    );
+  Widget _startButton() => ElevatedButton(
+    onPressed: _isLoading
+        ? null
+        : () {
+      final form = _formkey.currentState;
+      if (form!.validate()) {
+        setState(() {
+          _isLoading = true;
+        });
+        form.save();
+        startTelebirr(amountController.value.text);
+      }
+    },
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Spacer(),
+        const Text("Start",
+            style: TextStyle(color: Colors.white)),
+        const Spacer(),
+        Align(
+          alignment: Alignment.centerRight,
+          child: _isLoading
+              ? const SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          )
+              : Container(),
+        )
+      ],
+    ),
+  );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0.5,
-          backgroundColor: Colors.white,
-          title: const Text(
-            "Wallet",
-            style: TextStyle(fontWeight: FontWeight.w300),
-          ),
-          centerTitle: true,
-        ),
+        appBar: CreditAppBar(key: _formkey,title: "Recharge",appBar: AppBar(),widgets: []),
         body: Form(
             key: _formkey,
             child: Center(
@@ -47,34 +102,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                       )),
                   Padding(
                     padding: const EdgeInsets.only(left: 40, right: 40, top: 5),
-                    child: TextFormField(
-                      keyboardType: const TextInputType.numberWithOptions(
-                          signed: true, decimal: true),
-                      controller: amountController,
-                      decoration: const InputDecoration(
-                          alignLabelWithHint: true,
-                          hintText: "Amount",
-                          hintStyle: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black45),
-                          prefixIcon: Icon(
-                            Icons.money,
-                            size: 19,
-                          ),
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(style: BorderStyle.solid))),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter Amount';
-                        } else if (int.parse(value) < 100) {
-                          return 'Minimum Amount is 100.ETB';
-                        }
-                        return null;
-                      },
-                    ),
+                    child: _amountBox(),
                   ),
                   Padding(
                     padding:
@@ -82,41 +110,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                     child: SizedBox(
                       height: 40,
                       width: MediaQuery.of(context).size.width,
-                      child: ElevatedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : () {
-                                final form = _formkey.currentState;
-                                if (form!.validate()) {
-                                  setState(() {
-                                    _isLoading = true;
-                                  });
-                                  form.save();
-                                  startTelebirr(amountController.value.text);
-                                }
-                              },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Spacer(),
-                            const Text("Start",
-                                style: TextStyle(color: Colors.white)),
-                            const Spacer(),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          ],
-                        ),
-                      ),
+                      child: _startButton(),
                     ),
                   ),
                 ],
@@ -152,7 +146,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
       initTeleBirr(value);
     } else {
       print(value.message);
-      ShowToast(context, value.message!).show();
+      ShowToast(context, value.message).show();
     }
   }
 
@@ -164,7 +158,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
           .onError((error, stackTrace) =>
               {ShowMessage(context, "Recharge", error.toString())});
     } else {
-      ShowMessage(context, "Recharge", '${result.code} : ${result.message}');
+      ShowMessage(context, "Recharge", result.message);
     }
   }
 

@@ -24,34 +24,134 @@ class _TransferState extends State<TransferMoney> {
   TextEditingController phoneController = TextEditingController();
   bool _isLoading = false;
 
+  Widget _amountBox(){
+    return TextFormField(
+      keyboardType: const TextInputType.numberWithOptions(
+          signed: true, decimal: true),
+      controller: amountController,
+      decoration: const InputDecoration(
+          alignLabelWithHint: true,
+          hintText: "Amount",
+          hintStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black45),
+          prefixIcon: Icon(
+            Icons.money,
+            size: 19,
+          ),
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(
+              borderSide: BorderSide
+                  .none //BorderSide(style: BorderStyle.none)
+          )),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter Amount';
+        } else if (int.parse(value) < 100) {
+          return 'Minimum Amount is 100.ETB';
+        }
+        return null;
+      },
+    );
+  }
+  Widget _phoneBox(){
+    return Container(
+      padding:
+      const EdgeInsets.only(left: 5, right: 5, top: 2),
+      decoration: const BoxDecoration(
+        //border: Border.all(),
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(3))),
+      child: InternationalPhoneNumberInput(
+        textFieldController: phoneController,
+        onSaved: (value) {
+          print(value);
+          _auth["phoneNumber"] = value.toString();
+        },
+        onInputChanged: (PhoneNumber number) {
+          print(number.phoneNumber);
+        },
+        onInputValidated: (bool value) {
+          print(value);
+        },
+        selectorConfig: const SelectorConfig(
+            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+            trailingSpace: false),
+        ignoreBlank: false,
+        autoValidateMode: AutovalidateMode.onUserInteraction,
+        selectorTextStyle:
+        const TextStyle(color: Colors.black),
+        initialValue: PhoneNumber(isoCode: "ET"),
+        formatInput: true,
+        keyboardType: const TextInputType.numberWithOptions(
+            signed: true, decimal: true),
+        inputBorder: const OutlineInputBorder(
+            borderSide: BorderSide.none),
+        spaceBetweenSelectorAndTextField: 0,
+        inputDecoration: const InputDecoration(
+            hintText: "Phone Number",
+            hintStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black45),
+            fillColor: Colors.white,
+            filled: true,
+            border: OutlineInputBorder(
+                borderSide: BorderSide.none)),
+      ),
+    );
+  }
+  Widget _transferButton(){
+    return ElevatedButton(
+      onPressed: _isLoading
+          ? null
+          : () {
+        final form = _formkey.currentState;
+        if (form!.validate()) {
+          setState(() {
+            _isLoading = true;
+          });
+          form.save();
+          startTelebirr(phoneController.value.text,
+              amountController.value.text);
+        }
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Spacer(),
+          const Text("Transfer",
+              style: TextStyle(color: Colors.white)),
+          const Spacer(),
+          Align(
+            alignment: Alignment.centerRight,
+            child: _isLoading
+                ? const SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            )
+                : Container(),
+          )
+        ],
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0.5,
-          backgroundColor: Colors.white,
-          title: const Text(
-            "Transfer",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
-        ),
+        appBar: CreditAppBar(key: _formkey,title: "Transfer",appBar: AppBar(),widgets: []),
         body: Form(
             key: _formkey,
             child: Card(
               margin: const EdgeInsets.only(left: 10, right: 10, top: 50),
-              elevation: 5,
+              elevation: 0.3,
               child: Container(
                 decoration: const BoxDecoration(
                     color: Colors.white,
-                    /*boxShadow: [
-                      BoxShadow(
-                          blurRadius: 3,
-                          color: Colors.grey,
-                          blurStyle: BlurStyle.outer,
-                          spreadRadius: 2)
-                    ],*/
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 2,
@@ -62,90 +162,19 @@ class _TransferState extends State<TransferMoney> {
                     const Padding(
                         padding: EdgeInsets.only(left: 40, right: 40, top: 10),
                         child: Text(
-                          "Amount",
+                          "Send Money",
                           style: TextStyle(fontSize: 25),
                         )),
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 40, right: 40, top: 5),
                       //padding: const EdgeInsets.all(10),
-                      child: Container(
-                        padding:
-                            const EdgeInsets.only(left: 5, right: 5, top: 2),
-                        decoration: const BoxDecoration(
-                            //border: Border.all(),
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(3))),
-                        child: InternationalPhoneNumberInput(
-                          textFieldController: phoneController,
-                          onSaved: (value) {
-                            print(value);
-                            _auth["phoneNumber"] = value.toString();
-                          },
-                          onInputChanged: (PhoneNumber number) {
-                            print(number.phoneNumber);
-                          },
-                          onInputValidated: (bool value) {
-                            print(value);
-                          },
-                          selectorConfig: const SelectorConfig(
-                              selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                              trailingSpace: false),
-                          ignoreBlank: false,
-                          autoValidateMode: AutovalidateMode.onUserInteraction,
-                          selectorTextStyle:
-                              const TextStyle(color: Colors.black),
-                          initialValue: PhoneNumber(isoCode: "ET"),
-                          formatInput: true,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              signed: true, decimal: true),
-                          inputBorder: const OutlineInputBorder(
-                              borderSide: BorderSide.none),
-                          spaceBetweenSelectorAndTextField: 0,
-                          inputDecoration: const InputDecoration(
-                              hintText: "Phone Number",
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black45),
-                              fillColor: Colors.white,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide.none)),
-                        ),
-                      ),
+                      child: _phoneBox(),
                     ),
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 40, right: 40, top: 5),
-                      child: TextFormField(
-                        keyboardType: const TextInputType.numberWithOptions(
-                            signed: true, decimal: true),
-                        controller: amountController,
-                        decoration: const InputDecoration(
-                            alignLabelWithHint: true,
-                            hintText: "Amount",
-                            hintStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black45),
-                            prefixIcon: Icon(
-                              Icons.money,
-                              size: 19,
-                            ),
-                            fillColor: Colors.white,
-                            filled: true,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide
-                                    .none //BorderSide(style: BorderStyle.none)
-                                )),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter Amount';
-                          } else if (int.parse(value) < 100) {
-                            return 'Minimum Amount is 100.ETB';
-                          }
-                          return null;
-                        },
-                      ),
+                      child: _amountBox(),
                     ),
                     Padding(
                       padding:
@@ -153,42 +182,7 @@ class _TransferState extends State<TransferMoney> {
                       child: SizedBox(
                         height: 40,
                         width: MediaQuery.of(context).size.width,
-                        child: ElevatedButton(
-                          onPressed: _isLoading
-                              ? null
-                              : () {
-                                  final form = _formkey.currentState;
-                                  if (form!.validate()) {
-                                    setState(() {
-                                      _isLoading = true;
-                                    });
-                                    form.save();
-                                    startTelebirr(phoneController.value.text,
-                                        amountController.value.text);
-                                  }
-                                },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Spacer(),
-                              const Text("Start",
-                                  style: TextStyle(color: Colors.white)),
-                              const Spacer(),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: _isLoading
-                                    ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : Container(),
-                              )
-                            ],
-                          ),
-                        ),
+                        child: _transferButton(),
                       ),
                     ),
                   ],

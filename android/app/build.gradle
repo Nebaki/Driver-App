@@ -74,6 +74,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:29.1.0')
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.github.walelgnw:telebirr-android-sdk:0.1'
+    implementation 'com.github.walelgnw:telebirr-android-sdk:0.2'
 
 }
