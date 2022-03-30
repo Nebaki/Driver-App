@@ -3,12 +3,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/dataprovider/auth/auth.dart';
 import '../../screens/credit/telebirr_data.dart';
+import '../header/header.dart';
 
 class TeleBirrDataProvider {
-  final _baseUrl = 'https://safeway-api.herokuapp.com/api/credits/';
+  final _baseUrl = RequestHeader.baseURL+'credits';
   final http.Client httpClient;
-  AuthDataProvider authDataProvider =
-      AuthDataProvider(httpClient: http.Client());
   TeleBirrDataProvider({required this.httpClient});
 
   Future<TelePack> initTelebirr(String user) async {
@@ -16,8 +15,7 @@ class TeleBirrDataProvider {
     final response = await http.get(
       Uri.parse('$_baseUrl/initiate-telebirr'),
       //Uri.parse('https://app.hellotena.com/api/telebirr/confirmPayment/01245890-9dd9-4abd-a5d3-9fe1e9d39b2b/covid/covid'),
-      headers: <String, String>{'Content-Type': 'application/json',
-        'x-access-token': '${await authDataProvider.getToken()}'}
+      headers: await RequestHeader().authorisedHeader()
     );
     if (response.statusCode == 200) {
       var data = TelePack.fromJson(jsonDecode(response.body));
@@ -36,8 +34,7 @@ class TeleBirrDataProvider {
     String wait = "Please Wait we are processing";
     final response = await http.get(
         Uri.parse('$_baseUrl/confirm-telebirr/user-id/out-trade-number'),
-        headers: <String, String>{'Content-Type': 'application/json',
-          'x-access-token': '${await authDataProvider.getToken()}'}
+        headers: await RequestHeader().authorisedHeader()
     ).timeout(
       const Duration(seconds: 1),
       onTimeout: () {

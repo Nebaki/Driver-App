@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 // import 'package:dio/dio.dart';
+import 'package:driverapp/dataprovider/header/header.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
@@ -15,16 +16,14 @@ import 'package:driverapp/repository/auth.dart';
 import '../../screens/credit/telebirr_data.dart';
 
 class CreditDataProvider {
-  final _baseUrl = 'https://safeway-api.herokuapp.com/api/credit';
+  final _baseUrl = RequestHeader.baseURL+'credit';
   final http.Client httpClient;
-  AuthDataProvider authDataProvider =
-      AuthDataProvider(httpClient: http.Client());
   CreditDataProvider({required this.httpClient});
 
   Future<User> rechargeCredit(User user) async {
     final response = await http.post(
       Uri.parse('$_baseUrl/create-credit'),
-      headers: <String, String>{'Content-Type': 'application/json'},
+      headers: await RequestHeader().authorisedHeader(),
       body: json.encode({
         'name': user.firstName,
         'email': user.email,
@@ -35,13 +34,13 @@ class CreditDataProvider {
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to create user.');
+      throw Exception('Failed to recharge credit.');
     }
   }
   Future<Result> transferCredit(String receiverPhone,String amount) async {
     final response = await http.post(
       Uri.parse('$_baseUrl/transfer-credit'),
-      headers: <String, String>{'Content-Type': 'application/json'},
+      headers: await RequestHeader().authorisedHeader(),
       body: json.encode({
         'senderPhone': "0922877115",
         'receiverPhone': receiverPhone,
@@ -62,10 +61,7 @@ class CreditDataProvider {
   Future<Result> loadBalance(String id) async {
     final http.Response response = await httpClient.get(
         Uri.parse('$_baseUrl/$id/load-credit-balance'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'x-access-token': '${await authDataProvider.getToken()}'
-        });
+        headers: await RequestHeader().authorisedHeader());
     if(response.statusCode == 200){
       return Result(response.statusCode.toString(), response.body);
     }
@@ -77,10 +73,7 @@ class CreditDataProvider {
   Future<CreditStore> loadCreditHistory(String user) async {
     final http.Response response = await http.post(
       Uri.parse('$_baseUrl/load-credit-history'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'x-access-token': '${await authDataProvider.getToken()}'
-      }
+      headers: await RequestHeader().authorisedHeader()
     );
 
     if (response.statusCode == 200) {
