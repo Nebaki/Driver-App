@@ -200,46 +200,49 @@ class _HomeScreenState extends State<HomeScreen> {
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10))),
               builder: (BuildContext ctx) {
-                return Container(
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  padding: const EdgeInsets.fromLTRB(30, 30, 20, 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text("Location Services are off",
-                            style: Theme.of(context).textTheme.headline5),
-                      ),
-                      Expanded(
-                          child: Text(
-                              "Please enable Location Service to allow us finding your location.",
-                              style: Theme.of(context).textTheme.bodyText2)),
-                      Expanded(
-                          child: Text(
-                              "For better accuracy,please turn on both GPS and WIFI location services",
-                              style: Theme.of(context).textTheme.bodyText2)),
-                      Expanded(
-                          child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await Geolocator.openLocationSettings();
-                            },
-                            child: Text("Go to Location Services")),
-                      )),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Expanded(
-                          child: SizedBox(
-                        width: double.infinity,
-                        child: TextButton(
-                            onPressed: () async {
-                              SystemNavigator.pop();
-                            },
-                            child: Text("Close App")),
-                      ))
-                    ],
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    padding: const EdgeInsets.fromLTRB(30, 30, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text("Location Services are off",
+                              style: Theme.of(context).textTheme.headline5),
+                        ),
+                        Expanded(
+                            child: Text(
+                                "Please enable Location Service to allow us finding your location.",
+                                style: Theme.of(context).textTheme.bodyText2)),
+                        Expanded(
+                            child: Text(
+                                "For better accuracy,please turn on both GPS and WIFI location services",
+                                style: Theme.of(context).textTheme.bodyText2)),
+                        Expanded(
+                            child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                await Geolocator.openLocationSettings();
+                              },
+                              child: Text("Go to Location Services")),
+                        )),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Expanded(
+                            child: SizedBox(
+                          width: double.infinity,
+                          child: TextButton(
+                              onPressed: () async {
+                                SystemNavigator.pop();
+                              },
+                              child: Text("Close App")),
+                        ))
+                      ],
+                    ),
                   ),
                 );
               });
@@ -265,46 +268,49 @@ class _HomeScreenState extends State<HomeScreen> {
             isDismissible: false,
             context: context,
             builder: (BuildContext context) {
-              return Container(
-                height: MediaQuery.of(context).size.height * 0.4,
-                padding: const EdgeInsets.fromLTRB(30, 30, 20, 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text("No Internet Connection",
-                          style: Theme.of(context).textTheme.headline5),
-                    ),
-                    Expanded(
-                        child: Text(
-                            "Please enable WIFI or Mobile Data to allow us finding your location.",
-                            style: Theme.of(context).textTheme.bodyText2)),
-                    Expanded(
-                        child: Text(
-                            "For better accuracy,please turn on both GPS and WIFI location services",
-                            style: Theme.of(context).textTheme.bodyText2)),
-                    Expanded(
-                        child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            await Geolocator.openAppSettings();
-                          },
-                          child: Text("Go to Settings")),
-                    )),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Expanded(
-                        child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            SystemNavigator.pop();
-                          },
-                          child: Text("Close App")),
-                    ))
-                  ],
+              return WillPopScope(
+                onWillPop: () async => false,
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  padding: const EdgeInsets.fromLTRB(30, 30, 20, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text("No Internet Connection",
+                            style: Theme.of(context).textTheme.headline5),
+                      ),
+                      Expanded(
+                          child: Text(
+                              "Please enable WIFI or Mobile Data to allow us finding your location.",
+                              style: Theme.of(context).textTheme.bodyText2)),
+                      Expanded(
+                          child: Text(
+                              "For better accuracy,please turn on both GPS and WIFI location services",
+                              style: Theme.of(context).textTheme.bodyText2)),
+                      Expanded(
+                          child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              await Geolocator.openAppSettings();
+                            },
+                            child: Text("Go to Settings")),
+                      )),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Expanded(
+                          child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              SystemNavigator.pop();
+                            },
+                            child: Text("Close App")),
+                      ))
+                    ],
+                  ),
                 ),
               );
             });
