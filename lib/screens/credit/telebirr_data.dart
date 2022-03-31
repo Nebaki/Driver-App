@@ -1,9 +1,10 @@
 
 class Result {
   final String code;
+  final bool success;
   final String message;
 
-  Result(this.code, this.message);
+  Result(this.code,this.success, this.message);
 }
 
 class TelePack {
@@ -19,7 +20,7 @@ class TelePack {
   String? timeoutExpress;
   String? appKey;
   String? publicKey;
-  String? outTradeNo;
+  String? outTradeNumber;
 
   TelePack(
       {required this.message,
@@ -34,23 +35,23 @@ class TelePack {
         this.timeoutExpress,
         this.appKey,
         this.publicKey,
-        this.outTradeNo});
+        this.outTradeNumber});
 
-  factory TelePack.fromJson(Map<String, dynamic> json)
+  factory TelePack.fromJson(Map<String, dynamic> json,int code)
   => TelePack(
     message: json["message"],
-    code: json["code"],
+    code: code,
     totalAmount: json["totalAmount"].toString(),
     appId: json["appId"],
     receiverName: json["receiverName"],
-    shortCode: json["shortCode"],
+    shortCode: json["shortCode"].toString(),
     subject: json["subject"],
     returnUrl: json["returnUrl"],
     notifyUrl: json["notifyUrl"],
     timeoutExpress: json["timeoutExpress"],
     appKey: json["appKey"],
     publicKey: json["publicKey"],
-    outTradeNo: json["outTradeNo"],
+    outTradeNumber: json["outTradeNumber"],
   );
 
 
@@ -68,7 +69,7 @@ class TelePack {
       'timeoutExpress: $timeoutExpress,'
       'appKey: $appKey,'
       'publicKey: $publicKey,'
-      'outTradeNo: $outTradeNo}';
+      'outTradeNumber: $outTradeNumber}';
 
   Map<String, dynamic> toJson() => {
     'code': '$code',
@@ -83,6 +84,6 @@ class TelePack {
     'timeoutExpress': '$timeoutExpress',
     'appKey': '$appKey',
     'publicKey': '$publicKey',
-    'outTradeNo': '$outTradeNo'
+    'outTradeNumber': '$outTradeNumber'
   };
 }

@@ -50,10 +50,9 @@ class CreditDataProvider {
     );
 
     if (response.statusCode == 200) {
-      return Result(response.statusCode.toString(), response.body);
+      return Result(response.statusCode.toString(),true, response.body);
     } else {
-      return Result(response.statusCode.toString(), "Error Happened for receiver: "
-          "$receiverPhone, amount: $amount with code: ${response.statusCode}");
+      return RequestResult().requestResult(response.statusCode.toString(), response.body);
     }
   }
 
@@ -63,10 +62,10 @@ class CreditDataProvider {
         Uri.parse('$_baseUrl/$id/load-credit-balance'),
         headers: await RequestHeader().authorisedHeader());
     if(response.statusCode == 200){
-      return Result(response.statusCode.toString(), response.body);
+      return Result(response.statusCode.toString(),true, response.body);
     }
     else{
-      return Result(response.statusCode.toString(), "Error Happened for id: $id with code: ${response.statusCode}");
+      return RequestResult().requestResult(response.statusCode.toString(), response.body);
     }
   }
 

@@ -17,6 +17,7 @@ class TeleBirrData extends StatefulWidget {
 
 class _TeleBirrDataState extends State<TeleBirrData> {
   final _formkey = GlobalKey<FormState>();
+  final _appBar = GlobalKey<FormState>();
 
   TextEditingController amountController = TextEditingController();
   bool _isLoading = false;
@@ -88,7 +89,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: CreditAppBar(key: _formkey,title: "Recharge",appBar: AppBar(),widgets: []),
+        appBar: CreditAppBar(key: _appBar,title: "Recharge",appBar: AppBar(),widgets: []),
         body: Form(
             key: _formkey,
             child: Center(
@@ -167,7 +168,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
   void initTeleBirr(TelePack telePack) {
     teleBirrRequest(telePack).catchError(
       (onError) {
-        var result = Result("0", "there is an error: " + onError.toString());
+        var result = Result("0",false, "there is an error: " + onError.toString());
         paymentProcess(result);
       },
     ).then((value) {
@@ -182,7 +183,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
     var json = jsonDecode(teleBirr);
     var code = json['CODE'];
     var message = json['MSG'];
-    var result = Result(code, message);
+    var result = Result(code.toString(),false, message);
     return result;
   }
 }

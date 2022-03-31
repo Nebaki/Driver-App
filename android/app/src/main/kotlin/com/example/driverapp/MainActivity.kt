@@ -51,7 +51,7 @@ class MainActivity: FlutterActivity(),PaymentResultListener {
         var tBirr = TeleBirrPack()
         tBirr.appId = data?.get("appId") as String
         tBirr.notifyUrl = data["notifyUrl"] as String
-        tBirr.outTradeNo = data["outTradeNo"] as String?
+        tBirr.outTradeNo = data["outTradeNumber"] as String?
         tBirr.receiverName = data["receiverName"] as String?
         tBirr.returnUrl = data["returnUrl"] as String?
         tBirr.shortCode = data["shortCode"] as String?
