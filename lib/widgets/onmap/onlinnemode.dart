@@ -38,7 +38,9 @@ class _OnlinModeState extends State<OnlinMode> {
                   return Container(
                     child: FloatingActionButton(
                       backgroundColor: Colors.green,
-                      onPressed: () async {
+                      onPressed: () {
+                        // homeScreenStreamSubscription.cancel();
+
                         // setDriverStatus(false);
                         isDriverOnline = false;
                         widget.callback!(OfflineMode(

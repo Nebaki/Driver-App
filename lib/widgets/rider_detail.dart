@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,29 @@ class RiderDetail extends StatelessWidget {
               // );
             }),
             const SizedBox(width: 5),
-            CircleAvatar(),
+            CircleAvatar(
+              backgroundColor: Colors.grey.shade300,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: CachedNetworkImage(
+                    imageUrl: passengerProfilePictureUrl,
+                    imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => const Icon(
+                          Icons.person,
+                          color: Colors.black,
+                          size: 20,
+                        )),
+              ),
+            ),
             const SizedBox(width: 5),
             BlocConsumer<DirectionBloc, DirectionState>(listener: (_, state) {
               if (state is DirectionDistanceDurationLoadSuccess) {

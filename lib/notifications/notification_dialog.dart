@@ -188,6 +188,9 @@ class NotificationDialog extends StatelessWidget {
                     //     side: MaterialStateProperty.all<BorderSide>(
                     //         const BorderSide(width: 1, color: Colors.red))),
                     onPressed: () {
+                      player.stop();
+                      player.dispose();
+
                       RideRequestEvent requestEvent = RideRequestChangeStatus(
                           requestId, "Cancelled", passengerFcm);
                       BlocProvider.of<RideRequestBloc>(context)
@@ -210,6 +213,7 @@ class NotificationDialog extends StatelessWidget {
                           const Color.fromRGBO(244, 201, 60, 1)),
                     ),
                     onPressed: () {
+                      player.dispose();
                       isLoading = true;
 
                       RideRequestEvent requestEvent =

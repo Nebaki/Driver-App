@@ -54,14 +54,18 @@ class _CompleteTripState extends State<CompleteTrip> {
                         horizontal: 20, vertical: 10),
                     width: MediaQuery.of(context).size.width,
                     child: const Divider()),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildItems(
-                        text: "Chat", icon: Icons.chat_bubble_outline_rounded),
-                    _buildItems(text: "Message", icon: Icons.message_outlined),
-                    _buildItems(text: "Cancel Trip", icon: Icons.clear_outlined)
-                  ],
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //   children: [
+                //     _buildItems(
+                //         text: "Chat", icon: Icons.chat_bubble_outline_rounded),
+                //     _buildItems(text: "Message", icon: Icons.message_outlined),
+                //     _buildItems(text: "Cancel Trip", icon: Icons.clear_outlined)
+                //   ],
+                // ),
+                Text(
+                  "Cash: 234 ETB",
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 Container(
                     width: MediaQuery.of(context).size.width,
@@ -72,9 +76,9 @@ class _CompleteTripState extends State<CompleteTrip> {
                         backgroundColor: Colors.indigo.shade900,
                         icon: const Center(
                             child: Icon(
-                          Icons.done,
+                          Icons.arrow_forward_ios,
                           color: Colors.black,
-                          size: 40.0,
+                          size: 25.0,
                           semanticLabel:
                               'Text to announce in accessibility modes',
                         )),

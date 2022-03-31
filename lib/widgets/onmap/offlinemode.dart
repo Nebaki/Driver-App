@@ -8,28 +8,34 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class OfflineMode extends StatelessWidget {
-  late StreamSubscription<Position> homeScreenStreamSubscription;
-
   Function? callback;
   // Function getLiveLocation;
   Function setDriverStatus;
   bool isDriverOn = false;
   OfflineMode(this.setDriverStatus, this.callback);
   void getLiveLocation() async {
+    print("Yah Here");
     homeScreenStreamSubscription =
         Geolocator.getPositionStream().listen((event) {
-      isDriverOnline
-          ? Geofire.setLocation(myId, event.latitude, event.longitude)
-          : Geofire.removeLocation(myId);
+      if (isDriverOnline != null) {
+        print("Listening bruhhh is $isDriverOnline");
+        isDriverOnline!
+            ? Geofire.setLocation(myId, event.latitude, event.longitude)
+            : Geofire.removeLocation(myId);
 
-      if (!isDriverOnline) {
-        homeScreenStreamSubscription.cancel();
+        if (!isDriverOnline!) {
+          homeScreenStreamSubscription.cancel();
+        }
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    print("my id iss $myId , $isDriverOnline");
+    if (isDriverOnline != null) {
+      !isDriverOnline! ? Geofire.removeLocation(myId) : null;
+    }
     return Positioned(
       bottom: 0,
       right: 0,

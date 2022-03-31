@@ -40,8 +40,21 @@ class WaitingPassenger extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 15, top: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: RiderDetail(),
+                ),
+                Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    width: MediaQuery.of(context).size.width,
+                    child: Divider()),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildItems(
+                        text: "Chat", icon: Icons.chat_bubble_outline_rounded),
+                    _buildItems(text: "Message", icon: Icons.message_outlined),
+                    _buildItems(text: "Cancel Trip", icon: Icons.clear_outlined)
+                  ],
                 ),
                 Container(
                     width: MediaQuery.of(context).size.width,
@@ -49,11 +62,13 @@ class WaitingPassenger extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         left: 30, right: 30, top: 10, bottom: 10),
                     child: SliderButton(
+                        buttonColor: Colors.indigo.shade900,
+                        radius: 10,
                         icon: const Center(
                             child: Icon(
-                          Icons.start,
+                          Icons.arrow_forward_ios,
                           color: Colors.white,
-                          size: 40.0,
+                          size: 20.0,
                           semanticLabel:
                               'Text to announce in accessibility modes',
                         )),
@@ -65,6 +80,7 @@ class WaitingPassenger extends StatelessWidget {
                               fontSize: 17),
                         ),
                         action: () {
+                          homeScreenStreamSubscription.cancel();
                           RideRequestEvent requestEvent =
                               RideRequestChangeStatus(
                                   requestId, "Started", passengerFcm);
@@ -92,6 +108,33 @@ class WaitingPassenger extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildItems({required String text, required IconData icon}) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: Container(
+            color: Colors.grey.shade100,
+            padding: const EdgeInsets.all(10),
+            child: Icon(
+              icon,
+              color: Colors.indigo.shade900,
+              size: 22,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            text,
+            style: TextStyle(color: Colors.indigo.shade900),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:driverapp/functions/functions.dart';
+import 'package:driverapp/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -32,6 +34,13 @@ class _SigninScreenState extends State<SigninScreen> {
         body: BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
       return _buildSigninForm();
     }, listener: (_, state) {
+      print("The statate $state");
+      if (state is AuthDataLoadSuccess) {
+        myId = state.auth.id!;
+        myPictureUrl = state.auth.profilePicture!;
+        myName = state.auth.name!;
+      }
+
       if (state is AuthSigningIn) {
         _isLoading = true;
       }
@@ -51,12 +60,17 @@ class _SigninScreenState extends State<SigninScreen> {
   }
 
   void signIn() {
-    _isLoading = true;
-    AuthEvent event = AuthLogin(
-        Auth(phoneNumber: _auth["phoneNumber"], password: _auth["password"]));
+    checkInternetConnection(context).then((value) {
+      print("Value $value");
+      if (value) {
+        _isLoading = true;
+        AuthEvent event = AuthLogin(Auth(
+            phoneNumber: _auth["phoneNumber"], password: _auth["password"]));
 
-    BlocProvider.of<AuthBloc>(context).add(event);
-    BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
+        BlocProvider.of<AuthBloc>(context).add(event);
+        BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
+      }
+    });
   }
 
   Widget _buildSigninForm() {
