@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/bloc/bloc.dart';
@@ -17,6 +18,7 @@ import 'package:driverapp/drawer/drawer.dart';
 import 'package:driverapp/route.dart';
 import 'dart:async';
 import 'package:driverapp/widgets/widgets.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as toolkit;
 
 class HomeScreen extends StatefulWidget {
@@ -101,21 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
     return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.lowest);
+        desiredAccuracy: LocationAccuracy.best);
   }
 
   static final CameraPosition _addissAbaba = CameraPosition(
@@ -292,8 +281,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                            onPressed: () async {
-                              await Geolocator.openAppSettings();
+                            onPressed: () {
+                              AppSettings.openDeviceSettings(
+                                  asAnotherTask: true);
                             },
                             child: Text("Go to Settings")),
                       )),
@@ -475,6 +465,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 10, 20, 10),
+                                      child: InternationalPhoneNumberInput(
+                                          initialValue:
+                                              PhoneNumber(isoCode: "ET"),
+                                          onInputChanged: (value) {})),
+                                  Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         20, 10, 20, 10),
                                     child: TextField(
@@ -632,6 +629,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       backgroundColor: Colors.red.shade900));
                 }
               }),
+          // Align(
+          //   alignment: Alignment.topRight,
+          //   child: ElevatedButton(
+          //       onPressed: () {
+          //         homeScreenStreamSubscription.cancel();
+          //         driverStreamSubscription.cancel();
+          //       },
+          //       child: Text("Maintenance")),
+          // )
         ],
       ),
     );
@@ -698,7 +704,8 @@ class _HomeScreenState extends State<HomeScreen> {
             locationSettings: const LocationSettings(
                 distanceFilter: 5, accuracy: LocationAccuracy.best))
         .listen((event) {
-      print("Hey yow i'm still listening");
+      driverStreamSubscription.cancel();
+      // print("Hey yow i'm still listening");
       myPosition = event;
       LatLng driverPosition = LatLng(event.latitude, event.longitude);
       Marker marker = Marker(

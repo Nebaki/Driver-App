@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -35,6 +36,7 @@ class PushNotificationService {
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
+            player.open(Audio("assets/sounds/announcement-sound.mp3"));
             return NotificationDialog(
                 callback, setDestination, setIsArrivedWidget);
           });
