@@ -1,4 +1,5 @@
 import 'package:driverapp/screens/credit/credit_form.dart';
+import 'package:driverapp/screens/credit/transfer_form.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 
@@ -45,6 +46,9 @@ class AppRoute {
     }
     if (settings.name == TeleBirrData.routeName) {
       return MaterialPageRoute(builder: (context) => TeleBirrData());
+    }
+    if (settings.name == TransferMoney.routeName) {
+      return MaterialPageRoute(builder: (context) => TransferMoney());
     }
 
     if (settings.name == Earning.routeName) {
