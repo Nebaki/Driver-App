@@ -16,68 +16,73 @@ class WeeklyEarningTab extends StatelessWidget {
     return ListView(
       children: [
         Container(
-          padding: const EdgeInsets.only(top: 0, left: 20, right: 20),
-          color: Colors.white,
+          padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+          //color: Colors.white,
           width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              Container(
-                height: 200,
-                child: CustomScrollView(
-                  slivers: <Widget>[
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          if (index == 0) {
-                            return Container(
-                              //  margin:
-                              //     EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-                              // decoration: BoxDecoration(
-                              //   color: Colors.white,
-                              //   boxShadow: [
-                              //     BoxShadow(
-                              //       color: Colors.black12,
-                              //       offset: Offset(0, 2),
-                              //       blurRadius: 6.0,
-                              //     ),
-                              //   ],
-                              //   borderRadius: BorderRadius.circular(10.0),
-                              // ),
-                              child: WeeklyEarningBarChart(
-                                  [8, 12, 3, 14, 5, 16, 7]),
-                            );
-                          }
-                        },
-                        childCount: 1 + 7,
+          child: Card(
+            child: Column(
+              children: [
+                Container(
+                  height: 200,
+                  child: CustomScrollView(
+                    slivers: <Widget>[
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            if (index == 0) {
+                              return Container(
+                                //  margin:
+                                //     EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+                                // decoration: BoxDecoration(
+                                //   color: Colors.white,
+                                //   boxShadow: [
+                                //     BoxShadow(
+                                //       color: Colors.black12,
+                                //       offset: Offset(0, 2),
+                                //       blurRadius: 6.0,
+                                //     ),
+                                //   ],
+                                //   borderRadius: BorderRadius.circular(10.0),
+                                // ),
+                                child: WeeklyEarningBarChart(
+                                    const [8, 12, 3, 14, 5, 16, 7]),
+                              );
+                            }
+                          },
+                          childCount: 1 + 7,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 0),
-                child: Divider(),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: const [Text("15"), Text("Trips")],
-                    ),
-                    const VerticalDivider(),
-                    Column(
-                      children: const [Text("8:30"), Text("Online hrs")],
-                    ),
-                    const VerticalDivider(),
-                    Column(
-                      children: const [Text("\$22.48"), Text("Cash Trips")],
-                    ),
-                  ],
+                const Padding(
+                  padding: EdgeInsets.only(top: 0),
+                  child: Divider(),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        children: const [Text("15",
+                            style: TextStyle(color: Colors.deepOrange)), Text("Trips")],
+                      ),
+                      const VerticalDivider(),
+                      Column(
+                        children: const [Text("830",
+                            style: TextStyle(color: Colors.deepOrange)), Text("Earned")],
+                      ),
+                      const VerticalDivider(width:3,color: Colors.grey),
+                      Column(
+                        children: const [Text("\$22.48",
+                            style: TextStyle(color: Colors.deepOrange)), Text("Total")],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(

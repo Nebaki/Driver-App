@@ -14,7 +14,7 @@ class RequestHeader{
 
   Future<Map<String,String>>? defaultHeader() async => <String,String>{
     'Content-Type': 'application/json',
-    'x-access-token': '${await authDataProvider.getToken()}'};
+    'app-key': 'app-key'};
 }
 
 class RequestResult{

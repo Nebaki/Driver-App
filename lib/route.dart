@@ -48,7 +48,10 @@ class AppRoute {
       return MaterialPageRoute(builder: (context) => TeleBirrData());
     }
     if (settings.name == TransferMoney.routeName) {
-      return MaterialPageRoute(builder: (context) => TransferMoney());
+      TransferCreditArgument argument = settings.arguments as TransferCreditArgument;
+      return MaterialPageRoute(builder: (context) => TransferMoney(
+        balance: argument,
+      ));
     }
 
     if (settings.name == Earning.routeName) {
@@ -107,6 +110,11 @@ class HomeScreenArgument {
 class EditProfileArgument {
   Auth auth;
   EditProfileArgument({required this.auth});
+}
+
+class TransferCreditArgument {
+  String balance;
+  TransferCreditArgument({required this.balance});
 }
 
 class PreferenceArgument {

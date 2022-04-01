@@ -4,6 +4,7 @@ import 'dart:math';
 // import 'package:dio/dio.dart';
 import 'package:driverapp/dataprovider/header/header.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
+import 'package:driverapp/utils/session.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'dart:io';
@@ -16,7 +17,7 @@ import 'package:driverapp/repository/auth.dart';
 import '../../screens/credit/telebirr_data.dart';
 
 class CreditDataProvider {
-  final _baseUrl = RequestHeader.baseURL+'credit';
+  final _baseUrl = RequestHeader.baseURL+'credits';
   final http.Client httpClient;
   CreditDataProvider({required this.httpClient});
 
@@ -57,17 +58,46 @@ class CreditDataProvider {
   }
 
 
-  Future<Result> loadBalance(String id) async {
+  Future<Result> loadBalance() async {
     final http.Response response = await httpClient.get(
-        Uri.parse('$_baseUrl/$id/load-credit-balance'),
+        Uri.parse('$_baseUrl/get-my-credit'),
         headers: await RequestHeader().authorisedHeader());
     if(response.statusCode == 200){
-      return Result(response.statusCode.toString(),true, response.body);
+      var balance = jsonDecode(response.body);
+      Session().logSession("balance", balance["balance"].toString());
+      return Result(response.statusCode.toString(),true, balance["balance"].toString());
     }
     else{
       return RequestResult().requestResult(response.statusCode.toString(), response.body);
     }
   }
+  Future<Result> dailyEarning() async {
+    final http.Response response = await httpClient.get(
+        Uri.parse('$_baseUrl/get-daily-credit'),
+        headers: await RequestHeader().authorisedHeader());
+    if(response.statusCode == 200){
+      var balance = jsonDecode(response.body);
+      Session().logSession("balance", balance["balance"].toString());
+      return Result(response.statusCode.toString(),true, balance["balance"].toString());
+    }
+    else{
+      return RequestResult().requestResult(response.statusCode.toString(), response.body);
+    }
+  }
+  Future<Result> weeklyEarning() async {
+    final http.Response response = await httpClient.get(
+        Uri.parse('$_baseUrl/get-weekly-credit'),
+        headers: await RequestHeader().authorisedHeader());
+    if(response.statusCode == 200){
+      var balance = jsonDecode(response.body);
+      Session().logSession("balance", balance["balance"].toString());
+      return Result(response.statusCode.toString(),true, balance["balance"].toString());
+    }
+    else{
+      return RequestResult().requestResult(response.statusCode.toString(), response.body);
+    }
+  }
+
 
   Future<CreditStore> loadCreditHistory(String user) async {
     final http.Response response = await http.post(

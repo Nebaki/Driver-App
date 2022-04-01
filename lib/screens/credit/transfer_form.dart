@@ -9,32 +9,37 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../../dataprovider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
 
+import '../../route.dart';
+
 class TransferMoney extends StatefulWidget {
   static const routeName = "/transfer";
+  TransferCreditArgument balance;
+
+  TransferMoney({Key? key, required this.balance}) : super(key: key);
 
   @override
   State<TransferMoney> createState() => _TransferState();
 }
 
 class _TransferState extends State<TransferMoney> {
-  final _formkey = GlobalKey<FormState>();
+  final _appBarKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   final Map<String, dynamic> _auth = {};
 
   TextEditingController amountController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   bool _isLoading = false;
 
-  Widget _amountBox(){
+  Widget _amountBox() {
     return TextFormField(
-      keyboardType: const TextInputType.numberWithOptions(
-          signed: true, decimal: true),
+      keyboardType:
+          const TextInputType.numberWithOptions(signed: true, decimal: true),
       controller: amountController,
       decoration: const InputDecoration(
           alignLabelWithHint: true,
           hintText: "Amount",
-          hintStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black45),
+          hintStyle:
+              TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
           prefixIcon: Icon(
             Icons.money,
             size: 19,
@@ -42,25 +47,26 @@ class _TransferState extends State<TransferMoney> {
           fillColor: Colors.white,
           filled: true,
           border: OutlineInputBorder(
-              borderSide: BorderSide
-                  .none //BorderSide(style: BorderStyle.none)
-          )),
+              borderSide: BorderSide.none //BorderSide(style: BorderStyle.none)
+              )),
       validator: (value) {
         if (value!.isEmpty) {
-          return 'Please enter Amount';
-        } else if (int.parse(value) < 100) {
-          return 'Minimum Amount is 100.ETB';
+            return 'Please enter Amount';
+        } else if (int.parse(value) < 1) {
+          return 'Please enter valid amount';
+        } else if (int.parse(value) > int.parse(widget.balance.balance.split(".")[0])) {
+          return 'Insufficient balance, please recharge';
         }
         return null;
       },
     );
   }
-  Widget _phoneBox(){
+
+  Widget _phoneBox() {
     return Container(
-      padding:
-      const EdgeInsets.only(left: 5, right: 5, top: 2),
+      padding: const EdgeInsets.only(left: 5, right: 5, top: 2),
       decoration: const BoxDecoration(
-        //border: Border.all(),
+          //border: Border.all(),
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(3))),
       child: InternationalPhoneNumberInput(
@@ -80,72 +86,70 @@ class _TransferState extends State<TransferMoney> {
             trailingSpace: false),
         ignoreBlank: false,
         autoValidateMode: AutovalidateMode.onUserInteraction,
-        selectorTextStyle:
-        const TextStyle(color: Colors.black),
+        selectorTextStyle: const TextStyle(color: Colors.black),
         initialValue: PhoneNumber(isoCode: "ET"),
         formatInput: true,
-        keyboardType: const TextInputType.numberWithOptions(
-            signed: true, decimal: true),
-        inputBorder: const OutlineInputBorder(
-            borderSide: BorderSide.none),
+        keyboardType:
+            const TextInputType.numberWithOptions(signed: true, decimal: true),
+        inputBorder: const OutlineInputBorder(borderSide: BorderSide.none),
         spaceBetweenSelectorAndTextField: 0,
         inputDecoration: const InputDecoration(
             hintText: "Phone Number",
-            hintStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black45),
+            hintStyle:
+                TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
             fillColor: Colors.white,
             filled: true,
-            border: OutlineInputBorder(
-                borderSide: BorderSide.none)),
+            border: OutlineInputBorder(borderSide: BorderSide.none)),
       ),
     );
   }
-  Widget _transferButton(){
+
+  Widget _transferButton() {
     return ElevatedButton(
       onPressed: _isLoading
           ? null
           : () {
-        final form = _formkey.currentState;
-        if (form!.validate()) {
-          setState(() {
-            _isLoading = true;
-          });
-          form.save();
-          startTelebirr(phoneController.value.text,
-              amountController.value.text);
-        }
-      },
+              final form = _formKey.currentState;
+              if (form!.validate()) {
+                setState(() {
+                  _isLoading = true;
+                });
+                form.save();
+                startTelebirr(
+                    phoneController.value.text, amountController.value.text);
+              }
+            },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
-          const Text("Transfer",
-              style: TextStyle(color: Colors.white)),
+          const Text("Transfer", style: TextStyle(color: Colors.white)),
           const Spacer(),
           Align(
             alignment: Alignment.centerRight,
             child: _isLoading
                 ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-              ),
-            )
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  )
                 : Container(),
           )
         ],
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: CreditAppBar(key: _formkey,title: "Transfer",appBar: AppBar(),widgets: []),
+        appBar: CreditAppBar(
+            key: _appBarKey, title: "Transfer", appBar: AppBar(), widgets: []),
         body: Form(
-            key: _formkey,
+            key: _formKey,
             child: Card(
               margin: const EdgeInsets.only(left: 10, right: 10, top: 50),
               elevation: 0.3,
@@ -212,9 +216,10 @@ class _TransferState extends State<TransferMoney> {
   }
 
   void reloadBalance() {
-    var confirm = transfer.loadBalance("otn");
+    var confirm = transfer.loadBalance();
     confirm
-        .then((value) => {ShowMessage(context,"Balance",value.message)})
-        .onError((error, stackTrace) => {ShowMessage(context,"Balance",error.toString())});
+        .then((value) => {ShowMessage(context, "Balance", value.message)})
+        .onError((error, stackTrace) =>
+            {ShowMessage(context, "Balance", error.toString())});
   }
 }
