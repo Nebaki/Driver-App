@@ -20,7 +20,11 @@ class RequestHeader{
 class RequestResult{
   Result requestResult(String code, String body){
     Session().logSession("response", "code: $code, body $body");
-    return Result(code,false, _prepareResult(code));
+    if(code == "400"){
+      return Result(code,false, body);
+    }else{
+      return Result(code,false, _prepareResult(code));
+    }
   }
   String _prepareResult(code){
     switch(code){

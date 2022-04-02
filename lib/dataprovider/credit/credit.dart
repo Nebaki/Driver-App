@@ -4,6 +4,7 @@ import 'dart:math';
 // import 'package:dio/dio.dart';
 import 'package:driverapp/dataprovider/header/header.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
+import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/session.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
@@ -39,21 +40,25 @@ class CreditDataProvider {
     }
   }
   Future<Result> transferCredit(String receiverPhone,String amount) async {
+    var phone = "+251"+receiverPhone.trim().replaceAll(' ', '');
+    Session().logSession("phone", phone);
     final response = await http.post(
       Uri.parse('$_baseUrl/transfer-credit'),
       headers: await RequestHeader().authorisedHeader(),
       body: json.encode({
-        'senderPhone': "0922877115",
-        'receiverPhone': receiverPhone,
-        'amount': amount,
-        'senderName': "winux",
+        'receiver_phone': phone,
+        'amount': int.parse(amount),
       }),
     );
 
     if (response.statusCode == 200) {
-      return Result(response.statusCode.toString(),true, response.body);
+      //var data = jsonDecode(response.body)["message"];
+      var balance = jsonDecode(response.body)["balance"];
+      var message = "You Transferred $amount to $phone successfully, your remaining balance is $balance";
+      return Result(response.statusCode.toString(),true, message);
     } else {
-      return RequestResult().requestResult(response.statusCode.toString(), response.body);
+      var message = jsonDecode(response.body)["message"];
+      return RequestResult().requestResult(response.statusCode.toString(), message);
     }
   }
 
@@ -100,13 +105,17 @@ class CreditDataProvider {
 
 
   Future<CreditStore> loadCreditHistory(String user) async {
-    final http.Response response = await http.post(
-      Uri.parse('$_baseUrl/load-credit-history'),
+    final http.Response response = await http.get(
+      Uri.parse('$_baseUrl/get-credit-transactions'),
       headers: await RequestHeader().authorisedHeader()
     );
 
-    if (response.statusCode == 200) {
-      return CreditStore.fromJson(jsonDecode(response.body));
+    if (response.statusCode != 200) {
+      Credit credit;
+      List<Credit> credits = [];
+      Session().logSession("trans", response.body);
+      return CreditStore(trips: credits);
+      //return CreditStore.fromJson(jsonDecode(response.body));
     } else {
         Credit credit;
         List<Credit> credits = [];

@@ -73,7 +73,7 @@ class _TransferState extends State<TransferMoney> {
         textFieldController: phoneController,
         onSaved: (value) {
           print(value);
-          _auth["phoneNumber"] = value.toString();
+          //_auth["phoneNumber"] = value.toString();
         },
         onInputChanged: (PhoneNumber number) {
           print(number.phoneNumber);
@@ -205,7 +205,7 @@ class _TransferState extends State<TransferMoney> {
                 _isLoading = false;
               }),
               ShowMessage(context, "Transaction", value.message),
-              if (value.code == "200") reloadBalance()
+              //if (value.code == "200") reloadBalance()
             })
         .onError((error, stackTrace) => {
               ShowMessage(context, "Transaction", "Error happened: $error"),
@@ -215,11 +215,12 @@ class _TransferState extends State<TransferMoney> {
             });
   }
 
-  void reloadBalance() {
+  /*void reloadBalance() {
     var confirm = transfer.loadBalance();
     confirm
         .then((value) => {ShowMessage(context, "Balance", value.message)})
         .onError((error, stackTrace) =>
             {ShowMessage(context, "Balance", error.toString())});
   }
+  */
 }

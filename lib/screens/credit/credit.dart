@@ -26,7 +26,8 @@ class _WaletState extends State<Walet> {
 
   @override
   void initState() {
-    _isLoading = true;
+    _isBalanceLoading = true;
+    _isMessageLoading = true;
     reloadBalance();
     prepareRequest(context);
     super.initState();
@@ -61,7 +62,7 @@ class _WaletState extends State<Walet> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: _isLoading ? const SpinKitThreeBounce(
+                      child: _isBalanceLoading ? const SpinKitThreeBounce(
                         color: Colors.deepOrange,size: 30,
                       ):Text(
                         balance,
@@ -145,7 +146,7 @@ class _WaletState extends State<Walet> {
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10))),
               height: MediaQuery.of(context).size.height - 324,
-              child: _isLoading
+              child: _isMessageLoading
                   ? const Align(
                       alignment: Alignment.center,
                       child: SizedBox(
@@ -165,14 +166,15 @@ class _WaletState extends State<Walet> {
   }
 
   List<Credit>? _items;
-  var _isLoading = false;
+  var _isBalanceLoading = false;
+  var _isMessageLoading = false;
 
   void prepareRequest(BuildContext context) {
     var sender = CreditDataProvider(httpClient: http.Client());
     var res = sender.loadCreditHistory("0922877115");
     res.then((value) => {
           setState(() {
-            _isLoading = false;
+            _isMessageLoading = false;
             _items = value.trips!;
           })
         });
@@ -191,7 +193,7 @@ class _WaletState extends State<Walet> {
     confirm
         .then((value) => {
               setState(() {
-                _isLoading = false;
+                _isBalanceLoading = false;
                 balance = value.message+".ETB";
               })
             })
