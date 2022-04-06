@@ -26,3 +26,6 @@ late String duration;
 late String price;
 late String passengerProfilePictureUrl;
 final player = AssetsAudioPlayer();
+
+bool willScreenPop = true;
+late Function setWillScreenPop;

@@ -17,6 +17,9 @@ class Arrived extends StatefulWidget {
 class _ArrivedState extends State<Arrived> {
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      setWillScreenPop();
+    });
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
         if (state is RideRequesChanged) {
