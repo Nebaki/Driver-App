@@ -73,12 +73,13 @@ class _CompleteTripState extends State<CompleteTrip> {
                     padding: const EdgeInsets.only(
                         left: 30, right: 30, top: 10, bottom: 10),
                     child: SliderButton(
-                        backgroundColor: Colors.indigo.shade900,
+                        buttonColor: Colors.indigo.shade900,
+                        radius: 10,
                         icon: const Center(
                             child: Icon(
                           Icons.arrow_forward_ios,
-                          color: Colors.black,
-                          size: 25.0,
+                          color: Colors.white,
+                          size: 20.0,
                           semanticLabel:
                               'Text to announce in accessibility modes',
                         )),
@@ -92,7 +93,7 @@ class _CompleteTripState extends State<CompleteTrip> {
                         action: () {
                           RideRequestEvent requestEvent =
                               RideRequestChangeStatus(
-                                  requestId, "Completed", null);
+                                  requestId, "Completed", passengerFcm);
                           BlocProvider.of<RideRequestBloc>(context)
                               .add(requestEvent);
                         })

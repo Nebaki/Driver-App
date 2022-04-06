@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    Geofire.initialize("availableDrivers");
+    Geofire.initialize("availableTrucks");
 
     initConnectivity();
     _connectivitySubscription =
@@ -427,7 +427,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(100),
               child: Container(
-                color: Colors.grey.shade100,
+                color: Colors.grey.shade300,
                 child: IconButton(
                     onPressed: () {
                       makePhoneCall("9495");
