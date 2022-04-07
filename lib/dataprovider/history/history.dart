@@ -4,6 +4,7 @@ import 'package:driverapp/models/trip/trip.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../utils/session.dart';
+import '../database/database.dart';
 import '../header/header.dart';
 
 import 'package:http/http.dart' as http;
@@ -29,10 +30,10 @@ class HistoryDataProvider {
       List<Trip> trips = [];
       int i = 0;
       while (i < 10) {
-        LatLng origion = LatLng(double.parse("8.9806" + getRandNum()),
-            double.parse("38.7578" + getRandNum()));
-        LatLng destination = LatLng(double.parse("8.9806" + getRandNum()),
-            double.parse("38.7578" + getRandNum()));
+        LatLng origin = LatLng(double.parse("8.98" + getRandNum()),
+            double.parse("38.75" + getRandNum()));
+        LatLng destination = LatLng(double.parse("8.98" + getRandNum()),
+            double.parse("38.75" + getRandNum()));
         var rng = Random();
         int money = rng.nextInt(100) * i + 237;
         var type = i % 2 == 0 ? 'Gift' : 'Message';
@@ -42,22 +43,26 @@ class HistoryDataProvider {
         trip = Trip(
             id: "$i vic",
             date: "Money Received $i",
-            from: "Hello! you received nothing, Thanks",
+            from: "Hello you received nothing Thanks",
             time: "soon",
             price: "$money.ETB",
             to: "Today",
-            origin: origion,
-            destination: destination);
+            origin: origin,
+            destination: destination,
+        picture: null);
+
+        HistoryDB().insertTrip(trip);
         trips.add(trip);
         i++;
       }
-      return trips;
+      return HistoryDB().trips();
+      //return trips;
     }
   }
 
   String getRandNum() {
     var rng = Random();
     print(rng.nextInt(99));
-    return rng.nextInt(99).toString();
+    return rng.nextInt(9999).toString();
   }
 }

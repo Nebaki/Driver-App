@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:driverapp/utils/session.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -86,6 +87,7 @@ class SnapShot{
     _addMarker(origin, "origin",
         BitmapDescriptor.defaultMarker);
 
+    Session().logSession("snap", "map loading");
     /// destination marker
     _addMarker(destination, "destination",
         BitmapDescriptor.defaultMarkerWithHue(90));
@@ -102,10 +104,12 @@ class SnapShot{
       polylines: Set<Polyline>.of(polylines.values),
       markers: Set<Marker>.of(markers.values),
       onMapCreated: (GoogleMapController controller) async {
+        Session().logSession("snap", "taking snap");
         controller.animateCamera(CameraUpdate.newLatLngBounds(
             LatLngBounds(southwest: origin, northeast: destination), 5
         ));
         uin8list = (await controller.takeSnapshot())!;
+        Session().logSession("snap", "taking snap");
       },
     );
     return uin8list;
