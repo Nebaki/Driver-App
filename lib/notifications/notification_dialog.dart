@@ -3,6 +3,7 @@ import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NotificationDialog extends StatelessWidget {
@@ -31,8 +32,8 @@ class NotificationDialog extends StatelessWidget {
       return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Column(
-          children: [
-            const Text(
+          children: const [
+            Text(
               "New Ride Request",
               style: TextStyle(fontSize: 20),
             ),
@@ -59,12 +60,12 @@ class NotificationDialog extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         backgroundColor: Colors.grey.shade300,
-                        child: Icon(
+                        child: const Icon(
                           Icons.person,
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 5,
                       ),
                       Text(passengerName!,
@@ -82,7 +83,7 @@ class NotificationDialog extends StatelessWidget {
                         'Duration',
                         style: Theme.of(context).textTheme.caption,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                       Text(
@@ -107,7 +108,7 @@ class NotificationDialog extends StatelessWidget {
                           'Distance',
                           style: Theme.of(context).textTheme.caption,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 5,
                         ),
                         Text(
@@ -123,7 +124,7 @@ class NotificationDialog extends StatelessWidget {
                           'Price',
                           style: Theme.of(context).textTheme.caption,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 5,
                         ),
                         Text(
@@ -140,12 +141,12 @@ class NotificationDialog extends StatelessWidget {
               ),
 
               const Divider(),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.location_on,
                     color: Colors.green,
                     size: 15,
@@ -154,10 +155,10 @@ class NotificationDialog extends StatelessWidget {
                       style: Theme.of(context).textTheme.caption)
                 ],
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.location_on,
                     color: Colors.red,
                     size: 15,
@@ -166,7 +167,11 @@ class NotificationDialog extends StatelessWidget {
                       style: Theme.of(context).textTheme.caption)
                 ],
               ),
-              isLoading ? LinearProgressIndicator() : Container()
+              isLoading
+                  ? const LinearProgressIndicator(
+                      minHeight: 2,
+                    )
+                  : Container()
             ],
           ),
         ),
@@ -213,8 +218,13 @@ class NotificationDialog extends StatelessWidget {
                           const Color.fromRGBO(244, 201, 60, 1)),
                     ),
                     onPressed: () {
+                      homeScreenStreamSubscription.cancel();
+
+                      Geofire.removeLocation(myId);
+
                       player.dispose();
                       isLoading = true;
+       
 
                       RideRequestEvent requestEvent =
                           RideRequestAccept(requestId, passengerFcm!);

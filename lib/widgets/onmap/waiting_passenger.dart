@@ -80,7 +80,7 @@ class WaitingPassenger extends StatelessWidget {
                               fontSize: 17),
                         ),
                         action: () {
-                          homeScreenStreamSubscription.cancel();
+                          // homeScreenStreamSubscription.cancel();
                           RideRequestEvent requestEvent =
                               RideRequestChangeStatus(
                                   requestId, "Started", passengerFcm);

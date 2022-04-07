@@ -48,8 +48,11 @@ class NavDrawer extends StatelessWidget {
                               placeholder: (context, url) =>
                                   const CircularProgressIndicator(),
                               errorWidget: (context, url, error) {
-                                return Image.asset(
-                                    'assets/icons/avatar-icon.png');
+                                return Icon(
+                                  Icons.person,
+                                  size: 50,
+                                  color: Colors.black,
+                                );
                               }),
                         )),
                     const SizedBox(

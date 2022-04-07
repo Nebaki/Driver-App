@@ -171,7 +171,7 @@ class _EditProfileState extends State<EditProfile> {
                       Center(
                         child: GestureDetector(
                           onTap: () {
-                            _showModalNavigation();
+                            // _showModalNavigation();
                           },
                           child: CircleAvatar(
                             radius: 60,
@@ -198,10 +198,12 @@ class _EditProfileState extends State<EditProfile> {
                                             ),
                                             placeholder: (context, url) =>
                                                 const CircularProgressIndicator(),
-                                            errorWidget: (context, url,
-                                                    error) =>
-                                                Image.asset(
-                                                    'assets/icons/avatar-icon.png'),
+                                            errorWidget:
+                                                (context, url, error) => Icon(
+                                              Icons.person,
+                                              size: 70,
+                                              color: Colors.black,
+                                            ),
                                           );
                                         }
                                         return const CircleAvatar(

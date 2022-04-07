@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   ConnectivityResult _connectionStatus = ConnectivityResult.bluetooth;
   final Connectivity _connectivity = Connectivity();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool? isLocationOn;
   bool isModal = false;
@@ -96,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         isLocationOn = false;
       });
-      // return Future.error('Location services are disabled.');
+      return Future.error('Location services are disabled.');
     } else if (serviceEnabled) {
       setState(() {
         isLocationOn = true;
@@ -198,17 +199,27 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: Text("Location Services are off",
+                          child: Text("Enable location services",
                               style: Theme.of(context).textTheme.headline5),
                         ),
+                        const Expanded(
+                            child: Center(
+                          child: Icon(Icons.location_off_outlined,
+                              color: Colors.red, size: 60),
+                        )),
+                        const Expanded(child: SizedBox()),
+
                         Expanded(
                             child: Text(
-                                "Please enable Location Service to allow us finding your location.",
+                                "We can't get your location because you have disabled location services. Please turn it on for better experience.",
                                 style: Theme.of(context).textTheme.bodyText2)),
-                        Expanded(
-                            child: Text(
-                                "For better accuracy,please turn on both GPS and WIFI location services",
-                                style: Theme.of(context).textTheme.bodyText2)),
+                        // Expanded(
+                        //     child: Text(
+                        //         "For better accuracy,please turn on both GPS and WIFI location services",
+                        //         style: Theme.of(context).textTheme.bodyText2)),
+
+                        const Expanded(child: SizedBox()),
+
                         Expanded(
                             child: SizedBox(
                           width: double.infinity,
@@ -216,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPressed: () async {
                                 await Geolocator.openLocationSettings();
                               },
-                              child: Text("Go to Location Services")),
+                              child: Text("TURN ON LOCATION SERVICES")),
                         )),
                         const SizedBox(
                           height: 10,
@@ -224,11 +235,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                             child: SizedBox(
                           width: double.infinity,
-                          child: TextButton(
+                          child: ElevatedButton(
                               onPressed: () async {
                                 SystemNavigator.pop();
                               },
-                              child: Text("Close App")),
+                              child: Text("CANCEL")),
                         ))
                       ],
                     ),
@@ -269,14 +280,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text("No Internet Connection",
                             style: Theme.of(context).textTheme.headline5),
                       ),
+                      const Expanded(
+                          child: Center(
+                        child: Icon(
+                            Icons
+                                .signal_wifi_statusbar_connected_no_internet_4_rounded,
+                            color: Colors.red,
+                            size: 60),
+                      )),
+                      const Expanded(child: SizedBox()),
                       Expanded(
                           child: Text(
-                              "Please enable WIFI or Mobile Data to allow us finding your location.",
+                              "Please enable WIFI or Mobile data to serve the app",
                               style: Theme.of(context).textTheme.bodyText2)),
-                      Expanded(
-                          child: Text(
-                              "For better accuracy,please turn on both GPS and WIFI location services",
-                              style: Theme.of(context).textTheme.bodyText2)),
+                      // Expanded(
+                      //     child: Text(
+                      //         "For better accuracy,please turn on both GPS and WIFI location services",
+                      //         style: Theme.of(context).textTheme.bodyText2)),
                       Expanded(
                           child: SizedBox(
                         width: double.infinity,
@@ -297,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () async {
                               SystemNavigator.pop();
                             },
-                            child: Text("Close App")),
+                            child: Text("Cancel")),
                       ))
                     ],
                   ),
@@ -306,339 +326,375 @@ class _HomeScreenState extends State<HomeScreen> {
             });
       });
     }
+    setWillScreenPop = () {
+      setState(() {
+        willScreenPop = false;
+      });
+    };
 
     createMarkerIcon();
     return Scaffold(
       key: _scaffoldKey,
       drawer: NavDrawer(),
-      body: Stack(
-        children: [
-          BlocConsumer<DirectionBloc, DirectionState>(
-              builder: (context, state) {
-            print('the state is $state');
-            return Animarker(
-              curve: Curves.ease,
-              shouldAnimateCamera: false,
-              mapId: _controller.future.then((value) => value.mapId),
-              markers: Set<Marker>.of(markers.values),
-              child: GoogleMap(
-                mapType: MapType.normal,
-                myLocationButtonEnabled: false,
-                myLocationEnabled: true,
-                zoomControlsEnabled: false,
-                zoomGesturesEnabled: false,
-                scrollGesturesEnabled: false,
-                rotateGesturesEnabled: false,
-                initialCameraPosition: _addissAbaba,
-                polylines: Set<Polyline>.of(polylines.values),
-                // markers: Set<Marker>.of(markers.values),
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                  _myController = controller;
+      body: WillPopScope(
+        onWillPop: () async => willScreenPop,
+        child: Stack(
+          children: [
+            BlocConsumer<DirectionBloc, DirectionState>(
+                builder: (context, state) {
+              print('the state is $state');
+              return Animarker(
+                curve: Curves.ease,
+                shouldAnimateCamera: false,
+                mapId: _controller.future.then((value) => value.mapId),
+                markers: Set<Marker>.of(markers.values),
+                child: GoogleMap(
+                  mapType: MapType.normal,
+                  myLocationButtonEnabled: false,
+                  myLocationEnabled: true,
+                  zoomControlsEnabled: false,
+                  zoomGesturesEnabled: false,
+                  scrollGesturesEnabled: false,
+                  rotateGesturesEnabled: false,
+                  initialCameraPosition: _addissAbaba,
+                  polylines: Set<Polyline>.of(polylines.values),
+                  // markers: Set<Marker>.of(markers.values),
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                    _myController = controller;
 
-                  _determinePosition().then((value) {
-                    currentLat = value.latitude;
-                    currentLng = value.longitude;
-                    print('this is the value $value');
-                    controller.animateCamera(CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                            zoom: 16.4746,
-                            target: LatLng(value.latitude, value.longitude))));
-                  });
-                },
-              ),
-            );
-          }, listenWhen: (prevstate, state) {
-            bool isDirectionLoading = true;
-            print("here is the state---------------------");
-            print(prevstate);
-            print("The state ende");
-            if (state is DirectionDistanceDurationLoading ||
-                state is DirectionDistanceDurationLoadSuccess) {
-              isDirectionLoading = false;
-            }
+                    _determinePosition().then((value) {
+                      currentLat = value.latitude;
+                      currentLng = value.longitude;
+                      print('this is the value $value');
+                      controller.animateCamera(CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                              zoom: 16.4746,
+                              target:
+                                  LatLng(value.latitude, value.longitude))));
+                    });
+                  },
+                ),
+              );
+            }, listenWhen: (prevstate, state) {
+              bool isDirectionLoading = true;
+              print("here is the state---------------------");
+              print(prevstate);
+              print("The state ende");
+              if (state is DirectionDistanceDurationLoading ||
+                  state is DirectionDistanceDurationLoadSuccess) {
+                isDirectionLoading = false;
+              }
 
-            if (state is DirectionLoadSuccess) {
-              isDirectionLoading = true;
-            }
+              if (state is DirectionLoadSuccess) {
+                isDirectionLoading = true;
+              }
 
-            print(isDirectionLoading);
-            return isDirectionLoading;
-          },
-              // buildWhen: (prevstate, state) {
-              //   bool build = true;
-              //   if (state is DirectionDistanceDurationLoading ||
-              //       state is DirectionDistanceDurationLoadSuccess) {
-              //     build = false;
-              //   }
-              //   return build;
-              // },
-              listener: (context, state) {
-            if (state is DirectionLoadSuccess) {
-              print("here is the current latlng $currentLat $currentLng");
-              // isDialog = false;
-              showDriversOnMap();
+              print(isDirectionLoading);
+              return isDirectionLoading;
+            },
+                // buildWhen: (prevstate, state) {
+                //   bool build = true;
+                //   if (state is DirectionDistanceDurationLoading ||
+                //       state is DirectionDistanceDurationLoadSuccess) {
+                //     build = false;
+                //   }
+                //   return build;
+                // },
+                listener: (context, state) {
+              if (state is DirectionLoadSuccess) {
+                print("here is the current latlng $currentLat $currentLng");
+                // isDialog = false;
+                showDriversOnMap();
 
-              _getPolyline(state.direction.encodedPoints);
+                _getPolyline(state.direction.encodedPoints);
 
-              _addMarker(
-                  destination,
-                  "destination",
-                  BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueGreen));
-              WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-                changeCameraView();
-              });
-            }
-          }),
-          Positioned(
-              right: 25,
-              top: 50,
-              child: GestureDetector(
-                onTap: () => _scaffoldKey.currentState!.openDrawer(),
-                child: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.grey.shade300,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: CachedNetworkImage(
-                          imageUrl: myPictureUrl,
-                          imageBuilder: (context, imageProvider) => Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) => const Icon(
-                                Icons.person,
-                                color: Colors.black,
-                                size: 20,
-                              )),
-                    )),
-              )),
-          _currentWidget,
-          Positioned(
-            top: 40,
-            left: 20,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Container(
-                color: Colors.grey.shade100,
-                child: IconButton(
-                    onPressed: () {
-                      makePhoneCall("9495");
-                    },
-                    icon: Icon(
-                      Icons.call,
-                      color: Colors.indigo.shade900,
-                      size: 20,
-                    )),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 50),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(100)),
-                child: InkWell(
-                  onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (BuildContext ctx) {
-                          return SizedBox(
-                            // height: MediaQuery.of(context).size.height * 0.4,
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 10, 20, 10),
-                                      child: InternationalPhoneNumberInput(
-                                          initialValue:
-                                              PhoneNumber(isoCode: "ET"),
-                                          onInputChanged: (value) {})),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 10, 20, 10),
-                                    child: TextField(
-                                      onChanged: (value) {
-                                        findPlace(value);
-                                      },
-                                      decoration: const InputDecoration(
-                                          prefixIcon: Icon(
-                                            Icons.location_on,
-                                            color: Colors.red,
-                                          ),
-                                          labelText: "Pick Location"),
+                _addMarker(
+                    destination,
+                    "destination",
+                    BitmapDescriptor.defaultMarkerWithHue(
+                        BitmapDescriptor.hueGreen));
+                WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                  changeCameraView();
+                });
+              }
+            }),
+            Positioned(
+                right: 25,
+                top: 50,
+                child: GestureDetector(
+                  onTap: () => _scaffoldKey.currentState!.openDrawer(),
+                  child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.grey.shade300,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: CachedNetworkImage(
+                            imageUrl: myPictureUrl,
+                            imageBuilder: (context, imageProvider) => Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.3,
-                                    child: Container(
-                                        color: Colors.white,
-                                        child: BlocBuilder<
-                                                LocationPredictionBloc,
-                                                LocationPredictionState>(
-                                            builder: (_, state) {
-                                          if (state
-                                              is LocationPredictionLoading) {
-                                            return const Center(
-                                                child:
-                                                    CircularProgressIndicator());
-                                          }
-                                          if (state
-                                              is LocationPredictionLoadSuccess) {
-                                            return ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              child: Container(
-                                                padding: const EdgeInsets.only(
-                                                    top: 30, bottom: 20),
-                                                // height: 200,
-                                                constraints:
-                                                    const BoxConstraints(
-                                                        maxHeight: 400,
-                                                        minHeight: 30),
-                                                color: Colors.white,
-                                                width: double.infinity,
-                                                child: ListView.separated(
-                                                    physics:
-                                                        const ClampingScrollPhysics(),
-                                                    shrinkWrap: true,
-                                                    itemBuilder: (_, index) {
-                                                      return _buildPredictedItem(
-                                                          state
-                                                              .placeList[index],
-                                                          context);
-                                                    },
-                                                    separatorBuilder:
-                                                        (context, index) =>
-                                                            const Padding(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          20),
-                                                              child: Divider(
-                                                                  color: Colors
-                                                                      .black38),
-                                                            ),
-                                                    itemCount:
-                                                        state.placeList.length),
+                                ),
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => const Icon(
+                                  Icons.person,
+                                  color: Colors.black,
+                                  size: 20,
+                                )),
+                      )),
+                )),
+            _currentWidget,
+            Positioned(
+              top: 40,
+              left: 20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Container(
+                  color: Colors.grey.shade300,
+                  child: IconButton(
+                      onPressed: () {
+                        makePhoneCall("9495");
+                      },
+                      icon: Icon(
+                        Icons.call,
+                        color: Colors.indigo.shade900,
+                        size: 20,
+                      )),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 50),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(100)),
+                  child: InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (BuildContext ctx) {
+                            return SizedBox(
+                              // height: MediaQuery.of(context).size.height * 0.4,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    // Padding(
+                                    //     padding: const EdgeInsets.fromLTRB(
+                                    //         20, 10, 20, 10),
+                                    //     child: InternationalPhoneNumberInput(
+                                    //         initialValue:
+                                    //             PhoneNumber(isoCode: "ET"),
+                                    //         onInputChanged: (value) {})),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 10, 20, 10),
+                                      child: Form(
+                                        key: _formKey,
+                                        child: TextFormField(
+                                          validator: (value) {
+                                            if (value!.length != 13) {
+                                              return "Invalid Phone Number";
+                                            }
+                                          },
+                                          initialValue: '+251',
+                                          onChanged: (value) {
+                                            // findPlace(value);
+                                          },
+                                          decoration: const InputDecoration(
+                                              prefixIcon: Icon(
+                                                Icons.phone,
+                                                color: Colors.red,
                                               ),
+                                              labelText: "Phone Number"),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 10, 20, 10),
+                                      child: TextField(
+                                        onChanged: (value) {
+                                          findPlace(value);
+                                        },
+                                        decoration: const InputDecoration(
+                                            prefixIcon: Icon(
+                                              Icons.location_on,
+                                              color: Colors.red,
+                                            ),
+                                            labelText: "Pick Location"),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.3,
+                                      child: Container(
+                                          color: Colors.white,
+                                          child: BlocBuilder<
+                                                  LocationPredictionBloc,
+                                                  LocationPredictionState>(
+                                              builder: (_, state) {
+                                            if (state
+                                                is LocationPredictionLoading) {
+                                              return const Center(
+                                                  child:
+                                                      CircularProgressIndicator());
+                                            }
+                                            if (state
+                                                is LocationPredictionLoadSuccess) {
+                                              return ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 30, bottom: 20),
+                                                  // height: 200,
+                                                  constraints:
+                                                      const BoxConstraints(
+                                                          maxHeight: 400,
+                                                          minHeight: 30),
+                                                  color: Colors.white,
+                                                  width: double.infinity,
+                                                  child: ListView.separated(
+                                                      physics:
+                                                          const ClampingScrollPhysics(),
+                                                      shrinkWrap: true,
+                                                      itemBuilder: (_, index) {
+                                                        return _buildPredictedItem(
+                                                            state.placeList[
+                                                                index],
+                                                            context);
+                                                      },
+                                                      separatorBuilder:
+                                                          (context, index) =>
+                                                              const Padding(
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        horizontal:
+                                                                            20),
+                                                                child: Divider(
+                                                                    color: Colors
+                                                                        .black38),
+                                                              ),
+                                                      itemCount: state
+                                                          .placeList.length),
+                                                ),
+                                              );
+                                            }
+
+                                            if (state
+                                                is LocationPredictionOperationFailure) {}
+
+                                            return const Center(
+                                              child: Text("Enter The location"),
                                             );
-                                          }
-
-                                          if (state
-                                              is LocationPredictionOperationFailure) {}
-
-                                          return const Center(
-                                            child: Text("Enter The location"),
-                                          );
-                                        })),
-                                  )
-                                ],
+                                          })),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        });
-                  },
-                  child: const Text(
-                    "Create Trip",
-                    style: TextStyle(fontSize: 19),
+                            );
+                          });
+                    },
+                    child: const Text(
+                      "Create Trip",
+                      style: TextStyle(fontSize: 19),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
-              builder: (context, state) => Align(
-                    alignment: Alignment.centerRight,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          topLeft: Radius.circular(30)),
-                      child: Container(
-                        color: Colors.grey.shade300,
-                        child: IconButton(
-                            onPressed: () {
-                              EmergencyReportEvent event =
-                                  EmergencyReportCreate(
-                                      EmergencyReport(location: [2, 3]));
+            BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
+                builder: (context, state) => Align(
+                      alignment: Alignment.centerRight,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            topLeft: Radius.circular(30)),
+                        child: Container(
+                          color: Colors.grey.shade300,
+                          child: IconButton(
+                              onPressed: () {
+                                EmergencyReportEvent event =
+                                    EmergencyReportCreate(
+                                        EmergencyReport(location: [2, 3]));
 
-                              BlocProvider.of<EmergencyReportBloc>(context)
-                                  .add(event);
-                            },
-                            icon: Icon(
-                              Icons.dangerous,
-                              color: Colors.indigo.shade900,
-                              size: 35,
-                            )),
+                                BlocProvider.of<EmergencyReportBloc>(context)
+                                    .add(event);
+                              },
+                              icon: Icon(
+                                Icons.dangerous,
+                                color: Colors.indigo.shade900,
+                                size: 35,
+                              )),
+                        ),
                       ),
                     ),
-                  ),
-              listener: (context, state) {
-                if (state is EmergencyReportCreating) {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          content: Row(
-                            children: const [
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 1,
-                                  color: Colors.red,
+                listener: (context, state) {
+                  if (state is EmergencyReportCreating) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Row(
+                              children: const [
+                                SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 1,
+                                    color: Colors.red,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text("Reporting.."),
-                            ],
-                          ),
-                        );
-                      });
-                }
-                if (state is EmergencyReportCreated) {
-                  Navigator.pop(context);
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text("Reporting.."),
+                              ],
+                            ),
+                          );
+                        });
+                  }
+                  if (state is EmergencyReportCreated) {
+                    Navigator.pop(context);
 
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Emergency report has been sent")));
-                }
-                if (state is EmergencyReportOperationFailur) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: const Text("Reporting Failed."),
-                      backgroundColor: Colors.red.shade900));
-                }
-              }),
-          // Align(
-          //   alignment: Alignment.topRight,
-          //   child: ElevatedButton(
-          //       onPressed: () {
-          //         homeScreenStreamSubscription.cancel();
-          //         driverStreamSubscription.cancel();
-          //       },
-          //       child: Text("Maintenance")),
-          // )
-        ],
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Emergency report has been sent")));
+                  }
+                  if (state is EmergencyReportOperationFailur) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: const Text("Reporting Failed."),
+                        backgroundColor: Colors.red.shade900));
+                  }
+                }),
+            // Align(
+            //   alignment: Alignment.topRight,
+            //   child: ElevatedButton(
+            //       onPressed: () {
+            //         homeScreenStreamSubscription.cancel();
+            //         driverStreamSubscription.cancel();
+            //       },
+            //       child: Text("Maintenance")),
+            // )
+          ],
+        ),
       ),
     );
   }
@@ -777,6 +833,15 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             isLocationOn = true;
           });
+          _determinePosition().then((value) {
+            currentLat = value.latitude;
+            currentLng = value.longitude;
+            print('this is the value $value');
+            _myController.animateCamera(CameraUpdate.newCameraPosition(
+                CameraPosition(
+                    zoom: 16.4746,
+                    target: LatLng(value.latitude, value.longitude))));
+          });
           // if (positionStreamStarted) {
           //   _toggleListening();
           // }
@@ -805,13 +870,17 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GestureDetector(
                 onTap: () {
-                  getPlaceDetail(prediction.placeId);
+                  final form = _formKey.currentState;
+                  if (form!.validate()) {
+                    getPlaceDetail(prediction.placeId);
 
-                  RideRequestEvent event = RideRequestCreate(RideRequest(
-                      driverId: myId,
-                      passengerName: "Random Customer",
-                      pickupLocation: const LatLng(8.4543, 38.98765)));
-                  BlocProvider.of<RideRequestBloc>(context).add(event);
+                    RideRequestEvent event = RideRequestCreate(RideRequest(
+                        driverId: myId,
+                        passengerName: "Random Customer",
+                        pickupLocation: const LatLng(8.4543, 38.98765)));
+                    BlocProvider.of<RideRequestBloc>(context).add(event);
+                  }
+
                   // Navigator.pop(con);
                 },
                 child: Container(

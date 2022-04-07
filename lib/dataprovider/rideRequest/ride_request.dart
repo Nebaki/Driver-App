@@ -23,11 +23,11 @@ class RideRequestDataProvider {
         "x-access-token": '${await authDataProvider.getToken()}'
       },
       body: json.encode({
-        'driverId': myId,
-        'passengerName': request.passengerName,
-        'passengerPhoneNumber': "+251987654321",
-        "pickupAddress": "meskel flower",
-        'pickupLocation': [
+        'driver_id': myId,
+        "pickup_address": "meskel flower",
+        "droppoff_location": [2, 3],
+        "droppoff_address": "test",
+        'pickup_location': [
           request.pickupLocation!.latitude,
           request.pickupLocation!.longitude
         ],
@@ -65,6 +65,9 @@ class RideRequestDataProvider {
       String id, String status, String? passengerFcm) async {
     print("we Are hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!!!!!!!!!!!!");
     print(id);
+    final res =
+        await http.get(Uri.parse("https://safeway-api.herokuapp.com/api"));
+    print(' the response body ${res.body}');
 
     // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
     final response =

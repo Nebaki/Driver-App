@@ -14,32 +14,41 @@ class PushNotificationService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
+      player.open(Audio("assets/sounds/announcement-sound.mp3"));
+
+      if (message.data['status'] == 'Cancelled') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Request Cancelled"),
+        ));
+      }
+
       print("Notification data is ::");
       print(message.data);
+      if (message.data['passengerName'] != null) {
+        final pickupList = json.decode(message.data['pickupLocation']);
+        final droppOffList = json.decode(message.data['droppOffLocation']);
 
-      final pickupList = json.decode(message.data['pickupLocation']);
-      final droppOffList = json.decode(message.data['droppOffLocation']);
-
-      pickupLocation = LatLng(pickupList[0], pickupList[1]);
-      droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
-      passengerName = message.data['passengerName'];
-      passengerPhoneNumber = message.data['passengerPhoneNumber'];
-      requestId = message.data['requestId'];
-      passengerFcm = message.data['passengerFcm'];
-      distance = message.data['distance'];
-      duration = message.data['duration'];
-      price = message.data['price'];
-      droppOffAddress = message.data['droppOffAddress'];
-      pickUpAddress = message.data['pickupAddress'];
-      passengerProfilePictureUrl = message.data['profilePictureUrl'];
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            player.open(Audio("assets/sounds/announcement-sound.mp3"));
-            return NotificationDialog(
-                callback, setDestination, setIsArrivedWidget);
-          });
+        pickupLocation = LatLng(pickupList[0], pickupList[1]);
+        droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
+        passengerName = message.data['passengerName'];
+        passengerPhoneNumber = message.data['passengerPhoneNumber'];
+        requestId = message.data['requestId'];
+        passengerFcm = message.data['passengerFcm'];
+        distance = message.data['distance'];
+        duration = message.data['duration'];
+        price = message.data['price'];
+        droppOffAddress = message.data['droppOffAddress'];
+        pickUpAddress = message.data['pickupAddress'];
+        passengerProfilePictureUrl = message.data['profilePictureUrl'];
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              // player.open(Audio("assets/sounds/announcement-sound.mp3"));
+              return NotificationDialog(
+                  callback, setDestination, setIsArrivedWidget);
+            });
+      } else {}
 
       // if (notification != null && android != null && !kIsWeb) {
       //   flutterLocalNotificationsPlugin.show(

@@ -76,8 +76,11 @@ class SettingScreen extends StatelessWidget {
                             ),
                             placeholder: (context, url) =>
                                 const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                Image.asset('assets/icons/avatar-icon.png'),
+                            errorWidget: (context, url, error) => Icon(
+                              Icons.person,
+                              size: 50,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
 
