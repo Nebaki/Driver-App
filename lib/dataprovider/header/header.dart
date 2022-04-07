@@ -14,13 +14,17 @@ class RequestHeader{
 
   Future<Map<String,String>>? defaultHeader() async => <String,String>{
     'Content-Type': 'application/json',
-    'x-access-token': '${await authDataProvider.getToken()}'};
+    'app-key': 'app-key'};
 }
 
 class RequestResult{
   Result requestResult(String code, String body){
     Session().logSession("response", "code: $code, body $body");
-    return Result(code,false, _prepareResult(code));
+    if(code == "400"){
+      return Result(code,false, body);
+    }else{
+      return Result(code,false, _prepareResult(code));
+    }
   }
   String _prepareResult(code){
     switch(code){

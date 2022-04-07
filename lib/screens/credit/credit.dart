@@ -1,7 +1,9 @@
 import 'package:driverapp/dataprovider/credit/credit.dart';
+import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/credit/list_builder.dart';
 import 'package:driverapp/screens/credit/transfer_form.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -16,7 +18,7 @@ class Walet extends StatefulWidget {
 }
 
 class _WaletState extends State<Walet> {
-  final _formkey = GlobalKey<FormState>();
+  final _appBar = GlobalKey<FormState>();
   final _inkweltextStyle = const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.bold,
@@ -24,7 +26,9 @@ class _WaletState extends State<Walet> {
 
   @override
   void initState() {
-    _isLoading = true;
+    _isBalanceLoading = true;
+    _isMessageLoading = true;
+    reloadBalance();
     prepareRequest(context);
     super.initState();
   }
@@ -33,7 +37,8 @@ class _WaletState extends State<Walet> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CreditAppBar(key: _formkey,title: "Credit",appBar: AppBar(),widgets: []),
+      appBar: CreditAppBar(
+          key: _appBar, title: "Credit", appBar: AppBar(), widgets: []),
       body: Padding(
         padding: const EdgeInsets.all(7),
         child: Column(
@@ -55,11 +60,13 @@ class _WaletState extends State<Walet> {
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text(
-                        "154.75",
-                        style: TextStyle(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: _isBalanceLoading ? const SpinKitThreeBounce(
+                        color: Colors.deepOrange,size: 30,
+                      ):Text(
+                        balance,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 34),
                       ),
                     ),
@@ -88,7 +95,8 @@ class _WaletState extends State<Walet> {
                                 ),
                                 onTap: () {
                                   Navigator.pushNamed(
-                                      context, TransferMoney.routeName);
+                                      context, TransferMoney.routeName,
+                                      arguments: TransferCreditArgument(balance: balance));
                                 },
                               )),
                               const VerticalDivider(
@@ -138,7 +146,7 @@ class _WaletState extends State<Walet> {
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10))),
               height: MediaQuery.of(context).size.height - 324,
-              child: _isLoading
+              child: _isMessageLoading
                   ? const Align(
                       alignment: Alignment.center,
                       child: SizedBox(
@@ -158,14 +166,15 @@ class _WaletState extends State<Walet> {
   }
 
   List<Credit>? _items;
-  var _isLoading = false;
+  var _isBalanceLoading = false;
+  var _isMessageLoading = false;
 
   void prepareRequest(BuildContext context) {
     var sender = CreditDataProvider(httpClient: http.Client());
     var res = sender.loadCreditHistory("0922877115");
     res.then((value) => {
           setState(() {
-            _isLoading = false;
+            _isMessageLoading = false;
             _items = value.trips!;
           })
         });
@@ -174,5 +183,21 @@ class _WaletState extends State<Walet> {
   void showMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  var transfer = CreditDataProvider(httpClient: http.Client());
+  var balance = "loading...";
+
+  void reloadBalance() {
+    var confirm = transfer.loadBalance();
+    confirm
+        .then((value) => {
+              setState(() {
+                _isBalanceLoading = false;
+                balance = value.message+".ETB";
+              })
+            })
+        .onError((error, stackTrace) =>
+            {ShowMessage(context, "Balance", error.toString())});
   }
 }
