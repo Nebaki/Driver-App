@@ -84,7 +84,7 @@ class _CompleteTripState extends State<CompleteTrip> {
                               'Text to announce in accessibility modes',
                         )),
                         label: const Text(
-                          "Slide to Copmlete",
+                          "Slide to Complete",
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,

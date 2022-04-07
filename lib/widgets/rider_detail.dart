@@ -53,7 +53,7 @@ class RiderDetail extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: CachedNetworkImage(
-                    imageUrl: passengerProfilePictureUrl,
+                    imageUrl: passengerProfilePictureUrl ?? "",
                     imageBuilder: (context, imageProvider) => Container(
                           decoration: BoxDecoration(
                             image: DecorationImage(

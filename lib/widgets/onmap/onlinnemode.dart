@@ -85,32 +85,68 @@ class _OnlinModeState extends State<OnlinMode> {
                     ),
                   ),
                 ),
-                const LinearProgressIndicator(
-                  minHeight: 1.5,
-                ),
-                Container(
-                  height: 90,
-                  padding: const EdgeInsets.only(left: 20, top: 15, bottom: 15),
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.black26.withOpacity(0.05),
-                  child: Column(
+                const Divider(color: Colors.orange, thickness: 1),
+                SizedBox(
+                  height: 100,
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Opportunity nearby",
-                        style: TextStyle(color: Colors.red, fontSize: 24),
+                      _items(
+                          num: "\$95",
+                          text: "Earning",
+                          icon: Icons.monetization_on),
+                      VerticalDivider(
+                        color: Colors.grey.shade300,
                       ),
-                      Text(
-                        "Waiting for Ridders request",
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
-                      )
+                      _items(num: "4.75", text: "Rating", icon: Icons.star),
+                      VerticalDivider(
+                        color: Colors.grey.shade300,
+                      ),
+                      _items(
+                          num: "\$342",
+                          text: "Wallet",
+                          icon: Icons.wallet_giftcard),
                     ],
                   ),
                 )
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _items(
+      {required String num, required String text, required IconData icon}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: Container(
+              padding: const EdgeInsets.all(5),
+              color: Colors.green,
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 15,
+              ),
+            ),
+          ),
+          Text(
+            num,
+            style: const TextStyle(fontSize: 16),
+          ),
+          Text(
+            text,
+            style: const TextStyle(
+                color: Colors.black38,
+                fontSize: 16,
+                fontWeight: FontWeight.w300),
+          )
         ],
       ),
     );

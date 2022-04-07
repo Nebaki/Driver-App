@@ -224,6 +224,7 @@ class NotificationDialog extends StatelessWidget {
 
                       player.dispose();
                       isLoading = true;
+       
 
                       RideRequestEvent requestEvent =
                           RideRequestAccept(requestId, passengerFcm!);

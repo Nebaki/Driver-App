@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   ConnectivityResult _connectionStatus = ConnectivityResult.bluetooth;
   final Connectivity _connectivity = Connectivity();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool? isLocationOn;
   bool isModal = false;
@@ -96,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         isLocationOn = false;
       });
-      // return Future.error('Location services are disabled.');
+      return Future.error('Location services are disabled.');
     } else if (serviceEnabled) {
       setState(() {
         isLocationOn = true;
@@ -116,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    Geofire.initialize("availableTrucks");
+    Geofire.initialize("availableDrivers");
 
     initConnectivity();
     _connectivitySubscription =
@@ -201,6 +202,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text("Enable location services",
                               style: Theme.of(context).textTheme.headline5),
                         ),
+                        const Expanded(
+                            child: Center(
+                          child: Icon(Icons.location_off_outlined,
+                              color: Colors.red, size: 60),
+                        )),
+                        const Expanded(child: SizedBox()),
+
                         Expanded(
                             child: Text(
                                 "We can't get your location because you have disabled location services. Please turn it on for better experience.",
@@ -209,6 +217,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         //     child: Text(
                         //         "For better accuracy,please turn on both GPS and WIFI location services",
                         //         style: Theme.of(context).textTheme.bodyText2)),
+
+                        const Expanded(child: SizedBox()),
+
                         Expanded(
                             child: SizedBox(
                           width: double.infinity,
@@ -224,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                             child: SizedBox(
                           width: double.infinity,
-                          child: TextButton(
+                          child: ElevatedButton(
                               onPressed: () async {
                                 SystemNavigator.pop();
                               },
@@ -269,14 +280,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text("No Internet Connection",
                             style: Theme.of(context).textTheme.headline5),
                       ),
+                      const Expanded(
+                          child: Center(
+                        child: Icon(
+                            Icons
+                                .signal_wifi_statusbar_connected_no_internet_4_rounded,
+                            color: Colors.red,
+                            size: 60),
+                      )),
+                      const Expanded(child: SizedBox()),
                       Expanded(
                           child: Text(
-                              "Please enable WIFI or Mobile Data to allow us finding your location.",
+                              "Please enable WIFI or Mobile data to serve the app",
                               style: Theme.of(context).textTheme.bodyText2)),
-                      Expanded(
-                          child: Text(
-                              "For better accuracy,please turn on both GPS and WIFI location services",
-                              style: Theme.of(context).textTheme.bodyText2)),
+                      // Expanded(
+                      //     child: Text(
+                      //         "For better accuracy,please turn on both GPS and WIFI location services",
+                      //         style: Theme.of(context).textTheme.bodyText2)),
                       Expanded(
                           child: SizedBox(
                         width: double.infinity,
@@ -297,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () async {
                               SystemNavigator.pop();
                             },
-                            child: Text("Close App")),
+                            child: Text("Cancel")),
                       ))
                     ],
                   ),
@@ -473,13 +493,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
+                                    // Padding(
+                                    //     padding: const EdgeInsets.fromLTRB(
+                                    //         20, 10, 20, 10),
+                                    //     child: InternationalPhoneNumberInput(
+                                    //         initialValue:
+                                    //             PhoneNumber(isoCode: "ET"),
+                                    //         onInputChanged: (value) {})),
                                     Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            20, 10, 20, 10),
-                                        child: InternationalPhoneNumberInput(
-                                            initialValue:
-                                                PhoneNumber(isoCode: "ET"),
-                                            onInputChanged: (value) {})),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 10, 20, 10),
+                                      child: Form(
+                                        key: _formKey,
+                                        child: TextFormField(
+                                          validator: (value) {
+                                            if (value!.length != 13) {
+                                              return "Invalid Phone Number";
+                                            }
+                                          },
+                                          initialValue: '+251',
+                                          onChanged: (value) {
+                                            // findPlace(value);
+                                          },
+                                          decoration: const InputDecoration(
+                                              prefixIcon: Icon(
+                                                Icons.phone,
+                                                color: Colors.red,
+                                              ),
+                                              labelText: "Phone Number"),
+                                        ),
+                                      ),
+                                    ),
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           20, 10, 20, 10),
@@ -826,13 +870,17 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GestureDetector(
                 onTap: () {
-                  getPlaceDetail(prediction.placeId);
+                  final form = _formKey.currentState;
+                  if (form!.validate()) {
+                    getPlaceDetail(prediction.placeId);
 
-                  RideRequestEvent event = RideRequestCreate(RideRequest(
-                      driverId: myId,
-                      passengerName: "Random Customer",
-                      pickupLocation: const LatLng(8.4543, 38.98765)));
-                  BlocProvider.of<RideRequestBloc>(context).add(event);
+                    RideRequestEvent event = RideRequestCreate(RideRequest(
+                        driverId: myId,
+                        passengerName: "Random Customer",
+                        pickupLocation: const LatLng(8.4543, 38.98765)));
+                    BlocProvider.of<RideRequestBloc>(context).add(event);
+                  }
+
                   // Navigator.pop(con);
                 },
                 child: Container(

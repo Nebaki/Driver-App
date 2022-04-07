@@ -16,6 +16,12 @@ class PushNotificationService {
       AndroidNotification? android = message.notification?.android;
       player.open(Audio("assets/sounds/announcement-sound.mp3"));
 
+      if (message.data['status'] == 'Cancelled') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Request Cancelled"),
+        ));
+      }
+
       print("Notification data is ::");
       print(message.data);
       if (message.data['passengerName'] != null) {
@@ -42,11 +48,7 @@ class PushNotificationService {
               return NotificationDialog(
                   callback, setDestination, setIsArrivedWidget);
             });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Request Cancelled"),
-        ));
-      }
+      } else {}
 
       // if (notification != null && android != null && !kIsWeb) {
       //   flutterLocalNotificationsPlugin.show(
