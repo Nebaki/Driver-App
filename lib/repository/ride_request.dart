@@ -22,4 +22,9 @@ class RideRequestRepository {
   Future acceptRequest(String id, String passengerFcm) async {
     return await dataProvider.acceptRequest(id, passengerFcm);
   }
+
+  Future cancelRideRequest(
+      String id, String cancelReason, String passengerFcm) async {
+    return await dataProvider.cancelRideRequest(id, cancelReason, passengerFcm);
+  }
 }

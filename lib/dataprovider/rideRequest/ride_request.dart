@@ -143,4 +143,48 @@ class RideRequestDataProvider {
       throw Exception('Failed to send notification.');
     }
   }
+
+  Future cancelNotification(String fcmId) async {
+    final response = await http.post(
+      Uri.parse(_fcmUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$token'
+      },
+      body: json.encode({
+        "data": {'response': 'Cancelled'},
+        "to": fcmId,
+        "notification": {
+          "title": "RideRequest Cancelled",
+          "body": "Your ride request has been Cancelled."
+        }
+      }),
+    );
+
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      final data = (response.body);
+    } else {
+      throw Exception('Failed to send notification.');
+    }
+  }
+
+  Future cancelRideRequest(String id, String cancelReason, String fcmId) async {
+    final http.Response response =
+        await http.post(Uri.parse('$_baseUrl/cancel-ride-request/$id'),
+            headers: <String, String>{
+              "Content-Type": "application/json",
+              "x-access-token": "${await authDataProvider.getToken()}"
+            },
+            body: json.encode({'cancel_reason': cancelReason}));
+
+    print("response ${response.statusCode} ${response.body}");
+
+    if (response.statusCode == 200) {
+      cancelNotification(fcmId);
+    } else {
+      throw 'Unable to cancel the request';
+    }
+  }
 }

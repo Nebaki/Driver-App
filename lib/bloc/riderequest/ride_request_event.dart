@@ -48,3 +48,13 @@ class RideRequestAccept extends RideRequestEvent {
   @override
   List<Object> get props => [id, passengerFcm];
 }
+
+class RideRequestCancell extends RideRequestEvent {
+  final String id;
+  final String cancelReason;
+  final String passengerFcm;
+
+  const RideRequestCancell(this.id, this.cancelReason, this.passengerFcm);
+  @override
+  List<Object> get props => [id, cancelReason, passengerFcm];
+}

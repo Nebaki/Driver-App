@@ -353,9 +353,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   myLocationButtonEnabled: false,
                   myLocationEnabled: true,
                   zoomControlsEnabled: false,
-                  zoomGesturesEnabled: false,
-                  scrollGesturesEnabled: false,
-                  rotateGesturesEnabled: false,
+                  // zoomGesturesEnabled: false,
+                  // scrollGesturesEnabled: false,
+                  // rotateGesturesEnabled: false,
                   initialCameraPosition: _addissAbaba,
                   polylines: Set<Polyline>.of(polylines.values),
                   // markers: Set<Marker>.of(markers.values),
@@ -469,16 +469,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 50),
+              padding: const EdgeInsets.only(top: 40),
               child: Align(
                 alignment: Alignment.topCenter,
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(100)),
-                  child: InkWell(
-                    onTap: () {
+                child: SizedBox(
+                  height: 60,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.grey.shade300,
+                    onPressed: () {
                       showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
@@ -612,10 +610,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           });
                     },
-                    child: const Text(
-                      "Create Trip",
-                      style: TextStyle(fontSize: 19),
-                    ),
+                    child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.indigo.shade900, width: 1.5),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Icon(Icons.trip_origin,
+                            color: Colors.indigo.shade900)),
                   ),
                 ),
               ),
@@ -623,27 +625,23 @@ class _HomeScreenState extends State<HomeScreen> {
             BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
                 builder: (context, state) => Align(
                       alignment: Alignment.centerRight,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            topLeft: Radius.circular(30)),
-                        child: Container(
-                          color: Colors.grey.shade300,
-                          child: IconButton(
-                              onPressed: () {
-                                EmergencyReportEvent event =
-                                    EmergencyReportCreate(
-                                        EmergencyReport(location: [2, 3]));
+                      child: SizedBox(
+                        height: 50,
+                        child: FloatingActionButton(
+                            backgroundColor: Colors.grey.shade100,
+                            onPressed: () {
+                              EmergencyReportEvent event =
+                                  EmergencyReportCreate(
+                                      EmergencyReport(location: [2, 3]));
 
-                                BlocProvider.of<EmergencyReportBloc>(context)
-                                    .add(event);
-                              },
-                              icon: Icon(
-                                Icons.dangerous,
-                                color: Colors.indigo.shade900,
-                                size: 35,
-                              )),
-                        ),
+                              BlocProvider.of<EmergencyReportBloc>(context)
+                                  .add(event);
+                            },
+                            child: Icon(
+                              Icons.dangerous,
+                              color: Colors.indigo.shade900,
+                              size: 35,
+                            )),
                       ),
                     ),
                 listener: (context, state) {
@@ -929,7 +927,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               Future.delayed(Duration(seconds: 1), () {
                 setState(() {
-                  _currentWidget = CompleteTrip(callback);
+                  _currentWidget = WaitingPassenger(callback);
                 });
                 Navigator.pop(_);
               });
