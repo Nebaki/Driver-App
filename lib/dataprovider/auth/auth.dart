@@ -60,6 +60,10 @@ class AuthDataProvider {
           key: "car_type",
           value: output["driver"]['preference']['car_type'] ?? "");
 
+      await secure_storage.write(
+          key: "vehicle_category",
+          value: output["driver"]['vehicle']['vehicle_category'] ?? "");
+
       // print(await secure_storage.read(key: "min_rate"));
       // print(await secure_storage.read(key: "driver_gender"));
       print("WelDoneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");

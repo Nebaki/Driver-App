@@ -11,6 +11,7 @@ class Auth extends Equatable {
   String? email;
   String? emergencyContact;
   String? profilePicture;
+  String? vehicleCategory;
   Map<String?, dynamic?>? pref;
 
   Auth(
@@ -22,7 +23,8 @@ class Auth extends Equatable {
       required this.phoneNumber,
       this.password,
       this.pref,
-      this.profilePicture});
+      this.profilePicture,
+      this.vehicleCategory});
 
   @override
   List<Object?> get props => [phoneNumber, password];
@@ -36,6 +38,7 @@ class Auth extends Equatable {
         emergencyContact: storage["emergency_contact"],
         email: storage["email"],
         profilePicture: storage["profile_image"],
+        vehicleCategory: storage['vehicle_category'],
         pref: {
           "gender": storage["driver_gender"],
           "min_rate": storage["min_rate"],

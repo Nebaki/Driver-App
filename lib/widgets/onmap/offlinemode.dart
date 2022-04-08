@@ -15,12 +15,13 @@ class OfflineMode extends StatelessWidget {
   OfflineMode(this.setDriverStatus, this.callback);
   void getLiveLocation() async {
     print("Yah Here");
-    homeScreenStreamSubscription =
-        Geolocator.getPositionStream().listen((event) {
+    homeScreenStreamSubscription = Geolocator.getPositionStream(
+            locationSettings: const LocationSettings(distanceFilter: 5))
+        .listen((event) {
       if (isDriverOnline != null) {
         print("Listening bruhhh is $isDriverOnline");
         isDriverOnline!
-            ? Geofire.setLocation(myId, event.latitude, event.longitude)
+            ? Geofire.setLocation(firebaseKey, event.latitude, event.longitude)
             : Geofire.removeLocation(myId);
 
         if (!isDriverOnline!) {
@@ -34,7 +35,7 @@ class OfflineMode extends StatelessWidget {
   Widget build(BuildContext context) {
     print("my id iss $myId , $isDriverOnline");
     if (isDriverOnline != null) {
-      !isDriverOnline! ? Geofire.removeLocation(myId) : null;
+      !isDriverOnline! ? Geofire.removeLocation(firebaseKey) : null;
     }
     return Positioned(
       bottom: 0,

@@ -161,6 +161,8 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                           myId = state.auth.id!;
                           myPictureUrl = state.auth.profilePicture!;
                           myName = state.auth.name!;
+                          myVehicleCategory = state.auth.vehicleCategory!;
+                          firebaseKey = '$myId,$myVehicleCategory';
                           Navigator.pushReplacementNamed(
                               context, HomeScreen.routeName,
                               arguments: HomeScreenArgument(isSelected: false));

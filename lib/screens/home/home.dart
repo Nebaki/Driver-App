@@ -200,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: Text("Enable location services",
+                          child: Text("Enable Location Services",
                               style: Theme.of(context).textTheme.headline5),
                         ),
                         const Expanded(
@@ -218,8 +218,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         //     child: Text(
                         //         "For better accuracy,please turn on both GPS and WIFI location services",
                         //         style: Theme.of(context).textTheme.bodyText2)),
-
-                        const Expanded(child: SizedBox()),
 
                         Expanded(
                             child: SizedBox(
