@@ -29,7 +29,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
   void initState() {
     super.initState();
     initConnectivity();
-
+requestLocationPermission()
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
   }
