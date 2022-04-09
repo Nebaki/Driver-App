@@ -23,8 +23,9 @@ class RideRequestRepository {
     return await dataProvider.acceptRequest(id, passengerFcm);
   }
 
-  Future cancelRideRequest(
-      String id, String cancelReason, String passengerFcm) async {
-    return await dataProvider.cancelRideRequest(id, cancelReason, passengerFcm);
+  Future cancelRideRequest(String id, String cancelReason, String? passengerFcm,
+      bool sendRequest) async {
+    return await dataProvider.cancelRideRequest(
+        id, cancelReason, passengerFcm, sendRequest);
   }
 }

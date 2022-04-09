@@ -16,6 +16,20 @@ class RideRequestDataProvider {
   RideRequestDataProvider({required this.httpClient});
 
   Future<RideRequest> createRequest(RideRequest request) async {
+    // bool isPhoneNumberValid;
+    // final http.Response res =
+    //     await http.get(Uri.parse("$_baseUrl/check-phone-number?+2519345402"));
+    // if (res.statusCode == 200) {
+    //   final data = json.decode(res.body);
+    //   if(data['userExit']){
+
+    //   }
+    //   else {
+
+    //   }
+    // } else {
+    //   isPhoneNumberValid = false;
+    // }
     final response = await http.post(
       Uri.parse('$_baseUrl/create-ride-request'),
       headers: <String, String>{
@@ -42,6 +56,7 @@ class RideRequestDataProvider {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      requestId = data['rideRequest']['id'];
       return RideRequest.fromJson(data);
     } else {
       throw Exception('Failed to create request.');
@@ -170,7 +185,8 @@ class RideRequestDataProvider {
     }
   }
 
-  Future cancelRideRequest(String id, String cancelReason, String fcmId) async {
+  Future cancelRideRequest(
+      String id, String cancelReason, String? fcmId, bool sendRequest) async {
     final http.Response response =
         await http.post(Uri.parse('$_baseUrl/cancel-ride-request/$id'),
             headers: <String, String>{
@@ -182,7 +198,9 @@ class RideRequestDataProvider {
     print("response ${response.statusCode} ${response.body}");
 
     if (response.statusCode == 200) {
-      cancelNotification(fcmId);
+      if (sendRequest) {
+        cancelNotification(fcmId!);
+      }
     } else {
       throw 'Unable to cancel the request';
     }

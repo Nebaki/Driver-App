@@ -61,8 +61,8 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
     if (event is RideRequestCancell) {
       yield RideRequestLoading();
       try {
-        await rideRequestRepository.cancelRideRequest(
-            event.id, event.cancelReason, event.passengerFcm);
+        await rideRequestRepository.cancelRideRequest(event.id,
+            event.cancelReason, event.passengerFcm, event.sendRequest);
         yield RideRequestCancelled();
       } catch (_) {
         yield RideRequestOperationFailur();

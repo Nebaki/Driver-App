@@ -7,6 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CancelReason extends StatefulWidget {
   static const routeName = "cacelreason";
+  final CancelReasonArgument arg;
+
+  CancelReason({Key? key, required this.arg}) : super(key: key);
 
   @override
   State<CancelReason> createState() => _CancelReasonState();
@@ -144,8 +147,8 @@ class _CancelReasonState extends State<CancelReason> {
 
   void cancellRequest(BuildContext context) {
     isLoading = true;
-    RideRequestEvent requestEvent =
-        RideRequestCancell(requestId, groupValue!, passengerFcm!);
+    RideRequestEvent requestEvent = RideRequestCancell(
+        requestId, groupValue!, passengerFcm, widget.arg.sendRequest);
     BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
   }
 

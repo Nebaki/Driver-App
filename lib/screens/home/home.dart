@@ -450,21 +450,19 @@ class _HomeScreenState extends State<HomeScreen> {
             _currentWidget,
             Positioned(
               top: 40,
-              left: 20,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Container(
-                  color: Colors.grey.shade300,
-                  child: IconButton(
-                      onPressed: () {
-                        makePhoneCall("9495");
-                      },
-                      icon: Icon(
-                        Icons.call,
-                        color: Colors.indigo.shade900,
-                        size: 20,
-                      )),
-                ),
+              left: 10,
+              child: SizedBox(
+                height: 40,
+                child: FloatingActionButton(
+                    backgroundColor: Colors.grey.shade300,
+                    onPressed: () {
+                      makePhoneCall("9495");
+                    },
+                    child: Icon(
+                      Icons.call,
+                      color: Colors.indigo.shade900,
+                      size: 30,
+                    )),
               ),
             ),
             Padding(
@@ -472,7 +470,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Align(
                 alignment: Alignment.topCenter,
                 child: SizedBox(
-                  height: 60,
+                  height: 45,
                   child: FloatingActionButton(
                     backgroundColor: Colors.grey.shade300,
                     onPressed: () {
@@ -610,7 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           });
                     },
                     child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                             border: Border.all(
                                 color: Colors.indigo.shade900, width: 1.5),
@@ -625,9 +623,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, state) => Align(
                       alignment: Alignment.centerRight,
                       child: SizedBox(
-                        height: 50,
+                        height: 45,
                         child: FloatingActionButton(
-                            backgroundColor: Colors.grey.shade100,
+                            backgroundColor: Colors.red,
                             onPressed: () {
                               EmergencyReportEvent event =
                                   EmergencyReportCreate(
@@ -636,10 +634,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               BlocProvider.of<EmergencyReportBloc>(context)
                                   .add(event);
                             },
-                            child: Icon(
-                              Icons.dangerous,
-                              color: Colors.indigo.shade900,
-                              size: 35,
+                            child: Text(
+                              'SOS',
+                              style: TextStyle(color: Colors.white),
+                              // color: Colors.indigo.shade900,
+                              // size: 35,
                             )),
                       ),
                     ),
@@ -671,8 +670,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (state is EmergencyReportCreated) {
                     Navigator.pop(context);
 
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Emergency report has been sent")));
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Row(
+                              children: const [
+                                SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child:
+                                        Icon(Icons.done, color: Colors.green)),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text("Emergency report has been sent"),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Okay'))
+                            ],
+                          );
+                        });
                   }
                   if (state is EmergencyReportOperationFailur) {
                     Navigator.pop(context);
@@ -681,15 +704,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundColor: Colors.red.shade900));
                   }
                 }),
-            // Align(
-            //   alignment: Alignment.topRight,
-            //   child: ElevatedButton(
-            //       onPressed: () {
-            //         homeScreenStreamSubscription.cancel();
-            //         driverStreamSubscription.cancel();
-            //       },
-            //       child: Text("Maintenance")),
-            // )
           ],
         ),
       ),

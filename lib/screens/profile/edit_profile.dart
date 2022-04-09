@@ -164,8 +164,8 @@ class _EditProfileState extends State<EditProfile> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                            "you have to have your old password in order to change new password. lorem ipsum text to add the new."),
+                        // Text(
+                        // "you have to have your old password in order to change new password. lorem ipsum text to add the new."),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.1,
                         ),
