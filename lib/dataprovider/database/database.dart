@@ -31,7 +31,7 @@ class HistoryDB {
     //await db.execute("DROP TABLE IF EXISTS TripHistory");
     return db.execute(
       '''CREATE TABLE TripHistory(
-           id TEXT PRIMARY KEY,
+           id INTEGER PRIMARY KEY,
            date TEXT,
            froms TEXT,
            time TEXT,
@@ -43,15 +43,23 @@ class HistoryDB {
     );
   }
 
-  Future<void> insertTrip(Trip trip) async {
+  Future<int> insertTrip(Trip trip) async {
     final db = await database;
     //deleteTable("TripHistory");
     //createTable("TripHistory");
-    await db.insert(
+    return await db.insert(
       'TripHistory',
       trip.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    //return 0;
+  }
+  Future<num> insertTrips(List<Trip> trips) async {
+    num count = 0;
+    for(Trip trip in trips){
+      count += await insertTrip(trip);
+    }
+    return count;
   }
 
   Future<List<Trip>> trips() async {
@@ -104,7 +112,7 @@ class HistoryDB {
     final db = await database;
     return db.execute(
       '''CREATE TABLE $name(
-           id TEXT PRIMARY KEY,
+           id INTEGER PRIMARY KEY,
            date TEXT,
            froms TEXT,
            time TEXT,

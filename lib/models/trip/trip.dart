@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Trip {
-  String? id;
+  int? id;
   String? date;
   String? time;
   String? from;
@@ -47,7 +47,7 @@ class Trip {
   };
   @override
   String toString() {
-    return 'Dog{id: $id, date: $date, time: $time, from: $from,'
+    return 'Trip{id: $id, date: $date, time: $time, from: $from,'
         ' to: $to, price: $price, origin: $origin, destination: $destination, picture: $picture}';
   }
 

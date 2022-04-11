@@ -44,8 +44,8 @@ class _TeleBirrDataState extends State<TeleBirrData> {
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please enter Amount';
-        } else if (int.parse(value) < 100) {
-          return 'Minimum Amount is 100.ETB';
+        } else if (int.parse(value) < 0) {
+          return 'Minimum Amount is 1.ETB';
         }
         return null;
       },

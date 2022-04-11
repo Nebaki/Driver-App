@@ -21,6 +21,7 @@ class TelePack {
   String? appKey;
   String? publicKey;
   String? outTradeNumber;
+  String? inAppPaymentUrl;
 
   TelePack(
       {required this.message,
@@ -35,6 +36,7 @@ class TelePack {
         this.timeoutExpress,
         this.appKey,
         this.publicKey,
+        this.inAppPaymentUrl,
         this.outTradeNumber});
 
   factory TelePack.fromJson(Map<String, dynamic> json,int code)
@@ -52,6 +54,7 @@ class TelePack {
     appKey: json["appKey"],
     publicKey: json["publicKey"],
     outTradeNumber: json["outTradeNumber"],
+    inAppPaymentUrl: json["inAppPaymentUrl"],
   );
 
 
@@ -69,7 +72,8 @@ class TelePack {
       'timeoutExpress: $timeoutExpress,'
       'appKey: $appKey,'
       'publicKey: $publicKey,'
-      'outTradeNumber: $outTradeNumber}';
+      'outTradeNumber: $outTradeNumber,'
+      'inAppPaymentUrl: $inAppPaymentUrl}';
 
   Map<String, dynamic> toJson() => {
     'code': '$code',
@@ -84,6 +88,7 @@ class TelePack {
     'timeoutExpress': '$timeoutExpress',
     'appKey': '$appKey',
     'publicKey': '$publicKey',
-    'outTradeNumber': '$outTradeNumber'
+    'outTradeNumber': '$outTradeNumber',
+    'inAppPaymentUrl': '$inAppPaymentUrl'
   };
 }
