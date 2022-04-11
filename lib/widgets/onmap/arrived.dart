@@ -1,6 +1,8 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
+import 'package:driverapp/route.dart';
+import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,7 +71,11 @@ class _ArrivedState extends State<Arrived> {
                     ),
                     GestureDetector(
                         onTap: () {
-                          widget.callback!(CancelTrip(widget.callback));
+                          Navigator.pushNamed(context, CancelReason.routeName,
+                              arguments:
+                                  CancelReasonArgument(sendRequest: true));
+
+                          // widget.callback!(CancelTrip(widget.callback));
                         },
                         child: _buildItems(
                             text: "Cancel Trip", icon: Icons.clear_outlined))

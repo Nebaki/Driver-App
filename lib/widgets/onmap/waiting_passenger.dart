@@ -1,5 +1,7 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/route.dart';
+import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,7 +55,16 @@ class WaitingPassenger extends StatelessWidget {
                     _buildItems(
                         text: "Chat", icon: Icons.chat_bubble_outline_rounded),
                     _buildItems(text: "Message", icon: Icons.message_outlined),
-                    _buildItems(text: "Cancel Trip", icon: Icons.clear_outlined)
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, CancelReason.routeName,
+                              arguments:
+                                  CancelReasonArgument(sendRequest: false));
+
+                          // callback!(CancelTrip(callback));
+                        },
+                        child: _buildItems(
+                            text: "Cancel Trip", icon: Icons.clear_outlined))
                   ],
                 ),
                 Container(

@@ -9,9 +9,11 @@ bool? isDriverOnline;
 late StreamSubscription<Position> homeScreenStreamSubscription;
 late StreamSubscription driverStreamSubscription;
 
+late String firebaseKey;
 late String myId;
 late String myPictureUrl;
 late String myName;
+late String myVehicleCategory;
 String? passengerName;
 late String passengerPhoneNumber;
 late String requestId;
@@ -24,7 +26,7 @@ late LatLng droppOffLocation;
 late String distance;
 late String duration;
 late String price;
- String? passengerProfilePictureUrl;
+String? passengerProfilePictureUrl;
 final player = AssetsAudioPlayer();
 
 bool willScreenPop = true;

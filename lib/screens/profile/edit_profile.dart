@@ -142,318 +142,322 @@ class _EditProfileState extends State<EditProfile> {
   Widget _buildProfileForm() {
     return Form(
         key: _formKey,
-        child: Container(
-          color: const Color.fromRGBO(240, 241, 241, 1),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              Positioned(
-                top: MediaQuery.of(context).size.height * 0.12,
-                right: 10,
-                left: 10,
-                child: Container(
-                  height: MediaQuery.of(context).size.height * .88,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ListView(
-                    //crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Edit Profile",
-                          style: Theme.of(context).textTheme.headlineSmall),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                          "you have to have your old password in order to change new password. lorem ipsum text to add the new."),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.1,
-                      ),
-                      Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            // _showModalNavigation();
-                          },
-                          child: CircleAvatar(
-                            radius: 60,
-                            backgroundColor: Colors.grey.shade300,
-                            child: _isImageLoading
-                                ? CircularProgressIndicator()
-                                : ClipRRect(
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: BlocBuilder<AuthBloc, AuthState>(
-                                      builder: (_, state) {
-                                        if (state is AuthDataLoadSuccess) {
-                                          return CachedNetworkImage(
-                                            imageUrl:
-                                                state.auth.profilePicture!,
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover,
+        child: SingleChildScrollView(
+          child: Container(
+            color: const Color.fromRGBO(240, 241, 241, 1),
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Stack(
+              children: [
+                Positioned(
+                  top: MediaQuery.of(context).size.height * 0.12,
+                  right: 10,
+                  left: 10,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * .88,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Edit Profile",
+                            style: Theme.of(context).textTheme.headlineSmall),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // Text(
+                        // "you have to have your old password in order to change new password. lorem ipsum text to add the new."),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.1,
+                        ),
+                        Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              // _showModalNavigation();
+                            },
+                            child: CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.grey.shade300,
+                              child: _isImageLoading
+                                  ? CircularProgressIndicator()
+                                  : ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: BlocBuilder<AuthBloc, AuthState>(
+                                        builder: (_, state) {
+                                          if (state is AuthDataLoadSuccess) {
+                                            return CachedNetworkImage(
+                                              imageUrl:
+                                                  state.auth.profilePicture!,
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      Container(
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            placeholder: (context, url) =>
-                                                const CircularProgressIndicator(),
-                                            errorWidget:
-                                                (context, url, error) => Icon(
-                                              Icons.person,
-                                              size: 70,
-                                              color: Colors.black,
-                                            ),
+                                              placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) => Icon(
+                                                Icons.person,
+                                                size: 70,
+                                                color: Colors.black,
+                                              ),
+                                            );
+                                          }
+                                          return const CircleAvatar(
+                                            radius: 100,
                                           );
-                                        }
-                                        return const CircleAvatar(
-                                          radius: 100,
-                                        );
-                                      },
-                                    )),
+                                        },
+                                      )),
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      // Container(
-                      //   decoration: BoxDecoration(boxShadow: [
-                      //     BoxShadow(
-                      //         color: Colors.grey.shade300,
-                      //         blurRadius: 4,
-                      //         spreadRadius: 2,
-                      //         blurStyle: BlurStyle.normal)
-                      //   ]),
-                      //   child: TextFormField(
-                      //     initialValue: widget.args.auth.name,
-                      //     decoration: const InputDecoration(
-                      //         alignLabelWithHint: true,
-                      //         floatingLabelBehavior:
-                      //             FloatingLabelBehavior.always,
-                      //         isCollapsed: false,
-                      //         isDense: true,
-                      //         hintText: "Full Name",
-                      //         focusColor: Colors.blue,
-                      //         focusedBorder: OutlineInputBorder(
-                      //             borderSide: BorderSide(
-                      //                 width: 0.6, color: Colors.orange)),
-                      //         hintStyle: TextStyle(
-                      //             fontWeight: FontWeight.bold,
-                      //             color: Colors.black45),
-                      //         prefixIcon: Icon(
-                      //           Icons.contact_mail,
-                      //           size: 19,
-                      //         ),
-                      //         fillColor: Colors.white,
-                      //         filled: true,
-                      //         border: OutlineInputBorder(
-                      //             //borderRadius: BorderRadius.all(Radius.circular(10)),
-                      //             borderSide: BorderSide.none)),
-                      //     validator: (value) {
-                      //       if (value!.isEmpty) {
-                      //         return 'This field can\'t be empity';
-                      //       } else if (value.length < 4) {
-                      //         return 'Name length must not be less than 4';
-                      //       } else if (value.length > 25) {
-                      //         return 'Nameength must not be Longer than 25';
-                      //       }
-                      //       return null;
-                      //     },
-                      //     onSaved: (value) {
-                      //       _user["first_name"] = value!.split(" ")[0];
-                      //       _user["last_name"] = value.split(" ")[1];
-                      //     },
-                      //   ),
-                      // ),
-                      // const SizedBox(
-                      //   height: 20,
-                      // ),
-                      Container(
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.shade300,
-                              blurRadius: 4,
-                              spreadRadius: 2,
-                              blurStyle: BlurStyle.normal)
-                        ]),
-                        child: TextFormField(
-                          initialValue: widget.args.auth.phoneNumber,
-                          decoration: const InputDecoration(
-                              alignLabelWithHint: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              isCollapsed: false,
-                              isDense: true,
-                              hintText: "Phone Number",
-                              focusColor: Colors.blue,
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      width: 0.6, color: Colors.orange)),
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black45),
-                              prefixIcon: Icon(
-                                Icons.phone_callback_outlined,
-                                size: 19,
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide.none)),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter Your Password';
-                            } else if (value.length < 4) {
-                              return 'Password length must not be less than 4';
-                            } else if (value.length > 25) {
-                              return 'Password length must not be greater than 25';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _user["phone_number"] = value;
-                          },
+                        const SizedBox(
+                          height: 20,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.shade300,
-                              blurRadius: 4,
-                              spreadRadius: 2,
-                              blurStyle: BlurStyle.normal)
-                        ]),
-                        child: TextFormField(
-                          initialValue: widget.args.auth.email,
-                          decoration: const InputDecoration(
-                              alignLabelWithHint: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              isCollapsed: false,
-                              isDense: true,
-                              hintText: "Email",
-                              focusColor: Colors.blue,
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      width: 0.6, color: Colors.orange)),
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black45),
-                              prefixIcon: Icon(
-                                Icons.mail_outline,
-                                size: 19,
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  //borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  borderSide: BorderSide.none)),
-                          validator: (value) {
-                            if (value!.isEmpty) {}
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _user["email"] = value;
-                          },
+                        Container(
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 4,
+                                spreadRadius: 2,
+                                blurStyle: BlurStyle.normal)
+                          ]),
+                          child: TextFormField(
+                            enabled: false,
+                            initialValue: widget.args.auth.name,
+                            decoration: const InputDecoration(
+                                alignLabelWithHint: true,
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                isCollapsed: false,
+                                isDense: true,
+                                hintText: "Full Name",
+                                focusColor: Colors.blue,
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 0.6, color: Colors.orange)),
+                                hintStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black45),
+                                prefixIcon: Icon(
+                                  Icons.contact_mail,
+                                  size: 19,
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                    //borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderSide: BorderSide.none)),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'This field can\'t be empity';
+                              } else if (value.length < 4) {
+                                return 'Name length must not be less than 4';
+                              } else if (value.length > 25) {
+                                return 'Nameength must not be Longer than 25';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _user["first_name"] = value!.split(" ")[0];
+                              _user["last_name"] = value.split(" ")[1];
+                            },
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.shade300,
-                              blurRadius: 4,
-                              spreadRadius: 2,
-                              blurStyle: BlurStyle.normal)
-                        ]),
-                        child: TextFormField(
-                          initialValue: widget.args.auth.emergencyContact,
-                          decoration: const InputDecoration(
-                              alignLabelWithHint: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              isCollapsed: false,
-                              isDense: true,
-                              hintText: "Emergency Contact Number",
-                              focusColor: Colors.blue,
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      width: 0.6, color: Colors.orange)),
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black45),
-                              prefixIcon: Icon(
-                                Icons.contact_phone_outlined,
-                                size: 19,
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  //borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  borderSide: BorderSide.none)),
-                          onSaved: (value) {
-                            //print("now");
-                            _user["emergency_contact"] = value;
-                          },
+                        const SizedBox(
+                          height: 20,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _isLoading
-                              ? null
-                              : () {
-                                  final form = _formKey.currentState;
-                                  if (form!.validate()) {
-                                    form.save();
+                        Container(
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 4,
+                                spreadRadius: 2,
+                                blurStyle: BlurStyle.normal)
+                          ]),
+                          child: TextFormField(
+                            enabled: false,
+                            initialValue: widget.args.auth.phoneNumber,
+                            decoration: const InputDecoration(
+                                alignLabelWithHint: true,
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                isCollapsed: false,
+                                isDense: true,
+                                hintText: "Phone Number",
+                                focusColor: Colors.blue,
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 0.6, color: Colors.orange)),
+                                hintStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black45),
+                                prefixIcon: Icon(
+                                  Icons.phone_callback_outlined,
+                                  size: 19,
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide.none)),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter Your Password';
+                              } else if (value.length < 4) {
+                                return 'Password length must not be less than 4';
+                              } else if (value.length > 25) {
+                                return 'Password length must not be greater than 25';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _user["phone_number"] = value;
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 4,
+                                spreadRadius: 2,
+                                blurStyle: BlurStyle.normal)
+                          ]),
+                          child: TextFormField(
+                            initialValue: widget.args.auth.email,
+                            decoration: const InputDecoration(
+                                alignLabelWithHint: true,
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                isCollapsed: false,
+                                isDense: true,
+                                hintText: "Email",
+                                focusColor: Colors.blue,
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 0.6, color: Colors.orange)),
+                                hintStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black45),
+                                prefixIcon: Icon(
+                                  Icons.mail_outline,
+                                  size: 19,
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                    //borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderSide: BorderSide.none)),
+                            validator: (value) {
+                              if (value!.isEmpty) {}
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _user["email"] = value;
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 4,
+                                spreadRadius: 2,
+                                blurStyle: BlurStyle.normal)
+                          ]),
+                          child: TextFormField(
+                            initialValue: widget.args.auth.emergencyContact,
+                            decoration: const InputDecoration(
+                                alignLabelWithHint: true,
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                isCollapsed: false,
+                                isDense: true,
+                                hintText: "Emergency Contact Number",
+                                focusColor: Colors.blue,
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 0.6, color: Colors.orange)),
+                                hintStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black45),
+                                prefixIcon: Icon(
+                                  Icons.contact_phone_outlined,
+                                  size: 19,
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                    //borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderSide: BorderSide.none)),
+                            onSaved: (value) {
+                              //print("now");
+                              _user["emergency_contact"] = value;
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        SizedBox(
+                          height: 50,
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _isLoading
+                                ? null
+                                : () {
+                                    final form = _formKey.currentState;
+                                    if (form!.validate()) {
+                                      form.save();
 
-                                    updateProfile();
-                                  }
-                                },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Spacer(),
-                              const Text(
-                                "Save Changes",
-                              ),
-                              const Spacer(),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: _isLoading
-                                    ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.black,
-                                          strokeWidth: 1,
-                                        ),
-                                      )
-                                    : Container(),
-                              )
-                            ],
+                                      updateProfile();
+                                    }
+                                  },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Spacer(),
+                                const Text(
+                                  "Save Changes",
+                                ),
+                                const Spacer(),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: _isLoading
+                                      ? const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                            strokeWidth: 1,
+                                          ),
+                                        )
+                                      : Container(),
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    ],
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              CustomeBackArrow(),
-            ],
+                CustomeBackArrow(),
+              ],
+            ),
           ),
         ));
   }

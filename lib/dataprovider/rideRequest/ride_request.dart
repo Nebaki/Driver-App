@@ -16,6 +16,20 @@ class RideRequestDataProvider {
   RideRequestDataProvider({required this.httpClient});
 
   Future<RideRequest> createRequest(RideRequest request) async {
+    // bool isPhoneNumberValid;
+    // final http.Response res =
+    //     await http.get(Uri.parse("$_baseUrl/check-phone-number?+2519345402"));
+    // if (res.statusCode == 200) {
+    //   final data = json.decode(res.body);
+    //   if(data['userExit']){
+
+    //   }
+    //   else {
+
+    //   }
+    // } else {
+    //   isPhoneNumberValid = false;
+    // }
     final response = await http.post(
       Uri.parse('$_baseUrl/create-ride-request'),
       headers: <String, String>{
@@ -42,6 +56,7 @@ class RideRequestDataProvider {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      requestId = data['rideRequest']['id'];
       return RideRequest.fromJson(data);
     } else {
       throw Exception('Failed to create request.');
@@ -141,6 +156,53 @@ class RideRequestDataProvider {
       //return NotificationRequest.fromJson(data);
     } else {
       throw Exception('Failed to send notification.');
+    }
+  }
+
+  Future cancelNotification(String fcmId) async {
+    final response = await http.post(
+      Uri.parse(_fcmUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$token'
+      },
+      body: json.encode({
+        "data": {'response': 'Cancelled'},
+        "to": fcmId,
+        "notification": {
+          "title": "RideRequest Cancelled",
+          "body": "Your ride request has been Cancelled."
+        }
+      }),
+    );
+
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      final data = (response.body);
+    } else {
+      throw Exception('Failed to send notification.');
+    }
+  }
+
+  Future cancelRideRequest(
+      String id, String cancelReason, String? fcmId, bool sendRequest) async {
+    final http.Response response =
+        await http.post(Uri.parse('$_baseUrl/cancel-ride-request/$id'),
+            headers: <String, String>{
+              "Content-Type": "application/json",
+              "x-access-token": "${await authDataProvider.getToken()}"
+            },
+            body: json.encode({'cancel_reason': cancelReason}));
+
+    print("response ${response.statusCode} ${response.body}");
+
+    if (response.statusCode == 200) {
+      if (sendRequest) {
+        cancelNotification(fcmId!);
+      }
+    } else {
+      throw 'Unable to cancel the request';
     }
   }
 }

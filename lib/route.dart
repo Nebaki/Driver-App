@@ -36,7 +36,12 @@ class AppRoute {
       return MaterialPageRoute(builder: (context) => ProfileDetail());
     }
     if (settings.name == CancelReason.routeName) {
-      return MaterialPageRoute(builder: (context) => CancelReason());
+      CancelReasonArgument argument =
+          settings.arguments as CancelReasonArgument;
+      return MaterialPageRoute(
+          builder: (context) => CancelReason(
+                arg: argument,
+              ));
     }
     if (settings.name == CollectedCash.routeName) {
       return MaterialPageRoute(builder: (context) => CollectedCash());
@@ -124,4 +129,9 @@ class PreferenceArgument {
 
   PreferenceArgument(
       {required this.gender, required this.min_rate, required this.carType});
+}
+
+class CancelReasonArgument {
+  final bool sendRequest;
+  CancelReasonArgument({required this.sendRequest});
 }

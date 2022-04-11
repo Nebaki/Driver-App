@@ -116,6 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    willScreenPop = false;
 
     Geofire.initialize("availableDrivers");
 
@@ -199,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: Text("Enable location services",
+                          child: Text("Enable Location Services",
                               style: Theme.of(context).textTheme.headline5),
                         ),
                         const Expanded(
@@ -217,8 +218,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         //     child: Text(
                         //         "For better accuracy,please turn on both GPS and WIFI location services",
                         //         style: Theme.of(context).textTheme.bodyText2)),
-
-                        const Expanded(child: SizedBox()),
 
                         Expanded(
                             child: SizedBox(
@@ -353,9 +352,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   myLocationButtonEnabled: false,
                   myLocationEnabled: true,
                   zoomControlsEnabled: false,
-                  zoomGesturesEnabled: false,
-                  scrollGesturesEnabled: false,
-                  rotateGesturesEnabled: false,
+                  // zoomGesturesEnabled: false,
+                  // scrollGesturesEnabled: false,
+                  // rotateGesturesEnabled: false,
                   initialCameraPosition: _addissAbaba,
                   polylines: Set<Polyline>.of(polylines.values),
                   // markers: Set<Marker>.of(markers.values),
@@ -451,34 +450,30 @@ class _HomeScreenState extends State<HomeScreen> {
             _currentWidget,
             Positioned(
               top: 40,
-              left: 20,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Container(
-                  color: Colors.grey.shade300,
-                  child: IconButton(
-                      onPressed: () {
-                        makePhoneCall("9495");
-                      },
-                      icon: Icon(
-                        Icons.call,
-                        color: Colors.indigo.shade900,
-                        size: 20,
-                      )),
-                ),
+              left: 10,
+              child: SizedBox(
+                height: 40,
+                child: FloatingActionButton(
+                    backgroundColor: Colors.grey.shade300,
+                    onPressed: () {
+                      makePhoneCall("9495");
+                    },
+                    child: Icon(
+                      Icons.call,
+                      color: Colors.indigo.shade900,
+                      size: 30,
+                    )),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 50),
+              padding: const EdgeInsets.only(top: 40),
               child: Align(
                 alignment: Alignment.topCenter,
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(100)),
-                  child: InkWell(
-                    onTap: () {
+                child: SizedBox(
+                  height: 45,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.grey.shade300,
+                    onPressed: () {
                       showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
@@ -612,10 +607,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           });
                     },
-                    child: const Text(
-                      "Create Trip",
-                      style: TextStyle(fontSize: 19),
-                    ),
+                    child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.indigo.shade900, width: 1.5),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Icon(Icons.trip_origin,
+                            color: Colors.indigo.shade900)),
                   ),
                 ),
               ),
@@ -623,27 +622,24 @@ class _HomeScreenState extends State<HomeScreen> {
             BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
                 builder: (context, state) => Align(
                       alignment: Alignment.centerRight,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            topLeft: Radius.circular(30)),
-                        child: Container(
-                          color: Colors.grey.shade300,
-                          child: IconButton(
-                              onPressed: () {
-                                EmergencyReportEvent event =
-                                    EmergencyReportCreate(
-                                        EmergencyReport(location: [2, 3]));
+                      child: SizedBox(
+                        height: 45,
+                        child: FloatingActionButton(
+                            backgroundColor: Colors.red,
+                            onPressed: () {
+                              EmergencyReportEvent event =
+                                  EmergencyReportCreate(
+                                      EmergencyReport(location: [2, 3]));
 
-                                BlocProvider.of<EmergencyReportBloc>(context)
-                                    .add(event);
-                              },
-                              icon: Icon(
-                                Icons.dangerous,
-                                color: Colors.indigo.shade900,
-                                size: 35,
-                              )),
-                        ),
+                              BlocProvider.of<EmergencyReportBloc>(context)
+                                  .add(event);
+                            },
+                            child: Text(
+                              'SOS',
+                              style: TextStyle(color: Colors.white),
+                              // color: Colors.indigo.shade900,
+                              // size: 35,
+                            )),
                       ),
                     ),
                 listener: (context, state) {
@@ -674,8 +670,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (state is EmergencyReportCreated) {
                     Navigator.pop(context);
 
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Emergency report has been sent")));
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Row(
+                              children: const [
+                                SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child:
+                                        Icon(Icons.done, color: Colors.green)),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text("Emergency report has been sent"),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Okay'))
+                            ],
+                          );
+                        });
                   }
                   if (state is EmergencyReportOperationFailur) {
                     Navigator.pop(context);
@@ -684,15 +704,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundColor: Colors.red.shade900));
                   }
                 }),
-            // Align(
-            //   alignment: Alignment.topRight,
-            //   child: ElevatedButton(
-            //       onPressed: () {
-            //         homeScreenStreamSubscription.cancel();
-            //         driverStreamSubscription.cancel();
-            //       },
-            //       child: Text("Maintenance")),
-            // )
           ],
         ),
       ),
@@ -929,7 +940,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               Future.delayed(Duration(seconds: 1), () {
                 setState(() {
-                  _currentWidget = CompleteTrip(callback);
+                  _currentWidget = WaitingPassenger(callback);
                 });
                 Navigator.pop(_);
               });
