@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:path_provider/path_provider.dart';
 import 'package:driverapp/screens/history/snapshot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,14 +28,15 @@ class HistoryBuilder extends StatelessWidget {
             itemBuilder: (context, item) {
               return _buildListItems(context, items[item], item);
             })
-        : const Center(child: Text('No Message'));
+        : const Center(child: Text('No History'));
   }
 
   Widget _buildListItems(BuildContext context, Trip trip, int item) {
     if (trip.picture == null) {
       getImageBit(trip);
-    }else{
-      ShowToast(context,trip.id!);
+    } else {
+      print("unit8: db-${trip.picture}");
+      //trip.picture = trip.picture!.substring(0, trip.picture!.length - 3);
     }
 
     return Card(
@@ -44,39 +45,29 @@ class HistoryBuilder extends StatelessWidget {
           children: [
             //Image.network(imageUrl(trip.origin, trip.destination)),
             //getInstance(trip.origin,trip.destination),
-            trip.picture!=null?Image.memory(trip.picture!):Container(),
-
+            //trip.picture != null ? Image.file(ImageUtils().getImage("id-${trip.id}") : Container(),
+            trip.picture != null
+                ? FutureBuilder(
+                    future: ImageUtils().getImage("id-${trip.id}"),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<File> snapshot) {
+                      return snapshot.data != null
+                          ? Image.file(snapshot.data!)
+                          : new Container();
+                    })
+                : Container(),
             ListTile(
               onTap: () async {
-                Uint8List? data;
-                await SnapShot(trip.origin!, trip.destination!)
-                    .getUnitCode()
-                    .then((value) => {
-                          showModalBottomSheet<void>(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20.0),
-                                    topRight: Radius.circular(20.0)),
-                              ),
-                              context: context,
-                              builder: (BuildContext context) {
-                                return _showBottomMessage(context, trip, value);
-                              })
-                        })
-                    .onError((error, stackTrace) => {
-                          //logger(context, error.toString())
-                          //ShowToast(context,"hell")
-                          showModalBottomSheet<void>(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(0.0),
-                                    topRight: Radius.circular(0.0)),
-                              ),
-                              context: context,
-                              builder: (BuildContext context) {
-                                return _showBottomMessage(context, trip, data);
-                              })
-                        });
+                showModalBottomSheet<void>(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0),
+                          topRight: Radius.circular(20.0)),
+                    ),
+                    context: context,
+                    builder: (BuildContext context) {
+                      return _showBottomMessage(context, trip);
+                    });
               },
               /*leading: Icon(
                 credit.type == "Gift" ? Icons.wallet_giftcard : Icons.email,
@@ -98,8 +89,7 @@ class HistoryBuilder extends StatelessWidget {
     ShowMessage(context, "Transaction", "Error happened: $error")
   }
 */
-  Widget _showBottomMessage(
-      BuildContext context, Trip trip, Uint8List? uin8list) {
+  Widget _showBottomMessage(BuildContext context, Trip trip) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.4,
       child: Column(
@@ -120,8 +110,8 @@ class HistoryBuilder extends StatelessWidget {
           Container(
             decoration: BoxDecoration(color: Colors.blueGrey[50]),
             height: 180,
-            child: uin8list != null
-                ? Image.memory(uin8list)
+            child: trip.picture != null
+                ? Image.memory(trip.picture!)
                 : const Text("Unable to load Image"),
           ),
           Text(
@@ -137,15 +127,24 @@ class HistoryBuilder extends StatelessWidget {
       ),
     );
   }
+
   void getImageBit(Trip trip) async {
     await ImageUtils.networkImageToBase64(
-        imageUrl(trip.origin!, trip.destination!))
+            imageUrl(trip.origin!, trip.destination!))
         .then((value) => {
-          print("base64: $value"),
-      trip.picture = ImageUtils.base64ToUnit8list(value),
-      HistoryDB().updateTrip(trip),update()
-    });
+              ImageUtils().saveImage(
+                  ImageUtils.base64ToUnit8list(value), "id-${trip.id}"),
+              trip.picture = ImageUtils.base64ToUnit8list(value),
+              print("unit8: net- $value"),
+              print("unit8: hot- ${trip.picture}"),
+              updateDB(trip)
+            });
   }
+
+  Future<void> updateDB(Trip trip) async {
+    await HistoryDB().updateTrip(trip).then((value) => {update()});
+  }
+
   String imageUrl(LatLng origin, LatLng destination) {
     String googleAPiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
     return "https://maps.googleapis.com/maps/api/staticmap?"
@@ -153,10 +152,12 @@ class HistoryBuilder extends StatelessWidget {
         "maptype=roadmap&"
         "markers=color:green%7Clabel:S%7C${origin.latitude},${origin.longitude}&"
         "markers=color:red%7Clabel:E%7C${destination.latitude},${destination.longitude}&"
-        "key=$googleAPiKey&" /*"signature=YOUR_SIGNATURE"*/;
+        "key=$googleAPiKey" /*"signature=YOUR_SIGNATURE"*/;
   }
 }
+
 late Function update;
+
 class ImageUtils {
   static MemoryImage base64ToImage(String base64String) {
     return MemoryImage(
@@ -165,7 +166,8 @@ class ImageUtils {
   }
 
   static Uint8List base64ToUnit8list(String base64String) {
-    return base64Decode(base64String);
+    return base64.decode(base64String);
+    //return base64Decode(base64String);
   }
 
   static String fileToBase64(File imgFile) {
@@ -180,5 +182,51 @@ class ImageUtils {
   Future assetImageToBase64(String path) async {
     ByteData bytes = await rootBundle.load(path);
     return base64.encode(Uint8List.view(bytes.buffer));
+  }
+
+  Future<void> saveImage(Uint8List uint8list, String name) async {
+    listDirs();
+    final tempDir = await getExternalStorageDirectory();
+    print("imgp: ${tempDir?.path}");
+    File('${tempDir?.path}/historyIMG').exists().then((value) => {
+          if (value)
+            {
+              print("img: dir exist"),
+              writeImageImage(tempDir!, uint8list, name)
+            }
+          else
+            {print("img: dir not exist"), createDir(tempDir!)}
+        });
+  }
+
+  Future<File> getImage(String filename) async {
+    final dir = await getExternalStorageDirectory();
+    File f = File('${dir?.path}/historyIMG/$filename.png');
+    f.exists().then((value) => {if (value) {} else {}});
+    return f;
+  }
+
+  Future<void> writeImageImage(
+      Directory directory, Uint8List uint8list, String filename) async {
+    File file = await File('${directory.path}/historyIMG/$filename.png')
+        .create(recursive: true);
+    file.writeAsBytesSync(uint8list);
+  }
+
+  Future<void> createDir(Directory directory) async {
+    await Directory('${directory.path}/historyIMG/')
+        .create(recursive: true)
+        .then((value) => {
+              print("img-d: ${value.path}"),
+            });
+  }
+
+  void listDirs() {
+    var systemTempDir = getExternalStorageDirectory();
+    systemTempDir.then((value) => {
+          value?.list(recursive: true, followLinks: false).listen((event) {
+            print("img-d: ${value.path}");
+          })
+        });
   }
 }

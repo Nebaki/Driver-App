@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:driverapp/models/trip/trip.dart';
+import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,7 +25,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     _isMessageLoading = true;
-    prepareRequest(context);
+    syncHistory();
     super.initState();
   }
 
@@ -34,7 +35,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   void prepareRequest(BuildContext context) {
     var sender = HistoryDataProvider(httpClient: http.Client());
-    var res = sender.loadCreditHistory("0922877115");
+    var res = sender.loadCreditHistoryDB("0922877115");
     res.then((value) => {
           setState(() {
             _isMessageLoading = false;
@@ -42,7 +43,14 @@ class _HistoryPageState extends State<HistoryPage> {
           })
         });
   }
-
+  void syncHistory(){
+    var sender = HistoryDataProvider(httpClient: http.Client());
+    var res = sender.loadCreditHistory("0922877115");
+    res.then((value) => {
+        ShowToast(context,value).show(),
+        prepareRequest(context),
+    });
+  }
 
 
 

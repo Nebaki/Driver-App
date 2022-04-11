@@ -15,7 +15,7 @@ class HistoryDataProvider {
 
   HistoryDataProvider({required this.httpClient});
 
-  Future<List<Trip>> loadCreditHistory(String user) async {
+  Future<String> loadCreditHistory(String user) async {
     final http.Response response = await http.get(
         Uri.parse('$_baseUrl/get-credit-transactions'),
         headers: await RequestHeader().authorisedHeader());
@@ -23,17 +23,18 @@ class HistoryDataProvider {
     if (response.statusCode != 200) {
       List<Trip> trips = [];
       Session().logSession("trans", response.body);
-      return trips;
+      return "Unable to update history";
       //return CreditStore.fromJson(jsonDecode(response.body));
     } else {
       Trip trip;
       List<Trip> trips = [];
       int i = 0;
-      while (i < 10) {
+      while (i < 1) {
         LatLng origin = LatLng(double.parse("8.98" + getRandNum()),
-            double.parse("38.75" + getRandNum()));
+            double.parse("38.75"+getRandNum()));
         LatLng destination = LatLng(double.parse("8.98" + getRandNum()),
             double.parse("38.75" + getRandNum()));
+
         var rng = Random();
         int money = rng.nextInt(100) * i + 237;
         var type = i % 2 == 0 ? 'Gift' : 'Message';
@@ -41,7 +42,7 @@ class HistoryDataProvider {
           type = "Message";
         }
         trip = Trip(
-            id: "$i vic",
+            id: i ,
             date: "Money Received $i",
             from: "Hello you received nothing Thanks",
             time: "soon",
@@ -50,15 +51,18 @@ class HistoryDataProvider {
             origin: origin,
             destination: destination,
         picture: null);
-
-        HistoryDB().insertTrip(trip);
         trips.add(trip);
         i++;
       }
-      return HistoryDB().trips();
+      //return "Skiped";
+      return HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
       //return trips;
     }
   }
+  Future<List<Trip>> loadCreditHistoryDB(String user) async {
+      return HistoryDB().trips();
+    }
+
 
   String getRandNum() {
     var rng = Random();

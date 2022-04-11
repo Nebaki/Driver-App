@@ -12,7 +12,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
 
-class MainActivity: FlutterActivity(),PaymentResultListener {
+class MainActivity: FlutterActivity(), PaymentResultListener {
     companion object {
         const val CHANNEL = "telebirr_channel"
     }
@@ -61,6 +61,7 @@ class MainActivity: FlutterActivity(),PaymentResultListener {
         tBirr.publicKey = data["publicKey"] as String?
         tBirr.message = data["message"] as String?
         tBirr.entityId = data["totalAmount"] as String?
+        tBirr.inAppPaymentUrl = data["inAppPaymentUrl"] as String?
         return tBirr
     }
     fun initTeleBirr(payData: TeleBirrPack?) {
@@ -77,7 +78,7 @@ class MainActivity: FlutterActivity(),PaymentResultListener {
             request.setTotalAmount(payData.entityId)
             if (payData.appKey != null && payData.publicKey != null) {
                 AngolaPayUtil.getInstance().startPayment(
-                    request, this, payData.appKey, payData.publicKey
+                    request, this,payData.inAppPaymentUrl, payData.appKey, payData.publicKey
                 )
             } else {
                 val result = PaymentResult()
