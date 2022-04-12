@@ -29,11 +29,11 @@ class HistoryDataProvider {
       Trip trip;
       List<Trip> trips = [];
       int i = 0;
-      while (i < 1) {
-        LatLng origin = LatLng(double.parse("8.98" + getRandNum()),
-            double.parse("38.75"+getRandNum()));
-        LatLng destination = LatLng(double.parse("8.98" + getRandNum()),
-            double.parse("38.75" + getRandNum()));
+      while (i < 5) {
+        LatLng origin = LatLng(double.parse("8.9" + getRandNum()),
+            double.parse("38.7"+getRandNum()));
+        LatLng destination = LatLng(double.parse("8.9" + getRandNum()),
+            double.parse("38.7" + getRandNum()));
 
         var rng = Random();
         int money = rng.nextInt(100) * i + 237;
@@ -54,8 +54,8 @@ class HistoryDataProvider {
         trips.add(trip);
         i++;
       }
-      //return "Skiped";
-      return HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
+      return "Skiped";
+      //return HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
       //return trips;
     }
   }
@@ -66,7 +66,7 @@ class HistoryDataProvider {
 
   String getRandNum() {
     var rng = Random();
-    print(rng.nextInt(99));
+    print(rng.nextInt(999));
     return rng.nextInt(9999).toString();
   }
 }

@@ -46,6 +46,9 @@ class TeleBirrDataProvider {
       Result result = Result(response.statusCode.toString(),true, wait);
       return result;
     } else {
+      if(exec < 3){
+        exec += 1;
+      }
       return RequestResult().requestResult(response.statusCode.toString(), response.body);
     }
   }
