@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:isolate';
+import 'dart:ui';
+
+import 'package:driverapp/helper/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +21,13 @@ import 'package:wakelock/wakelock.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
+  // startTimer();
+  // dialog!();
+  print("We are around here manuaaaaaaws asd ${message.data['passengerName']}");
+
+  final SendPort? send = IsolateNameServer.lookupPortByName('tt');
+  send!.send(message);
   print('Handling a background message ${message.messageId}');
 }
 

@@ -168,8 +168,7 @@ class VerificationCode extends StatelessWidget {
                         otp5Controller.text +
                         otp6Controller.text;
                     print(code);
-                    print(
-                        "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                   
                     // PhoneAuthCredential credential =
                     //     PhoneAuthProvider.credential(
                     //         verificationId: verificationId, smsCode: code);

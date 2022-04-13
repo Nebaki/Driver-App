@@ -23,7 +23,6 @@ class RideRequest extends Equatable {
       [id, driverId, passengerName, pickupLocation, dropOffLocation];
 
   factory RideRequest.fromJson(Map<String, dynamic> json) {
-    print("this is the response data ${json["rideRequest"]["id"]}");
     return RideRequest(
       id: json["rideRequest"]["id"],
       driverId: json["rideRequest"]["driverId"],

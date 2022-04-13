@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:app_settings/app_settings.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -5,6 +9,7 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/models/models.dart';
+import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:driverapp/notifications/pushNotification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -117,6 +122,57 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     willScreenPop = false;
+    print("YAYAYAYAYAYAYAERERERE");
+    IsolateNameServer.registerPortWithName(_port.sendPort, 'tt');
+    _port.listen((message) {
+      waitingTimer = 30;
+      const oneSec = Duration(seconds: 1);
+      _timer = Timer.periodic(
+        oneSec,
+        (Timer timer) {
+          print("Timer starteddd");
+
+          if (waitingTimer == 0) {
+            UserEvent event = UserLoadById(myId);
+            BlocProvider.of<UserBloc>(context).add(event);
+            print("Yeah right now on action");
+            timer.cancel();
+          } else {
+            waitingTimer--;
+          }
+        },
+      );
+
+      final pickupList = json.decode(message.data['pickupLocation']);
+      final droppOffList = json.decode(message.data['droppOffLocation']);
+      // final nextDrivers = json.decode(message.data['nextDrivers']);
+
+      pickupLocation = LatLng(pickupList[0], pickupList[1]);
+      droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
+      passengerName = message.data['passengerName'];
+      passengerPhoneNumber = message.data['passengerPhoneNumber'];
+      requestId = message.data['requestId'];
+      passengerFcm = message.data['passengerFcm'];
+      distance = message.data['distance'];
+      duration = message.data['duration'];
+      price = message.data['price'];
+      droppOffAddress = message.data['droppOffAddress'];
+      pickUpAddress = message.data['pickupAddress'];
+      passengerProfilePictureUrl = message.data['profilePictureUrl'];
+      final listOfDrivers = json.decode(message.data['nextDrivers']);
+      nextDrivers = listOfDrivers;
+      print(
+          "Yeah we are still listeninggg here on the push notification class $waitingTimer");
+
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            // player.open(Audio("assets/sounds/announcement-sound.mp3"));
+            return NotificationDialog(callback, setDestination,
+                setIsArrivedWidget, [], waitingTimer, false);
+          });
+    });
 
     Geofire.initialize("availableDrivers");
 
@@ -131,8 +187,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _currentWidget = OfflineMode(setDriverStatus, callback);
   }
 
+  late Timer _timer;
+
+  int waitingTimer = 30;
+
   @override
   void dispose() {
+    IsolateNameServer.removePortNameMapping('mike');
     _serviceStatusStreamSubscription!.cancel();
     _connectivitySubscription.cancel();
     // homeScreenStreamSubscription.cancel();
@@ -144,6 +205,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _currentWidget = nextwidget;
     });
   }
+
+  final ReceivePort _port = ReceivePort();
 
   void setDestination(LatLng dest) {
     setState(() {
@@ -163,10 +226,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  late List<dynamic> nextDrivers;
   bool loadPoly = true;
+  void passRequest(driverFcm, nextDriver) {
+    RideRequestEvent event = RideRequestPass(driverFcm, nextDriver);
+    BlocProvider.of<RideRequestBloc>(context).add(event);
+  }
 
   @override
   Widget build(BuildContext context) {
+    changeDestination = (LatLng dest) {
+      setState(() {
+        destination = dest;
+      });
+    };
     if (isLocationOn != null) {
       if (isLocationOn! && isModal) {
         setState(() {
@@ -339,9 +412,21 @@ class _HomeScreenState extends State<HomeScreen> {
         onWillPop: () async => willScreenPop,
         child: Stack(
           children: [
+            BlocConsumer<UserBloc, UserState>(
+              listener: (context, state) {
+                if (state is UsersLoadSuccess) {
+                  print("Succceeeeeeeeeeeeessssssssss $nextDrivers");
+                  // widget.nextDrivers.removeAt(0);
+                  passRequest(state.user.fcm, nextDrivers);
+                }
+              },
+              buildWhen: (previous, current) => false,
+              builder: (context, state) {
+                return Container();
+              },
+            ),
             BlocConsumer<DirectionBloc, DirectionState>(
                 builder: (context, state) {
-              print('the state is $state');
               return Animarker(
                 curve: Curves.ease,
                 shouldAnimateCamera: false,
@@ -365,7 +450,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     _determinePosition().then((value) {
                       currentLat = value.latitude;
                       currentLng = value.longitude;
-                      print('this is the value $value');
                       controller.animateCamera(CameraUpdate.newCameraPosition(
                           CameraPosition(
                               zoom: 16.4746,
@@ -377,9 +461,6 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }, listenWhen: (prevstate, state) {
               bool isDirectionLoading = true;
-              print("here is the state---------------------");
-              print(prevstate);
-              print("The state ende");
               if (state is DirectionDistanceDurationLoading ||
                   state is DirectionDistanceDurationLoadSuccess) {
                 isDirectionLoading = false;
@@ -389,7 +470,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 isDirectionLoading = true;
               }
 
-              print(isDirectionLoading);
               return isDirectionLoading;
             },
                 // buildWhen: (prevstate, state) {
@@ -402,7 +482,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 // },
                 listener: (context, state) {
               if (state is DirectionLoadSuccess) {
-                print("here is the current latlng $currentLat $currentLng");
                 // isDialog = false;
                 showDriversOnMap();
 
@@ -803,7 +882,6 @@ class _HomeScreenState extends State<HomeScreen> {
         toolkit.LatLng(driverLat, driverLng),
         toolkit.LatLng(dropoffLat, dropOffLng)) as double;
 
-    print("Rotation is :: ");
     print(rotation);
 
     if (rotation <= 180 && rotation >= 0) {
@@ -817,7 +895,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void updateRideDetails() {
     if (isRequestingDirection == false) {
       isRequestingDirection = true;
-      print("Asked to load the duration");
       DirectionEvent event =
           DirectionDistanceDurationLoad(destination: destination);
       BlocProvider.of<DirectionBloc>(context).add(event);
@@ -828,8 +905,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _toggleServiceStatusStream() {
     if (_serviceStatusStreamSubscription == null) {
-      print("yeah it's enabled");
-
       final serviceStatusStream = _geolocatorPlatform.getServiceStatusStream();
       _serviceStatusStreamSubscription =
           serviceStatusStream.handleError((error) {
@@ -840,7 +915,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }).listen((serviceStatus) {
         String serviceStatusValue;
         if (serviceStatus == ServiceStatus.enabled) {
-          print("yeah it's enabled");
           setState(() {
             isLocationOn = true;
           });
@@ -934,7 +1008,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       LatLng(state.placeDetail.lat, state.placeDetail.lng));
               BlocProvider.of<DirectionBloc>(context).add(event);
 
-              print("Hey trying to pop the context around here::");
               destination =
                   LatLng(state.placeDetail.lat, state.placeDetail.lng);
 

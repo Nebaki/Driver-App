@@ -17,7 +17,6 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
             await rideRequestRepository.createRequest(event.rideRequest);
         yield RideRequestSuccess(request);
       } catch (_) {
-        print("the error is $_");
         yield RideRequestOperationFailur();
       }
     }
@@ -41,7 +40,6 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
             event.id, event.status, event.passengerFcm);
         yield RideRequesChanged();
       } catch (_) {
-        print("herererere");
         yield RideRequestOperationFailur();
       }
     }
@@ -53,7 +51,6 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         await rideRequestRepository.acceptRequest(event.id, event.passengerFcm);
         yield RideRequestAccepted();
       } catch (_) {
-        print("herererere");
         yield RideRequestOperationFailur();
       }
     }
@@ -64,6 +61,28 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         await rideRequestRepository.cancelRideRequest(event.id,
             event.cancelReason, event.passengerFcm, event.sendRequest);
         yield RideRequestCancelled();
+      } catch (_) {
+        yield RideRequestOperationFailur();
+      }
+    }
+
+    if (event is RideRequestComplete) {
+      yield RideRequestLoading();
+      try {
+        await rideRequestRepository.completeTrip(
+            event.id, event.price, event.passengerFcm);
+        yield RideRequestCompleted();
+      } catch (_) {
+        yield RideRequestOperationFailur();
+      }
+    }
+
+    if (event is RideRequestPass) {
+      yield RideRequestLoading();
+      try {
+        await rideRequestRepository.passRequest(
+            event.driverFcm, event.nextDrivers);
+        yield RideRequestPassed();
       } catch (_) {
         yield RideRequestOperationFailur();
       }

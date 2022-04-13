@@ -6,6 +6,8 @@ import 'package:driverapp/models/models.dart';
 
 class RideRequestDataProvider {
   final _baseUrl = 'https://safeway-api.herokuapp.com/api/ride-requests';
+  final _maintenanceUrl =
+      'https://mobiletaxi-api.herokuapp.com/api/ride-requests';
   final _fcmUrl = 'https://fcm.googleapis.com/fcm/send';
   final token =
       "AAAAKTCNpPU:APA91bHPscWDa8pPO5MGRj11FWo6NZkpK5tRPodi_2wuMdHhDNwlTO3l4jF50tFGiU55EWMyNss0St0l_kk2H1YmKH1z4yzWPVL25xGTt-GqOFWUdh7BgjJmiNo55eVzzJgHeEOBvHtH";
@@ -51,8 +53,6 @@ class RideRequestDataProvider {
         // ],
       }),
     );
-    print(
-        ' this is the response Status coed: ${response.body} ${response.statusCode}');
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -78,13 +78,9 @@ class RideRequestDataProvider {
 
   Future<void> changeRequestStatus(
       String id, String status, String? passengerFcm) async {
-    print("we Are hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!!!!!!!!!!!!");
-    print(id);
     final res =
         await http.get(Uri.parse("https://safeway-api.herokuapp.com/api"));
-    print(' the response body ${res.body}');
 
-    // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
     final response =
         await http.post(Uri.parse('$_baseUrl/set-ride-request-status/$id'),
             headers: <String, String>{
@@ -93,7 +89,6 @@ class RideRequestDataProvider {
             },
             body: json.encode({'status': status}));
 
-    print("this is the status code: ${response.statusCode}");
     if (response.statusCode == 200) {
       if (passengerFcm != null) {
         if (status == "Cancelled" ||
@@ -108,9 +103,6 @@ class RideRequestDataProvider {
   }
 
   Future<void> acceptRequest(String id, String passengerFcm) async {
-    print("we Are hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!!!!!!!!!!!!");
-    print(id);
-
     // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
     final response = await http.post(
       Uri.parse('$_baseUrl/accept-ride-request/$id'),
@@ -120,8 +112,6 @@ class RideRequestDataProvider {
       },
     );
 
-    print(
-        "this is the status code: ${response.statusCode}  and ${response.body}");
     if (response.statusCode == 200) {
       sendNotification(passengerFcm, "Accepted");
     } else {
@@ -149,8 +139,6 @@ class RideRequestDataProvider {
       }),
     );
 
-    print(response.statusCode);
-
     if (response.statusCode == 200) {
       final data = (response.body);
       //return NotificationRequest.fromJson(data);
@@ -176,8 +164,6 @@ class RideRequestDataProvider {
       }),
     );
 
-    print(response.statusCode);
-
     if (response.statusCode == 200) {
       final data = (response.body);
     } else {
@@ -195,14 +181,103 @@ class RideRequestDataProvider {
             },
             body: json.encode({'cancel_reason': cancelReason}));
 
-    print("response ${response.statusCode} ${response.body}");
-
     if (response.statusCode == 200) {
       if (sendRequest) {
         cancelNotification(fcmId!);
       }
     } else {
       throw 'Unable to cancel the request';
+    }
+  }
+
+  Future completeTrip(String id, double price, String? fcmId) async {
+    final http.Response response =
+        await http.post(Uri.parse('$_maintenanceUrl/end-trip/$id'),
+            headers: <String, String>{
+              "Content-Type": "application/json",
+              "x-access-token": "${await authDataProvider.getToken()}"
+            },
+            body: json.encode({'price': price}));
+
+    if (response.statusCode == 200) {
+      completeNotification(fcmId!);
+    } else {
+      throw 'Unable to cancel the request';
+    }
+  }
+
+  Future completeNotification(String fcmId) async {
+    final response = await http.post(
+      Uri.parse(_fcmUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$token'
+      },
+      body: json.encode({
+        "data": {'response': 'Completed'},
+        "to": fcmId,
+        "notification": {
+          "title": "Trip Completed",
+          "body": "Your trip has been completed"
+        }
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = (response.body);
+    } else {
+      throw Exception('Failed to send notification.');
+    }
+  }
+
+  Future passRequest(String driverFcm, List<dynamic> nextDrivers) async {
+    final response = await http.post(
+      Uri.parse(_fcmUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$token'
+      },
+      body: json.encode({
+        "data": {
+          "nextDrivers": nextDrivers,
+          "response": "Cancelled",
+          "requestId": requestId,
+          "passengerFcm": passengerFcm,
+          "pickupLocation": [pickupLocation.latitude, pickupLocation.longitude],
+          "droppOffLocation": [
+            droppOffLocation.latitude,
+            droppOffLocation.longitude
+          ],
+          "passengerName": passengerName,
+          "pickupAddress": pickUpAddress,
+          "droppOffAddress": droppOffAddress,
+          "passengerPhoneNumber": passengerPhoneNumber,
+          "price": price,
+          "duration": duration,
+          "distance": distance,
+          "profilePictureUrl": "someurl"
+        },
+        "android": {"priority": "high"},
+        "to": driverFcm,
+        "notification": {
+          "title": "New RideRequest",
+          "body":
+              "You have new ride request open it by tapping the nottification."
+        }
+      }),
+    );
+// 622ef747b9eb9b904c5d2210
+
+    // dxGQlHGETnWjGYmlVy8Utn:APA91bErJaqPmsqfQOcStX6MYcBxfIAMr9kofXqF7bOBhftlZ3qo327e3PQ1jinm6o7FmtTy1LX4e0SE-dCUc2NwcyL6OJqKW7dagp6uTs8k-m6ynhp7NBotpPMaioTNxBuJFPz_RUif
+
+    print("Status code is ${response.body}");
+
+    if (response.statusCode == 200) {
+      print("come on come on turn the radio on it;s friday night");
+      final data = (response.body);
+      //return NotificationRequest.fromJson(data);
+    } else {
+      throw Exception('Failed to send notification.');
     }
   }
 }

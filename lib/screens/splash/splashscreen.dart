@@ -154,7 +154,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                       );
                     }, listener: (_, state) {
                       if (state is AuthDataLoadSuccess) {
-                        print("teststst");
                         print(state.auth.token);
 
                         if (state.auth.token != null) {

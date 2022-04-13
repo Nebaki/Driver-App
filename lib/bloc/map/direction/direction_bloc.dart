@@ -12,13 +12,10 @@ class DirectionBloc extends Bloc<DirectionEvent, DirectionState> {
       yield DirectionLoading();
 
       try {
-        print("yeah Trying");
         final direction =
             await directionRepository.getDirection(event.destination);
-        print("yeah Successfull");
         yield DirectionLoadSuccess(direction: direction);
       } catch (_) {
-        print("not successfull");
         yield DirectionOperationFailure();
       }
     }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/widgets/widgets.dart';
@@ -6,10 +8,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class NotificationDialog extends StatelessWidget {
+class NotificationDialog extends StatefulWidget {
   final Function callback;
   final Function setDestination;
   final Function setIsArrivedWidget;
+  final List<dynamic> nextDrivers;
+  final bool passRequest;
+  int timer;
   // final String pickup;
   // final String droppOff;
   // final String requestId;
@@ -18,13 +23,66 @@ class NotificationDialog extends StatelessWidget {
   // final String passengerFcm;
   // final LatLng droppOffPos;
 
-  NotificationDialog(
-    this.callback,
-    this.setDestination,
-    this.setIsArrivedWidget,
-  );
+  NotificationDialog(this.callback, this.setDestination,
+      this.setIsArrivedWidget, this.nextDrivers, this.timer, this.passRequest);
+
+  @override
+  State<NotificationDialog> createState() => _NotificationDialogState();
+}
+
+class _NotificationDialogState extends State<NotificationDialog> {
+  List<String> drivers = [];
+  late Timer _timer;
+
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (widget.timer == 0) {
+          // print("Yeah right now on action");
+          // player.dispose();
+          if (widget.passRequest) {
+            UserEvent event = UserLoadById(myId);
+            BlocProvider.of<UserBloc>(context).add(event);
+          }
+
+          // RideRequestEvent requestEvent =
+          //     RideRequestChangeStatus(requestId, "Cancelled", passengerFcm);
+          // BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
+          setState(() {
+            timer.cancel();
+          });
+        } else {
+          setState(() {
+            widget.timer--;
+          });
+        }
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    startTimer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // if (_start == 0) {
+    //   player.dispose();
+
+    //   RideRequestEvent requestEvent =
+    //       RideRequestChangeStatus(requestId, "Cancelled", passengerFcm);
+    //   BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
+    // }
     bool isLoading = false;
 
     return BlocConsumer<RideRequestBloc, RideRequestState>(
@@ -32,11 +90,12 @@ class NotificationDialog extends StatelessWidget {
       return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Column(
-          children: const [
-            Text(
+          children: [
+            const Text(
               "New Ride Request",
               style: TextStyle(fontSize: 20),
             ),
+            Text(widget.timer.toString(), style: const TextStyle(fontSize: 20))
           ],
         ),
         content: SizedBox(
@@ -193,19 +252,35 @@ class NotificationDialog extends StatelessWidget {
                     //     side: MaterialStateProperty.all<BorderSide>(
                     //         const BorderSide(width: 1, color: Colors.red))),
                     onPressed: () {
+                      print(myId);
                       player.stop();
                       player.dispose();
+                      UserEvent event = UserLoadById(myId);
+                      BlocProvider.of<UserBloc>(context).add(event);
 
-                      RideRequestEvent requestEvent = RideRequestChangeStatus(
-                          requestId, "Cancelled", passengerFcm);
-                      BlocProvider.of<RideRequestBloc>(context)
-                          .add(requestEvent);
+                      // RideRequestEvent requestEvent = RideRequestChangeStatus(
+                      //     requestId, "Cancelled", passengerFcm);
+                      // BlocProvider.of<RideRequestBloc>(context)
+                      //     .add(requestEvent);
                       // Navigator.pop(context);
                     },
                     child: const Text("Skip",
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.normal))),
+              ),
+              BlocConsumer<UserBloc, UserState>(
+                listener: (context, state) {
+                  if (state is UsersLoadSuccess) {
+                    print("Succceeeeeeeeeeeeessssssssss ${widget.nextDrivers}");
+                    widget.nextDrivers.removeAt(0);
+                    passRequest(state.user.fcm, widget.nextDrivers);
+                  }
+                },
+                buildWhen: (previous, current) => false,
+                builder: (context, state) {
+                  return Container();
+                },
               ),
               SizedBox(
                 width: 100,
@@ -224,7 +299,6 @@ class NotificationDialog extends StatelessWidget {
 
                       player.dispose();
                       isLoading = true;
-       
 
                       RideRequestEvent requestEvent =
                           RideRequestAccept(requestId, passengerFcm!);
@@ -244,17 +318,16 @@ class NotificationDialog extends StatelessWidget {
     }, listener: (_, state) {
       if (state is RideRequestAccepted) {
         isLoading = false;
-        print("Yeah yeah yeah it's Changedd");
         DirectionEvent event = DirectionLoad(destination: pickupLocation);
 
         BlocProvider.of<DirectionBloc>(context).add(event);
 
-        setIsArrivedWidget(true);
-        setDestination(pickupLocation);
-        callback(Arrived(callback));
+        widget.setIsArrivedWidget(true);
+        widget.setDestination(pickupLocation);
+        widget.callback(Arrived(widget.callback));
         Navigator.pop(context);
       }
-      if (state is RideRequesChanged) {
+      if (state is RideRequestPassed) {
         Navigator.pop(context);
       }
       if (state is RideRequestOperationFailur) {
@@ -265,5 +338,10 @@ class NotificationDialog extends StatelessWidget {
             backgroundColor: Colors.red.shade900));
       }
     });
+  }
+
+  void passRequest(driverFcm, nextDriver) {
+    RideRequestEvent event = RideRequestPass(driverFcm, nextDriver);
+    BlocProvider.of<RideRequestBloc>(context).add(event);
   }
 }

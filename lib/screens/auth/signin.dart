@@ -34,7 +34,6 @@ class _SigninScreenState extends State<SigninScreen> {
         body: BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
       return _buildSigninForm();
     }, listener: (_, state) {
-      print("The statate $state");
       if (state is AuthDataLoadSuccess) {
         myId = state.auth.id!;
         myPictureUrl = state.auth.profilePicture!;
@@ -64,7 +63,6 @@ class _SigninScreenState extends State<SigninScreen> {
 
   void signIn() {
     checkInternetConnection(context).then((value) {
-      print("Value $value");
       if (value) {
         _isLoading = true;
         AuthEvent event = AuthLogin(Auth(

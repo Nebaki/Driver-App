@@ -27,6 +27,7 @@ class PushNotificationService {
       if (message.data['passengerName'] != null) {
         final pickupList = json.decode(message.data['pickupLocation']);
         final droppOffList = json.decode(message.data['droppOffLocation']);
+        // final nextDrivers = json.decode(message.data['nextDrivers']);
 
         pickupLocation = LatLng(pickupList[0], pickupList[1]);
         droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
@@ -40,13 +41,14 @@ class PushNotificationService {
         droppOffAddress = message.data['droppOffAddress'];
         pickUpAddress = message.data['pickupAddress'];
         passengerProfilePictureUrl = message.data['profilePictureUrl'];
+        final listOfDrivers = json.decode(message.data['nextDrivers']);
         showDialog(
             barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
               // player.open(Audio("assets/sounds/announcement-sound.mp3"));
-              return NotificationDialog(
-                  callback, setDestination, setIsArrivedWidget);
+              return NotificationDialog(callback, setDestination,
+                  setIsArrivedWidget, listOfDrivers, 60, true);
             });
       } else {}
 
@@ -85,13 +87,15 @@ class PushNotificationService {
       droppOffAddress = message.data['droppOffAddress'];
       pickUpAddress = message.data['pickupAddress'];
       passengerProfilePictureUrl = message.data['profilePictureUrl'];
+      final listOfDrivers = json.decode(message.data['nextDrivers']);
+
       print('A new onMessageOpenedApp event was published!');
       showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
-            return NotificationDialog(
-                callback, setDestination, setIsArrivedWidget);
+            return NotificationDialog(callback, setDestination,
+                setIsArrivedWidget, listOfDrivers, 60, true);
           });
       // Navigator.pushNamed(
       //   context,

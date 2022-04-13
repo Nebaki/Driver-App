@@ -28,7 +28,6 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    print(widget.args.carType);
     serviceName = widget.args.carType;
     min_rate = widget.args.min_rate;
     switch (widget.args.gender) {

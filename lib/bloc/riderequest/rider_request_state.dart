@@ -27,3 +27,7 @@ class RideRequestAccepted extends RideRequestState {}
 class RideRequestDeleteSuccess extends RideRequestState {}
 
 class RideRequestCancelled extends RideRequestState {}
+
+class RideRequestCompleted extends RideRequestState {}
+
+class RideRequestPassed extends RideRequestState {}

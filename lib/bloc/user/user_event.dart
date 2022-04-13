@@ -72,3 +72,12 @@ class UserDelete extends UserEvent {
   @override
   toString() => 'User Deleted {Passenger: $user}';
 }
+
+class UserLoadById extends UserEvent {
+  final String id;
+
+  const UserLoadById(this.id);
+
+  @override
+  List<Object> get props => [id];
+}

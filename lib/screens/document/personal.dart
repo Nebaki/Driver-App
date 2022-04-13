@@ -135,12 +135,10 @@ class _PersonalDocumentState extends State<PersonalDocument> {
         subtitle: Text(subtitle),
         trailing: InkWell(
           onTap: () {
-            print("YAY");
 
             _pickFiles();
           },
           onLongPress: () {
-            print("YAY");
           },
           child: _isLoading
               ? CircularProgressIndicator()

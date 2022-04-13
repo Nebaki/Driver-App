@@ -17,6 +17,24 @@ class UserDataProvider {
       AuthDataProvider(httpClient: http.Client());
   UserDataProvider({required this.httpClient}) : assert(httpClient != null);
 
+  Future<User> getDriverById(String id) async {
+    print("in hereeeeeeeee");
+    final response = await http
+        .get(Uri.parse('$_baseUrl/get-driver/$id'), headers: <String, String>{
+      'Content-Type': "application/json",
+      'x-access-token': '${await authDataProvider.getToken()}',
+    });
+
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      return User.fromJson(responseData);
+    } else {
+      throw Exception('Failed to get driver.');
+    }
+  }
+
   Future<User> createdriver(User user) async {
     final response = await http.post(
       Uri.parse('$_baseUrl/create-driver'),
@@ -39,7 +57,6 @@ class UserDataProvider {
   }
 
   Future uploadImage(XFile file) async {
-    print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
     final request = http.MultipartRequest(
         'POST', Uri.parse('$_baseUrl/update-profile-image'));
     request.headers['x-access-token'] = '${await authDataProvider.getToken()}';
@@ -49,8 +66,6 @@ class UserDataProvider {
       contentType: MediaType('image', 'jpg'),
     ));
     final response = await request.send();
-    print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-    print(response.statusCode);
 
     if (response.statusCode == 200) {
       await response.stream.transform(utf8.decoder).listen((value) async {
@@ -99,8 +114,6 @@ class UserDataProvider {
       }),
     );
 
-    print("yow here is the status code ${response.statusCode}");
-
     if (response.statusCode == 200) {
       authDataProvider.updateUserData(user);
       return User.fromJson(jsonDecode(response.body));
@@ -112,8 +125,6 @@ class UserDataProvider {
   }
 
   Future updatePreference(User user) async {
-    print("Comeonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
-    print(user.preference);
     final http.Response response = await http.post(
       Uri.parse('$_baseUrl/update-profile'),
       headers: <String, String>{
@@ -122,12 +133,9 @@ class UserDataProvider {
       },
       body: jsonEncode(<String, dynamic>{'preference': user.preference}),
     );
-    print(response.statusCode);
-    print(response.body);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print(data['driver']['preference']['car_type']);
       authDataProvider.updatePreference(
           data['driver']['preference']['gender'],
           data['driver']['preference']['min_rate'].toString(),

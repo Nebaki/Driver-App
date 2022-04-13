@@ -13,7 +13,6 @@ class SettingScreen extends StatelessWidget {
       const TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
   @override
   Widget build(BuildContext context) {
-    print("yeahyeahyehy");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

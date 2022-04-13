@@ -23,9 +23,7 @@ class EmergencyReportDataProvider {
         'location': [emergencyReport.location[0], emergencyReport.location[1]]
       }),
     );
-    print(
-        ' this is the response Status coed: ${response.body} ${response.statusCode}');
-
+   
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       // return da

@@ -16,6 +16,8 @@ class WaitingPassenger extends StatelessWidget {
       listener: (context, state) {
         if (state is RideRequesChanged) {
           callback!(CompleteTrip(callback));
+          changeDestination(droppOffLocation);
+
           DirectionEvent event = DirectionLoad(destination: droppOffLocation);
 
           BlocProvider.of<DirectionBloc>(context).add(event);

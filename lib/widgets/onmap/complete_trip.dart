@@ -25,7 +25,7 @@ class _CompleteTripState extends State<CompleteTrip> {
   Widget build(BuildContext context) {
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
-        if (state is RideRequesChanged) {
+        if (state is RideRequestCompleted) {
           Navigator.pushReplacementNamed(context, CollectedCash.routeName);
         }
       },
@@ -91,9 +91,8 @@ class _CompleteTripState extends State<CompleteTrip> {
                               fontSize: 17),
                         ),
                         action: () {
-                          RideRequestEvent requestEvent =
-                              RideRequestChangeStatus(
-                                  requestId, "Completed", passengerFcm);
+                          RideRequestEvent requestEvent = RideRequestComplete(
+                              requestId, 98.8, passengerFcm);
                           BlocProvider.of<RideRequestBloc>(context)
                               .add(requestEvent);
                         })
