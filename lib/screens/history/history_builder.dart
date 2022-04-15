@@ -59,24 +59,13 @@ class HistoryBuilder extends StatelessWidget {
                 : Container(),
             */
             ListTile(
-              onTap: () async {
-                showModalBottomSheet<void>(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.0),
-                          topRight: Radius.circular(20.0)),
-                    ),
-                    context: context,
-                    builder: (BuildContext context) {
-                      return _showBottomMessage(context, trip);
-                    });
-              },
+              onTap: () async {},
               /*leading: Icon(
                 credit.type == "Gift" ? Icons.wallet_giftcard : Icons.email,
                 size: 40,
               ),*/
               title: Text(
-                "From: " + trip.from! + " To" + trip.to!,
+                "From:  ${trip.pickUpAddress!}   To+ ${trip.dropOffLocation!}",
                 style: const TextStyle(color: Colors.black, fontSize: 16),
               ),
               subtitle: Text('${trip.date} . ${trip.time}'),
@@ -87,60 +76,15 @@ class HistoryBuilder extends StatelessWidget {
         ));
   }
 
-  /* Future<Widget> logger(BuildContext context, String message) async {
-    ShowMessage(context, "Transaction", "Error happened: $error")
-  }
-*/
-  Widget _showBottomMessage(BuildContext context, Trip trip) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.4,
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            /*leading: Icon(
-              credit.type == "Gift" ? Icons.wallet_giftcard : Icons.email,
-              size: 50,
-            ),*/
-            title: Text(
-              trip.date!,
-              style: const TextStyle(fontSize: 22, color: Colors.red),
-            ),
-            subtitle: Text(trip.date!),
-            trailing:
-                Text(trip.price!, style: const TextStyle(color: Colors.red)),
-          ),
-          Container(
-            decoration: BoxDecoration(color: Colors.blueGrey[50]),
-            height: 180,
-            child: trip.picture != null
-                ? Image.memory(trip.picture!)
-                : const Text("Unable to load Image"),
-          ),
-          Text(
-            'from: ${trip.from} to: ${trip.to}',
-            style: const TextStyle(color: Colors.black),
-          ),
-          Text(
-            'Origin: ${LatLngConverter().string(trip.origin!)}'
-            'destination: ${LatLngConverter().string(trip.destination!)}}',
-            style: const TextStyle(color: Colors.black),
-          ),
-        ],
-      ),
-    );
-  }
-
   void getImageBit(Trip trip) async {
     //downloadImage(trip);
-    await ImageUtils.networkImageToBase64(
-            imageUrl(trip))
-        .then((value) => {
-              //ImageUtils().saveImage(ImageUtils.base64ToUnit8list(value), "id-${trip.id}"),
-              trip.picture = ImageUtils.base64ToUnit8list(value),
-              print("unit8: net- $value"),
-              print("unit8: hot- ${trip.picture}"),
-              updateDB(trip)
-            });
+    await ImageUtils.networkImageToBase64(imageUrl(trip)).then((value) => {
+          //ImageUtils().saveImage(ImageUtils.base64ToUnit8list(value), "id-${trip.id}"),
+          trip.picture = ImageUtils.base64ToUnit8list(value),
+          print("unit8: net- $value"),
+          print("unit8: hot- ${trip.picture}"),
+          updateDB(trip)
+        });
   }
 
   Future<void> updateDB(Trip trip) async {
@@ -153,20 +97,21 @@ class HistoryBuilder extends StatelessWidget {
         "size=600x250&"
         "zoom=10&"
         "maptype=roadmap&"
-        "markers=color:green%7Clabel:S%7C${trip.origin?.latitude},${trip.origin?.longitude}&"
-        "markers=color:red%7Clabel:E%7C${trip.destination?.latitude},${trip.destination?.longitude}&"
+        "markers=color:green%7Clabel:S%7C${trip.pickUpLocation?.latitude},${trip.pickUpLocation?.longitude}&"
+        "markers=color:red%7Clabel:E%7C${trip.dropOffLocation?.latitude},${trip.dropOffLocation?.longitude}&"
         "key=$googleAPiKey" /*"signature=YOUR_SIGNATURE"*/;
   }
 }
+
 Future<void> downloadImage(Trip trip) async {
   String googleAPiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
   var url = "https://maps.googleapis.com/maps/api/staticmap?"
-  "center=${trip.origin?.latitude},${trip.origin?.longitude}&"
+      "center=${trip.pickUpLocation?.latitude},${trip.pickUpLocation?.longitude}&"
       "size=600x250&"
       "zoom=10&"
       "maptype=roadmap&"
-      "markers=color:green%7Clabel:S%7C${trip.origin?.latitude},${trip.origin?.longitude}&"
-      "markers=color:red%7Clabel:E%7C${trip.destination?.latitude},${trip.destination?.longitude}&"
+      "markers=color:green%7Clabel:S%7C${trip.pickUpLocation?.latitude},${trip.pickUpLocation?.longitude}&"
+      "markers=color:red%7Clabel:E%7C${trip.dropOffLocation?.latitude},${trip.dropOffLocation?.longitude}&"
       "key=$googleAPiKey"; // <-- 1
   var response = await get(Uri.parse(url)); // <--2
   print("url-: $url");
@@ -177,7 +122,7 @@ Future<void> downloadImage(Trip trip) async {
   //to the device to show that it's coming from the internet
   await Directory(firstPath).create(recursive: true); // <-- 1
   File file2 = File(filePathAndName); // <-- 2
-  file2.writeAsBytesSync(response.bodyBytes);         // <-- 3
+  file2.writeAsBytesSync(response.bodyBytes); // <-- 3
 }
 
 late Function update;
@@ -226,11 +171,7 @@ class ImageUtils {
   Future<File> getImage(String filename) async {
     final dir = await getExternalStorageDirectory();
     File f = File('${dir?.path}/historyIMG/$filename.png');
-    f.exists().then((value) => {if (value) {
-
-    } else {
-
-    }});
+    f.exists().then((value) => {if (value) {} else {}});
     return f;
   }
 
@@ -240,17 +181,16 @@ class ImageUtils {
     File file = await File('${directory.path}/historyIMG/$filename.png')
         .create(recursive: true);
     file.writeAsBytesSync(uint8list);
-    await file.exists().then((value) => {
-    print("img-w: $value")
-    });
+    await file.exists().then((value) => {print("img-w: $value")});
   }
 
-  Future<void> createDir(Directory directory, Uint8List uint8list, String name) async {
+  Future<void> createDir(
+      Directory directory, Uint8List uint8list, String name) async {
     await Directory('${directory.path}/historyIMG/')
         .create(recursive: true)
         .then((value) => {
               print("img-c: ${value.path} created"),
-      writeImageImage(directory, uint8list, name)
+              writeImageImage(directory, uint8list, name)
             });
   }
 

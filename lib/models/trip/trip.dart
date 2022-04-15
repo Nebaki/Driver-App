@@ -6,49 +6,49 @@ class Trip {
   int? id;
   String? date;
   String? time;
-  String? from;
-  String? to;
+  String? pickUpAddress;
+  String? dropOffAddress;
   String? price;
-  LatLng? origin;
-  LatLng? destination;
+  LatLng? pickUpLocation;
+  LatLng? dropOffLocation;
   Uint8List? picture;
 
   Trip(
       {required this.id,
       required this.date,
       required this.time,
-      required this.from,
-      required this.to,
+      required this.pickUpAddress,
+      required this.dropOffAddress,
       required this.price,
-      required this.origin,
-      required this.destination,
+      required this.pickUpLocation,
+      required this.dropOffLocation,
       required this.picture});
   Trip.fromMap(Map map) {
     id = map[id];
     date = map[date];
     time = map[time];
-    from = map[from];
-    to = map[to];
+    pickUpAddress = map[pickUpAddress];
+    dropOffAddress = map[dropOffAddress];
     price = map[price];
-    origin = map[origin];
-    destination = map[destination];
+    pickUpLocation = map[pickUpLocation];
+    dropOffLocation = map[dropOffLocation];
     picture = map[picture];
   }
   Map<String, dynamic> toMap() => {
     "id": id,
     "date": date,
     "time": time,
-    "froms": from,
-    "tos": to,
+    "pickUpAddress": pickUpAddress,
+    "dropOffAddress": dropOffAddress,
     "price": price,
-    "origin": LatLngConverter().string(origin!),
-    "destination": LatLngConverter().string(destination!),
+    "pickUpLocation": LatLngConverter().string(pickUpLocation!),
+    "dropOffLocation": LatLngConverter().string(dropOffLocation!),
     "picture": picture,
   };
   @override
   String toString() {
-    return 'Trip{id: $id, date: $date, time: $time, from: $from,'
-        ' to: $to, price: $price, origin: $origin, destination: $destination, picture: $picture}';
+    return 'Trip{id: $id, date: $date, time: $time, from: $pickUpAddress,'
+        ' to: $dropOffAddress, price: $price, origin: $pickUpLocation, destination: $dropOffLocation, picture: $picture}';
   }
 
 }

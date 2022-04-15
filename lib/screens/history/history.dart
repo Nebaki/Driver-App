@@ -99,24 +99,4 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-
-  /*void getImageBit(Trip trip) async {
-    await ImageUtils.networkImageToBase64(
-            imageUrl(trip.origin!, trip.destination!))
-        .then((value) => {
-              trip.picture = ImageUtils.base64ToUnit8list(value),
-              HistoryDB().updateTrip(trip),setState((){})
-            });
-  }
-
-
-  String imageUrl(LatLng origin, LatLng destination) {
-    String googleAPiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
-    return "https://maps.googleapis.com/maps/api/staticmap?"
-        "size=600x250&"
-        "maptype=roadmap&"
-        "markers=color:green%7Clabel:S%7C${origin.latitude},${origin.longitude}&"
-        "markers=color:red%7Clabel:E%7C${destination.latitude},${destination.longitude}&"
-        "key=$googleAPiKey&" *//*"signature=YOUR_SIGNATURE"*//*;
-  }*/
 }

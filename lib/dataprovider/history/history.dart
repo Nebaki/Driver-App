@@ -10,17 +10,17 @@ import '../header/header.dart';
 import 'package:http/http.dart' as http;
 
 class HistoryDataProvider {
-  final _baseUrl = RequestHeader.baseURL + 'credits';
+  final _baseUrl = RequestHeader.baseURL + 'ride-requests';
   final http.Client httpClient;
 
   HistoryDataProvider({required this.httpClient});
 
   Future<String> loadCreditHistory(String user) async {
     final http.Response response = await http.get(
-        Uri.parse('$_baseUrl/get-credit-transactions'),
+        Uri.parse('$_baseUrl/get-driver-trips'),
         headers: await RequestHeader().authorisedHeader());
 
-    if (response.statusCode != 200) {
+    if (response.statusCode == 200) {
       List<Trip> trips = [];
       Session().logSession("trans", response.body);
       return "Unable to update history";
@@ -44,12 +44,12 @@ class HistoryDataProvider {
         trip = Trip(
             id: i ,
             date: "Money Received $i",
-            from: "Hello you received nothing Thanks",
+            pickUpAddress: "Hello you received nothing Thanks",
             time: "soon",
             price: "$money.ETB",
-            to: "Today",
-            origin: origin,
-            destination: destination,
+            dropOffAddress: "Today",
+            pickUpLocation: origin,
+            dropOffLocation: destination,
         picture: null);
         trips.add(trip);
         i++;

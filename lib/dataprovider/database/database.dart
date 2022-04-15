@@ -33,10 +33,10 @@ class HistoryDB {
       '''CREATE TABLE TripHistory(
            id INTEGER PRIMARY KEY,
            date TEXT,
-           froms TEXT,
+           pickUpAddress TEXT,
            time TEXT,
            price TEXT,
-           tos TEXT,
+           dropOffAddress TEXT,
             origin TEXT,
             destination TEXT,
             picture BLOB )''',
@@ -69,14 +69,15 @@ class HistoryDB {
       return Trip(
         id: maps[i]['id'],
         date: maps[i]['date'],
-        from: maps[i]['froms'],
+        pickUpAddress: maps[i]['pickUpAddress'],
         time: maps[i]['time'],
         price: maps[i]['price'],
-        to: maps[i]['tos'],
-        origin: LatLngConverter().latLng(maps[i]['origin']),
-        destination: LatLngConverter().latLng(maps[i]['destination']),
+        dropOffAddress: maps[i]['dropOffAddress'],
+        pickUpLocation: LatLngConverter().latLng(maps[i]['pickUpLocation']),
+        dropOffLocation: LatLngConverter().latLng(maps[i]['dropOffLocation']),
         picture: maps[i]['picture'],
       );
+
     });
   }
 
@@ -114,10 +115,10 @@ class HistoryDB {
       '''CREATE TABLE $name(
            id INTEGER PRIMARY KEY,
            date TEXT,
-           froms TEXT,
+           pickUpAddress TEXT,
            time TEXT,
            price TEXT,
-           tos TEXT,
+           dropOffAddress TEXT,
             origin TEXT,
             destination TEXT,
             picture BLOB )''',
