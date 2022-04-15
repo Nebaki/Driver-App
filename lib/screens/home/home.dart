@@ -11,6 +11,7 @@ import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:driverapp/notifications/pushNotification.dart';
+import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animarker/widgets/animarker.dart';
@@ -139,6 +140,9 @@ class _HomeScreenState extends State<HomeScreen> {
             if (nextDrivers.isNotEmpty) {
               UserEvent event = UserLoadById(nextDrivers[0]);
               BlocProvider.of<UserBloc>(context).add(event);
+            } else {
+              Navigator.pushNamed(context, CancelReason.routeName,
+                  arguments: CancelReasonArgument(sendRequest: true));
             }
             print("Yeah right now on action");
             timer.cancel();
@@ -186,8 +190,59 @@ class _HomeScreenState extends State<HomeScreen> {
     pushNotificationService.initialize(
         context, callback, setDestination, setIsArrivedWidget);
     pushNotificationService.seubscribeTopic();
-
     _currentWidget = OfflineMode(setDriverStatus, callback);
+
+    widget.args.isSelected
+        ? WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return WillPopScope(
+                    onWillPop: () async => false,
+                    child: AlertDialog(
+                      title: Text("Uncompleted Trip"),
+                      content: Text(
+                          "You have uncompleted trip you have to cancel or complete the trip in order to continue."),
+                      actions: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, CancelReason.routeName,
+                                    arguments: CancelReasonArgument(
+                                        sendRequest: false));
+                              },
+                              child: Text("Cancel"),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+
+                                  _getPolyline(widget.args.encodedPts!);
+
+                                  _currentWidget = CompleteTrip(callback);
+                                  destination = droppOffLocation;
+
+                                  setState(() {});
+                                  showDriversOnMap();
+
+                                  // DirectionEvent event =
+                                  //     DirectionDistanceDurationLoad(
+                                  //         destination: droppOffLocation);
+                                  // BlocProvider.of<DirectionBloc>(context).add(event);
+                                },
+                                child: Text('Procced'))
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                });
+          })
+        : null;
   }
 
   late Timer _timer;

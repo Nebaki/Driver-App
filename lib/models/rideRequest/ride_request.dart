@@ -47,10 +47,12 @@ class RideRequest extends Equatable {
 
   factory RideRequest.fromJson(Map<String, dynamic> json) {
     return RideRequest(
-      id: json["id"],
+      id: json["_id"],
       driverId: json["driver_id"] ?? '',
-      // pickupLocation: json["rideRequest"]["pickupLocation"],
-      // dropOffLocation: json["passenger"]["gender"],
+      pickupLocation:
+          LatLng(json["pickup_location"][0], json["pickup_location"][1]),
+      dropOffLocation:
+          LatLng(json["droppoff_location"][1], json["droppoff_location"][0]),
       // passengerPhoneNumber: json["rideRequest"]["passengerName"],
       direction: json['direction'],
       pickUpAddress: json["pickup_address"] ?? '',

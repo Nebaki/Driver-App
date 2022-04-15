@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -166,9 +167,9 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                           setState(() {
                             isSuccess = true;
                           });
-                          Navigator.pushReplacementNamed(
-                              context, HomeScreen.routeName,
-                              arguments: HomeScreenArgument(isSelected: false));
+                          // Navigator.pushReplacementNamed(
+                          //     context, HomeScreen.routeName,
+                          //     arguments: HomeScreenArgument(isSelected: false));
                         } else {
                           Navigator.pushReplacementNamed(
                               context, SigninScreen.routeName);
@@ -186,14 +187,19 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                 }, listener: (context, st) {
                   print("Yoyoyoyoyoyoyoyoyoyooyqqq $st");
                   if (st is RideRequestStartedTripChecked) {
+                    // distanceDistance = st.rideRequest.distance!;
+
                     print(st.rideRequest);
-                    print("data is is is is ${st.rideRequest.pickUpAddress}");
+                    print(
+                        "data is is is is ${st.rideRequest.id} ${st.rideRequest.dropOffLocation}");
 
                     if (st.rideRequest.pickUpAddress == null) {
                       Navigator.pushReplacementNamed(
                           context, HomeScreen.routeName,
                           arguments: HomeScreenArgument(isSelected: false));
                     } else {
+                      droppOffLocation = st.rideRequest.dropOffLocation!;
+                      requestId = st.rideRequest.id!;
                       // DriverEvent event = DriverLoad(st.rideRequest.driverId!);
                       // BlocProvider.of<DriverBloc>(context).add(event);
                       price = st.rideRequest.price!;

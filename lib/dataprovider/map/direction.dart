@@ -26,7 +26,6 @@ class DirectionDataProvider {
 
     final response = await httpClient.get(Uri.parse(_directionUrl));
 
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return Direction.fromJson(data);
