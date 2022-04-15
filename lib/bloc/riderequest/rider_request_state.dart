@@ -31,3 +31,10 @@ class RideRequestCancelled extends RideRequestState {}
 class RideRequestCompleted extends RideRequestState {}
 
 class RideRequestPassed extends RideRequestState {}
+
+class RideRequestStartedTripChecked extends RideRequestState {
+  final RideRequest rideRequest;
+  const RideRequestStartedTripChecked(this.rideRequest);
+  @override
+  List<Object> get props => [rideRequest];
+}

@@ -123,9 +123,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     willScreenPop = false;
     print("YAYAYAYAYAYAYAERERERE");
-    IsolateNameServer.registerPortWithName(_port.sendPort, 'tt');
+    IsolateNameServer.registerPortWithName(_port.sendPort, 'portName');
     _port.listen((message) {
-      waitingTimer = 30;
+      final listOfDrivers = json.decode(message.data['nextDrivers']);
+      nextDrivers = listOfDrivers;
+
+      waitingTimer = 40;
       const oneSec = Duration(seconds: 1);
       _timer = Timer.periodic(
         oneSec,
@@ -133,8 +136,10 @@ class _HomeScreenState extends State<HomeScreen> {
           print("Timer starteddd");
 
           if (waitingTimer == 0) {
-            UserEvent event = UserLoadById(myId);
-            BlocProvider.of<UserBloc>(context).add(event);
+            if (nextDrivers.isNotEmpty) {
+              UserEvent event = UserLoadById(nextDrivers[0]);
+              BlocProvider.of<UserBloc>(context).add(event);
+            }
             print("Yeah right now on action");
             timer.cancel();
           } else {
@@ -159,8 +164,6 @@ class _HomeScreenState extends State<HomeScreen> {
       droppOffAddress = message.data['droppOffAddress'];
       pickUpAddress = message.data['pickupAddress'];
       passengerProfilePictureUrl = message.data['profilePictureUrl'];
-      final listOfDrivers = json.decode(message.data['nextDrivers']);
-      nextDrivers = listOfDrivers;
       print(
           "Yeah we are still listeninggg here on the push notification class $waitingTimer");
 
@@ -189,11 +192,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late Timer _timer;
 
-  int waitingTimer = 30;
+  int waitingTimer = 40;
 
   @override
   void dispose() {
-    IsolateNameServer.removePortNameMapping('mike');
+    IsolateNameServer.removePortNameMapping('portName');
     _serviceStatusStreamSubscription!.cancel();
     _connectivitySubscription.cancel();
     // homeScreenStreamSubscription.cancel();
@@ -416,8 +419,12 @@ class _HomeScreenState extends State<HomeScreen> {
               listener: (context, state) {
                 if (state is UsersLoadSuccess) {
                   print("Succceeeeeeeeeeeeessssssssss $nextDrivers");
-                  // widget.nextDrivers.removeAt(0);
-                  passRequest(state.user.fcm, nextDrivers);
+                  if (nextDrivers.isNotEmpty) {
+                    nextDrivers.removeAt(0);
+                    passRequest(state.user.fcm, nextDrivers);
+                  } else {
+                    Navigator.pop(context);
+                  }
                 }
               },
               buildWhen: (previous, current) => false,
@@ -433,6 +440,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mapId: _controller.future.then((value) => value.mapId),
                 markers: Set<Marker>.of(markers.values),
                 child: GoogleMap(
+                  padding: EdgeInsets.only(top: 100, bottom: 250, right: 10),
                   mapType: MapType.normal,
                   myLocationButtonEnabled: false,
                   myLocationEnabled: true,
@@ -533,6 +541,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SizedBox(
                 height: 40,
                 child: FloatingActionButton(
+                    heroTag: 'makePhoneCall',
                     backgroundColor: Colors.grey.shade300,
                     onPressed: () {
                       makePhoneCall("9495");
@@ -551,6 +560,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: SizedBox(
                   height: 45,
                   child: FloatingActionButton(
+                    heroTag: 'createTrip',
                     backgroundColor: Colors.grey.shade300,
                     onPressed: () {
                       showModalBottomSheet(
@@ -704,6 +714,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: SizedBox(
                         height: 45,
                         child: FloatingActionButton(
+                            heroTag: 'sos',
                             backgroundColor: Colors.red,
                             onPressed: () {
                               EmergencyReportEvent event =
@@ -1013,7 +1024,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               Future.delayed(Duration(seconds: 1), () {
                 setState(() {
-                  _currentWidget = WaitingPassenger(callback);
+                  _currentWidget = WaitingPassenger(callback, false);
                 });
                 Navigator.pop(_);
               });

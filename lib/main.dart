@@ -26,7 +26,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // dialog!();
   print("We are around here manuaaaaaaws asd ${message.data['passengerName']}");
 
-  final SendPort? send = IsolateNameServer.lookupPortByName('tt');
+  final SendPort? send = IsolateNameServer.lookupPortByName('portName');
   send!.send(message);
   print('Handling a background message ${message.messageId}');
 }
@@ -152,7 +152,8 @@ class MyApp extends StatelessWidget {
                       placeDetailRepository: placeDetailRepository)),
               BlocProvider(
                   create: (context) => RideRequestBloc(
-                      rideRequestRepository: rideRequestRepository)),
+                      rideRequestRepository: rideRequestRepository)
+                    ..add(RideRequestCheckStartedTrip())),
               BlocProvider(
                   create: (context) => LocationPredictionBloc(
                       locationPredictionRepository:

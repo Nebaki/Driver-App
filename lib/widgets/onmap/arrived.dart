@@ -25,7 +25,7 @@ class _ArrivedState extends State<Arrived> {
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
         if (state is RideRequesChanged) {
-          widget.callback!(WaitingPassenger(widget.callback));
+          widget.callback!(WaitingPassenger(widget.callback, true));
         }
       },
       builder: (context, state) {

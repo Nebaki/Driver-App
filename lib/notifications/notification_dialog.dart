@@ -43,8 +43,12 @@ class _NotificationDialogState extends State<NotificationDialog> {
           // print("Yeah right now on action");
           // player.dispose();
           if (widget.passRequest) {
-            UserEvent event = UserLoadById(myId);
-            BlocProvider.of<UserBloc>(context).add(event);
+            if (widget.nextDrivers.isNotEmpty) {
+              UserEvent event = UserLoadById(widget.nextDrivers[0]);
+              BlocProvider.of<UserBloc>(context).add(event);
+            } else {
+              Navigator.pop(context);
+            }
           }
 
           // RideRequestEvent requestEvent =
@@ -255,8 +259,12 @@ class _NotificationDialogState extends State<NotificationDialog> {
                       print(myId);
                       player.stop();
                       player.dispose();
-                      UserEvent event = UserLoadById(myId);
-                      BlocProvider.of<UserBloc>(context).add(event);
+                      if (widget.nextDrivers.isNotEmpty) {
+                        UserEvent event = UserLoadById(widget.nextDrivers[0]);
+                        BlocProvider.of<UserBloc>(context).add(event);
+                      } else {
+                        Navigator.pop(context);
+                      }
 
                       // RideRequestEvent requestEvent = RideRequestChangeStatus(
                       //     requestId, "Cancelled", passengerFcm);

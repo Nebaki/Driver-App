@@ -16,6 +16,30 @@ class RideRequestDataProvider {
       AuthDataProvider(httpClient: http.Client());
 
   RideRequestDataProvider({required this.httpClient});
+  Future<RideRequest> checkStartedTrip() async {
+    final http.Response response = await http.get(
+        Uri.parse(
+            'https://mobiletaxi-api.herokuapp.com/api/ride-requests/check-driver-started-trip'),
+        headers: <String, String>{
+          'Content-Type': "application/json",
+          'x-access-token': '${await authDataProvider.getToken()}'
+        });
+    print(' this is the response Status coed: ${response.body}');
+    print(' hah ${json.decode(response.body)['ride_Request']}');
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)['ride_Request'] as List;
+      return data.isNotEmpty
+          ? RideRequest.fromJson(data[0])
+          : RideRequest(
+              pickUpAddress: null,
+              droppOffAddress: null,
+              driverId: null,
+            );
+    } else {
+      throw 'Unable to get Started Trips';
+    }
+  }
 
   Future<RideRequest> createRequest(RideRequest request) async {
     // bool isPhoneNumberValid;
@@ -200,7 +224,7 @@ class RideRequestDataProvider {
             body: json.encode({'price': price}));
 
     if (response.statusCode == 200) {
-      completeNotification(fcmId!);
+      // completeNotification(fcmId!);
     } else {
       throw 'Unable to cancel the request';
     }

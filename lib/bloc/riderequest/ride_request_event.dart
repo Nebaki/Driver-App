@@ -84,3 +84,8 @@ class RideRequestPass extends RideRequestEvent {
   @override
   List<Object> get props => [];
 }
+
+class RideRequestCheckStartedTrip extends RideRequestEvent {
+  @override
+  List<Object?> get props => [];
+}

@@ -48,7 +48,7 @@ class PushNotificationService {
             builder: (BuildContext context) {
               // player.open(Audio("assets/sounds/announcement-sound.mp3"));
               return NotificationDialog(callback, setDestination,
-                  setIsArrivedWidget, listOfDrivers, 60, true);
+                  setIsArrivedWidget, listOfDrivers, 40, true);
             });
       } else {}
 
@@ -95,7 +95,7 @@ class PushNotificationService {
           context: context,
           builder: (BuildContext context) {
             return NotificationDialog(callback, setDestination,
-                setIsArrivedWidget, listOfDrivers, 60, true);
+                setIsArrivedWidget, listOfDrivers, 40, true);
           });
       // Navigator.pushNamed(
       //   context,

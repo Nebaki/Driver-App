@@ -14,6 +14,7 @@ class OfflineMode extends StatelessWidget {
   bool isDriverOn = false;
   OfflineMode(this.setDriverStatus, this.callback);
   void getLiveLocation() async {
+    print(firebaseKey);
     homeScreenStreamSubscription = Geolocator.getPositionStream(
             locationSettings: const LocationSettings(distanceFilter: 5))
         .listen((event) {

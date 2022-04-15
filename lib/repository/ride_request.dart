@@ -40,4 +40,8 @@ class RideRequestRepository {
   Future passRequest(String driverFcm, List<dynamic> nextDrivers) async {
     return await dataProvider.passRequest(driverFcm, nextDrivers);
   }
+
+  Future<RideRequest> checkStartedTrip() async {
+    return await dataProvider.checkStartedTrip();
+  }
 }
