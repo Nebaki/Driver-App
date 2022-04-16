@@ -1,3 +1,4 @@
+import 'package:driverapp/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,9 +10,7 @@ class RideRequest extends Equatable {
   String? driverFcm;
   LatLng? pickupLocation;
   LatLng? dropOffLocation;
-  String? passengerName;
   String? pickUpAddress;
-  String? passengerPhoneNumber;
   String? droppOffAddress;
   String? status;
   String? cancelReason;
@@ -21,48 +20,69 @@ class RideRequest extends Equatable {
   String? direction;
   String? date;
   String? time;
-  RideRequest({
-    this.id,
-    this.date,
-    this.time,
-    this.driverFcm,
-    this.direction,
-    this.duration,
-    this.price,
-    this.status,
-    this.distance,
-    this.cancelReason,
-    this.passengerPhoneNumber,
-    this.pickUpAddress,
-    this.droppOffAddress,
-    required this.driverId,
-    this.passengerName,
-    this.pickupLocation,
-    this.dropOffLocation,
-  });
+  Passenger? passenger;
+  String? phoneNumber;
+  String? name;
+
+  RideRequest(
+      {this.id,
+      this.date,
+      this.time,
+      this.driverFcm,
+      this.direction,
+      this.duration,
+      this.price,
+      this.phoneNumber,
+      this.name,
+      this.status,
+      this.distance,
+      this.cancelReason,
+      this.pickUpAddress,
+      this.droppOffAddress,
+      required this.driverId,
+      this.pickupLocation,
+      this.dropOffLocation,
+      this.passenger});
 
   @override
   List<Object?> get props =>
-      [id, driverId, passengerName, pickupLocation, dropOffLocation];
+      [id, driverId, pickupLocation, dropOffLocation, passenger];
 
   factory RideRequest.fromJson(Map<String, dynamic> json) {
-    return RideRequest(
-      id: json["_id"],
-      driverId: json["driver_id"] ?? '',
-      pickupLocation:
-          LatLng(json["pickup_location"][0], json["pickup_location"][1]),
-      dropOffLocation:
-          LatLng(json["droppoff_location"][1], json["droppoff_location"][0]),
-      // passengerPhoneNumber: json["rideRequest"]["passengerName"],
-      direction: json['direction'],
-      pickUpAddress: json["pickup_address"] ?? '',
-      droppOffAddress: json["droppoff_address"] ?? '',
-      status: json['status'],
-      price: json['price'].toString(),
-      distance: json['distance'].toString(),
-      // date: DateFormat.yMMMMEEEEd().format(now),
-      // time: DateFormat.jm().format(now)
-    );
+    return json['passenger'] != null
+        ? RideRequest(
+            id: json["id"],
+            driverId: json["driver_id"] ?? '',
+            // pickupLocation:
+            //     LatLng(json["pickup_location"][0], json["pickup_location"][1]),
+            // dropOffLocation:
+            //     LatLng(json["droppoff_location"][1], json["droppoff_location"][0]),
+            // direction: json['direction'],
+            pickUpAddress: json["pickup_address"] ?? '',
+            droppOffAddress: json["droppoff_address"] ?? '',
+            status: json['status'],
+            // price: json['price'].toString(),
+            // distance: json['distance'].toString(),
+            passenger: Passenger.fromJson(json['passenger'])
+            // date: DateFormat.yMMMMEEEEd().format(now),
+            // time: DateFormat.jm().format(now)
+            )
+        : RideRequest(
+            id: json["id"],
+            driverId: json["driver_id"] ?? '',
+            // pickupLocation:
+            //     LatLng(json["pickup_location"][0], json["pickup_location"][1]),
+            // dropOffLocation:
+            //     LatLng(json["droppoff_location"][1], json["droppoff_location"][0]),
+            // direction: json['direction'],
+            pickUpAddress: json["pickup_address"] ?? '',
+            droppOffAddress: json["droppoff_address"] ?? '',
+            status: json['status'],
+            // price: json['price'].toString(),
+            // distance: json['distance'].toString(),
+            // date: DateFormat.yMMMMEEEEd().format(now),
+            // time: DateFormat.jm().format(now)
+          );
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:driverapp/models/models.dart';
 
 class RideRequestDataProvider {
   final _baseUrl = 'https://safeway-api.herokuapp.com/api/ride-requests';
+
   final _maintenanceUrl =
       'https://mobiletaxi-api.herokuapp.com/api/ride-requests';
   final _fcmUrl = 'https://fcm.googleapis.com/fcm/send';
@@ -42,28 +43,16 @@ class RideRequestDataProvider {
   }
 
   Future<RideRequest> createRequest(RideRequest request) async {
-    // bool isPhoneNumberValid;
-    // final http.Response res =
-    //     await http.get(Uri.parse("$_baseUrl/check-phone-number?+2519345402"));
-    // if (res.statusCode == 200) {
-    //   final data = json.decode(res.body);
-    //   if(data['userExit']){
-
-    //   }
-    //   else {
-
-    //   }
-    // } else {
-    //   isPhoneNumberValid = false;
-    // }
     final response = await http.post(
-      Uri.parse('$_baseUrl/create-ride-request'),
+      Uri.parse('$_maintenanceUrl/create-manual-ride-request'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         "x-access-token": '${await authDataProvider.getToken()}'
       },
       body: json.encode({
         'driver_id': myId,
+        'phone_number': request.phoneNumber,
+        'name': request.name,
         "pickup_address": "meskel flower",
         "droppoff_location": [2, 3],
         "droppoff_address": "test",
@@ -71,17 +60,17 @@ class RideRequestDataProvider {
           request.pickupLocation!.latitude,
           request.pickupLocation!.longitude
         ],
-        // 'droppoffLocation': [
-        //   request.dropOffLocation!.longitude,
-        //   request.dropOffLocation!.latitude
-        // ],
       }),
     );
 
+    print("DATAAAAAAAAAAAAAAAAA status = ${response.statusCode}");
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      print("DATAAAAAAAAAAAAAAAAA ${data}");
+
       requestId = data['rideRequest']['id'];
-      return RideRequest.fromJson(data);
+      return RideRequest.fromJson(data['rideRequest']);
     } else {
       throw Exception('Failed to create request.');
     }
@@ -129,7 +118,7 @@ class RideRequestDataProvider {
   Future<void> acceptRequest(String id, String passengerFcm) async {
     // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
     final response = await http.post(
-      Uri.parse('$_baseUrl/accept-ride-request/$id'),
+      Uri.parse('$_maintenanceUrl/accept-ride-request/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         "x-access-token": '${await authDataProvider.getToken()}'
@@ -204,6 +193,7 @@ class RideRequestDataProvider {
               "x-access-token": "${await authDataProvider.getToken()}"
             },
             body: json.encode({'cancel_reason': cancelReason}));
+    print("Statusss issss ${response.statusCode}', ${fcmId}, ${sendRequest}");
 
     if (response.statusCode == 200) {
       if (sendRequest) {

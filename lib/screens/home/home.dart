@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ConnectivityResult _connectionStatus = ConnectivityResult.bluetooth;
   final Connectivity _connectivity = Connectivity();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  late String phoneNum;
   bool? isLocationOn;
   bool isModal = false;
   bool isConModal = false;
@@ -213,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.pushNamed(
                                     context, CancelReason.routeName,
                                     arguments: CancelReasonArgument(
-                                        sendRequest: false));
+                                        sendRequest: true));
                               },
                               child: Text("Cancel"),
                             ),
@@ -652,6 +652,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           },
                                           initialValue: '+251',
                                           onChanged: (value) {
+                                            print(value);
+                                            phoneNum = value;
                                             // findPlace(value);
                                           },
                                           decoration: const InputDecoration(
@@ -1027,7 +1029,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     RideRequestEvent event = RideRequestCreate(RideRequest(
                         driverId: myId,
-                        passengerName: "Random Customer",
+                        phoneNumber: phoneNum,
+                        name: 'Kebadu',
+                        // passengerName: "Random Customer",
                         pickupLocation: const LatLng(8.4543, 38.98765)));
                     BlocProvider.of<RideRequestBloc>(context).add(event);
                   }

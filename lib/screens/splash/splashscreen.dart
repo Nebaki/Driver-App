@@ -200,6 +200,8 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                     } else {
                       droppOffLocation = st.rideRequest.dropOffLocation!;
                       requestId = st.rideRequest.id!;
+                      passengerName = st.rideRequest.passenger!.name;
+                      passengerFcm = st.rideRequest.passenger!.fcmId;
                       // DriverEvent event = DriverLoad(st.rideRequest.driverId!);
                       // BlocProvider.of<DriverBloc>(context).add(event);
                       price = st.rideRequest.price!;
