@@ -9,16 +9,21 @@ import 'package:slider_button/slider_button.dart';
 
 class WaitingPassenger extends StatelessWidget {
   Function? callback;
-  WaitingPassenger(this.callback);
+  bool formPassenger;
+  WaitingPassenger(this.callback, this.formPassenger);
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
         if (state is RideRequesChanged) {
           callback!(CompleteTrip(callback));
-          DirectionEvent event = DirectionLoad(destination: droppOffLocation);
+          if (formPassenger) {
+            changeDestination(droppOffLocation);
 
-          BlocProvider.of<DirectionBloc>(context).add(event);
+            DirectionEvent event = DirectionLoad(destination: droppOffLocation);
+
+            BlocProvider.of<DirectionBloc>(context).add(event);
+          }
         }
       },
       builder: (context, state) {

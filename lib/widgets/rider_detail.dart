@@ -16,8 +16,7 @@ class RiderDetail extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BlocConsumer<DirectionBloc, DirectionState>(listener: (_, state) {
-              print("State state state astatess");
-              print('here is your state bruh $state');
+            
               if (state is DirectionDistanceDurationLoadSuccess) {
                 directionDuration =
                     '${(state.direction.durationValue / 60).truncate()} min';

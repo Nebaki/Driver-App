@@ -14,8 +14,6 @@ class AuthDataProvider {
   AuthDataProvider({required this.httpClient});
   //iMkhQq
   Future<void> loginUser(Auth user) async {
-    print(user.phoneNumber);
-    print(user.password);
     final fcm_id = await FirebaseMessaging.instance.getToken();
     final response = await http.post(
       Uri.parse('$_baseUrl/driver-login'),
@@ -26,13 +24,10 @@ class AuthDataProvider {
         'fcm_id': fcm_id
       }),
     );
-    print(response.statusCode);
 
     if (response.statusCode == 200) {
       Map<String, dynamic> output = jsonDecode(response.body);
-      print('hey yowwww');
 
-      //  print(output['user'] ?? "hhh");
 
       await secure_storage.write(key: 'id', value: output['driver']['id']);
       await secure_storage.write(
@@ -62,13 +57,9 @@ class AuthDataProvider {
 
       await secure_storage.write(
           key: "vehicle_category",
-          value: output["driver"]['vehicle']['vehicle_category'] ?? "");
+          value: output["driver"]['vehicle']['type'] ?? "");
 
-      // print(await secure_storage.read(key: "min_rate"));
-      // print(await secure_storage.read(key: "driver_gender"));
-      print("WelDoneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-
-      //return User.fromJson(output);
+      
     } else {
       throw Exception('Failed to login.');
     }
@@ -93,14 +84,11 @@ class AuthDataProvider {
   }
 
   Future updatePreference(String gender, String rate, String carType) async {
-    print("waleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-    print(gender);
-    print(rate);
+    
     await secure_storage.write(key: "driver_gender", value: gender);
     await secure_storage.write(key: "min_rate", value: rate);
     await secure_storage.write(key: "car_type", value: carType);
 
-    print("Doneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
   }
 
   Future logOut() async {

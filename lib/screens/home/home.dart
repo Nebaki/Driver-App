@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:app_settings/app_settings.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -5,7 +9,9 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/models/models.dart';
+import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:driverapp/notifications/pushNotification.dart';
+import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animarker/widgets/animarker.dart';
@@ -58,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ConnectivityResult _connectionStatus = ConnectivityResult.bluetooth;
   final Connectivity _connectivity = Connectivity();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  late String phoneNum;
   bool? isLocationOn;
   bool isModal = false;
   bool isConModal = false;
@@ -117,6 +123,63 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     willScreenPop = false;
+    print("YAYAYAYAYAYAYAERERERE");
+    IsolateNameServer.registerPortWithName(_port.sendPort, 'portName');
+    _port.listen((message) {
+      final listOfDrivers = json.decode(message.data['nextDrivers']);
+      nextDrivers = listOfDrivers;
+
+      waitingTimer = 40;
+      const oneSec = Duration(seconds: 1);
+      _timer = Timer.periodic(
+        oneSec,
+        (Timer timer) {
+          print("Timer starteddd");
+
+          if (waitingTimer == 0) {
+            if (nextDrivers.isNotEmpty) {
+              UserEvent event = UserLoadById(nextDrivers[0]);
+              BlocProvider.of<UserBloc>(context).add(event);
+            } else {
+              Navigator.pushNamed(context, CancelReason.routeName,
+                  arguments: CancelReasonArgument(sendRequest: true));
+            }
+            print("Yeah right now on action");
+            timer.cancel();
+          } else {
+            waitingTimer--;
+          }
+        },
+      );
+
+      final pickupList = json.decode(message.data['pickupLocation']);
+      final droppOffList = json.decode(message.data['droppOffLocation']);
+      // final nextDrivers = json.decode(message.data['nextDrivers']);
+
+      pickupLocation = LatLng(pickupList[0], pickupList[1]);
+      droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
+      passengerName = message.data['passengerName'];
+      passengerPhoneNumber = message.data['passengerPhoneNumber'];
+      requestId = message.data['requestId'];
+      passengerFcm = message.data['passengerFcm'];
+      distance = message.data['distance'];
+      duration = message.data['duration'];
+      price = message.data['price'];
+      droppOffAddress = message.data['droppOffAddress'];
+      pickUpAddress = message.data['pickupAddress'];
+      passengerProfilePictureUrl = message.data['profilePictureUrl'];
+      print(
+          "Yeah we are still listeninggg here on the push notification class $waitingTimer");
+
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            // player.open(Audio("assets/sounds/announcement-sound.mp3"));
+            return NotificationDialog(callback, setDestination,
+                setIsArrivedWidget, [], waitingTimer, false);
+          });
+    });
 
     Geofire.initialize("availableDrivers");
 
@@ -127,12 +190,68 @@ class _HomeScreenState extends State<HomeScreen> {
     pushNotificationService.initialize(
         context, callback, setDestination, setIsArrivedWidget);
     pushNotificationService.seubscribeTopic();
-
     _currentWidget = OfflineMode(setDriverStatus, callback);
+
+    widget.args.isSelected
+        ? WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return WillPopScope(
+                    onWillPop: () async => false,
+                    child: AlertDialog(
+                      title: Text("Uncompleted Trip"),
+                      content: Text(
+                          "You have uncompleted trip you have to cancel or complete the trip in order to continue."),
+                      actions: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, CancelReason.routeName,
+                                    arguments: CancelReasonArgument(
+                                        sendRequest: true));
+                              },
+                              child: Text("Cancel"),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+
+                                  _getPolyline(widget.args.encodedPts!);
+
+                                  _currentWidget = CompleteTrip(callback);
+                                  destination = droppOffLocation;
+
+                                  setState(() {});
+                                  showDriversOnMap();
+
+                                  // DirectionEvent event =
+                                  //     DirectionDistanceDurationLoad(
+                                  //         destination: droppOffLocation);
+                                  // BlocProvider.of<DirectionBloc>(context).add(event);
+                                },
+                                child: Text('Procced'))
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                });
+          })
+        : null;
   }
+
+  late Timer _timer;
+
+  int waitingTimer = 40;
 
   @override
   void dispose() {
+    IsolateNameServer.removePortNameMapping('portName');
     _serviceStatusStreamSubscription!.cancel();
     _connectivitySubscription.cancel();
     // homeScreenStreamSubscription.cancel();
@@ -144,6 +263,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _currentWidget = nextwidget;
     });
   }
+
+  final ReceivePort _port = ReceivePort();
 
   void setDestination(LatLng dest) {
     setState(() {
@@ -163,10 +284,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  late List<dynamic> nextDrivers;
   bool loadPoly = true;
+  void passRequest(driverFcm, nextDriver) {
+    RideRequestEvent event = RideRequestPass(driverFcm, nextDriver);
+    BlocProvider.of<RideRequestBloc>(context).add(event);
+  }
 
   @override
   Widget build(BuildContext context) {
+    changeDestination = (LatLng dest) {
+      setState(() {
+        destination = dest;
+      });
+    };
     if (isLocationOn != null) {
       if (isLocationOn! && isModal) {
         setState(() {
@@ -339,15 +470,32 @@ class _HomeScreenState extends State<HomeScreen> {
         onWillPop: () async => willScreenPop,
         child: Stack(
           children: [
+            BlocConsumer<UserBloc, UserState>(
+              listener: (context, state) {
+                if (state is UsersLoadSuccess) {
+                  print("Succceeeeeeeeeeeeessssssssss $nextDrivers");
+                  if (nextDrivers.isNotEmpty) {
+                    nextDrivers.removeAt(0);
+                    passRequest(state.user.fcm, nextDrivers);
+                  } else {
+                    Navigator.pop(context);
+                  }
+                }
+              },
+              buildWhen: (previous, current) => false,
+              builder: (context, state) {
+                return Container();
+              },
+            ),
             BlocConsumer<DirectionBloc, DirectionState>(
                 builder: (context, state) {
-              print('the state is $state');
               return Animarker(
                 curve: Curves.ease,
                 shouldAnimateCamera: false,
                 mapId: _controller.future.then((value) => value.mapId),
                 markers: Set<Marker>.of(markers.values),
                 child: GoogleMap(
+                  padding: EdgeInsets.only(top: 100, bottom: 250, right: 10),
                   mapType: MapType.normal,
                   myLocationButtonEnabled: false,
                   myLocationEnabled: true,
@@ -365,7 +513,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     _determinePosition().then((value) {
                       currentLat = value.latitude;
                       currentLng = value.longitude;
-                      print('this is the value $value');
                       controller.animateCamera(CameraUpdate.newCameraPosition(
                           CameraPosition(
                               zoom: 16.4746,
@@ -377,9 +524,6 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }, listenWhen: (prevstate, state) {
               bool isDirectionLoading = true;
-              print("here is the state---------------------");
-              print(prevstate);
-              print("The state ende");
               if (state is DirectionDistanceDurationLoading ||
                   state is DirectionDistanceDurationLoadSuccess) {
                 isDirectionLoading = false;
@@ -389,7 +533,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 isDirectionLoading = true;
               }
 
-              print(isDirectionLoading);
               return isDirectionLoading;
             },
                 // buildWhen: (prevstate, state) {
@@ -402,7 +545,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 // },
                 listener: (context, state) {
               if (state is DirectionLoadSuccess) {
-                print("here is the current latlng $currentLat $currentLng");
                 // isDialog = false;
                 showDriversOnMap();
 
@@ -454,6 +596,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SizedBox(
                 height: 40,
                 child: FloatingActionButton(
+                    heroTag: 'makePhoneCall',
                     backgroundColor: Colors.grey.shade300,
                     onPressed: () {
                       makePhoneCall("9495");
@@ -472,6 +615,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: SizedBox(
                   height: 45,
                   child: FloatingActionButton(
+                    heroTag: 'createTrip',
                     backgroundColor: Colors.grey.shade300,
                     onPressed: () {
                       showModalBottomSheet(
@@ -508,6 +652,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           },
                                           initialValue: '+251',
                                           onChanged: (value) {
+                                            print(value);
+                                            phoneNum = value;
                                             // findPlace(value);
                                           },
                                           decoration: const InputDecoration(
@@ -625,6 +771,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: SizedBox(
                         height: 45,
                         child: FloatingActionButton(
+                            heroTag: 'sos',
                             backgroundColor: Colors.red,
                             onPressed: () {
                               EmergencyReportEvent event =
@@ -803,7 +950,6 @@ class _HomeScreenState extends State<HomeScreen> {
         toolkit.LatLng(driverLat, driverLng),
         toolkit.LatLng(dropoffLat, dropOffLng)) as double;
 
-    print("Rotation is :: ");
     print(rotation);
 
     if (rotation <= 180 && rotation >= 0) {
@@ -817,7 +963,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void updateRideDetails() {
     if (isRequestingDirection == false) {
       isRequestingDirection = true;
-      print("Asked to load the duration");
       DirectionEvent event =
           DirectionDistanceDurationLoad(destination: destination);
       BlocProvider.of<DirectionBloc>(context).add(event);
@@ -828,8 +973,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _toggleServiceStatusStream() {
     if (_serviceStatusStreamSubscription == null) {
-      print("yeah it's enabled");
-
       final serviceStatusStream = _geolocatorPlatform.getServiceStatusStream();
       _serviceStatusStreamSubscription =
           serviceStatusStream.handleError((error) {
@@ -840,7 +983,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }).listen((serviceStatus) {
         String serviceStatusValue;
         if (serviceStatus == ServiceStatus.enabled) {
-          print("yeah it's enabled");
           setState(() {
             isLocationOn = true;
           });
@@ -887,7 +1029,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     RideRequestEvent event = RideRequestCreate(RideRequest(
                         driverId: myId,
-                        passengerName: "Random Customer",
+                        phoneNumber: phoneNum,
+                        name: 'Kebadu',
+                        // passengerName: "Random Customer",
                         pickupLocation: const LatLng(8.4543, 38.98765)));
                     BlocProvider.of<RideRequestBloc>(context).add(event);
                   }
@@ -934,13 +1078,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       LatLng(state.placeDetail.lat, state.placeDetail.lng));
               BlocProvider.of<DirectionBloc>(context).add(event);
 
-              print("Hey trying to pop the context around here::");
               destination =
                   LatLng(state.placeDetail.lat, state.placeDetail.lng);
 
               Future.delayed(Duration(seconds: 1), () {
                 setState(() {
-                  _currentWidget = WaitingPassenger(callback);
+                  _currentWidget = WaitingPassenger(callback, false);
                 });
                 Navigator.pop(_);
               });

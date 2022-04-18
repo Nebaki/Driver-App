@@ -63,3 +63,29 @@ class RideRequestCancell extends RideRequestEvent {
         cancelReason,
       ];
 }
+
+class RideRequestComplete extends RideRequestEvent {
+  final String id;
+  final double price;
+  final String? passengerFcm;
+
+  const RideRequestComplete(this.id, this.price, this.passengerFcm);
+  @override
+  List<Object> get props => [
+        id,
+        price,
+      ];
+}
+
+class RideRequestPass extends RideRequestEvent {
+  final String driverFcm;
+  final List<dynamic> nextDrivers;
+  const RideRequestPass(this.driverFcm, this.nextDrivers);
+  @override
+  List<Object> get props => [];
+}
+
+class RideRequestCheckStartedTrip extends RideRequestEvent {
+  @override
+  List<Object?> get props => [];
+}

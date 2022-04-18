@@ -19,7 +19,6 @@ class LocationPredictionBloc
             await locationPredictionRepository.getPrediction(event.placeName);
         yield LocationPredictionLoadSuccess(placeList: placeList);
       } catch (_) {
-        print("the error is  $_");
         yield LocationPredictionOperationFailure();
       }
     }

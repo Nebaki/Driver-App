@@ -1,4 +1,5 @@
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 
@@ -81,7 +82,8 @@ class _CollectedCashState extends State<CollectedCash> {
                 child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushReplacementNamed(
-                          context, HomeScreen.routeName);
+                          context, HomeScreen.routeName,
+                          arguments: HomeScreenArgument(isSelected: false));
                     },
                     child: const Text(
                       "Done",

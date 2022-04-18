@@ -12,6 +12,7 @@ class User extends Equatable {
   String? gender;
   String? emergencyContact;
   String? profileImage;
+  String? fcm;
   Map<String, dynamic>? preference;
 
   User(
@@ -24,7 +25,8 @@ class User extends Equatable {
       this.gender,
       this.emergencyContact,
       this.preference,
-      this.profileImage});
+      this.profileImage,
+      this.fcm});
 
   @override
   List<Object?> get props => [
@@ -40,15 +42,14 @@ class User extends Equatable {
       ];
 
   factory User.fromJson(Map<String, dynamic> json) {
-    print(json);
     return User(
-      id: json["driver"]["id"],
-      email: json["driver"]["email"],
-      gender: json["driver"]["gender"],
-      phoneNumber: json["driver"]["phone_number"],
-      emergencyContact: json["driver"]["emergency_contact"],
-      profileImage: json["driver"]["profile_image"],
-    );
+        id: json["driver"]["id"],
+        email: json["driver"]["email"],
+        gender: json["driver"]["gender"],
+        phoneNumber: json["driver"]["phone_number"],
+        emergencyContact: json["driver"]["emergency_contact"],
+        profileImage: json["driver"]["profile_image"],
+        fcm: json['driver']['fcm_id']);
   }
 
   @override

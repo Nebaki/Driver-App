@@ -60,5 +60,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         yield UserOperationFailure();
       }
     }
+
+    if (event is UserLoadById) {
+      yield UserLoading();
+
+      try {
+        final user = await userRepository.getUserById(event.id);
+        yield UsersLoadSuccess(user);
+      } catch (_) {
+        yield UserOperationFailure();
+      }
+    }
   }
 }

@@ -28,4 +28,20 @@ class RideRequestRepository {
     return await dataProvider.cancelRideRequest(
         id, cancelReason, passengerFcm, sendRequest);
   }
+
+  Future completeTrip(String id, double price, String? passengerFcm) async {
+    return await dataProvider.completeTrip(
+      id,
+      price,
+      passengerFcm,
+    );
+  }
+
+  Future passRequest(String driverFcm, List<dynamic> nextDrivers) async {
+    return await dataProvider.passRequest(driverFcm, nextDrivers);
+  }
+
+  Future<RideRequest> checkStartedTrip() async {
+    return await dataProvider.checkStartedTrip();
+  }
 }

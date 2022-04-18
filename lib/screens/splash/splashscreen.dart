@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -24,6 +25,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
   ConnectivityResult? _connectionStatus;
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  bool isSuccess = false;
 
   @override
   void initState() {
@@ -154,7 +156,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                       );
                     }, listener: (_, state) {
                       if (state is AuthDataLoadSuccess) {
-                        print("teststst");
                         print(state.auth.token);
 
                         if (state.auth.token != null) {
@@ -163,9 +164,12 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                           myName = state.auth.name!;
                           myVehicleCategory = state.auth.vehicleCategory!;
                           firebaseKey = '$myId,$myVehicleCategory';
-                          Navigator.pushReplacementNamed(
-                              context, HomeScreen.routeName,
-                              arguments: HomeScreenArgument(isSelected: false));
+                          setState(() {
+                            isSuccess = true;
+                          });
+                          // Navigator.pushReplacementNamed(
+                          //     context, HomeScreen.routeName,
+                          //     arguments: HomeScreenArgument(isSelected: false));
                         } else {
                           Navigator.pushReplacementNamed(
                               context, SigninScreen.routeName);
@@ -175,7 +179,43 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
 
                       }
                       if (state is AuthOperationFailure) {}
-                    })
+                    }),
+          isSuccess
+              ? BlocConsumer<RideRequestBloc, RideRequestState>(
+                  builder: (context, state) {
+                  return Container();
+                }, listener: (context, st) {
+                  print("Yoyoyoyoyoyoyoyoyoyooyqqq $st");
+                  if (st is RideRequestStartedTripChecked) {
+                    // distanceDistance = st.rideRequest.distance!;
+
+                    print(st.rideRequest);
+                    print(
+                        "data is is is is ${st.rideRequest.id} ${st.rideRequest.dropOffLocation}");
+
+                    if (st.rideRequest.pickUpAddress == null) {
+                      Navigator.pushReplacementNamed(
+                          context, HomeScreen.routeName,
+                          arguments: HomeScreenArgument(isSelected: false));
+                    } else {
+                      droppOffLocation = st.rideRequest.dropOffLocation!;
+                      requestId = st.rideRequest.id!;
+                      passengerName = st.rideRequest.passenger!.name;
+                      passengerFcm = st.rideRequest.passenger!.fcmId;
+                      // DriverEvent event = DriverLoad(st.rideRequest.driverId!);
+                      // BlocProvider.of<DriverBloc>(context).add(event);
+                      price = st.rideRequest.price!;
+                      distance = st.rideRequest.distance!;
+                      Navigator.pushReplacementNamed(
+                          context, HomeScreen.routeName,
+                          arguments: HomeScreenArgument(
+                              isSelected: true,
+                              encodedPts: st.rideRequest.direction));
+                    }
+                    // loadRideRequest();
+                  }
+                })
+              : Container()
         ],
       ),
     );
