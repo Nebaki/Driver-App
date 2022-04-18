@@ -31,14 +31,16 @@ class HistoryDB {
     //await db.execute("DROP TABLE IF EXISTS TripHistory");
     return db.execute(
       '''CREATE TABLE TripHistory(
-           id INTEGER PRIMARY KEY,
-           date TEXT,
+           id TEXT PRIMARY KEY,
+           createdAt TEXT,
+           updatedAt TEXT,
            pickUpAddress TEXT,
-           time TEXT,
-           price TEXT,
            dropOffAddress TEXT,
-            origin TEXT,
-            destination TEXT,
+           price TEXT,
+           status TEXT,
+           passenger TEXT,
+            pickUpLocation TEXT,
+            dropOffLocation TEXT,
             picture BLOB )''',
     );
   }
@@ -54,9 +56,10 @@ class HistoryDB {
     );
     //return 0;
   }
+
   Future<num> insertTrips(List<Trip> trips) async {
     num count = 0;
-    for(Trip trip in trips){
+    for (Trip trip in trips) {
       count += await insertTrip(trip);
     }
     return count;
@@ -68,16 +71,17 @@ class HistoryDB {
     return List.generate(maps.length, (i) {
       return Trip(
         id: maps[i]['id'],
-        date: maps[i]['date'],
+        createdAt: maps[i]['createdAt'],
         pickUpAddress: maps[i]['pickUpAddress'],
-        time: maps[i]['time'],
+        updatedAt: maps[i]['updatedAt'],
         price: maps[i]['price'],
+        status: maps[i]['status'],
+        passenger: maps[i]['passenger'],
         dropOffAddress: maps[i]['dropOffAddress'],
         pickUpLocation: LatLngConverter().latLng(maps[i]['pickUpLocation']),
         dropOffLocation: LatLngConverter().latLng(maps[i]['dropOffLocation']),
         picture: maps[i]['picture'],
       );
-
     });
   }
 
@@ -113,14 +117,16 @@ class HistoryDB {
     final db = await database;
     return db.execute(
       '''CREATE TABLE $name(
-           id INTEGER PRIMARY KEY,
-           date TEXT,
+           id TEXT PRIMARY KEY,
+           createdAt TEXT,
+           updatedAt TEXT,
            pickUpAddress TEXT,
-           time TEXT,
-           price TEXT,
            dropOffAddress TEXT,
-            origin TEXT,
-            destination TEXT,
+           price TEXT,
+           status TEXT,
+           passenger TEXT,
+            pickUpLocation TEXT,
+            dropOffLocation TEXT,
             picture BLOB )''',
     );
   }

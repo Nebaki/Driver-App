@@ -65,10 +65,10 @@ class HistoryBuilder extends StatelessWidget {
                 size: 40,
               ),*/
               title: Text(
-                "From:  ${trip.pickUpAddress!}   To+ ${trip.dropOffLocation!}",
+                "From:  ${trip.pickUpAddress!}   To+ ${trip.dropOffAddress!}",
                 style: const TextStyle(color: Colors.black, fontSize: 16),
               ),
-              subtitle: Text('${trip.date} . ${trip.time}'),
+              subtitle: Text('Date: ${trip.createdAt}'),
               trailing:
                   Text(trip.price!, style: const TextStyle(color: Colors.red)),
             ),
@@ -81,8 +81,7 @@ class HistoryBuilder extends StatelessWidget {
     await ImageUtils.networkImageToBase64(imageUrl(trip)).then((value) => {
           //ImageUtils().saveImage(ImageUtils.base64ToUnit8list(value), "id-${trip.id}"),
           trip.picture = ImageUtils.base64ToUnit8list(value),
-          print("unit8: net- $value"),
-          print("unit8: hot- ${trip.picture}"),
+          print("unit8: net- ${imageUrl(trip)}"),
           updateDB(trip)
         });
   }
@@ -95,7 +94,7 @@ class HistoryBuilder extends StatelessWidget {
     String googleAPiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
     return "https://maps.googleapis.com/maps/api/staticmap?"
         "size=600x250&"
-        "zoom=10&"
+        "zoom=15&"
         "maptype=roadmap&"
         "markers=color:green%7Clabel:S%7C${trip.pickUpLocation?.latitude},${trip.pickUpLocation?.longitude}&"
         "markers=color:red%7Clabel:E%7C${trip.dropOffLocation?.latitude},${trip.dropOffLocation?.longitude}&"

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:driverapp/models/trip/trip.dart';
@@ -21,11 +22,16 @@ class HistoryDataProvider {
         headers: await RequestHeader().authorisedHeader());
 
     if (response.statusCode == 200) {
-      List<Trip> trips = [];
-      Session().logSession("trans", response.body);
+      final List maps = jsonDecode(response.body)['items'];
+
+      List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
+
+      Session().logSession("trans ${trips.length}", response.body);
+      //HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
       return "Unable to update history";
       //return CreditStore.fromJson(jsonDecode(response.body));
     } else {
+      Session().logSession("trans", response.statusCode.toString());
       Trip trip;
       List<Trip> trips = [];
       int i = 0;
@@ -42,11 +48,13 @@ class HistoryDataProvider {
           type = "Message";
         }
         trip = Trip(
-            id: i ,
-            date: "Money Received $i",
+            id: "$i ioi" ,
+            createdAt: "Money Received $i",
             pickUpAddress: "Hello you received nothing Thanks",
-            time: "soon",
+            updatedAt: "soon",
             price: "$money.ETB",
+            status: "status",
+            passenger: "passenger",
             dropOffAddress: "Today",
             pickUpLocation: origin,
             dropOffLocation: destination,
