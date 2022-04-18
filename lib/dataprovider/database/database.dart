@@ -31,14 +31,16 @@ class HistoryDB {
     //await db.execute("DROP TABLE IF EXISTS TripHistory");
     return db.execute(
       '''CREATE TABLE TripHistory(
-           id INTEGER PRIMARY KEY,
-           date TEXT,
-           froms TEXT,
-           time TEXT,
+           id TEXT PRIMARY KEY,
+           createdAt TEXT,
+           updatedAt TEXT,
+           pickUpAddress TEXT,
+           dropOffAddress TEXT,
            price TEXT,
-           tos TEXT,
-            origin TEXT,
-            destination TEXT,
+           status TEXT,
+           passenger TEXT,
+            pickUpLocation TEXT,
+            dropOffLocation TEXT,
             picture BLOB )''',
     );
   }
@@ -54,9 +56,10 @@ class HistoryDB {
     );
     //return 0;
   }
+
   Future<num> insertTrips(List<Trip> trips) async {
     num count = 0;
-    for(Trip trip in trips){
+    for (Trip trip in trips) {
       count += await insertTrip(trip);
     }
     return count;
@@ -68,13 +71,15 @@ class HistoryDB {
     return List.generate(maps.length, (i) {
       return Trip(
         id: maps[i]['id'],
-        date: maps[i]['date'],
-        from: maps[i]['froms'],
-        time: maps[i]['time'],
+        createdAt: maps[i]['createdAt'],
+        pickUpAddress: maps[i]['pickUpAddress'],
+        updatedAt: maps[i]['updatedAt'],
         price: maps[i]['price'],
-        to: maps[i]['tos'],
-        origin: LatLngConverter().latLng(maps[i]['origin']),
-        destination: LatLngConverter().latLng(maps[i]['destination']),
+        status: maps[i]['status'],
+        passenger: maps[i]['passenger'],
+        dropOffAddress: maps[i]['dropOffAddress'],
+        pickUpLocation: LatLngConverter().latLng(maps[i]['pickUpLocation']),
+        dropOffLocation: LatLngConverter().latLng(maps[i]['dropOffLocation']),
         picture: maps[i]['picture'],
       );
     });
@@ -112,14 +117,16 @@ class HistoryDB {
     final db = await database;
     return db.execute(
       '''CREATE TABLE $name(
-           id INTEGER PRIMARY KEY,
-           date TEXT,
-           froms TEXT,
-           time TEXT,
+           id TEXT PRIMARY KEY,
+           createdAt TEXT,
+           updatedAt TEXT,
+           pickUpAddress TEXT,
+           dropOffAddress TEXT,
            price TEXT,
-           tos TEXT,
-            origin TEXT,
-            destination TEXT,
+           status TEXT,
+           passenger TEXT,
+            pickUpLocation TEXT,
+            dropOffLocation TEXT,
             picture BLOB )''',
     );
   }
