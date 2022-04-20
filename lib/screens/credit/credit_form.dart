@@ -166,6 +166,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
   static const MethodChannel channel = MethodChannel('telebirr_channel');
 
   void initTeleBirr(TelePack telePack) {
+    print("t-pack ${telePack.toString()}");
     teleBirrRequest(telePack).catchError(
       (onError) {
         var result = Result("0",false, "there is an error: " + onError.toString());
