@@ -24,9 +24,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // await Firebase.initializeApp();
   // startTimer();
   // dialog!();
-  print("We are around here manuaaaaaaws asd ${message.data['passengerName']}");
 
-  final SendPort? send = IsolateNameServer.lookupPortByName('portName');
+  final SendPort? send = IsolateNameServer.lookupPortByName(portName);
   send!.send(message);
   print('Handling a background message ${message.messageId}');
 }

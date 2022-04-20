@@ -196,21 +196,28 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                     if (st.rideRequest.pickUpAddress == null) {
                       Navigator.pushReplacementNamed(
                           context, HomeScreen.routeName,
-                          arguments: HomeScreenArgument(isSelected: false));
+                          arguments: HomeScreenArgument(
+                              isSelected: false, isOnline: false));
                     } else {
                       droppOffLocation = st.rideRequest.dropOffLocation!;
                       requestId = st.rideRequest.id!;
-                      passengerName = st.rideRequest.passenger!.name;
-                      passengerFcm = st.rideRequest.passenger!.fcmId;
+                      if (st.rideRequest.passenger != null) {
+                        passengerName = st.rideRequest.passenger!.name;
+                        passengerFcm = st.rideRequest.passenger!.fcmId;
+                      } else {
+                        passengerName = st.rideRequest.name;
+                      }
+
                       // DriverEvent event = DriverLoad(st.rideRequest.driverId!);
                       // BlocProvider.of<DriverBloc>(context).add(event);
-                      price = st.rideRequest.price!;
-                      distance = st.rideRequest.distance!;
+                      // price = st.rideRequest.price!;
+                      // distance = st.rideRequest.distance!;
                       Navigator.pushReplacementNamed(
                           context, HomeScreen.routeName,
                           arguments: HomeScreenArgument(
                               isSelected: true,
-                              encodedPts: st.rideRequest.direction));
+                              encodedPts: st.rideRequest.direction,
+                              isOnline: false));
                     }
                     // loadRideRequest();
                   }

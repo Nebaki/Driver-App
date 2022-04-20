@@ -71,3 +71,5 @@ List<String> drivers = [];
 // void stopTimer() {
 //   _timer.cancel();
 // }
+
+String portName = 'DRIVER_BACKGROUND_LISTENERE';

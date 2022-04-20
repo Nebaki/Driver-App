@@ -108,8 +108,10 @@ class VerificationArgument {
 
 class HomeScreenArgument {
   bool isSelected = false;
+  bool isOnline;
   String? encodedPts;
-  HomeScreenArgument({required this.isSelected, this.encodedPts});
+  HomeScreenArgument(
+      {required this.isSelected, this.encodedPts, required this.isOnline});
 }
 
 class EditProfileArgument {

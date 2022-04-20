@@ -1,6 +1,7 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/screens.dart';
+import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +27,8 @@ class _CompleteTripState extends State<CompleteTrip> {
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
         if (state is RideRequestCompleted) {
+          directionDuration = 'loading';
+          distanceDistance = 'loading';
           Navigator.pushReplacementNamed(context, CollectedCash.routeName);
         }
       },
@@ -49,11 +52,25 @@ class _CompleteTripState extends State<CompleteTrip> {
             child: Column(
               children: [
                 RiderDetail(),
-                Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    width: MediaQuery.of(context).size.width,
-                    child: const Divider()),
+                BlocBuilder<RideRequestBloc, RideRequestState>(
+                    builder: (context, state) {
+                  if (state is RideRequestLoading) {
+                    return const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      child: LinearProgressIndicator(
+                        backgroundColor: Colors.white,
+                        color: Colors.black,
+                        minHeight: 1,
+                      ),
+                    );
+                  }
+                  return Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      width: MediaQuery.of(context).size.width,
+                      child: Divider());
+                }),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 //   children: [

@@ -11,6 +11,7 @@ import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:driverapp/notifications/pushNotification.dart';
+import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -68,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool? isLocationOn;
   bool isModal = false;
   bool isConModal = false;
+  bool fromCreateManualTrip = false;
 
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
@@ -121,36 +123,59 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    Geofire.initialize("availableDrivers");
+
     super.initState();
+    if (widget.args.isOnline) {
+      _currentWidget = OnlinMode(callback, setDriverStatus);
+      getLiveLocation();
+    } else {
+      _currentWidget = OfflineMode(setDriverStatus, callback);
+    }
+
     willScreenPop = false;
-    print("YAYAYAYAYAYAYAERERERE");
-    IsolateNameServer.registerPortWithName(_port.sendPort, 'portName');
+    IsolateNameServer.registerPortWithName(_port.sendPort, portName);
     _port.listen((message) {
       final listOfDrivers = json.decode(message.data['nextDrivers']);
       nextDrivers = listOfDrivers;
+      startTimer();
 
-      waitingTimer = 40;
-      const oneSec = Duration(seconds: 1);
-      _timer = Timer.periodic(
-        oneSec,
-        (Timer timer) {
-          print("Timer starteddd");
+      if (waitingTimer == 0) {
+        if (nextDrivers.isNotEmpty) {
+          UserEvent event = UserLoadById(nextDrivers[0]);
+          BlocProvider.of<UserBloc>(context).add(event);
+        } else {
+          Navigator.pushNamed(context, CancelReason.routeName,
+              arguments: CancelReasonArgument(sendRequest: true));
+        }
+        print("Yeah right now on action");
+        timer.cancel();
+      } else {
+        waitingTimer--;
+      }
 
-          if (waitingTimer == 0) {
-            if (nextDrivers.isNotEmpty) {
-              UserEvent event = UserLoadById(nextDrivers[0]);
-              BlocProvider.of<UserBloc>(context).add(event);
-            } else {
-              Navigator.pushNamed(context, CancelReason.routeName,
-                  arguments: CancelReasonArgument(sendRequest: true));
-            }
-            print("Yeah right now on action");
-            timer.cancel();
-          } else {
-            waitingTimer--;
-          }
-        },
-      );
+      // waitingTimer = 40;
+      // const oneSec = Duration(seconds: 1);
+      // _timer = Timer.periodic(
+      //   oneSec,
+      //   (Timer timer) {
+      //     print("Timer starteddd");
+
+      //     if (waitingTimer == 0) {
+      //       if (nextDrivers.isNotEmpty) {
+      //         UserEvent event = UserLoadById(nextDrivers[0]);
+      //         BlocProvider.of<UserBloc>(context).add(event);
+      //       } else {
+      //         Navigator.pushNamed(context, CancelReason.routeName,
+      //             arguments: CancelReasonArgument(sendRequest: true));
+      //       }
+      //       print("Yeah right now on action");
+      //       timer.cancel();
+      //     } else {
+      //       waitingTimer--;
+      //     }
+      //   },
+      // );
 
       final pickupList = json.decode(message.data['pickupLocation']);
       final droppOffList = json.decode(message.data['droppOffLocation']);
@@ -181,8 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
           });
     });
 
-    Geofire.initialize("availableDrivers");
-
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
@@ -190,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
     pushNotificationService.initialize(
         context, callback, setDestination, setIsArrivedWidget);
     pushNotificationService.seubscribeTopic();
-    _currentWidget = OfflineMode(setDriverStatus, callback);
+    // _currentWidget = OfflineMode(setDriverStatus, callback);
 
     widget.args.isSelected
         ? WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
@@ -201,8 +224,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   return WillPopScope(
                     onWillPop: () async => false,
                     child: AlertDialog(
-                      title: Text("Uncompleted Trip"),
-                      content: Text(
+                      title: const Text("Uncompleted Trip"),
+                      content: const Text(
                           "You have uncompleted trip you have to cancel or complete the trip in order to continue."),
                       actions: [
                         Row(
@@ -245,13 +268,13 @@ class _HomeScreenState extends State<HomeScreen> {
         : null;
   }
 
-  late Timer _timer;
+  // late Timer _timer;
 
-  int waitingTimer = 40;
+  // int waitingTimer = 40;
 
   @override
   void dispose() {
-    IsolateNameServer.removePortNameMapping('portName');
+    IsolateNameServer.removePortNameMapping(portName);
     _serviceStatusStreamSubscription!.cancel();
     _connectivitySubscription.cancel();
     // homeScreenStreamSubscription.cancel();
@@ -546,6 +569,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 listener: (context, state) {
               if (state is DirectionLoadSuccess) {
                 // isDialog = false;
+                double timeTraveledFare =
+                    (state.direction.durationValue / 60) * 0.20;
+                double distanceTraveldFare =
+                    (state.direction.distanceValue / 100) * 0.20;
+                double totalFareAmount = timeTraveledFare + distanceTraveldFare;
+
+                double localFareAmount = totalFareAmount * 1;
+                price = localFareAmount.truncate().toString();
+
+                if (fromCreateManualTrip) {
+                  RideRequestEvent event = RideRequestCreate(RideRequest(
+                      driverId: myId,
+                      phoneNumber: phoneNum,
+                      dropOffLocation: destination,
+                      droppOffAddress: droppOffAddress,
+                      name: 'Kebadu',
+                      direction: state.direction.encodedPoints,
+                      distance: (state.direction.distanceValue / 1000)
+                          .truncate()
+                          .toString(),
+                      price: price,
+                      duration: (state.direction.durationValue / 60)
+                          .truncate()
+                          .toString(),
+                      pickupLocation: const LatLng(8.4543, 38.98765)));
+                  BlocProvider.of<RideRequestBloc>(context).add(event);
+                }
                 showDriversOnMap();
 
                 _getPolyline(state.direction.encodedPoints);
@@ -562,32 +612,44 @@ class _HomeScreenState extends State<HomeScreen> {
             }),
             Positioned(
                 right: 25,
-                top: 50,
-                child: GestureDetector(
-                  onTap: () => _scaffoldKey.currentState!.openDrawer(),
-                  child: CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.grey.shade300,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: CachedNetworkImage(
-                            imageUrl: myPictureUrl,
-                            imageBuilder: (context, imageProvider) => Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover,
+                top: 43,
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(80),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.shade400,
+                            spreadRadius: 2,
+                            blurRadius: 3,
+                            offset: Offset(-1, 2))
+                      ]),
+                  child: GestureDetector(
+                    onTap: () => _scaffoldKey.currentState!.openDrawer(),
+                    child: CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.grey.shade300,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: CachedNetworkImage(
+                              imageUrl: myPictureUrl,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                ),
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => const Icon(
-                                  Icons.person,
-                                  color: Colors.black,
-                                  size: 20,
-                                )),
-                      )),
+                              placeholder: (context, url) =>
+                                  const CircularProgressIndicator(),
+                              errorWidget: (context, url, error) => Icon(
+                                    Icons.person,
+                                    color: Colors.indigo.shade900,
+                                    size: 20,
+                                  )),
+                        )),
+                  ),
                 )),
             _currentWidget,
             Positioned(
@@ -619,134 +681,202 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundColor: Colors.grey.shade300,
                     onPressed: () {
                       showModalBottomSheet(
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30))),
                           context: context,
                           isScrollControlled: true,
                           builder: (BuildContext ctx) {
-                            return SizedBox(
-                              // height: MediaQuery.of(context).size.height * 0.4,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom),
+                              child: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.52,
+                                child: Stack(
                                   children: [
-                                    // Padding(
-                                    //     padding: const EdgeInsets.fromLTRB(
-                                    //         20, 10, 20, 10),
-                                    //     child: InternationalPhoneNumberInput(
-                                    //         initialValue:
-                                    //             PhoneNumber(isoCode: "ET"),
-                                    //         onInputChanged: (value) {})),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 10, 20, 10),
-                                      child: Form(
-                                        key: _formKey,
-                                        child: TextFormField(
-                                          validator: (value) {
-                                            if (value!.length != 13) {
-                                              return "Invalid Phone Number";
-                                            }
-                                          },
-                                          initialValue: '+251',
-                                          onChanged: (value) {
-                                            print(value);
-                                            phoneNum = value;
-                                            // findPlace(value);
-                                          },
-                                          decoration: const InputDecoration(
-                                              prefixIcon: Icon(
-                                                Icons.phone,
-                                                color: Colors.red,
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          top: 20,
+                                          left: 20,
+                                          right: 20,
+                                          bottom: 10),
+                                      decoration: const BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(30),
+                                              topRight: Radius.circular(30))),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: const [
+                                            Text(
+                                              'Create Trip',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 22),
+                                            ),
+                                          ]),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(30),
+                                              topRight: Radius.circular(30)),
+                                          color: Colors.white,
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            // Padding(
+                                            //     padding: const EdgeInsets.fromLTRB(
+                                            //         20, 10, 20, 10),
+                                            //     child: InternationalPhoneNumberInput(
+                                            //         initialValue:
+                                            //             PhoneNumber(isoCode: "ET"),
+                                            //         onInputChanged: (value) {})),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      50, 10, 50, 10),
+                                              child: Form(
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
+                                                key: _formKey,
+                                                child: TextFormField(
+                                                  validator: (value) {
+                                                    if (value!.length != 13) {
+                                                      return "Invalid Phone Number";
+                                                    }
+                                                  },
+                                                  keyboardType:
+                                                      TextInputType.phone,
+                                                  initialValue: '+251',
+                                                  onChanged: (value) {
+                                                    print(value);
+                                                    phoneNum = value;
+                                                    // findPlace(value);
+                                                  },
+                                                  decoration:
+                                                      const InputDecoration(
+                                                          prefixIcon: Icon(
+                                                            Icons.phone,
+                                                            color: Colors.black,
+                                                          ),
+                                                          labelText:
+                                                              "Phone Number"),
+                                                ),
                                               ),
-                                              labelText: "Phone Number"),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      50, 0, 50, 0),
+                                              child: TextField(
+                                                onChanged: (value) {
+                                                  findPlace(value);
+                                                },
+                                                decoration:
+                                                    const InputDecoration(
+                                                        prefixIcon: Icon(
+                                                          Icons.location_on,
+                                                          color: Colors.black,
+                                                        ),
+                                                        labelText:
+                                                            "Pick Location"),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.25,
+                                              child: Container(
+                                                  color: Colors.white,
+                                                  child: BlocBuilder<
+                                                          LocationPredictionBloc,
+                                                          LocationPredictionState>(
+                                                      builder: (_, state) {
+                                                    if (state
+                                                        is LocationPredictionLoading) {
+                                                      return const Center(
+                                                          child:
+                                                              CircularProgressIndicator());
+                                                    }
+                                                    if (state
+                                                        is LocationPredictionLoadSuccess) {
+                                                      return ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 15,
+                                                                  right: 15,
+                                                                  top: 15,
+                                                                  bottom: 20),
+                                                          // height: 200,
+                                                          constraints:
+                                                              const BoxConstraints(
+                                                                  maxHeight:
+                                                                      400,
+                                                                  minHeight:
+                                                                      30),
+                                                          color: Colors.white,
+                                                          width:
+                                                              double.infinity,
+                                                          child: ListView
+                                                              .separated(
+                                                                  physics:
+                                                                      const ClampingScrollPhysics(),
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  itemBuilder: (_, index) {
+                                                                    return _buildPredictedItem(
+                                                                        state.placeList[
+                                                                            index],
+                                                                        context);
+                                                                  },
+                                                                  separatorBuilder:
+                                                                      (context,
+                                                                              index) =>
+                                                                          Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 20),
+                                                                            child:
+                                                                                Divider(color: Colors.grey.shade300),
+                                                                          ),
+                                                                  itemCount: state
+                                                                      .placeList
+                                                                      .length),
+                                                        ),
+                                                      );
+                                                    }
+
+                                                    if (state
+                                                        is LocationPredictionOperationFailure) {}
+
+                                                    return const Center(
+                                                      child: Text(
+                                                          "Enter The location"),
+                                                    );
+                                                  })),
+                                            )
+                                          ],
                                         ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 10, 20, 10),
-                                      child: TextField(
-                                        onChanged: (value) {
-                                          findPlace(value);
-                                        },
-                                        decoration: const InputDecoration(
-                                            prefixIcon: Icon(
-                                              Icons.location_on,
-                                              color: Colors.red,
-                                            ),
-                                            labelText: "Pick Location"),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.3,
-                                      child: Container(
-                                          color: Colors.white,
-                                          child: BlocBuilder<
-                                                  LocationPredictionBloc,
-                                                  LocationPredictionState>(
-                                              builder: (_, state) {
-                                            if (state
-                                                is LocationPredictionLoading) {
-                                              return const Center(
-                                                  child:
-                                                      CircularProgressIndicator());
-                                            }
-                                            if (state
-                                                is LocationPredictionLoadSuccess) {
-                                              return ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 30, bottom: 20),
-                                                  // height: 200,
-                                                  constraints:
-                                                      const BoxConstraints(
-                                                          maxHeight: 400,
-                                                          minHeight: 30),
-                                                  color: Colors.white,
-                                                  width: double.infinity,
-                                                  child: ListView.separated(
-                                                      physics:
-                                                          const ClampingScrollPhysics(),
-                                                      shrinkWrap: true,
-                                                      itemBuilder: (_, index) {
-                                                        return _buildPredictedItem(
-                                                            state.placeList[
-                                                                index],
-                                                            context);
-                                                      },
-                                                      separatorBuilder:
-                                                          (context, index) =>
-                                                              const Padding(
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
-                                                                        horizontal:
-                                                                            20),
-                                                                child: Divider(
-                                                                    color: Colors
-                                                                        .black38),
-                                                              ),
-                                                      itemCount: state
-                                                          .placeList.length),
-                                                ),
-                                              );
-                                            }
-
-                                            if (state
-                                                is LocationPredictionOperationFailure) {}
-
-                                            return const Center(
-                                              child: Text("Enter The location"),
-                                            );
-                                          })),
-                                    )
                                   ],
                                 ),
                               ),
@@ -765,92 +895,131 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
-                builder: (context, state) => Align(
-                      alignment: Alignment.centerRight,
-                      child: SizedBox(
-                        height: 45,
-                        child: FloatingActionButton(
-                            heroTag: 'sos',
-                            backgroundColor: Colors.red,
-                            onPressed: () {
-                              EmergencyReportEvent event =
-                                  EmergencyReportCreate(
-                                      EmergencyReport(location: [2, 3]));
-
-                              BlocProvider.of<EmergencyReportBloc>(context)
-                                  .add(event);
-                            },
-                            child: Text(
-                              'SOS',
-                              style: TextStyle(color: Colors.white),
-                              // color: Colors.indigo.shade900,
-                              // size: 35,
-                            )),
+            Align(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
+                  height: 200,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: SizedBox(
+                          height: 45,
+                          child: FloatingActionButton(
+                              heroTag: 'Mylocation',
+                              backgroundColor: Colors.grey.shade300,
+                              onPressed: () {
+                                _myController.animateCamera(
+                                    CameraUpdate.newCameraPosition(
+                                        CameraPosition(
+                                            zoom: 16.4746,
+                                            target: LatLng(
+                                                currentLat, currentLng))));
+                              },
+                              child: Icon(
+                                Icons.gps_fixed,
+                                color: Colors.indigo.shade900,
+                              )),
+                        ),
                       ),
-                    ),
-                listener: (context, state) {
-                  if (state is EmergencyReportCreating) {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            content: Row(
-                              children: const [
-                                SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 1,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text("Reporting.."),
-                              ],
-                            ),
-                          );
-                        });
-                  }
-                  if (state is EmergencyReportCreated) {
-                    Navigator.pop(context);
+                      BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
+                          builder: (context, state) => Align(
+                                alignment: Alignment.centerRight,
+                                child: SizedBox(
+                                  height: 45,
+                                  child: FloatingActionButton(
+                                      heroTag: 'sos',
+                                      backgroundColor: Colors.grey.shade300,
+                                      onPressed: () {
+                                        EmergencyReportEvent event =
+                                            EmergencyReportCreate(
+                                                EmergencyReport(
+                                                    location: [2, 3]));
 
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            content: Row(
-                              children: const [
-                                SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child:
-                                        Icon(Icons.done, color: Colors.green)),
-                                SizedBox(
-                                  width: 5,
+                                        BlocProvider.of<EmergencyReportBloc>(
+                                                context)
+                                            .add(event);
+                                      },
+                                      child: Text(
+                                        'SOS',
+                                        style: TextStyle(
+                                            color: Colors.indigo.shade900,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+
+                                        // color: Colors.indigo.shade900,
+                                        // size: 35,
+                                      )),
                                 ),
-                                Text("Emergency report has been sent"),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Okay'))
-                            ],
-                          );
-                        });
-                  }
-                  if (state is EmergencyReportOperationFailur) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: const Text("Reporting Failed."),
-                        backgroundColor: Colors.red.shade900));
-                  }
-                }),
+                              ),
+                          listener: (context, state) {
+                            if (state is EmergencyReportCreating) {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: Row(
+                                        children: const [
+                                          SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 1,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text("Reporting.."),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                            }
+                            if (state is EmergencyReportCreated) {
+                              Navigator.pop(context);
+
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: Row(
+                                        children: const [
+                                          SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: Icon(Icons.done,
+                                                  color: Colors.green)),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                              "Emergency report has been sent"),
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Okay'))
+                                      ],
+                                    );
+                                  });
+                            }
+                            if (state is EmergencyReportOperationFailur) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: const Text("Reporting Failed."),
+                                      backgroundColor: Colors.red.shade900));
+                            }
+                          }),
+                    ],
+                  ),
+                )),
           ],
         ),
       ),
@@ -1026,14 +1195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   final form = _formKey.currentState;
                   if (form!.validate()) {
                     getPlaceDetail(prediction.placeId);
-
-                    RideRequestEvent event = RideRequestCreate(RideRequest(
-                        driverId: myId,
-                        phoneNumber: phoneNum,
-                        name: 'Kebadu',
-                        // passengerName: "Random Customer",
-                        pickupLocation: const LatLng(8.4543, 38.98765)));
-                    BlocProvider.of<RideRequestBloc>(context).add(event);
+                    settingDropOffDialog(con);
                   }
 
                   // Navigator.pop(con);
@@ -1044,14 +1206,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     children: [
                       const Icon(
-                        Icons.arrow_forward_ios,
+                        Icons.location_on,
                         color: Colors.black,
                         size: 12,
                       ),
                       const SizedBox(
                         width: 10,
                       ),
-                      Text(prediction.mainText),
+                      Container(
+                          padding: EdgeInsets.all(4.0),
+                          child: Text(prediction.mainText)),
                     ],
                   ),
                 ),
@@ -1059,9 +1223,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
         listener: (context, state) {
           if (state is RideRequestSuccess) {
+            fromCreateManualTrip = false;
             requestId = state.request.id!;
-            Navigator.pop(context);
-            settingDropOffDialog(con);
+            Future.delayed(
+              Duration(seconds: 3),
+              () {
+                Navigator.pop(context);
+              },
+            );
           }
         });
   }
@@ -1073,6 +1242,10 @@ class _HomeScreenState extends State<HomeScreen> {
           return BlocBuilder<PlaceDetailBloc, PlaceDetailState>(
               builder: (_, state) {
             if (state is PlaceDetailLoadSuccess) {
+              droppOffAddress = state.placeDetail.placeName;
+              fromCreateManualTrip = true;
+              destination =
+                  LatLng(state.placeDetail.lat, state.placeDetail.lng);
               DirectionEvent event = DirectionLoad(
                   destination:
                       LatLng(state.placeDetail.lat, state.placeDetail.lng));
@@ -1084,6 +1257,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Future.delayed(Duration(seconds: 1), () {
                 setState(() {
                   _currentWidget = WaitingPassenger(callback, false);
+                  Navigator.pop(context);
                 });
                 Navigator.pop(_);
               });
@@ -1097,8 +1271,18 @@ class _HomeScreenState extends State<HomeScreen> {
             return AlertDialog(
               content: Row(
                 children: const [
-                  CircularProgressIndicator(),
-                  Text("Setting up Drop Off. Please wait")
+                  SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text("Setting up Drop Off. Please wait.."),
                 ],
               ),
             );

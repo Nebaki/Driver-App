@@ -4,6 +4,7 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/cancel_reason.dart';
+import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -304,6 +305,8 @@ class _NotificationDialogState extends State<NotificationDialog> {
                           const Color.fromRGBO(244, 201, 60, 1)),
                     ),
                     onPressed: () {
+                      _timer.cancel();
+                      stopTimer();
                       homeScreenStreamSubscription.cancel();
 
                       Geofire.removeLocation(myId);

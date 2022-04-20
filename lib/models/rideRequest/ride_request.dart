@@ -53,16 +53,16 @@ class RideRequest extends Equatable {
         ? RideRequest(
             id: json["id"],
             driverId: json["driver_id"] ?? '',
-            // pickupLocation:
-            //     LatLng(json["pickup_location"][0], json["pickup_location"][1]),
-            // dropOffLocation:
-            //     LatLng(json["droppoff_location"][1], json["droppoff_location"][0]),
-            // direction: json['direction'],
+            pickupLocation:
+                LatLng(json["pickup_location"][0], json["pickup_location"][1]),
+            dropOffLocation: LatLng(
+                json["droppoff_location"][1], json["droppoff_location"][0]),
+            direction: json['direction'],
             pickUpAddress: json["pickup_address"] ?? '',
             droppOffAddress: json["droppoff_address"] ?? '',
             status: json['status'],
-            // price: json['price'].toString(),
-            // distance: json['distance'].toString(),
+            price: json['price'].toString(),
+            distance: json['distance'].toString(),
             passenger: Passenger.fromJson(json['passenger'])
             // date: DateFormat.yMMMMEEEEd().format(now),
             // time: DateFormat.jm().format(now)
@@ -70,19 +70,20 @@ class RideRequest extends Equatable {
         : RideRequest(
             id: json["id"],
             driverId: json["driver_id"] ?? '',
-            // pickupLocation:
-            //     LatLng(json["pickup_location"][0], json["pickup_location"][1]),
-            // dropOffLocation:
-            //     LatLng(json["droppoff_location"][1], json["droppoff_location"][0]),
-            // direction: json['direction'],
+            pickupLocation:
+                LatLng(json["pickup_location"][0], json["pickup_location"][1]),
+            dropOffLocation: LatLng(
+                json["droppoff_location"][1], json["droppoff_location"][0]),
+            direction: json['direction'] ?? '',
             pickUpAddress: json["pickup_address"] ?? '',
             droppOffAddress: json["droppoff_address"] ?? '',
             status: json['status'],
-            // price: json['price'].toString(),
-            // distance: json['distance'].toString(),
+            price: json['price'].toString(),
+            distance: json['distance'].toString(),
+            name: json['passenger_info']['name']
             // date: DateFormat.yMMMMEEEEd().format(now),
             // time: DateFormat.jm().format(now)
-          );
+            );
   }
 
   @override
