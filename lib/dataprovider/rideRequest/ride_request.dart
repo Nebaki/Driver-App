@@ -25,13 +25,13 @@ class RideRequestDataProvider {
           'Content-Type': "application/json",
           'x-access-token': '${await authDataProvider.getToken()}'
         });
-    print(' this is the response Status coed: ${response.body}');
+    print(' this is the response Status coed: ${response.statusCode}');
     print(' hah ${json.decode(response.body)['ride_Request']}');
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body)['ride_Request'] as List;
-      return data.isNotEmpty
-          ? RideRequest.fromJson(data[0])
+      final data = json.decode(response.body);
+      return data['isEmpty'] != true
+          ? RideRequest.fromJson(data['ride_Request'])
           : RideRequest(
               pickUpAddress: null,
               droppOffAddress: null,
@@ -50,16 +50,23 @@ class RideRequestDataProvider {
         "x-access-token": '${await authDataProvider.getToken()}'
       },
       body: json.encode({
-        'driver_id': myId,
         'phone_number': request.phoneNumber,
-        'name': request.name,
+        'name': 'request.name',
         "pickup_address": "meskel flower",
-        "droppoff_location": [2, 3],
-        "droppoff_address": "test",
+        'droppoff_location': [
+          request.dropOffLocation!.longitude,
+          request.dropOffLocation!.latitude
+        ],
+        "droppoff_address": request.droppOffAddress,
         'pickup_location': [
           request.pickupLocation!.latitude,
           request.pickupLocation!.longitude
         ],
+        'duration': request.duration,
+        'direction': request.direction,
+        'price': int.parse(request.price!),
+        'status': "Accepted",
+        'distance': int.parse(request.distance!)
       }),
     );
 
@@ -214,7 +221,9 @@ class RideRequestDataProvider {
             body: json.encode({'price': price}));
 
     if (response.statusCode == 200) {
-      // completeNotification(fcmId!);
+      if (fcmId != null) {
+        completeNotification(fcmId);
+      }
     } else {
       throw 'Unable to cancel the request';
     }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
@@ -13,22 +14,6 @@ class OfflineMode extends StatelessWidget {
   Function setDriverStatus;
   bool isDriverOn = false;
   OfflineMode(this.setDriverStatus, this.callback);
-  void getLiveLocation() async {
-    print(firebaseKey);
-    homeScreenStreamSubscription = Geolocator.getPositionStream(
-            locationSettings: const LocationSettings(distanceFilter: 5))
-        .listen((event) {
-      if (isDriverOnline != null) {
-        isDriverOnline!
-            ? Geofire.setLocation(firebaseKey, event.latitude, event.longitude)
-            : Geofire.removeLocation(myId);
-
-        if (!isDriverOnline!) {
-          homeScreenStreamSubscription.cancel();
-        }
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

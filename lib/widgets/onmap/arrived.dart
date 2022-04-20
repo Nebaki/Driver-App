@@ -48,10 +48,51 @@ class _ArrivedState extends State<Arrived> {
             child: Column(
               children: [
                 RiderDetail(),
-                Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    width: MediaQuery.of(context).size.width,
-                    child: Divider()),
+                BlocBuilder<RideRequestBloc, RideRequestState>(
+                    builder: (context, state) {
+                  if (state is RideRequestLoading) {
+                    return const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      child: LinearProgressIndicator(
+                        backgroundColor: Colors.white,
+                        color: Colors.black,
+                        minHeight: 1,
+                      ),
+                    );
+                  }
+                  return Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      width: MediaQuery.of(context).size.width,
+                      child: Divider());
+                }),
+                BlocBuilder<DirectionBloc, DirectionState>(
+                    builder: (context, state) {
+                  if (state is DirectionLoading) {
+                    return const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      child: LinearProgressIndicator(
+                        backgroundColor: Colors.white,
+                        color: Colors.black,
+                        minHeight: 1,
+                      ),
+                    );
+                  }
+                  if (state is DirectionDistanceDurationLoading) {
+                    return const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      child: LinearProgressIndicator(
+                        backgroundColor: Colors.white,
+                        color: Colors.black,
+                        minHeight: 1,
+                      ),
+                    );
+                  }
+                  return Container();
+                }),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

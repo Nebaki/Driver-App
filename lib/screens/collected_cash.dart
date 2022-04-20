@@ -83,7 +83,8 @@ class _CollectedCashState extends State<CollectedCash> {
                     onPressed: () {
                       Navigator.pushReplacementNamed(
                           context, HomeScreen.routeName,
-                          arguments: HomeScreenArgument(isSelected: false));
+                          arguments: HomeScreenArgument(
+                              isSelected: false, isOnline: true));
                     },
                     child: const Text(
                       "Done",

@@ -131,7 +131,8 @@ class _CancelReasonState extends State<CancelReason> {
               if (state is RideRequestCancelled) {
                 isLoading = false;
                 Navigator.pushReplacementNamed(context, HomeScreen.routeName,
-                    arguments: HomeScreenArgument(isSelected: false));
+                    arguments:
+                        HomeScreenArgument(isSelected: false, isOnline: true));
               }
               if (state is RideRequestOperationFailur) {
                 isLoading = false;
