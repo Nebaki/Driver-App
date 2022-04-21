@@ -170,8 +170,10 @@ class _HomeScreenState extends State<HomeScreen> {
               UserEvent event = UserLoadById(nextDrivers[0]);
               BlocProvider.of<UserBloc>(context).add(event);
             } else {
-              Navigator.pushNamed(context, CancelReason.routeName,
-                  arguments: CancelReasonArgument(sendRequest: true));
+              BlocProvider.of<RideRequestBloc>(context)
+                  .add(RideRequestTimeOut(requestId));
+              // Navigator.pushNamed(context, CancelReason.routeName,
+              //     arguments: CancelReasonArgument(sendRequest: true));
             }
             print("Yeah right now on action");
             timer.cancel();

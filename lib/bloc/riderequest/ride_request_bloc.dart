@@ -99,5 +99,16 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         RideRequestOperationFailur();
       }
     }
+
+    if (event is RideRequestTimeOut) {
+      yield RideRequestLoading();
+
+      try {
+        await rideRequestRepository.timeOutRequest(event.id);
+        yield RideRequestTimeOuted();
+      } catch (_) {
+        RideRequestOperationFailur();
+      }
+    }
   }
 }

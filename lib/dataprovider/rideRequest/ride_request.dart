@@ -303,4 +303,38 @@ class RideRequestDataProvider {
       throw Exception('Failed to send notification.');
     }
   }
+
+  Future timoutRequest(String id) async {
+    final http.Response response = await http.post(
+        Uri.parse('$_maintenanceUrl/timeout-ride-request/$id'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          "x-access-token": "${await authDataProvider.getToken()}"
+        });
+    print('status code is ${response.statusCode}');
+    if (response.statusCode == 200) {
+      timeOutNotification('fcmId');
+    } else {
+      throw 'Unable to time out the request';
+    }
+  }
+
+  Future timeOutNotification(String fcmId) async {
+    final response = await http.post(
+      Uri.parse(_fcmUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$token'
+      },
+      body: json.encode({
+        "data": {'response': 'TimeOut'},
+        "to": passengerFcm,
+        "notification": {
+          "title": "RideRequest TimeOut",
+          "body": "Ride request timeout."
+        }
+      }),
+    );
+    print('notification status code is ${response.statusCode}');
+  }
 }

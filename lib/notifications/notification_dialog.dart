@@ -35,7 +35,7 @@ class NotificationDialog extends StatefulWidget {
 
 class _NotificationDialogState extends State<NotificationDialog> {
   List<String> drivers = [];
-  late Timer _timer;
+  Timer? _timer;
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
@@ -44,7 +44,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
       (Timer timer) {
         if (widget.timer == 0) {
           setState(() {
-            _timer.cancel();
+            _timer!.cancel();
           });
           // print("Yeah right now on action");
           // player.dispose();
@@ -53,9 +53,11 @@ class _NotificationDialogState extends State<NotificationDialog> {
               UserEvent event = UserLoadById(widget.nextDrivers[0]);
               BlocProvider.of<UserBloc>(context).add(event);
             } else {
+              BlocProvider.of<RideRequestBloc>(context)
+                  .add(RideRequestTimeOut(requestId));
               Navigator.pop(context);
-              Navigator.pushNamed(context, CancelReason.routeName,
-                  arguments: CancelReasonArgument(sendRequest: true));
+              // Navigator.pushNamed(context, CancelReason.routeName,
+              //     arguments: CancelReasonArgument(sendRequest: true));
             }
           }
 
@@ -80,7 +82,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer!.cancel();
     super.dispose();
   }
 
@@ -262,6 +264,9 @@ class _NotificationDialogState extends State<NotificationDialog> {
                     //     side: MaterialStateProperty.all<BorderSide>(
                     //         const BorderSide(width: 1, color: Colors.red))),
                     onPressed: () {
+                      if (_timer != null) {
+                        _timer!.cancel();
+                      }
                       if (timer != null) {
                         timer!.cancel();
                       }
@@ -272,8 +277,10 @@ class _NotificationDialogState extends State<NotificationDialog> {
                         UserEvent event = UserLoadById(widget.nextDrivers[0]);
                         BlocProvider.of<UserBloc>(context).add(event);
                       } else {
-                        Navigator.pushNamed(context, CancelReason.routeName,
-                            arguments: CancelReasonArgument(sendRequest: true));
+                        BlocProvider.of<RideRequestBloc>(context)
+                            .add(RideRequestTimeOut(requestId));
+                        // Navigator.pushNamed(context, CancelReason.routeName,
+                        //     arguments: CancelReasonArgument(sendRequest: true));
                         // Navigator.pop(context);
                       }
 
@@ -312,7 +319,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                           const Color.fromRGBO(244, 201, 60, 1)),
                     ),
                     onPressed: () {
-                      _timer.cancel();
+                      _timer!.cancel();
                       if (timer != null) {
                         timer!.cancel();
                       }
