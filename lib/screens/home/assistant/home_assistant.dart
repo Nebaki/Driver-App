@@ -40,5 +40,4 @@ void getLiveLocation() async {
 // void stopTimer() {
 //   timer.cancel();
 // }
-
-late Timer timer;
+Timer? timer;

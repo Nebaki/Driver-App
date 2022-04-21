@@ -262,6 +262,9 @@ class _NotificationDialogState extends State<NotificationDialog> {
                     //     side: MaterialStateProperty.all<BorderSide>(
                     //         const BorderSide(width: 1, color: Colors.red))),
                     onPressed: () {
+                      if (timer != null) {
+                        timer!.cancel();
+                      }
                       print(myId);
                       player.stop();
                       player.dispose();
@@ -310,7 +313,9 @@ class _NotificationDialogState extends State<NotificationDialog> {
                     ),
                     onPressed: () {
                       _timer.cancel();
-                      timer.cancel();
+                      if (timer != null) {
+                        timer!.cancel();
+                      }
                       homeScreenStreamSubscription.cancel();
 
                       Geofire.removeLocation(myId);
