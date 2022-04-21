@@ -35,7 +35,7 @@ class NotificationDialog extends StatefulWidget {
 
 class _NotificationDialogState extends State<NotificationDialog> {
   List<String> drivers = [];
-  late Timer _timer;
+  Timer? _timer;
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
@@ -43,6 +43,9 @@ class _NotificationDialogState extends State<NotificationDialog> {
       oneSec,
       (Timer timer) {
         if (widget.timer == 0) {
+          setState(() {
+            _timer!.cancel();
+          });
           // print("Yeah right now on action");
           // player.dispose();
           if (widget.passRequest) {
@@ -50,17 +53,18 @@ class _NotificationDialogState extends State<NotificationDialog> {
               UserEvent event = UserLoadById(widget.nextDrivers[0]);
               BlocProvider.of<UserBloc>(context).add(event);
             } else {
-              Navigator.pushNamed(context, CancelReason.routeName,
-                  arguments: CancelReasonArgument(sendRequest: true));
+              BlocProvider.of<RideRequestBloc>(context)
+                  .add(RideRequestTimeOut(requestId));
+              Navigator.pop(context);
+              // Navigator.pushNamed(context, CancelReason.routeName,
+              //     arguments: CancelReasonArgument(sendRequest: true));
             }
           }
 
           // RideRequestEvent requestEvent =
           //     RideRequestChangeStatus(requestId, "Cancelled", passengerFcm);
           // BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
-          setState(() {
-            timer.cancel();
-          });
+
         } else {
           setState(() {
             widget.timer--;
@@ -78,7 +82,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer!.cancel();
     super.dispose();
   }
 
@@ -260,6 +264,12 @@ class _NotificationDialogState extends State<NotificationDialog> {
                     //     side: MaterialStateProperty.all<BorderSide>(
                     //         const BorderSide(width: 1, color: Colors.red))),
                     onPressed: () {
+                      if (_timer != null) {
+                        _timer!.cancel();
+                      }
+                      if (timer != null) {
+                        timer!.cancel();
+                      }
                       print(myId);
                       player.stop();
                       player.dispose();
@@ -267,7 +277,11 @@ class _NotificationDialogState extends State<NotificationDialog> {
                         UserEvent event = UserLoadById(widget.nextDrivers[0]);
                         BlocProvider.of<UserBloc>(context).add(event);
                       } else {
-                        Navigator.pop(context);
+                        BlocProvider.of<RideRequestBloc>(context)
+                            .add(RideRequestTimeOut(requestId));
+                        // Navigator.pushNamed(context, CancelReason.routeName,
+                        //     arguments: CancelReasonArgument(sendRequest: true));
+                        // Navigator.pop(context);
                       }
 
                       // RideRequestEvent requestEvent = RideRequestChangeStatus(
@@ -305,8 +319,10 @@ class _NotificationDialogState extends State<NotificationDialog> {
                           const Color.fromRGBO(244, 201, 60, 1)),
                     ),
                     onPressed: () {
-                      _timer.cancel();
-                      stopTimer();
+                      _timer!.cancel();
+                      if (timer != null) {
+                        timer!.cancel();
+                      }
                       homeScreenStreamSubscription.cancel();
 
                       Geofire.removeLocation(myId);

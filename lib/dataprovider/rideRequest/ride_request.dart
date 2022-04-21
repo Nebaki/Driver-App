@@ -147,7 +147,7 @@ class RideRequestDataProvider {
         'Authorization': 'key=$token'
       },
       body: json.encode({
-        "data": {'response': status},
+        "data": {'response': status, 'myId': myId},
         "to": fcmToken,
         //request.driverToken,
         // "dIZJlO16S6aIiFoGPAg9qf:APA91bHjrxQ0I5vRqyrBFHqbYBM90rYZfmb2llmtA6q8Ps6LmIS9WwoO3ENnBGUDaax7l1eTpzh71RK9YS4fyDdPdowyalVhZXbjWxq337ZEtDvOSGihA5pyuTJeS0dqQl0I9H5MfnFp",
@@ -302,5 +302,39 @@ class RideRequestDataProvider {
     } else {
       throw Exception('Failed to send notification.');
     }
+  }
+
+  Future timoutRequest(String id) async {
+    final http.Response response = await http.post(
+        Uri.parse('$_maintenanceUrl/timeout-ride-request/$id'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          "x-access-token": "${await authDataProvider.getToken()}"
+        });
+    print('status code is ${response.statusCode}');
+    if (response.statusCode == 200) {
+      timeOutNotification('fcmId');
+    } else {
+      throw 'Unable to time out the request';
+    }
+  }
+
+  Future timeOutNotification(String fcmId) async {
+    final response = await http.post(
+      Uri.parse(_fcmUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$token'
+      },
+      body: json.encode({
+        "data": {'response': 'TimeOut'},
+        "to": passengerFcm,
+        "notification": {
+          "title": "RideRequest TimeOut",
+          "body": "Ride request timeout."
+        }
+      }),
+    );
+    print('notification status code is ${response.statusCode}');
   }
 }

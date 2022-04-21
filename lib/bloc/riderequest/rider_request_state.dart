@@ -38,3 +38,5 @@ class RideRequestStartedTripChecked extends RideRequestState {
   @override
   List<Object> get props => [rideRequest];
 }
+
+class RideRequestTimeOuted extends RideRequestState {}

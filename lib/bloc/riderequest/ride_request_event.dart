@@ -89,3 +89,10 @@ class RideRequestCheckStartedTrip extends RideRequestEvent {
   @override
   List<Object?> get props => [];
 }
+
+class RideRequestTimeOut extends RideRequestEvent {
+  final String id;
+  const RideRequestTimeOut(this.id);
+  @override
+  List<Object?> get props => [id];
+}

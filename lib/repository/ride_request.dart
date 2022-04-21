@@ -44,4 +44,8 @@ class RideRequestRepository {
   Future<RideRequest> checkStartedTrip() async {
     return await dataProvider.checkStartedTrip();
   }
+
+  Future timeOutRequest(String id) async {
+    await dataProvider.timoutRequest(id);
+  }
 }
