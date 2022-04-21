@@ -72,4 +72,4 @@ List<String> drivers = [];
 //   _timer.cancel();
 // }
 
-String portName = 'DRIVER_BACKGROUND_LISTENERE';
+String portName = 'DRIVER_BACKGROUND_lISTENER';

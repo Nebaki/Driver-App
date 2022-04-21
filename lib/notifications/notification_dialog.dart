@@ -43,6 +43,9 @@ class _NotificationDialogState extends State<NotificationDialog> {
       oneSec,
       (Timer timer) {
         if (widget.timer == 0) {
+          setState(() {
+            _timer.cancel();
+          });
           // print("Yeah right now on action");
           // player.dispose();
           if (widget.passRequest) {
@@ -50,6 +53,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
               UserEvent event = UserLoadById(widget.nextDrivers[0]);
               BlocProvider.of<UserBloc>(context).add(event);
             } else {
+              Navigator.pop(context);
               Navigator.pushNamed(context, CancelReason.routeName,
                   arguments: CancelReasonArgument(sendRequest: true));
             }
@@ -58,9 +62,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
           // RideRequestEvent requestEvent =
           //     RideRequestChangeStatus(requestId, "Cancelled", passengerFcm);
           // BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
-          setState(() {
-            timer.cancel();
-          });
+
         } else {
           setState(() {
             widget.timer--;
@@ -267,7 +269,9 @@ class _NotificationDialogState extends State<NotificationDialog> {
                         UserEvent event = UserLoadById(widget.nextDrivers[0]);
                         BlocProvider.of<UserBloc>(context).add(event);
                       } else {
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, CancelReason.routeName,
+                            arguments: CancelReasonArgument(sendRequest: true));
+                        // Navigator.pop(context);
                       }
 
                       // RideRequestEvent requestEvent = RideRequestChangeStatus(
@@ -306,7 +310,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                     ),
                     onPressed: () {
                       _timer.cancel();
-                      stopTimer();
+                      timer.cancel();
                       homeScreenStreamSubscription.cancel();
 
                       Geofire.removeLocation(myId);

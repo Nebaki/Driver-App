@@ -24,32 +24,21 @@ void getLiveLocation() async {
   });
 }
 
+// late Timer timer;
+// const oneSec = Duration(seconds: 1);
+// void startTimer() {
+//   print("And here!@#");
+
+//   timer = Timer.periodic(
+//     oneSec,
+//     (Timer timer) {
+//       print("Timer starteddd");
+//     },
+//   );
+// }
+
+// void stopTimer() {
+//   timer.cancel();
+// }
+
 late Timer timer;
-int waitingTimer = 40;
-const oneSec = Duration(seconds: 1);
-void startTimer() {
-  timer = Timer.periodic(
-    oneSec,
-    (Timer timer) {
-      print("Timer starteddd");
-
-      // if (waitingTimer == 0) {
-      //   if (nextDrivers.isNotEmpty) {
-      //     UserEvent event = UserLoadById(nextDrivers[0]);
-      //     BlocProvider.of<UserBloc>(context).add(event);
-      //   } else {
-      //     Navigator.pushNamed(context, CancelReason.routeName,
-      //         arguments: CancelReasonArgument(sendRequest: true));
-      //   }
-      //   print("Yeah right now on action");
-      //   timer.cancel();
-      // } else {
-      //   waitingTimer--;
-      // }
-    },
-  );
-}
-
-void stopTimer() {
-  timer.cancel();
-}

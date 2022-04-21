@@ -120,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
     target: LatLng(8.9806, 38.7578),
     zoom: 14.4746,
   );
+  int waitingTimer = 40;
 
   @override
   void initState() {
@@ -136,46 +137,49 @@ class _HomeScreenState extends State<HomeScreen> {
     willScreenPop = false;
     IsolateNameServer.registerPortWithName(_port.sendPort, portName);
     _port.listen((message) {
+      print("Yow we are right here!@#");
+
       final listOfDrivers = json.decode(message.data['nextDrivers']);
       nextDrivers = listOfDrivers;
-      startTimer();
 
-      if (waitingTimer == 0) {
-        if (nextDrivers.isNotEmpty) {
-          UserEvent event = UserLoadById(nextDrivers[0]);
-          BlocProvider.of<UserBloc>(context).add(event);
-        } else {
-          Navigator.pushNamed(context, CancelReason.routeName,
-              arguments: CancelReasonArgument(sendRequest: true));
-        }
-        print("Yeah right now on action");
-        timer.cancel();
-      } else {
-        waitingTimer--;
-      }
+      // if (waitingTimer == 0) {
+      //   if (nextDrivers.isNotEmpty) {
+      //     UserEvent event = UserLoadById(nextDrivers[0]);
+      //     BlocProvider.of<UserBloc>(context).add(event);
+      //   } else {
+      //     Navigator.pushNamed(context, CancelReason.routeName,
+      //         arguments: CancelReasonArgument(sendRequest: true));
+      //   }
+      //   print("Yeah right now on action");
+      //   timer.cancel();
+      // } else {
+      //   setState(() {
+      //     waitingTimer--;
+      //   });
+      // }
 
-      // waitingTimer = 40;
-      // const oneSec = Duration(seconds: 1);
-      // _timer = Timer.periodic(
-      //   oneSec,
-      //   (Timer timer) {
-      //     print("Timer starteddd");
+      waitingTimer = 40;
+      const oneSec = Duration(seconds: 1);
+      timer = Timer.periodic(
+        oneSec,
+        (Timer timer) {
+          print("Timer starteddd");
 
-      //     if (waitingTimer == 0) {
-      //       if (nextDrivers.isNotEmpty) {
-      //         UserEvent event = UserLoadById(nextDrivers[0]);
-      //         BlocProvider.of<UserBloc>(context).add(event);
-      //       } else {
-      //         Navigator.pushNamed(context, CancelReason.routeName,
-      //             arguments: CancelReasonArgument(sendRequest: true));
-      //       }
-      //       print("Yeah right now on action");
-      //       timer.cancel();
-      //     } else {
-      //       waitingTimer--;
-      //     }
-      //   },
-      // );
+          if (waitingTimer == 0) {
+            if (nextDrivers.isNotEmpty) {
+              UserEvent event = UserLoadById(nextDrivers[0]);
+              BlocProvider.of<UserBloc>(context).add(event);
+            } else {
+              Navigator.pushNamed(context, CancelReason.routeName,
+                  arguments: CancelReasonArgument(sendRequest: true));
+            }
+            print("Yeah right now on action");
+            timer.cancel();
+          } else {
+            waitingTimer--;
+          }
+        },
+      );
 
       final pickupList = json.decode(message.data['pickupLocation']);
       final droppOffList = json.decode(message.data['droppOffLocation']);
