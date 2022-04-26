@@ -49,41 +49,22 @@ class RideRequest extends Equatable {
       [id, driverId, pickupLocation, dropOffLocation, passenger];
 
   factory RideRequest.fromJson(Map<String, dynamic> json) {
-    return json['passenger'] != null
-        ? RideRequest(
-            id: json["id"],
-            driverId: json["driver_id"] ?? '',
-            pickupLocation:
-                LatLng(json["pickup_location"][0], json["pickup_location"][1]),
-            dropOffLocation: LatLng(
-                json["droppoff_location"][1], json["droppoff_location"][0]),
-            direction: json['direction'],
-            pickUpAddress: json["pickup_address"] ?? '',
-            droppOffAddress: json["droppoff_address"] ?? '',
-            status: json['status'],
-            price: json['price'].toString(),
-            distance: json['distance'].toString(),
-            passenger: Passenger.fromJson(json['passenger'])
-            // date: DateFormat.yMMMMEEEEd().format(now),
-            // time: DateFormat.jm().format(now)
-            )
-        : RideRequest(
-            id: json["id"],
-            driverId: json["driver_id"] ?? '',
-            pickupLocation:
-                LatLng(json["pickup_location"][0], json["pickup_location"][1]),
-            dropOffLocation: LatLng(
-                json["droppoff_location"][1], json["droppoff_location"][0]),
-            direction: json['direction'] ?? '',
-            pickUpAddress: json["pickup_address"] ?? '',
-            droppOffAddress: json["droppoff_address"] ?? '',
-            status: json['status'],
-            price: json['price'].toString(),
-            distance: json['distance'].toString(),
-            name: json['passenger_info']['name']
-            // date: DateFormat.yMMMMEEEEd().format(now),
-            // time: DateFormat.jm().format(now)
-            );
+    return RideRequest(
+        id: json["id"],
+        driverId: json["driver_id"] ?? '',
+        pickupLocation:
+            LatLng(json["pickup_location"][0], json["pickup_location"][1]),
+        dropOffLocation:
+            LatLng(json["droppoff_location"][1], json["droppoff_location"][0]),
+        direction: json['direction'],
+        pickUpAddress: json["pickup_address"] ?? '',
+        droppOffAddress: json["droppoff_address"] ?? '',
+        status: json['status'],
+        price: json['price'].toString(),
+        distance: json['distance'].toString(),
+        passenger: json.containsKey('passenger')
+            ? Passenger.fromJson(json['passenger'])
+            : Passenger(name: 'Uknown Customer'));
   }
 
   @override

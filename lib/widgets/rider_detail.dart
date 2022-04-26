@@ -16,7 +16,6 @@ class RiderDetail extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BlocConsumer<DirectionBloc, DirectionState>(listener: (_, state) {
-            
               if (state is DirectionDistanceDurationLoadSuccess) {
                 directionDuration =
                     '${(state.direction.durationValue / 60).truncate()} min';
@@ -102,10 +101,18 @@ class RiderDetail extends StatelessWidget {
             }),
           ],
         ),
-        Text(
-          "Picking up ${passengerName ?? "Customer"}",
-          style: TextStyle(color: Colors.indigo.shade900, fontSize: 16),
-        ),
+        BlocConsumer<RideRequestBloc, RideRequestState>(
+            builder: (context, state) => Text(
+                  "Picking up ${passengerName ?? "Customer"}",
+                  style: TextStyle(color: Colors.indigo.shade900, fontSize: 16),
+                ),
+            listener: (context, state) {
+              if (state is RideRequestSuccess) {
+                passengerName = state.request.passenger!.name;
+                passengerFcm = state.request.passenger!.fcmId;
+                requestId = state.request.id!;
+              }
+            }),
       ],
     );
   }

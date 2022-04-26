@@ -17,6 +17,7 @@ late String myId;
 late String myPictureUrl;
 late String myName;
 late String myVehicleCategory;
+late double myAvgRate;
 String? passengerName;
 late String passengerPhoneNumber;
 late String requestId;
@@ -72,4 +73,5 @@ List<String> drivers = [];
 //   _timer.cancel();
 // }
 
-String portName = 'DRIVER_BACKGROUND_lISTENER';
+String portName = 'DRIVER_BACKGROUND_lISTENER_PORT';
+const maintenanceUrl = 'https://mobiletaxi-api.herokuapp.com/api';

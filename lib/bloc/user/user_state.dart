@@ -35,3 +35,5 @@ class ImageUploadSuccess extends UserState {}
 class UserPreferenceUploadSuccess extends UserState {}
 
 class UserOperationFailure extends UserState {}
+
+class UserPasswordChanged extends UserState {}

@@ -221,6 +221,7 @@ class RideRequestDataProvider {
             body: json.encode({'price': price}));
 
     if (response.statusCode == 200) {
+      print("fcm_issddddddd $fcmId");
       if (fcmId != null) {
         completeNotification(fcmId);
       }
@@ -248,6 +249,8 @@ class RideRequestDataProvider {
 
     if (response.statusCode == 200) {
       final data = (response.body);
+
+      print(response.body);
     } else {
       throw Exception('Failed to send notification.');
     }

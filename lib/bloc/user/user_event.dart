@@ -81,3 +81,10 @@ class UserLoadById extends UserEvent {
   @override
   List<Object> get props => [id];
 }
+
+class UserChangePassword extends UserEvent {
+  final Map<String, String> passwordInfo;
+  const UserChangePassword(this.passwordInfo);
+  @override
+  List<Object?> get props => [passwordInfo];
+}
