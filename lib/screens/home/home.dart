@@ -187,7 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final pickupList = json.decode(message.data['pickupLocation']);
       final droppOffList = json.decode(message.data['droppOffLocation']);
-      // final nextDrivers = json.decode(message.data['nextDrivers']);
 
       pickupLocation = LatLng(pickupList[0], pickupList[1]);
       droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
