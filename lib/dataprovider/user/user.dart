@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 // import 'package:dio/dio.dart';
+import 'package:driverapp/helper/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'dart:io';
@@ -144,6 +145,24 @@ class UserDataProvider {
       throw Exception('204 Failed to update user.');
     } else {
       throw Exception('Failed to update user.');
+    }
+  }
+
+  Future changePassword(Map<String, String> passwordInfo) async {
+    final http.Response response =
+        await http.post(Uri.parse('$maintenanceUrl/drivers/change-password'),
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+              'x-access-token': '${await authDataProvider.getToken()}',
+            },
+            body: json.encode({
+              'current_password': passwordInfo['current_password'],
+              "new_password": passwordInfo['new_password'],
+              "confirm_password": passwordInfo['confirm_password']
+            }));
+    print('response ${response.statusCode}');
+    if (response.statusCode != 200) {
+      throw 'Unable to change password';
     }
   }
 }

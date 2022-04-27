@@ -159,7 +159,10 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                         print(state.auth.token);
 
                         if (state.auth.token != null) {
+                          print(
+                              'ratingggggggggggggggggggg ${state.auth.pref!['min_rate']}');
                           myId = state.auth.id!;
+                          myAvgRate = state.auth.avgRate!;
                           myPictureUrl = state.auth.profilePicture!;
                           myName = state.auth.name!;
                           myVehicleCategory = state.auth.vehicleCategory!;
@@ -185,7 +188,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                   builder: (context, state) {
                   return Container();
                 }, listener: (context, st) {
-                  print("Yoyoyoyoyoyoyoyoyoyooyqqq $st");
                   if (st is RideRequestStartedTripChecked) {
                     // distanceDistance = st.rideRequest.distance!;
 

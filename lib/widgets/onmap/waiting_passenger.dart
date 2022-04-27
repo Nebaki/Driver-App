@@ -79,7 +79,7 @@ class WaitingPassenger extends StatelessWidget {
                         onTap: () {
                           Navigator.pushNamed(context, CancelReason.routeName,
                               arguments:
-                                  CancelReasonArgument(sendRequest: false));
+                                  CancelReasonArgument(sendRequest: true));
 
                           // callback!(CancelTrip(callback));
                         },

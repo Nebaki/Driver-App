@@ -279,6 +279,8 @@ class _NotificationDialogState extends State<NotificationDialog> {
                       } else {
                         BlocProvider.of<RideRequestBloc>(context)
                             .add(RideRequestTimeOut(requestId));
+                        Navigator.pop(context);
+
                         // Navigator.pushNamed(context, CancelReason.routeName,
                         //     arguments: CancelReasonArgument(sendRequest: true));
                         // Navigator.pop(context);

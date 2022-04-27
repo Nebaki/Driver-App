@@ -13,6 +13,7 @@ class Auth extends Equatable {
   String? profilePicture;
   String? vehicleCategory;
   Map<String?, dynamic?>? pref;
+  double? avgRate;
 
   Auth(
       {this.id,
@@ -24,6 +25,7 @@ class Auth extends Equatable {
       this.password,
       this.pref,
       this.profilePicture,
+      this.avgRate,
       this.vehicleCategory});
 
   @override
@@ -39,6 +41,7 @@ class Auth extends Equatable {
         email: storage["email"],
         profilePicture: storage["profile_image"],
         vehicleCategory: storage['vehicle_category'],
+        avgRate: double.parse(storage['avg_rate']),
         pref: {
           "gender": storage["driver_gender"],
           "min_rate": storage["min_rate"],

@@ -172,6 +172,8 @@ class _HomeScreenState extends State<HomeScreen> {
             } else {
               BlocProvider.of<RideRequestBloc>(context)
                   .add(RideRequestTimeOut(requestId));
+              Navigator.pop(context);
+
               // Navigator.pushNamed(context, CancelReason.routeName,
               //     arguments: CancelReasonArgument(sendRequest: true));
             }
@@ -1230,6 +1232,8 @@ class _HomeScreenState extends State<HomeScreen> {
         listener: (context, state) {
           if (state is RideRequestSuccess) {
             fromCreateManualTrip = false;
+            passengerName = state.request.passenger!.name;
+            passengerFcm = state.request.passenger!.fcmId;
             requestId = state.request.id!;
             Future.delayed(
               Duration(seconds: 3),

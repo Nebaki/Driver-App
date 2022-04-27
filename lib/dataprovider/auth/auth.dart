@@ -27,7 +27,7 @@ class AuthDataProvider {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> output = jsonDecode(response.body);
-
+      print(output['driver']['avg_rate']['score']);
 
       await secure_storage.write(key: 'id', value: output['driver']['id']);
       await secure_storage.write(
@@ -59,7 +59,9 @@ class AuthDataProvider {
           key: "vehicle_category",
           value: output["driver"]['vehicle']['type'] ?? "");
 
-      
+      await secure_storage.write(
+          key: "avg_rate",
+          value: output['driver']['avg_rate']['score'].toString());
     } else {
       throw Exception('Failed to login.');
     }
@@ -84,11 +86,9 @@ class AuthDataProvider {
   }
 
   Future updatePreference(String gender, String rate, String carType) async {
-    
     await secure_storage.write(key: "driver_gender", value: gender);
     await secure_storage.write(key: "min_rate", value: rate);
     await secure_storage.write(key: "car_type", value: carType);
-
   }
 
   Future logOut() async {

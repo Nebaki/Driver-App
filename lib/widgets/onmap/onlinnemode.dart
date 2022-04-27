@@ -98,7 +98,10 @@ class _OnlinModeState extends State<OnlinMode> {
                       VerticalDivider(
                         color: Colors.grey.shade300,
                       ),
-                      _items(num: "4.75", text: "Rating", icon: Icons.star),
+                      _items(
+                          num: myAvgRate.toString(),
+                          text: "Rating",
+                          icon: Icons.star),
                       VerticalDivider(
                         color: Colors.grey.shade300,
                       ),

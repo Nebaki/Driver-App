@@ -31,4 +31,8 @@ class UserRepository {
   Future<User> getUserById(String id) async {
     return await dataProvider.getDriverById(id);
   }
+
+  Future changePassword(Map<String, String> passwordInfo) async {
+    await dataProvider.changePassword(passwordInfo);
+  }
 }

@@ -71,5 +71,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         yield UserOperationFailure();
       }
     }
+
+    if (event is UserChangePassword) {
+      yield UserLoading();
+
+      try {
+        await userRepository.changePassword(event.passwordInfo);
+        yield UserPasswordChanged();
+      } catch (_) {
+        yield UserOperationFailure();
+      }
+    }
   }
 }
