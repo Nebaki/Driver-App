@@ -201,6 +201,9 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                           arguments: HomeScreenArgument(
                               isSelected: false, isOnline: false));
                     } else {
+                      droppOffAddress = st.rideRequest.droppOffAddress!;
+                      pickupLocation = st.rideRequest.pickupLocation!;
+                      pickUpAddress = st.rideRequest.pickUpAddress!;
                       droppOffLocation = st.rideRequest.dropOffLocation!;
                       requestId = st.rideRequest.id!;
                       if (st.rideRequest.passenger != null) {

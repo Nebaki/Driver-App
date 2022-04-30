@@ -42,7 +42,12 @@ class AppRoute {
               ));
     }
     if (settings.name == CollectedCash.routeName) {
-      return MaterialPageRoute(builder: (context) => CollectedCash());
+      CollectedCashScreenArgument argument =
+          settings.arguments as CollectedCashScreenArgument;
+      return MaterialPageRoute(
+          builder: (context) => CollectedCash(
+                args: argument,
+              ));
     }
     if (settings.name == Walet.routeName) {
       return MaterialPageRoute(builder: (context) => Walet());
@@ -119,4 +124,10 @@ class PreferenceArgument {
 class CancelReasonArgument {
   final bool sendRequest;
   CancelReasonArgument({required this.sendRequest});
+}
+
+class CollectedCashScreenArgument {
+  final String name;
+  final double price;
+  CollectedCashScreenArgument({required this.name, required this.price});
 }

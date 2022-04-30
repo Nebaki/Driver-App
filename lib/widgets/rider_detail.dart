@@ -7,6 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'rider_detail_constatnts.dart';
 
 class RiderDetail extends StatelessWidget {
+  final String text;
+  RiderDetail({Key? key, required this.text}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -103,7 +106,7 @@ class RiderDetail extends StatelessWidget {
         ),
         BlocConsumer<RideRequestBloc, RideRequestState>(
             builder: (context, state) => Text(
-                  "Picking up ${passengerName ?? "Customer"}",
+                  "$text: ${passengerName ?? "Customer"}",
                   style: TextStyle(color: Colors.indigo.shade900, fontSize: 16),
                 ),
             listener: (context, state) {

@@ -6,6 +6,7 @@ class Auth extends Equatable {
   String? token;
   String? id;
   String? name;
+  String? lastName;
   String phoneNumber;
   String? password;
   String? email;
@@ -21,6 +22,7 @@ class Auth extends Equatable {
       this.email,
       this.emergencyContact,
       this.name,
+      this.lastName,
       required this.phoneNumber,
       this.password,
       this.pref,
@@ -37,11 +39,14 @@ class Auth extends Equatable {
         token: storage["token"],
         phoneNumber: storage["phone_number"],
         name: storage["name"],
+        lastName: storage['last_name'],
         emergencyContact: storage["emergency_contact"],
         email: storage["email"],
         profilePicture: storage["profile_image"],
         vehicleCategory: storage['vehicle_category'],
-        avgRate: double.parse(storage['avg_rate']),
+        avgRate: storage.containsKey('avg_rate')
+            ? double.parse(storage['avg_rate'])
+            : 0,
         pref: {
           "gender": storage["driver_gender"],
           "min_rate": storage["min_rate"],

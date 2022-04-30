@@ -59,12 +59,16 @@ void main() async {
   final EmergencyReportRepository emergencyReportRepository =
       EmergencyReportRepository(
           dataProvider: EmergencyReportDataProvider(httpClient: http.Client()));
+  final ReverseLocationRepository reverseLocationRepository =
+      ReverseLocationRepository(
+          dataProvider: ReverseGocoding(httpClient: http.Client()));
 
   runApp(MyApp(
     placeDetailRepository: placeDetailRepository,
     directionRepository: directionRepository,
     authRepository: authRepository,
     userRepository: userRepository,
+    reverseLocationRepository: reverseLocationRepository,
     rideRequestRepository: rideRequestRepository,
     locationPredictionRepository: locationPredictionRepository,
     emergencyReportRepository: emergencyReportRepository,
@@ -110,12 +114,14 @@ class MyApp extends StatelessWidget {
 
   final RideRequestRepository rideRequestRepository;
   final EmergencyReportRepository emergencyReportRepository;
+  final ReverseLocationRepository reverseLocationRepository;
 
   const MyApp(
       {Key? key,
       required this.placeDetailRepository,
       required this.directionRepository,
       required this.userRepository,
+      required this.reverseLocationRepository,
       required this.authRepository,
       required this.rideRequestRepository,
       required this.locationPredictionRepository,
@@ -133,6 +139,7 @@ class MyApp extends StatelessWidget {
           RepositoryProvider.value(value: directionRepository),
           RepositoryProvider.value(value: rideRequestRepository),
           RepositoryProvider.value(value: locationPredictionRepository),
+          RepositoryProvider.value(value: reverseLocationRepository),
           RepositoryProvider.value(value: emergencyReportRepository)
         ],
         child: MultiBlocProvider(
@@ -160,6 +167,9 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                   create: (context) => EmergencyReportBloc(
                       emergencyReportRepository: emergencyReportRepository)),
+              BlocProvider(
+                  create: (context) => LocationBloc(
+                      reverseLocationRepository: reverseLocationRepository)),
             ],
             child: MaterialApp(
               title: 'SafeWay',

@@ -2,6 +2,7 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/route.dart';
+import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _ArrivedState extends State<Arrived> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      disableCreateTripButton();
       setWillScreenPop();
     });
     return BlocConsumer<RideRequestBloc, RideRequestState>(
@@ -47,7 +49,7 @@ class _ArrivedState extends State<Arrived> {
                     topRight: Radius.circular(20))),
             child: Column(
               children: [
-                RiderDetail(),
+                RiderDetail(text: 'Picking up'),
                 BlocBuilder<RideRequestBloc, RideRequestState>(
                     builder: (context, state) {
                   if (state is RideRequestLoading) {

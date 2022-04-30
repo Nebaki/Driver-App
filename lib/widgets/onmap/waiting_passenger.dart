@@ -48,7 +48,7 @@ class WaitingPassenger extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
-                  child: RiderDetail(),
+                  child: RiderDetail(text: 'Picking up'),
                 ),
                 BlocBuilder<RideRequestBloc, RideRequestState>(
                     builder: (context, state) {

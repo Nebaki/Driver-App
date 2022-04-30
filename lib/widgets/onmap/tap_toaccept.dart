@@ -28,7 +28,7 @@ class TapToAccept extends StatelessWidget {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         child: Column(
           children: [
-            RiderDetail(),
+            RiderDetail(text: 'Picking up'),
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 20),
               child: Row(

@@ -24,20 +24,8 @@ void getLiveLocation() async {
   });
 }
 
-// late Timer timer;
-// const oneSec = Duration(seconds: 1);
-// void startTimer() {
-//   print("And here!@#");
-
-//   timer = Timer.periodic(
-//     oneSec,
-//     (Timer timer) {
-//       print("Timer starteddd");
-//     },
-//   );
-// }
-
-// void stopTimer() {
-//   timer.cancel();
-// }
 Timer? timer;
+late Function disableCreateTripButton;
+late Function updateEsimatedCost;
+DateTime? startingTime;
+double currentPrice = 75;

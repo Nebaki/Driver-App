@@ -13,6 +13,16 @@ class DirectionLoad extends DirectionEvent {
   List<Object> get props => [];
 }
 
+class DirectionLoadFromDiffrentPickupLocation extends DirectionEvent {
+  final LatLng destination;
+  final LatLng pickup;
+  const DirectionLoadFromDiffrentPickupLocation(
+      {required this.pickup, required this.destination});
+
+  @override
+  List<Object> get props => [];
+}
+
 class DirectionDistanceDurationLoad extends DirectionEvent {
   final LatLng destination;
   const DirectionDistanceDurationLoad({required this.destination});
