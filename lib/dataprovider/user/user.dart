@@ -98,6 +98,7 @@ class UserDataProvider {
   }
 
   Future<User> updatedriver(User user) async {
+    print("upp");
     final http.Response response = await http.post(
       Uri.parse('$_baseUrl/update-profile'),
       headers: <String, String>{
@@ -114,7 +115,7 @@ class UserDataProvider {
         'preference': user.preference
       }),
     );
-
+    print('statuss ${response.statusCode} and ${response.body}');
     if (response.statusCode == 200) {
       authDataProvider.updateUserData(user);
       return User.fromJson(jsonDecode(response.body));
@@ -160,7 +161,7 @@ class UserDataProvider {
               "new_password": passwordInfo['new_password'],
               "confirm_password": passwordInfo['confirm_password']
             }));
-    print('response ${response.statusCode}');
+    print('response ${response.statusCode} ${response.body}');
     if (response.statusCode != 200) {
       throw 'Unable to change password';
     }

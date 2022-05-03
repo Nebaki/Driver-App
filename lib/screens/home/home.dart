@@ -15,6 +15,7 @@ import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animarker/core/ripple_marker.dart';
 import 'package:flutter_animarker/widgets/animarker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
@@ -51,6 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
   PolylinePoints polylinePoints = PolylinePoints();
   Map<PolylineId, Polyline> polylines = {};
   Map<MarkerId, Marker> markers = {};
+  Map<MarkerId, Marker> availablePassengersMarkers = {};
+
   late LatLng destination;
   bool isArrivedwidget = false;
   late LatLngBounds latLngBounds;
@@ -76,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   FocusNode pickupLocationNode = FocusNode();
   FocusNode droppOffLocationNode = FocusNode();
+  bool showNearbyOpportunity = true;
 
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
@@ -540,6 +544,9 @@ class _HomeScreenState extends State<HomeScreen> {
             BlocConsumer<DirectionBloc, DirectionState>(
                 builder: (context, state) {
               return Animarker(
+                rippleRadius: 0.5,
+                rippleColor: Colors.teal,
+                rippleDuration: const Duration(milliseconds: 2500),
                 curve: Curves.ease,
                 shouldAnimateCamera: false,
                 mapId: _controller.future.then((value) => value.mapId),
@@ -555,7 +562,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // rotateGesturesEnabled: false,
                   initialCameraPosition: _addissAbaba,
                   polylines: Set<Polyline>.of(polylines.values),
-                  // markers: Set<Marker>.of(markers.values),
+                  markers: Set<Marker>.of(availablePassengersMarkers.values),
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
                     _myController = controller;
@@ -673,7 +680,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Align(
                 alignment: Alignment.centerRight,
                 child: SizedBox(
-                  height: 250,
+                  height: 350,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -736,6 +743,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 }
                                 if (state is ReverseLocationLoading) {
                                   showDialog(
+                                      barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
@@ -775,16 +783,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       backgroundColor: Colors.grey.shade300,
                                       onPressed: () {
                                         print("Testttt");
-                                        EmergencyReportEvent event =
-                                            EmergencyReportCreate(
-                                                EmergencyReport(location: [
-                                          currentLat,
-                                          currentLng
-                                        ]));
-
-                                        BlocProvider.of<EmergencyReportBloc>(
-                                                context)
-                                            .add(event);
+                                        createEmergencyReport();
                                       },
                                       child: Text(
                                         'SOS',
@@ -799,8 +798,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                           listener: (context, state) {
+                            print("Herer is the state ${state}");
                             if (state is EmergencyReportCreating) {
                               showDialog(
+                                  barrierDismissible: false,
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
@@ -862,6 +863,86 @@ class _HomeScreenState extends State<HomeScreen> {
                                       backgroundColor: Colors.red.shade900));
                             }
                           }),
+                      BlocConsumer<PassengerBloc, PassengerState>(
+                        builder: (context, state) => Align(
+                          alignment: Alignment.centerRight,
+                          child: SizedBox(
+                            height: 45,
+                            child: FloatingActionButton(
+                                heroTag: 'neabyOpportunities',
+                                backgroundColor: Colors.grey.shade300,
+                                onPressed: () {
+                                  if (showNearbyOpportunity) {
+                                    BlocProvider.of<PassengerBloc>(context)
+                                        .add(const LoadAvailablePassengers());
+                                    showNearbyOpportunity = false;
+                                  } else {
+                                    setState(() {
+                                      availablePassengersMarkers.clear();
+                                      showNearbyOpportunity = true;
+                                    });
+                                  }
+                                },
+                                child: Icon(
+                                    showNearbyOpportunity
+                                        ? Icons.golf_course
+                                        : Icons.close,
+                                    color: Colors.red.shade900,
+                                    size: 30)),
+                          ),
+                        ),
+                        listener: (context, state) {
+                          if (state is PassengerOperationFailure) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text("Operation failure"),
+                              backgroundColor: Colors.red.shade900,
+                            ));
+                          }
+                          if (state is AvailablePassengersLoading) {
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Dialog(
+                                      elevation: 0,
+                                      insetPadding: const EdgeInsets.all(0),
+                                      backgroundColor: Colors.transparent,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: const [
+                                          LinearProgressIndicator(
+                                            minHeight: 1,
+                                          ),
+                                        ],
+                                      ));
+                                });
+                          }
+                          if (state is LoadAvailablePassengersSuccess) {
+                            Navigator.pop(context);
+                            final icon = BitmapDescriptor.defaultMarkerWithHue(
+                                BitmapDescriptor.hueGreen);
+                            if (state.passenger != null) {
+                              for (Passenger p in state.passenger) {
+                                print('e is this $p');
+                                MarkerId markerId = MarkerId(p.ID!);
+                                Marker marker = RippleMarker(
+                                  markerId: markerId,
+                                  position: p.location!,
+                                  icon: icon,
+                                  ripple: true,
+                                );
+                                setState(() {
+                                  availablePassengersMarkers[markerId] = marker;
+                                });
+                              }
+                            } else {
+                              print('it is empty');
+                            }
+                          }
+                        },
+                      )
                     ],
                   ),
                 )),
@@ -930,7 +1011,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     driverStreamSubscription = Geolocator.getPositionStream(
             locationSettings: const LocationSettings(
-                distanceFilter: 0, accuracy: LocationAccuracy.best))
+                distanceFilter: 5, accuracy: LocationAccuracy.best))
         .listen((event) {
       if (startingTime != null) {
         currentPrice = (75 +
@@ -1447,6 +1528,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         });
+  }
+
+  void createEmergencyReport() {
+    BlocProvider.of<EmergencyReportBloc>(context).add(EmergencyReportCreate(
+        EmergencyReport(location: [currentLat, currentLng])));
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 @immutable
 class Passenger extends Equatable {
@@ -12,18 +13,23 @@ class Passenger extends Equatable {
   String? emergencyContact;
   String? profileImage;
   String? fcmId;
+  LatLng? location;
+  String? ID;
   // Map<String, dynamic>? preference;
 
-  Passenger(
-      {this.id,
-      this.name,
-      this.email,
-      this.password,
-      this.phoneNumber,
-      this.gender,
-      this.emergencyContact,
-      this.profileImage,
-      this.fcmId});
+  Passenger({
+    this.ID,
+    this.id,
+    this.name,
+    this.email,
+    this.password,
+    this.phoneNumber,
+    this.gender,
+    this.emergencyContact,
+    this.profileImage,
+    this.fcmId,
+    this.location,
+  });
 
   @override
   List<Object?> get props => [
@@ -47,7 +53,11 @@ class Passenger extends Equatable {
         phoneNumber: json["phone_number"],
         emergencyContact: json["emergency_contact"] ?? '',
         profileImage: json["profile_image"] ?? '',
-        fcmId: json['fcm_id']);
+        fcmId: json['fcm_id'],
+        location: json.containsKey('location')
+            ? LatLng(json['location'][0], json['location'][1])
+            : null,
+        ID: json.containsKey('id') ? json['id'] : null);
   }
 
   @override
