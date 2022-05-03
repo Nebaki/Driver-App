@@ -41,7 +41,7 @@ class Auth extends Equatable {
         email: storage["email"],
         profilePicture: storage["profile_image"],
         vehicleCategory: storage['vehicle_category'],
-        avgRate: double.parse(storage['avg_rate']),
+        avgRate: storage.containsKey('avg_rate') ?double.parse(storage['avg_rate']):0,
         pref: {
           "gender": storage["driver_gender"],
           "min_rate": storage["min_rate"],
