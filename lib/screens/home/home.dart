@@ -15,6 +15,7 @@ import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animarker/core/ripple_marker.dart';
 import 'package:flutter_animarker/widgets/animarker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
@@ -51,6 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
   PolylinePoints polylinePoints = PolylinePoints();
   Map<PolylineId, Polyline> polylines = {};
   Map<MarkerId, Marker> markers = {};
+  Map<MarkerId, Marker> availablePassengersMarkers = {};
+
   late LatLng destination;
   bool isArrivedwidget = false;
   late LatLngBounds latLngBounds;
@@ -70,6 +73,13 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isModal = false;
   bool isConModal = false;
   bool fromCreateManualTrip = false;
+  bool createTripButtonEnabled = true;
+  bool stopNotficationListner = true;
+  final pickupController = TextEditingController();
+
+  FocusNode pickupLocationNode = FocusNode();
+  FocusNode droppOffLocationNode = FocusNode();
+  bool showNearbyOpportunity = true;
 
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
@@ -125,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     Geofire.initialize("availableDrivers");
+    currentPrice = 75;
 
     super.initState();
     if (widget.args.isOnline) {
@@ -157,6 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
       //     waitingTimer--;
       //   });
       // }
+      stopNotficationListner = false;
 
       waitingTimer = 40;
       const oneSec = Duration(seconds: 1);
@@ -281,10 +293,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    pickupLocationNode.dispose();
+    droppOffLocationNode.dispose();
     IsolateNameServer.removePortNameMapping(portName);
     _serviceStatusStreamSubscription!.cancel();
     _connectivitySubscription.cancel();
-    // homeScreenStreamSubscription.cancel();
+    // s.cancel();
     super.dispose();
   }
 
@@ -486,13 +500,21 @@ class _HomeScreenState extends State<HomeScreen> {
             });
       });
     }
+
     setWillScreenPop = () {
       setState(() {
         willScreenPop = false;
       });
     };
 
+    disableCreateTripButton = () {
+      setState(() {
+        createTripButtonEnabled = false;
+      });
+    };
+
     createMarkerIcon();
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: NavDrawer(),
@@ -500,26 +522,31 @@ class _HomeScreenState extends State<HomeScreen> {
         onWillPop: () async => willScreenPop,
         child: Stack(
           children: [
-            BlocConsumer<UserBloc, UserState>(
-              listener: (context, state) {
-                if (state is UsersLoadSuccess) {
-                  print("Succceeeeeeeeeeeeessssssssss $nextDrivers");
-                  if (nextDrivers.isNotEmpty) {
-                    nextDrivers.removeAt(0);
-                    passRequest(state.user.fcm, nextDrivers);
-                  } else {
-                    Navigator.pop(context);
-                  }
-                }
-              },
-              buildWhen: (previous, current) => false,
-              builder: (context, state) {
-                return Container();
-              },
-            ),
+            stopNotficationListner
+                ? Container()
+                : BlocConsumer<UserBloc, UserState>(
+                    listener: (context, state) {
+                      if (state is UsersLoadSuccess) {
+                        print("Succceeeeeeeeeeeeessssssssss $nextDrivers");
+                        if (nextDrivers.isNotEmpty) {
+                          nextDrivers.removeAt(0);
+                          passRequest(state.user.fcm, nextDrivers);
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      }
+                    },
+                    buildWhen: (previous, current) => false,
+                    builder: (context, state) {
+                      return Container();
+                    },
+                  ),
             BlocConsumer<DirectionBloc, DirectionState>(
                 builder: (context, state) {
               return Animarker(
+                rippleRadius: 0.5,
+                rippleColor: Colors.teal,
+                rippleDuration: const Duration(milliseconds: 2500),
                 curve: Curves.ease,
                 shouldAnimateCamera: false,
                 mapId: _controller.future.then((value) => value.mapId),
@@ -535,7 +562,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // rotateGesturesEnabled: false,
                   initialCameraPosition: _addissAbaba,
                   polylines: Set<Polyline>.of(polylines.values),
-                  // markers: Set<Marker>.of(markers.values),
+                  markers: Set<Marker>.of(availablePassengersMarkers.values),
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
                     _myController = controller;
@@ -564,16 +591,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
 
               return isDirectionLoading;
-            },
-                // buildWhen: (prevstate, state) {
-                //   bool build = true;
-                //   if (state is DirectionDistanceDurationLoading ||
-                //       state is DirectionDistanceDurationLoadSuccess) {
-                //     build = false;
-                //   }
-                //   return build;
-                // },
-                listener: (context, state) {
+            }, listener: (context, state) {
               if (state is DirectionLoadSuccess) {
                 // isDialog = false;
                 double timeTraveledFare =
@@ -600,7 +618,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       duration: (state.direction.durationValue / 60)
                           .truncate()
                           .toString(),
-                      pickupLocation: const LatLng(8.4543, 38.98765)));
+                      pickupLocation: LatLng(currentLat, currentLng)));
                   BlocProvider.of<RideRequestBloc>(context).add(event);
                 }
                 showDriversOnMap();
@@ -618,7 +636,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             }),
             Positioned(
-                right: 25,
+                left: 25,
                 top: 43,
                 child: Container(
                   decoration: BoxDecoration(
@@ -653,262 +671,89 @@ class _HomeScreenState extends State<HomeScreen> {
                               errorWidget: (context, url, error) => Icon(
                                     Icons.person,
                                     color: Colors.indigo.shade900,
-                                    size: 20,
+                                    size: 30,
                                   )),
                         )),
                   ),
                 )),
             _currentWidget,
-            Positioned(
-              top: 40,
-              left: 10,
-              child: SizedBox(
-                height: 40,
-                child: FloatingActionButton(
-                    heroTag: 'makePhoneCall',
-                    backgroundColor: Colors.grey.shade300,
-                    onPressed: () {
-                      makePhoneCall("9495");
-                    },
-                    child: Icon(
-                      Icons.call,
-                      color: Colors.indigo.shade900,
-                      size: 30,
-                    )),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 40),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: SizedBox(
-                  height: 45,
-                  child: FloatingActionButton(
-                    heroTag: 'createTrip',
-                    backgroundColor: Colors.grey.shade300,
-                    onPressed: () {
-                      showModalBottomSheet(
-                          backgroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(30),
-                                  topRight: Radius.circular(30))),
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (BuildContext ctx) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom),
-                              child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.52,
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.only(
-                                          top: 20,
-                                          left: 20,
-                                          right: 20,
-                                          bottom: 10),
-                                      decoration: const BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(30),
-                                              topRight: Radius.circular(30))),
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: const [
-                                            Text(
-                                              'Create Trip',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 22),
-                                            ),
-                                          ]),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(30),
-                                              topRight: Radius.circular(30)),
-                                          color: Colors.white,
-                                        ),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            // Padding(
-                                            //     padding: const EdgeInsets.fromLTRB(
-                                            //         20, 10, 20, 10),
-                                            //     child: InternationalPhoneNumberInput(
-                                            //         initialValue:
-                                            //             PhoneNumber(isoCode: "ET"),
-                                            //         onInputChanged: (value) {})),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      50, 10, 50, 10),
-                                              child: Form(
-                                                autovalidateMode:
-                                                    AutovalidateMode
-                                                        .onUserInteraction,
-                                                key: _formKey,
-                                                child: TextFormField(
-                                                  validator: (value) {
-                                                    if (value!.length != 13) {
-                                                      return "Invalid Phone Number";
-                                                    }
-                                                  },
-                                                  keyboardType:
-                                                      TextInputType.phone,
-                                                  initialValue: '+251',
-                                                  onChanged: (value) {
-                                                    print(value);
-                                                    phoneNum = value;
-                                                    // findPlace(value);
-                                                  },
-                                                  decoration:
-                                                      const InputDecoration(
-                                                          prefixIcon: Icon(
-                                                            Icons.phone,
-                                                            color: Colors.black,
-                                                          ),
-                                                          labelText:
-                                                              "Phone Number"),
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      50, 0, 50, 0),
-                                              child: TextField(
-                                                onChanged: (value) {
-                                                  findPlace(value);
-                                                },
-                                                decoration:
-                                                    const InputDecoration(
-                                                        prefixIcon: Icon(
-                                                          Icons.location_on,
-                                                          color: Colors.black,
-                                                        ),
-                                                        labelText:
-                                                            "Pick Location"),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.25,
-                                              child: Container(
-                                                  color: Colors.white,
-                                                  child: BlocBuilder<
-                                                          LocationPredictionBloc,
-                                                          LocationPredictionState>(
-                                                      builder: (_, state) {
-                                                    if (state
-                                                        is LocationPredictionLoading) {
-                                                      return const Center(
-                                                          child:
-                                                              CircularProgressIndicator());
-                                                    }
-                                                    if (state
-                                                        is LocationPredictionLoadSuccess) {
-                                                      return ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20),
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 15,
-                                                                  right: 15,
-                                                                  top: 15,
-                                                                  bottom: 20),
-                                                          // height: 200,
-                                                          constraints:
-                                                              const BoxConstraints(
-                                                                  maxHeight:
-                                                                      400,
-                                                                  minHeight:
-                                                                      30),
-                                                          color: Colors.white,
-                                                          width:
-                                                              double.infinity,
-                                                          child: ListView
-                                                              .separated(
-                                                                  physics:
-                                                                      const ClampingScrollPhysics(),
-                                                                  shrinkWrap:
-                                                                      true,
-                                                                  itemBuilder: (_, index) {
-                                                                    return _buildPredictedItem(
-                                                                        state.placeList[
-                                                                            index],
-                                                                        context);
-                                                                  },
-                                                                  separatorBuilder:
-                                                                      (context,
-                                                                              index) =>
-                                                                          Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.symmetric(horizontal: 20),
-                                                                            child:
-                                                                                Divider(color: Colors.grey.shade300),
-                                                                          ),
-                                                                  itemCount: state
-                                                                      .placeList
-                                                                      .length),
-                                                        ),
-                                                      );
-                                                    }
-
-                                                    if (state
-                                                        is LocationPredictionOperationFailure) {}
-
-                                                    return const Center(
-                                                      child: Text(
-                                                          "Enter The location"),
-                                                    );
-                                                  })),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          });
-                    },
-                    child: Container(
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Colors.indigo.shade900, width: 1.5),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Icon(Icons.trip_origin,
-                            color: Colors.indigo.shade900)),
-                  ),
-                ),
-              ),
-            ),
             Align(
                 alignment: Alignment.centerRight,
                 child: SizedBox(
-                  height: 200,
+                  height: 350,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: SizedBox(
+                          height: 40,
+                          child: FloatingActionButton(
+                              heroTag: 'makePhoneCall',
+                              backgroundColor: Colors.grey.shade300,
+                              onPressed: () {
+                                makePhoneCall("9495");
+                              },
+                              child: Icon(
+                                Icons.call,
+                                color: Colors.indigo.shade900,
+                                size: 30,
+                              )),
+                        ),
+                      ),
+                      createTripButtonEnabled
+                          ? BlocConsumer<LocationBloc, ReverseLocationState>(
+                              builder: (context, state) => Align(
+                                alignment: Alignment.centerRight,
+                                child: SizedBox(
+                                  height: 45,
+                                  child: FloatingActionButton(
+                                    heroTag: 'createTrip',
+                                    backgroundColor: Colors.grey.shade300,
+                                    onPressed: () {
+                                      BlocProvider.of<LocationBloc>(context)
+                                          .add(ReverseLocationLoad());
+                                    },
+                                    child: Container(
+                                        padding: const EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.indigo.shade900,
+                                                width: 1.5),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Icon(Icons.trip_origin,
+                                            color: Colors.indigo.shade900)),
+                                  ),
+                                ),
+                              ),
+                              listener: (context, state) {
+                                if (state is ReverseLocationLoadSuccess) {
+                                  Geolocator.getCurrentPosition().then((value) {
+                                    pickupLocation =
+                                        LatLng(value.latitude, value.longitude);
+                                  });
+                                  Navigator.pop(context);
+                                  pickUpAddress = state.location.address1;
+
+                                  pickupController.text =
+                                      state.location.address1;
+
+                                  _buildSheet(state.location.address1);
+                                }
+                                if (state is ReverseLocationLoading) {
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                            content: Text(
+                                                "Loading Your current Location"));
+                                      });
+                                }
+                              },
+                            )
+                          : Container(),
                       Align(
                         alignment: Alignment.centerRight,
                         child: SizedBox(
@@ -924,10 +769,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             target: LatLng(
                                                 currentLat, currentLng))));
                               },
-                              child: Icon(
-                                Icons.gps_fixed,
-                                color: Colors.indigo.shade900,
-                              )),
+                              child: Icon(Icons.gps_fixed,
+                                  color: Colors.indigo.shade900, size: 30)),
                         ),
                       ),
                       BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
@@ -939,14 +782,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       heroTag: 'sos',
                                       backgroundColor: Colors.grey.shade300,
                                       onPressed: () {
-                                        EmergencyReportEvent event =
-                                            EmergencyReportCreate(
-                                                EmergencyReport(
-                                                    location: [2, 3]));
-
-                                        BlocProvider.of<EmergencyReportBloc>(
-                                                context)
-                                            .add(event);
+                                        print("Testttt");
+                                        createEmergencyReport();
                                       },
                                       child: Text(
                                         'SOS',
@@ -961,8 +798,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                           listener: (context, state) {
+                            print("Herer is the state ${state}");
                             if (state is EmergencyReportCreating) {
                               showDialog(
+                                  barrierDismissible: false,
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
@@ -1024,6 +863,86 @@ class _HomeScreenState extends State<HomeScreen> {
                                       backgroundColor: Colors.red.shade900));
                             }
                           }),
+                      BlocConsumer<PassengerBloc, PassengerState>(
+                        builder: (context, state) => Align(
+                          alignment: Alignment.centerRight,
+                          child: SizedBox(
+                            height: 45,
+                            child: FloatingActionButton(
+                                heroTag: 'neabyOpportunities',
+                                backgroundColor: Colors.grey.shade300,
+                                onPressed: () {
+                                  if (showNearbyOpportunity) {
+                                    BlocProvider.of<PassengerBloc>(context)
+                                        .add(const LoadAvailablePassengers());
+                                    showNearbyOpportunity = false;
+                                  } else {
+                                    setState(() {
+                                      availablePassengersMarkers.clear();
+                                      showNearbyOpportunity = true;
+                                    });
+                                  }
+                                },
+                                child: Icon(
+                                    showNearbyOpportunity
+                                        ? Icons.golf_course
+                                        : Icons.close,
+                                    color: Colors.red.shade900,
+                                    size: 30)),
+                          ),
+                        ),
+                        listener: (context, state) {
+                          if (state is PassengerOperationFailure) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text("Operation failure"),
+                              backgroundColor: Colors.red.shade900,
+                            ));
+                          }
+                          if (state is AvailablePassengersLoading) {
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Dialog(
+                                      elevation: 0,
+                                      insetPadding: const EdgeInsets.all(0),
+                                      backgroundColor: Colors.transparent,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: const [
+                                          LinearProgressIndicator(
+                                            minHeight: 1,
+                                          ),
+                                        ],
+                                      ));
+                                });
+                          }
+                          if (state is LoadAvailablePassengersSuccess) {
+                            Navigator.pop(context);
+                            final icon = BitmapDescriptor.defaultMarkerWithHue(
+                                BitmapDescriptor.hueGreen);
+                            if (state.passenger != null) {
+                              for (Passenger p in state.passenger) {
+                                print('e is this $p');
+                                MarkerId markerId = MarkerId(p.ID!);
+                                Marker marker = RippleMarker(
+                                  markerId: markerId,
+                                  position: p.location!,
+                                  icon: icon,
+                                  ripple: true,
+                                );
+                                setState(() {
+                                  availablePassengersMarkers[markerId] = marker;
+                                });
+                              }
+                            } else {
+                              print('it is empty');
+                            }
+                          }
+                        },
+                      )
                     ],
                   ),
                 )),
@@ -1094,7 +1013,25 @@ class _HomeScreenState extends State<HomeScreen> {
             locationSettings: const LocationSettings(
                 distanceFilter: 5, accuracy: LocationAccuracy.best))
         .listen((event) {
-      driverStreamSubscription.cancel();
+      if (startingTime != null) {
+        currentPrice = (75 +
+            (2 *
+                (double.parse(DateTime.now()
+                        .difference(startingTime!)
+                        .inSeconds
+                        .toString()) /
+                    60)) +
+            (12 *
+                Geolocator.distanceBetween(
+                    currentLat, currentLng, event.latitude, event.longitude) /
+                1000));
+        updateEsimatedCost();
+
+        print(
+            'doubless = ${double.parse(DateTime.now().difference(startingTime!).inSeconds.toString())}');
+      }
+
+      // driverStreamSubscription.cancel();
       // print("Hey yow i'm still listening");
       myPosition = event;
       LatLng driverPosition = LatLng(event.latitude, event.longitude);
@@ -1201,8 +1138,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   final form = _formKey.currentState;
                   if (form!.validate()) {
-                    getPlaceDetail(prediction.placeId);
-                    settingDropOffDialog(con);
+                    if (droppOffLocationNode.hasFocus) {
+                      getPlaceDetail(prediction.placeId);
+                      settingDropOffDialog(con);
+                    } else if (pickupLocationNode.hasFocus) {
+                      getPlaceDetail(prediction.placeId);
+                      settingPickupDialog(con);
+
+                      pickupLocationNode.nextFocus();
+
+                      pickupController.text = prediction.mainText;
+
+                      pickUpAddress = prediction.mainText;
+                    }
+                    debugPrint("Focus: ${droppOffLocationNode.hasFocus}");
                   }
 
                   // Navigator.pop(con);
@@ -1255,16 +1204,26 @@ class _HomeScreenState extends State<HomeScreen> {
               fromCreateManualTrip = true;
               destination =
                   LatLng(state.placeDetail.lat, state.placeDetail.lng);
-              DirectionEvent event = DirectionLoad(
+              // DirectionEvent event = DirectionLoad(
+              //     destination:
+              //         LatLng(state.placeDetail.lat, state.placeDetail.lng));
+              // BlocProvider.of<DirectionBloc>(context).add(event);
+
+              DirectionEvent event = DirectionLoadFromDiffrentPickupLocation(
+                  pickup: pickupLocation,
                   destination:
                       LatLng(state.placeDetail.lat, state.placeDetail.lng));
               BlocProvider.of<DirectionBloc>(context).add(event);
 
               destination =
                   LatLng(state.placeDetail.lat, state.placeDetail.lng);
+              pickupLocation = LatLng(currentLat, currentLng);
+              droppOffLocation =
+                  LatLng(state.placeDetail.lat, state.placeDetail.lng);
 
               Future.delayed(Duration(seconds: 1), () {
                 setState(() {
+                  createTripButtonEnabled = false;
                   _currentWidget = WaitingPassenger(callback, false);
                   Navigator.pop(context);
                 });
@@ -1292,6 +1251,47 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 5,
                   ),
                   Text("Setting up Drop Off. Please wait.."),
+                ],
+              ),
+            );
+          });
+        });
+  }
+
+  void settingPickupDialog(BuildContext? con) {
+    showDialog(
+        context: context,
+        builder: (BuildContext cont) {
+          return BlocBuilder<PlaceDetailBloc, PlaceDetailState>(
+              builder: (_, state) {
+            if (state is PlaceDetailLoadSuccess) {
+              pickupLocation =
+                  LatLng(state.placeDetail.lat, state.placeDetail.lng);
+              Future.delayed(Duration(seconds: 1), () {
+                Navigator.pop(context);
+              });
+            }
+
+            if (state is PlaceDetailOperationFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  backgroundColor: Colors.red.shade900,
+                  content: const Text("Unable To set the Pickup.")));
+            }
+            return AlertDialog(
+              content: Row(
+                children: const [
+                  SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text("Setting up Pickup. Please wait.."),
                 ],
               ),
             );
@@ -1335,166 +1335,361 @@ class _HomeScreenState extends State<HomeScreen> {
     _myController
         .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 100));
   }
+
+  void _buildSheet(String address) {
+    showModalBottomSheet(
+        backgroundColor: Colors.black,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext ctx) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.57,
+              child: Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(
+                        top: 20, left: 20, right: 20, bottom: 10),
+                    decoration: const BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30))),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          Text(
+                            'Create Trip',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22),
+                          ),
+                        ]),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30)),
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Padding(
+                          //     padding: const EdgeInsets.fromLTRB(
+                          //         20, 10, 20, 10),
+                          //     child: InternationalPhoneNumberInput(
+                          //         initialValue:
+                          //             PhoneNumber(isoCode: "ET"),
+                          //         onInputChanged: (value) {})),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
+                            child: Form(
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              key: _formKey,
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value!.length != 13) {
+                                    return "Invalid Phone Number";
+                                  }
+                                },
+                                keyboardType: TextInputType.phone,
+                                initialValue: '+251',
+                                onChanged: (value) {
+                                  print(value);
+                                  phoneNum = value;
+                                  // findPlace(value);
+                                },
+                                decoration: const InputDecoration(
+                                    prefixIcon: Icon(
+                                      Icons.phone,
+                                      color: Colors.black,
+                                    ),
+                                    labelText: "Phone Number"),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                            child: TextFormField(
+                              focusNode: pickupLocationNode,
+                              // initialValue: address,
+                              controller: pickupController,
+                              onChanged: (value) {
+                                findPlace(value);
+                              },
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                      onPressed: () {
+                                        pickupController.clear();
+                                        debugPrint("TATAT");
+                                      },
+                                      icon: const Icon(
+                                        Icons.clear,
+                                        color: Colors.black,
+                                        size: 20,
+                                      )),
+                                  prefixIcon: const Icon(
+                                    Icons.location_on,
+                                    color: Colors.black,
+                                  ),
+                                  labelText: "Current Location"),
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                            child: TextField(
+                              focusNode: droppOffLocationNode,
+                              onChanged: (value) {
+                                findPlace(value);
+                              },
+                              decoration: const InputDecoration(
+                                  prefixIcon: Icon(
+                                    Icons.location_on,
+                                    color: Colors.black,
+                                  ),
+                                  labelText: "Pick Location"),
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.25,
+                            child: Container(
+                                color: Colors.white,
+                                child: BlocBuilder<LocationPredictionBloc,
+                                        LocationPredictionState>(
+                                    builder: (_, state) {
+                                  if (state is LocationPredictionLoading) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  }
+                                  if (state is LocationPredictionLoadSuccess) {
+                                    return ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Container(
+                                        padding: const EdgeInsets.only(
+                                            left: 15,
+                                            right: 15,
+                                            top: 15,
+                                            bottom: 20),
+                                        // height: 200,
+                                        constraints: const BoxConstraints(
+                                            maxHeight: 400, minHeight: 30),
+                                        color: Colors.white,
+                                        width: double.infinity,
+                                        child: ListView.separated(
+                                            physics:
+                                                const ClampingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemBuilder: (_, index) {
+                                              return _buildPredictedItem(
+                                                  state.placeList[index],
+                                                  context);
+                                            },
+                                            separatorBuilder:
+                                                (context, index) => Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 20),
+                                                      child: Divider(
+                                                          color: Colors
+                                                              .grey.shade300),
+                                                    ),
+                                            itemCount: state.placeList.length),
+                                      ),
+                                    );
+                                  }
+
+                                  if (state
+                                      is LocationPredictionOperationFailure) {}
+
+                                  return const Center(
+                                    child: Text("Enter The location"),
+                                  );
+                                })),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void createEmergencyReport() {
+    BlocProvider.of<EmergencyReportBloc>(context).add(EmergencyReportCreate(
+        EmergencyReport(location: [currentLat, currentLng])));
+  }
 }
 
-
-
-
-
-          // Positioned(
-          //     top: 10,
-          //     right: 10,
-          //     child: ElevatedButton(
-          //         onPressed: () {
-          //           // showDialog(
-          //           //     barrierDismissible: false,
-          //           //     context: context,
-          //           //     builder: (BuildContext context) {
-          //           //       return NotificationDialog(
-          //           //           "6228b3887ec0795442431d67",
-          //           //           "message.data['passengerName']",
-          //           //           LatLng(324.678, 234.67),
-          //           //           "message.data['pickupAddress']",
-          //           //           "message.data['dropOffAddress']",
-          //           //           callback,
-          //           //           setDestination,
-          //           //           setIsArrivedWidget);
-          //           //     });
-          //         },
-          //         child: Text("Maintenance")))
+// Positioned(
+//     top: 10,
+//     right: 10,
+//     child: ElevatedButton(
+//         onPressed: () {
+//           // showDialog(
+//           //     barrierDismissible: false,
+//           //     context: context,
+//           //     builder: (BuildContext context) {
+//           //       return NotificationDialog(
+//           //           "6228b3887ec0795442431d67",
+//           //           "message.data['passengerName']",
+//           //           LatLng(324.678, 234.67),
+//           //           "message.data['pickupAddress']",
+//           //           "message.data['dropOffAddress']",
+//           //           callback,
+//           //           setDestination,
+//           //           setIsArrivedWidget);
+//           //     });
+//         },
+//         child: Text("Maintenance")))
 
 // To be returned back
-          // isArrivedwidget
-          //     ? BlocBuilder<DirectionBloc, DirectionState>(
-          //         buildWhen: (prevstate, state) {
-          //         bool isDirectionLoading = true;
-          //         print("here is the state---------------------");
-          //         print(prevstate);
-          //         print("The state ende");
-          //         if (state is DirectionDistanceDurationLoading ||
-          //             state is DirectionDistanceDurationLoadSuccess) {
-          //           isDirectionLoading = false;
-          //         }
+// isArrivedwidget
+//     ? BlocBuilder<DirectionBloc, DirectionState>(
+//         buildWhen: (prevstate, state) {
+//         bool isDirectionLoading = true;
+//         print("here is the state---------------------");
+//         print(prevstate);
+//         print("The state ende");
+//         if (state is DirectionDistanceDurationLoading ||
+//             state is DirectionDistanceDurationLoadSuccess) {
+//           isDirectionLoading = false;
+//         }
 
-          //         if (state is DirectionLoadSuccess) {
-          //           isDirectionLoading = true;
-          //         }
+//         if (state is DirectionLoadSuccess) {
+//           isDirectionLoading = true;
+//         }
 
-          //         print(isDirectionLoading);
-          //         return isDirectionLoading;
-          //       }, builder: (context, state) {
-          //         bool isDialog = true;
+//         print(isDirectionLoading);
+//         return isDirectionLoading;
+//       }, builder: (context, state) {
+//         bool isDialog = true;
 
-          //         if (state is DirectionLoadSuccess) {
-          //           isDialog = false;
+//         if (state is DirectionLoadSuccess) {
+//           isDialog = false;
 
-          //           _getPolyline(state.direction.encodedPoints);
+//           _getPolyline(state.direction.encodedPoints);
 
-          //           _addMarker(
-          //               destination,
-          //               "destination",
-          //               BitmapDescriptor.defaultMarkerWithHue(
-          //                   BitmapDescriptor.hueGreen));
-          //           return GoogleMap(
-          //             mapType: MapType.normal,
-          //             myLocationButtonEnabled: true,
-          //             //myLocationEnabled: true,
-          //             zoomControlsEnabled: false,
-          //             zoomGesturesEnabled: false,
-          //             rotateGesturesEnabled: false,
-          //             scrollGesturesEnabled: false,
-          //             initialCameraPosition: _addissAbaba,
-          //             polylines: Set<Polyline>.of(polylines.values),
-          //             markers: Set<Marker>.of(markers.values),
-          //             onMapCreated: (GoogleMapController controller) {
-          //               _myController = controller;
-          //               showDriversOnMap();
+//           _addMarker(
+//               destination,
+//               "destination",
+//               BitmapDescriptor.defaultMarkerWithHue(
+//                   BitmapDescriptor.hueGreen));
+//           return GoogleMap(
+//             mapType: MapType.normal,
+//             myLocationButtonEnabled: true,
+//             //myLocationEnabled: true,
+//             zoomControlsEnabled: false,
+//             zoomGesturesEnabled: false,
+//             rotateGesturesEnabled: false,
+//             scrollGesturesEnabled: false,
+//             initialCameraPosition: _addissAbaba,
+//             polylines: Set<Polyline>.of(polylines.values),
+//             markers: Set<Marker>.of(markers.values),
+//             onMapCreated: (GoogleMapController controller) {
+//               _myController = controller;
+//               showDriversOnMap();
 
-          //               // _determinePosition().then((value) {
-          //               //   setState(() {
-          //               //     _addMarker(
-          //               //         LatLng(value.latitude, value.longitude),
-          //               //         "pickup",
-          //               //         BitmapDescriptor.defaultMarkerWithHue(
-          //               //             BitmapDescriptor.hueRed));
-          //               //   });
+//               // _determinePosition().then((value) {
+//               //   setState(() {
+//               //     _addMarker(
+//               //         LatLng(value.latitude, value.longitude),
+//               //         "pickup",
+//               //         BitmapDescriptor.defaultMarkerWithHue(
+//               //             BitmapDescriptor.hueRed));
+//               //   });
 
-          //               //   latLngBoundAnimator(
-          //               //       LatLng(value.latitude, value.longitude));
-          //               //   controller.animateCamera(
-          //               //       CameraUpdate.newLatLngBounds(latLngBounds, 70));
-          //               // });
-          //             },
-          //           );
-          //         }
+//               //   latLngBoundAnimator(
+//               //       LatLng(value.latitude, value.longitude));
+//               //   controller.animateCamera(
+//               //       CameraUpdate.newLatLngBounds(latLngBounds, 70));
+//               // });
+//             },
+//           );
+//         }
 
-          //         return isDialog
-          //             ? AlertDialog(
-          //                 content: Row(
-          //                   children: const [
-          //                     CircularProgressIndicator(),
-          //                     Text("finding direction")
-          //                   ],
-          //                 ),
-          //               )
-          //             : Container();
-          //       })
-          //     : GoogleMap(
-          //         mapType: MapType.normal,
-          //         myLocationButtonEnabled: true,
-          //         myLocationEnabled: true,
-          //         zoomControlsEnabled: false,
-          //         zoomGesturesEnabled: false,
-          //         scrollGesturesEnabled: false,
-          //         rotateGesturesEnabled: false,
-          //         initialCameraPosition: _addissAbaba,
-          //         onMapCreated: (GoogleMapController controller) {
-          //           _controller.complete(controller);
-          //           _myController = controller;
+//         return isDialog
+//             ? AlertDialog(
+//                 content: Row(
+//                   children: const [
+//                     CircularProgressIndicator(),
+//                     Text("finding direction")
+//                   ],
+//                 ),
+//               )
+//             : Container();
+//       })
+//     : GoogleMap(
+//         mapType: MapType.normal,
+//         myLocationButtonEnabled: true,
+//         myLocationEnabled: true,
+//         zoomControlsEnabled: false,
+//         zoomGesturesEnabled: false,
+//         scrollGesturesEnabled: false,
+//         rotateGesturesEnabled: false,
+//         initialCameraPosition: _addissAbaba,
+//         onMapCreated: (GoogleMapController controller) {
+//           _controller.complete(controller);
+//           _myController = controller;
 
-          //           _determinePosition().then((value) {
-          //             print('this is the value $value');
-          //             controller.animateCamera(CameraUpdate.newCameraPosition(
-          //                 CameraPosition(
-          //                     zoom: 16.4746,
-          //                     target:
-          //                         LatLng(value.latitude, value.longitude))));
-          //           });
-          //         },
-          //       ),
-          // BlocBuilder<AuthBloc, AuthState>(
-          //   builder: (_, state) {
-          //     if (state is AuthDataLoadSuccess) {
-          //       id = state.auth.id!;
-          //       return Positioned(
-          //           right: 25,
-          //           top: 50,
-          //           child: GestureDetector(
-          //             onTap: () => _scaffoldKey.currentState!.openDrawer(),
-          //             child: CircleAvatar(
-          //                 radius: 20,
-          //                 backgroundColor: Colors.grey.shade300,
-          //                 child: ClipRRect(
-          //                   borderRadius: BorderRadius.circular(100),
-          //                   child: CachedNetworkImage(
-          //                       imageUrl: state.auth.profilePicture!,
-          //                       imageBuilder: (context, imageProvider) =>
-          //                           Container(
-          //                             decoration: BoxDecoration(
-          //                               image: DecorationImage(
-          //                                 image: imageProvider,
-          //                                 fit: BoxFit.cover,
-          //                               ),
-          //                             ),
-          //                           ),
-          //                       placeholder: (context, url) =>
-          //                           const CircularProgressIndicator(),
-          //                       errorWidget: (context, url, error) =>
-          //                           Image.asset(
-          //                               'assets/icons/avatar-icon.png')),
-          //                 )),
-          //           ));
-          //     }
-          //     return Container();
-          //   },
-          // ),
+//           _determinePosition().then((value) {
+//             print('this is the value $value');
+//             controller.animateCamera(CameraUpdate.newCameraPosition(
+//                 CameraPosition(
+//                     zoom: 16.4746,
+//                     target:
+//                         LatLng(value.latitude, value.longitude))));
+//           });
+//         },
+//       ),
+// BlocBuilder<AuthBloc, AuthState>(
+//   builder: (_, state) {
+//     if (state is AuthDataLoadSuccess) {
+//       id = state.auth.id!;
+//       return Positioned(
+//           right: 25,
+//           top: 50,
+//           child: GestureDetector(
+//             onTap: () => _scaffoldKey.currentState!.openDrawer(),
+//             child: CircleAvatar(
+//                 radius: 20,
+//                 backgroundColor: Colors.grey.shade300,
+//                 child: ClipRRect(
+//                   borderRadius: BorderRadius.circular(100),
+//                   child: CachedNetworkImage(
+//                       imageUrl: state.auth.profilePicture!,
+//                       imageBuilder: (context, imageProvider) =>
+//                           Container(
+//                             decoration: BoxDecoration(
+//                               image: DecorationImage(
+//                                 image: imageProvider,
+//                                 fit: BoxFit.cover,
+//                               ),
+//                             ),
+//                           ),
+//                       placeholder: (context, url) =>
+//                           const CircularProgressIndicator(),
+//                       errorWidget: (context, url, error) =>
+//                           Image.asset(
+//                               'assets/icons/avatar-icon.png')),
+//                 )),
+//           ));
+//     }
+//     return Container();
+//   },
+// ),

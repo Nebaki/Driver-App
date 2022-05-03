@@ -10,4 +10,10 @@ class DirectionRepository {
   Future<Direction> getDirection(LatLng destination) async {
     return await dataProvider.getDirection(destination);
   }
+
+  Future<Direction> getDirectionFromDifferentPickupLocation(
+      LatLng pickup, LatLng destination) async {
+    return await dataProvider.getDirectionFromDifrentPickupLocation(
+        pickup, destination);
+  }
 }

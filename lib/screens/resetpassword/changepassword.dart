@@ -38,6 +38,7 @@ class ChangePassword extends StatelessWidget {
 
   Widget form(BuildContext context) {
     return Form(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         key: _formkey,
         child: Container(
           color: const Color.fromRGBO(240, 241, 241, 1),

@@ -6,7 +6,7 @@ class EmergencyReportRepository {
 
   EmergencyReportRepository({required this.dataProvider});
 
-  Future<void> createEmergencyReport(EmergencyReport emergencyReport) async {
-    return await dataProvider.createEmergencyReport(emergencyReport);
+  Future createEmergencyReport(EmergencyReport emergencyReport) async {
+    await dataProvider.createEmergencyReport(emergencyReport);
   }
 }

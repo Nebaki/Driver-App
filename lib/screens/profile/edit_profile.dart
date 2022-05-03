@@ -87,6 +87,9 @@ class _EditProfileState extends State<EditProfile> {
             content: Text("Update Successfull"),
             backgroundColor: Colors.green,
           ));
+          Future.delayed(Duration(seconds: 1), () {
+            BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
+          });
         }
         if (state is UserOperationFailure) {
           _isLoading = false;
@@ -150,11 +153,11 @@ class _EditProfileState extends State<EditProfile> {
             child: Stack(
               children: [
                 Positioned(
-                  top: MediaQuery.of(context).size.height * 0.12,
+                  top: MediaQuery.of(context).size.height * 0.1,
                   right: 10,
                   left: 10,
                   child: Container(
-                    height: MediaQuery.of(context).size.height * .88,
+                    height: MediaQuery.of(context).size.height * .95,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       //crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,41 +180,27 @@ class _EditProfileState extends State<EditProfile> {
                             child: CircleAvatar(
                               radius: 60,
                               backgroundColor: Colors.grey.shade300,
-                              child: _isImageLoading
-                                  ? CircularProgressIndicator()
-                                  : ClipRRect(
-                                      borderRadius: BorderRadius.circular(100),
-                                      child: BlocBuilder<AuthBloc, AuthState>(
-                                        builder: (_, state) {
-                                          if (state is AuthDataLoadSuccess) {
-                                            return CachedNetworkImage(
-                                              imageUrl:
-                                                  state.auth.profilePicture!,
-                                              imageBuilder:
-                                                  (context, imageProvider) =>
-                                                      Container(
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                              placeholder: (context, url) =>
-                                                  const CircularProgressIndicator(),
-                                              errorWidget:
-                                                  (context, url, error) => Icon(
-                                                Icons.person,
-                                                size: 70,
-                                                color: Colors.black,
-                                              ),
-                                            );
-                                          }
-                                          return const CircleAvatar(
-                                            radius: 100,
-                                          );
-                                        },
-                                      )),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: CachedNetworkImage(
+                                    imageUrl: widget.args.auth.profilePicture!,
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) => Icon(
+                                      Icons.person,
+                                      size: 70,
+                                      color: Colors.black,
+                                    ),
+                                  )),
                             ),
                           ),
                         ),
@@ -263,8 +252,59 @@ class _EditProfileState extends State<EditProfile> {
                               return null;
                             },
                             onSaved: (value) {
-                              _user["first_name"] = value!.split(" ")[0];
-                              _user["last_name"] = value.split(" ")[1];
+                              _user["first_name"] = value;
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 4,
+                                spreadRadius: 2,
+                                blurStyle: BlurStyle.normal)
+                          ]),
+                          child: TextFormField(
+                            enabled: false,
+                            initialValue: widget.args.auth.lastName,
+                            decoration: const InputDecoration(
+                                alignLabelWithHint: true,
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                isCollapsed: false,
+                                isDense: true,
+                                hintText: "Last Name",
+                                focusColor: Colors.blue,
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 0.6, color: Colors.orange)),
+                                hintStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black45),
+                                prefixIcon: Icon(
+                                  Icons.contact_mail,
+                                  size: 19,
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                    //borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderSide: BorderSide.none)),
+                            // validator: (value) {
+                            //   if (value!.isEmpty) {
+                            //     return 'This field can\'t be empity';
+                            //   } else if (value.length < 4) {
+                            //     return 'Name length must not be less than 4';
+                            //   } else if (value.length > 25) {
+                            //     return 'Nameength must not be Longer than 25';
+                            //   }
+                            //   return null;
+                            // },
+                            onSaved: (value) {
+                              _user["last_name"] = value;
                             },
                           ),
                         ),

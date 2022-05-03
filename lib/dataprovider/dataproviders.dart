@@ -7,3 +7,4 @@ export 'auth/auth.dart';
 export 'credit/credit.dart';
 export 'rideRequest/ride_request.dart';
 export 'emergencyReport/emergency_report.dart';
+export 'passenger/passenger.dart';

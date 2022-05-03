@@ -34,6 +34,8 @@ class AuthDataProvider {
           key: 'phone_number', value: output['driver']['phone_number']);
       await secure_storage.write(
           key: 'name', value: output['driver']['first_name']);
+                await secure_storage.write(
+          key: 'last_name', value: output['driver']['last_name']);
       await secure_storage.write(key: 'token', value: output['token']);
       await secure_storage.write(
           key: "email", value: output['driver']['email'] ?? "");

@@ -1,10 +1,14 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/route.dart';
+import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:slider_button/slider_button.dart';
 
 class CompleteTrip extends StatefulWidget {
@@ -16,6 +20,23 @@ class CompleteTrip extends StatefulWidget {
 }
 
 class _CompleteTripState extends State<CompleteTrip> {
+  double EsitimatedMoney = 0;
+  @override
+  void initState() {
+    startingTime = DateTime.now();
+    Geolocator.getCurrentPosition().then((value) {
+      setState(() {
+        Geolocator.distanceBetween(
+            pickupLocation.latitude,
+            pickupLocation.longitude,
+            droppOffLocation.latitude,
+            droppOffLocation.longitude);
+      });
+    });
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   void dispose() {
     driverStreamSubscription.cancel();
@@ -24,12 +45,19 @@ class _CompleteTripState extends State<CompleteTrip> {
 
   @override
   Widget build(BuildContext context) {
+    updateEsimatedCost = () {
+      setState(() {
+        currentPrice;
+      });
+    };
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
         if (state is RideRequestCompleted) {
           directionDuration = 'loading';
           distanceDistance = 'loading';
-          Navigator.pushReplacementNamed(context, CollectedCash.routeName);
+          Navigator.pushReplacementNamed(context, CollectedCash.routeName,
+              arguments: CollectedCashScreenArgument(
+                  name: passengerName!, price: currentPrice));
         }
       },
       builder: (context, state) {
@@ -51,7 +79,7 @@ class _CompleteTripState extends State<CompleteTrip> {
                     topRight: Radius.circular(20))),
             child: Column(
               children: [
-                RiderDetail(),
+                RiderDetail(text: 'Trip Started'),
                 BlocBuilder<RideRequestBloc, RideRequestState>(
                     builder: (context, state) {
                   if (state is RideRequestLoading) {
@@ -81,8 +109,14 @@ class _CompleteTripState extends State<CompleteTrip> {
                 //   ],
                 // ),
                 Text(
-                  "Cash: 234 ETB",
+                  "Estimated Cost: ${currentPrice.truncate()} ETB",
                   style: Theme.of(context).textTheme.titleLarge,
+                ),
+                Column(
+                  children: [
+                    Text(" PickUp Address: $pickUpAddress"),
+                    Text(" DropOff Address: $droppOffAddress"),
+                  ],
                 ),
                 Container(
                     width: MediaQuery.of(context).size.width,

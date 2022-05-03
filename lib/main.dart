@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/repository/passenger.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,6 @@ import 'package:http/http.dart' as http;
 import 'package:wakelock/wakelock.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
   // await Firebase.initializeApp();
   // startTimer();
   // dialog!();
@@ -59,15 +58,23 @@ void main() async {
   final EmergencyReportRepository emergencyReportRepository =
       EmergencyReportRepository(
           dataProvider: EmergencyReportDataProvider(httpClient: http.Client()));
+  final ReverseLocationRepository reverseLocationRepository =
+      ReverseLocationRepository(
+          dataProvider: ReverseGocoding(httpClient: http.Client()));
+
+  final PassengerRepository passengerRepository = PassengerRepository(
+      dataProvider: PassengerDataprovider(httpClient: http.Client()));
 
   runApp(MyApp(
     placeDetailRepository: placeDetailRepository,
     directionRepository: directionRepository,
     authRepository: authRepository,
     userRepository: userRepository,
+    reverseLocationRepository: reverseLocationRepository,
     rideRequestRepository: rideRequestRepository,
     locationPredictionRepository: locationPredictionRepository,
     emergencyReportRepository: emergencyReportRepository,
+    passengerRepository: passengerRepository,
   ));
 }
 
@@ -110,16 +117,20 @@ class MyApp extends StatelessWidget {
 
   final RideRequestRepository rideRequestRepository;
   final EmergencyReportRepository emergencyReportRepository;
+  final ReverseLocationRepository reverseLocationRepository;
+  final PassengerRepository passengerRepository;
 
   const MyApp(
       {Key? key,
       required this.placeDetailRepository,
       required this.directionRepository,
       required this.userRepository,
+      required this.reverseLocationRepository,
       required this.authRepository,
       required this.rideRequestRepository,
       required this.locationPredictionRepository,
-      required this.emergencyReportRepository})
+      required this.emergencyReportRepository,
+      required this.passengerRepository})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -133,7 +144,9 @@ class MyApp extends StatelessWidget {
           RepositoryProvider.value(value: directionRepository),
           RepositoryProvider.value(value: rideRequestRepository),
           RepositoryProvider.value(value: locationPredictionRepository),
-          RepositoryProvider.value(value: emergencyReportRepository)
+          RepositoryProvider.value(value: reverseLocationRepository),
+          RepositoryProvider.value(value: emergencyReportRepository),
+          RepositoryProvider.value(value: passengerRepository)
         ],
         child: MultiBlocProvider(
             providers: [
@@ -160,6 +173,12 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                   create: (context) => EmergencyReportBloc(
                       emergencyReportRepository: emergencyReportRepository)),
+              BlocProvider(
+                  create: (context) => LocationBloc(
+                      reverseLocationRepository: reverseLocationRepository)),
+              BlocProvider(
+                  create: (context) =>
+                      PassengerBloc(passengerRepository: passengerRepository))
             ],
             child: MaterialApp(
               title: 'SafeWay',

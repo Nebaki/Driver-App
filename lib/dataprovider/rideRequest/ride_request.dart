@@ -203,8 +203,8 @@ class RideRequestDataProvider {
     print("Statusss issss ${response.statusCode}', ${fcmId}, ${sendRequest}");
 
     if (response.statusCode == 200) {
-      if (sendRequest) {
-        cancelNotification(fcmId!);
+      if (sendRequest && fcmId != null) {
+        cancelNotification(fcmId);
       }
     } else {
       throw 'Unable to cancel the request';

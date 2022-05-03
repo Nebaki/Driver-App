@@ -33,4 +33,19 @@ class DirectionDataProvider {
       throw Exception('Failed to load loaction');
     }
   }
+
+  Future<Direction> getDirectionFromDifrentPickupLocation(
+      LatLng pickupLocation, LatLng destination) async {
+    final _directionUrl =
+        "https://maps.googleapis.com/maps/api/directions/json?origin=${pickupLocation.latitude},${pickupLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=$_api_key";
+
+    final response = await httpClient.get(Uri.parse(_directionUrl));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return Direction.fromJson(data);
+    } else {
+      throw Exception('Failed to load loaction');
+    }
+  }
 }

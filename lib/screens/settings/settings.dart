@@ -34,8 +34,10 @@ class SettingScreen extends StatelessWidget {
       body: BlocBuilder<AuthBloc, AuthState>(builder: (_, state) {
         String name;
         String phoneNumber;
-        print("Loadinggggggggggggggggggggggggg");
+        print("Loadinggggggggggggggggggggggggg $state");
         if (state is AuthDataLoadSuccess) {
+          print("Loadinggggggggggggggggggggggggg ${state.auth.email}");
+
           name = state.auth.name!;
           phoneNumber = state.auth.phoneNumber;
           return ListView(
@@ -129,6 +131,7 @@ class SettingScreen extends StatelessWidget {
                                         phoneNumber: state.auth.phoneNumber,
                                         id: state.auth.id,
                                         name: state.auth.name,
+                                        lastName: state.auth.lastName,
                                         email: state.auth.email,
                                         emergencyContact:
                                             state.auth.emergencyContact,

@@ -55,7 +55,7 @@ dependencies:
   maps_toolkit: ^2.0.0
   slider_button: ^2.0.0
   wakelock: ^0.6.1+2
-  flutter_animarker: ^3.3.1-beta.4
+  flutter_animarker: ^3.2.0
   assets_audio_player: ^3.0.4+1
   app_settings: ^4.1.1
   flutter_spinkit: ^5.1.0
