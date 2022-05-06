@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:driverapp/dataprovider/dataproviders.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/models/models.dart';
 
@@ -139,6 +140,23 @@ class RideRequestDataProvider {
     }
   }
 
+  Future<void> startTrip(String id, String passengerFcm) async {
+    // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
+    final response = await http.post(
+      Uri.parse('$_maintenanceUrl/start-trip/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        "x-access-token": '${await authDataProvider.getToken()}'
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // sendNotification(passengerFcm, "Accepted");
+    } else {
+      throw Exception('Failed to respond to the request.');
+    }
+  }
+
   Future sendNotification(String fcmToken, String status) async {
     final response = await http.post(
       Uri.parse(_fcmUrl),
@@ -218,7 +236,7 @@ class RideRequestDataProvider {
               "Content-Type": "application/json",
               "x-access-token": "${await authDataProvider.getToken()}"
             },
-            body: json.encode({'price': price}));
+            body: json.encode({'price': currentPrice}));
 
     if (response.statusCode == 200) {
       print("fcm_issddddddd $fcmId");
@@ -238,7 +256,7 @@ class RideRequestDataProvider {
         'Authorization': 'key=$token'
       },
       body: json.encode({
-        "data": {'response': 'Completed'},
+        "data": {'response': 'Completed','price': currentPrice},
         "to": fcmId,
         "notification": {
           "title": "Trip Completed",

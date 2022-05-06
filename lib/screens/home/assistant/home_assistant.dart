@@ -8,6 +8,8 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 
 void getLiveLocation() async {
+  print("YATAR");
+
   print(firebaseKey);
   homeScreenStreamSubscription = Geolocator.getPositionStream(
           locationSettings: const LocationSettings(distanceFilter: 5))
@@ -29,3 +31,5 @@ late Function disableCreateTripButton;
 late Function updateEsimatedCost;
 DateTime? startingTime;
 double currentPrice = 75;
+
+late Function startTrip;

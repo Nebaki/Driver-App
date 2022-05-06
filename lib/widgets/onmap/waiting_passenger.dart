@@ -1,6 +1,7 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/route.dart';
+import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class WaitingPassenger extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
-        if (state is RideRequesChanged) {
+        if (state is RideRequestStarted) {
           callback!(CompleteTrip(callback));
           if (formPassenger) {
             changeDestination(droppOffLocation);
@@ -111,10 +112,10 @@ class WaitingPassenger extends StatelessWidget {
                               fontSize: 17),
                         ),
                         action: () {
+                          startTrip();
                           // homeScreenStreamSubscription.cancel();
                           RideRequestEvent requestEvent =
-                              RideRequestChangeStatus(
-                                  requestId, "Started", passengerFcm);
+                              RideRequestStart(requestId, passengerFcm!);
                           BlocProvider.of<RideRequestBloc>(context)
                               .add(requestEvent);
                         })

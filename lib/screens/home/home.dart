@@ -13,6 +13,7 @@ import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:driverapp/notifications/pushNotification.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animarker/core/ripple_marker.dart';
@@ -76,6 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool createTripButtonEnabled = true;
   bool stopNotficationListner = true;
   final pickupController = TextEditingController();
+  DatabaseReference ref = FirebaseDatabase.instance.ref('bookedDrivers');
+  bool isTripStarted = false;
 
   FocusNode pickupLocationNode = FocusNode();
   FocusNode droppOffLocationNode = FocusNode();
@@ -136,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     Geofire.initialize("availableDrivers");
     currentPrice = 75;
+    isTripStarted = false;
 
     super.initState();
     if (widget.args.isOnline) {
@@ -513,6 +517,11 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     };
 
+    startTrip = () {
+      setState(() {
+        isTripStarted = true;
+      });
+    };
     createMarkerIcon();
 
     return Scaffold(
@@ -1013,7 +1022,9 @@ class _HomeScreenState extends State<HomeScreen> {
             locationSettings: const LocationSettings(
                 distanceFilter: 5, accuracy: LocationAccuracy.best))
         .listen((event) {
-      if (startingTime != null) {
+      ref.child('$myId').set({'lat': event.latitude, 'lng': event.longitude});
+
+      if (startingTime != null && isTripStarted) {
         currentPrice = (75 +
             (2 *
                 (double.parse(DateTime.now()
@@ -1050,7 +1061,9 @@ class _HomeScreenState extends State<HomeScreen> {
       //     .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
       markers.removeWhere((key, value) => key == markerId);
-      markers[markerId] = marker;
+      setState(() {
+        markers[markerId] = marker;
+      });
       // });
 
       initialDriverPosition = driverPosition;

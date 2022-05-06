@@ -56,6 +56,17 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
       }
     }
 
+    if (event is RideRequestStart) {
+      yield RideRequestLoading();
+
+      try {
+        await rideRequestRepository.startTrip(event.id, event.passengerFcm);
+        yield RideRequestStarted();
+      } catch (_) {
+        yield RideRequestOperationFailur();
+      }
+    }
+
     if (event is RideRequestCancell) {
       yield RideRequestLoading();
       try {
