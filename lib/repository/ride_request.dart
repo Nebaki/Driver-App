@@ -23,6 +23,10 @@ class RideRequestRepository {
     return await dataProvider.acceptRequest(id, passengerFcm);
   }
 
+  Future startTrip(String id, String passengerFcm) async {
+    return await dataProvider.startTrip(id, passengerFcm);
+  }
+
   Future cancelRideRequest(String id, String cancelReason, String? passengerFcm,
       bool sendRequest) async {
     return await dataProvider.cancelRideRequest(

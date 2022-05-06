@@ -5,6 +5,7 @@ import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:driverapp/widgets/widgets.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -21,6 +22,8 @@ class CompleteTrip extends StatefulWidget {
 
 class _CompleteTripState extends State<CompleteTrip> {
   double EsitimatedMoney = 0;
+  DatabaseReference ref = FirebaseDatabase.instance.ref('bookedDrivers');
+
   @override
   void initState() {
     startingTime = DateTime.now();
@@ -46,6 +49,7 @@ class _CompleteTripState extends State<CompleteTrip> {
   @override
   Widget build(BuildContext context) {
     updateEsimatedCost = () {
+      print("Trying hereee");
       setState(() {
         currentPrice;
       });
@@ -53,11 +57,14 @@ class _CompleteTripState extends State<CompleteTrip> {
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
         if (state is RideRequestCompleted) {
+          ref.child(myId).remove();
           directionDuration = 'loading';
           distanceDistance = 'loading';
+          // price = (75 +(12*))
           Navigator.pushReplacementNamed(context, CollectedCash.routeName,
               arguments: CollectedCashScreenArgument(
                   name: passengerName!, price: currentPrice));
+          resetData();
         }
       },
       builder: (context, state) {
@@ -201,5 +208,11 @@ class _CompleteTripState extends State<CompleteTrip> {
         ),
       ],
     );
+  }
+
+  void resetData() {
+    currentPrice = 75;
+    passengerFcm = null;
+    passengerName = null;
   }
 }

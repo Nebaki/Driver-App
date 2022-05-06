@@ -196,14 +196,13 @@ class MyApp extends StatelessWidget {
 
                   //F48221
                   primaryColor: const Color.fromRGBO(254, 79, 5, 1),
-                  textTheme: TextTheme(
-                      button: const TextStyle(
+                  textTheme: const TextTheme(
+                      button: TextStyle(
                         color: Color.fromRGBO(254, 79, 5, 1),
                       ),
-                      subtitle1:
-                          const TextStyle(color: Colors.black38, fontSize: 14),
-                      headline5: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 24),
+                      subtitle1: TextStyle(color: Colors.black38, fontSize: 14),
+                      headline5:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                       bodyText2: TextStyle(
                           color: Colors.black,
                           fontSize: 16,

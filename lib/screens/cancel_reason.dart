@@ -2,6 +2,7 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,6 +27,7 @@ class _CancelReasonState extends State<CancelReason> {
   ];
   String? groupValue;
   bool isLoading = false;
+  DatabaseReference ref = FirebaseDatabase.instance.ref('bookedDrivers');
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +131,8 @@ class _CancelReasonState extends State<CancelReason> {
                 )),
             listener: (context, state) {
               if (state is RideRequestCancelled) {
+                ref.child(myId).remove();
+
                 isLoading = false;
                 Navigator.pushReplacementNamed(context, HomeScreen.routeName,
                     arguments:
