@@ -37,188 +37,194 @@ class ChangePassword extends StatelessWidget {
   }
 
   Widget form(BuildContext context) {
-    return Form(
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        key: _formkey,
-        child: Container(
-          color: const Color.fromRGBO(240, 241, 241, 1),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              Positioned(
-                top: MediaQuery.of(context).size.height * 0.12,
-                right: 10,
-                left: 10,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Change Password",
-                          style: Theme.of(context).textTheme.headlineSmall),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Text(
-                          "you have to have your old password in order to change new password. lorem ipsum text to add the new."),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.1,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.shade300,
-                              blurRadius: 4,
-                              spreadRadius: 2,
-                              blurStyle: BlurStyle.normal)
-                        ]),
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                              hintText: "Old Password",
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black45),
-                              prefixIcon: Icon(
-                                Icons.phone,
-                                size: 19,
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide.none)),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter The Old password';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _passwordInfo['current_password'] = value!;
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.shade300,
-                              blurRadius: 4,
-                              spreadRadius: 2,
-                              blurStyle: BlurStyle.normal)
-                        ]),
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                              hintText: "New Password",
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black45),
-                              prefixIcon: Icon(
-                                Icons.phone,
-                                size: 19,
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide.none)),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter The New Password';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _passwordInfo['new_password'] = value!;
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.shade300,
-                              blurRadius: 4,
-                              spreadRadius: 2,
-                              blurStyle: BlurStyle.normal)
-                        ]),
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                              hintText: "Confirm Password",
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black45),
-                              prefixIcon: Icon(
-                                Icons.vpn_key,
-                                size: 19,
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide.none)),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please confirm the password';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _passwordInfo['confirm_password'] = value!;
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _isLoading
-                              ? null
-                              : () {
-                                  final form = _formkey.currentState;
-                                  if (form!.validate()) {
-                                    form.save();
-                                    changePassword(context);
-
-                                    print("passwordInfo $_passwordInfo");
-                                  }
-                                },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Spacer(),
-                              const Text("Change Password",
-                                  style: TextStyle(color: Colors.white)),
-                              const Spacer(),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: _isLoading
-                                    ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : Container(),
-                              )
-                            ],
+    return SingleChildScrollView(
+      child: Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            key: _formkey,
+            child: Container(
+              color: const Color.fromRGBO(240, 241, 241, 1),
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: MediaQuery.of(context).size.height * 0.12,
+                    right: 10,
+                    left: 10,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Change Password",
+                              style: Theme.of(context).textTheme.headlineSmall),
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                      )
-                    ],
+                          const Text(
+                              "you have to have your old password in order to change new password. lorem ipsum text to add the new."),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.shade300,
+                                  blurRadius: 4,
+                                  spreadRadius: 2,
+                                  blurStyle: BlurStyle.normal)
+                            ]),
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                  hintText: "Old Password",
+                                  hintStyle: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black45),
+                                  prefixIcon: Icon(
+                                    Icons.phone,
+                                    size: 19,
+                                  ),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide.none)),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter The Old password';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _passwordInfo['current_password'] = value!;
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.shade300,
+                                  blurRadius: 4,
+                                  spreadRadius: 2,
+                                  blurStyle: BlurStyle.normal)
+                            ]),
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                  hintText: "New Password",
+                                  hintStyle: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black45),
+                                  prefixIcon: Icon(
+                                    Icons.phone,
+                                    size: 19,
+                                  ),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide.none)),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter The New Password';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _passwordInfo['new_password'] = value!;
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.shade300,
+                                  blurRadius: 4,
+                                  spreadRadius: 2,
+                                  blurStyle: BlurStyle.normal)
+                            ]),
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                  hintText: "Confirm Password",
+                                  hintStyle: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black45),
+                                  prefixIcon: Icon(
+                                    Icons.vpn_key,
+                                    size: 19,
+                                  ),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide.none)),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please confirm the password';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _passwordInfo['confirm_password'] = value!;
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          SizedBox(
+                            height: 50,
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _isLoading
+                                  ? null
+                                  : () {
+                                      final form = _formkey.currentState;
+                                      if (form!.validate()) {
+                                        form.save();
+                                        changePassword(context);
+
+                                        print("passwordInfo $_passwordInfo");
+                                      }
+                                    },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Spacer(),
+                                  const Text("Change Password",
+                                      style: TextStyle(color: Colors.white)),
+                                  const Spacer(),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: _isLoading
+                                        ? const SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                            ),
+                                          )
+                                        : Container(),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                  CustomeBackArrow(),
+                ],
               ),
-              CustomeBackArrow(),
-            ],
-          ),
-        ));
+            )),
+      ),
+    );
   }
 }
 

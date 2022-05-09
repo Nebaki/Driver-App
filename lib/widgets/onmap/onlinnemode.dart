@@ -17,7 +17,6 @@ class OnlinMode extends StatefulWidget {
 class _OnlinModeState extends State<OnlinMode> {
   @override
   void dispose() {
-    homeScreenStreamSubscription.cancel();
     super.dispose();
   }
 
@@ -39,6 +38,9 @@ class _OnlinModeState extends State<OnlinMode> {
                     child: FloatingActionButton(
                       backgroundColor: Colors.green,
                       onPressed: () {
+                        homeScreenStreamSubscription.cancel().then((value) {
+                          print("1YEAhhhhh");
+                        });
                         // homeScreenStreamSubscription.cancel();
 
                         // setDriverStatus(false);

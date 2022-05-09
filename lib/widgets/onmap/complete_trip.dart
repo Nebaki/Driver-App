@@ -41,12 +41,6 @@ class _CompleteTripState extends State<CompleteTrip> {
   }
 
   @override
-  void dispose() {
-    driverStreamSubscription.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     updateEsimatedCost = () {
       print("Trying hereee");
@@ -57,14 +51,14 @@ class _CompleteTripState extends State<CompleteTrip> {
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
         if (state is RideRequestCompleted) {
-          ref.child(myId).remove();
-          directionDuration = 'loading';
-          distanceDistance = 'loading';
-          // price = (75 +(12*))
-          Navigator.pushReplacementNamed(context, CollectedCash.routeName,
-              arguments: CollectedCashScreenArgument(
-                  name: passengerName!, price: currentPrice));
-          resetData();
+          driverStreamSubscription.cancel().then((value) {
+            ref.child(myId).remove();
+            Navigator.pushReplacementNamed(context, CollectedCash.routeName,
+                arguments: CollectedCashScreenArgument(
+                    name: passengerName!, price: currentPrice));
+
+            resetData();
+          });
         }
       },
       builder: (context, state) {
@@ -115,10 +109,12 @@ class _CompleteTripState extends State<CompleteTrip> {
                 //     _buildItems(text: "Cancel Trip", icon: Icons.clear_outlined)
                 //   ],
                 // ),
+
                 Text(
                   "Estimated Cost: ${currentPrice.truncate()} ETB",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
+
                 Column(
                   children: [
                     Text(" PickUp Address: $pickUpAddress"),
@@ -214,5 +210,7 @@ class _CompleteTripState extends State<CompleteTrip> {
     currentPrice = 75;
     passengerFcm = null;
     passengerName = null;
+    directionDuration = 'loading';
+    distanceDistance = 'loading';
   }
 }

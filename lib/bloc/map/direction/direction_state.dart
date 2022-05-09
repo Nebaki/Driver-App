@@ -33,3 +33,5 @@ class DirectionDistanceDurationLoadSuccess extends DirectionState {
 }
 
 class DirectionDistanceDurationOperationFailur extends DirectionState {}
+
+class DrectionInitialState extends DirectionState {}
