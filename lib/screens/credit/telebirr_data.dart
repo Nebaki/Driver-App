@@ -6,21 +6,6 @@ class Result {
   Result(this.code, this.success, this.message);
 }
 
-class PaymentStatus {
-  final String code;
-  final String status;
-  final String message;
-
-  PaymentStatus({required this.code, required this.status, required this.message});
-
-  factory PaymentStatus.fromJson(Map<String, dynamic> json)
-  =>
-      PaymentStatus(
-          code: json["message"],
-          message: json["message"],
-          status: json["status"].toString()
-      );
-}
 
 class TelePack {
   String message;
@@ -107,4 +92,4 @@ class TelePack {
         'outTradeNumber': '$outTradeNumber',
         'inAppPaymentUrl': '$inAppPaymentUrl'
       };
-}}
+}
