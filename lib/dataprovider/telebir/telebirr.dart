@@ -18,7 +18,8 @@ class TeleBirrDataProvider {
         headers: await RequestHeader().authorisedHeader());
     if (response.statusCode == 200) {
       //Session().logSession("telebirr", response.body);
-      var data = TelePack.fromJson(jsonDecode(response.body),response.statusCode);
+      var data =
+          TelePack.fromJson(jsonDecode(response.body), response.statusCode);
       //data.code = response.statusCode;
       data.message = "Success";
       Session().logSession("telebirr", data.toString());
@@ -27,7 +28,7 @@ class TeleBirrDataProvider {
       print("init-telebirr ${response.statusCode}");
       String data =
           "{\"code\":${response.statusCode},\"message\":\"Failed to initiate telebirr\"}";
-      return TelePack.fromJson(jsonDecode(data),response.statusCode);
+      return TelePack.fromJson(jsonDecode(data), response.statusCode);
     }
   }
 
@@ -36,20 +37,25 @@ class TeleBirrDataProvider {
   Future<Result> confirmTransaction(String otn) async {
     String wait = "Please Wait we are processing";
     final response = await http
-        .get(Uri.parse('$_baseUrl/confirm-telebirr/user-id/out-trade-number'),
+        .get(Uri.parse('$_baseUrl/confirm-telebirr/$otn'),
             headers: await RequestHeader().authorisedHeader())
         .timeout(const Duration(seconds: 60), onTimeout: () {
       return http.Response(
           'Error', 408); // Request Timeout response status code
     });
     if (response.statusCode == 200) {
-      Result result = Result(response.statusCode.toString(),true, wait);
-      return result;
-    } else {
-      if(exec < 3){
-        exec += 1;
+      String status = jsonDecode(response.body)["status"];
+      if (status == "1") {
+        if (exec < 3) {
+          exec += 1;
+          confirmTransaction(otn);
+        }
+      } else if (status == "2") {
+        return Result(response.statusCode.toString(), false, wait);
       }
-      return RequestResult().requestResult(response.statusCode.toString(), response.body);
+      return Result(response.statusCode.toString(), false, wait);
+    } else {
+      return Result(response.statusCode.toString(), false, wait);
     }
   }
 }
