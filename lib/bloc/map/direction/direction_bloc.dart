@@ -43,5 +43,9 @@ class DirectionBloc extends Bloc<DirectionEvent, DirectionState> {
         yield DirectionDistanceDurationOperationFailur();
       }
     }
+
+    if (event is DirectionChangeToInitialState) {
+      yield DrectionInitialState();
+    }
   }
 }

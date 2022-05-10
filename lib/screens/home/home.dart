@@ -78,11 +78,11 @@ class _HomeScreenState extends State<HomeScreen> {
   bool stopNotficationListner = true;
   final pickupController = TextEditingController();
   DatabaseReference ref = FirebaseDatabase.instance.ref('bookedDrivers');
-  bool isTripStarted = false;
 
   FocusNode pickupLocationNode = FocusNode();
   FocusNode droppOffLocationNode = FocusNode();
   bool showNearbyOpportunity = true;
+  late int counter;
 
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
@@ -137,9 +137,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    Geofire.initialize("availableDrivers");
+    counter = 0;
+    switch (myVehicleCategory) {
+      case 'Truck':
+        Geofire.initialize('availableTrucks');
+        break;
+      case 'Taxi':
+        Geofire.initialize('availableDrivers');
+        break;
+    }
+    // Geofire.initialize(myVehicleCategory);
     currentPrice = 75;
-    isTripStarted = false;
 
     super.initState();
     if (widget.args.isOnline) {
@@ -517,11 +525,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     };
 
-    startTrip = () {
-      setState(() {
-        isTripStarted = true;
-      });
-    };
     createMarkerIcon();
 
     return Scaffold(
@@ -601,7 +604,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
               return isDirectionLoading;
             }, listener: (context, state) {
+              print('STAteeeeeeeeeeeeeeeeeeeeeeee is $state counter $counter');
+
               if (state is DirectionLoadSuccess) {
+                counter++;
+
+                if (counter <= 1) {
+                  print("function Called");
+                  showDriversOnMap();
+                }
                 // isDialog = false;
                 double timeTraveledFare =
                     (state.direction.durationValue / 60) * 0.20;
@@ -630,7 +641,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       pickupLocation: LatLng(currentLat, currentLng)));
                   BlocProvider.of<RideRequestBloc>(context).add(event);
                 }
-                showDriversOnMap();
 
                 _getPolyline(state.direction.encodedPoints);
 
@@ -807,7 +817,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                           listener: (context, state) {
-                            print("Herer is the state ${state}");
+                            print("Herer is the state $state ");
                             if (state is EmergencyReportCreating) {
                               showDialog(
                                   barrierDismissible: false,
@@ -1013,6 +1023,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void showDriversOnMap() {
+    print("Yow otowo listen me ");
     Map<MarkerId, Marker> newMarker = {};
 
     MarkerId markerId = MarkerId("driver");
@@ -1022,9 +1033,10 @@ class _HomeScreenState extends State<HomeScreen> {
             locationSettings: const LocationSettings(
                 distanceFilter: 5, accuracy: LocationAccuracy.best))
         .listen((event) {
+      print("Listening from driver;");
       ref.child('$myId').set({'lat': event.latitude, 'lng': event.longitude});
 
-      if (startingTime != null && isTripStarted) {
+      if (startingTime != null) {
         currentPrice = (75 +
             (2 *
                 (double.parse(DateTime.now()
@@ -1041,6 +1053,8 @@ class _HomeScreenState extends State<HomeScreen> {
         print(
             'doubless = ${double.parse(DateTime.now().difference(startingTime!).inSeconds.toString())}');
       }
+
+      // Blocf<DirectionBloc>(context).add(DirectionChangeToInitialState());
 
       // driverStreamSubscription.cancel();
       // print("Hey yow i'm still listening");

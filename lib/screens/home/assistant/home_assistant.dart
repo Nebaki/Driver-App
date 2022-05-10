@@ -14,13 +14,17 @@ void getLiveLocation() async {
   homeScreenStreamSubscription = Geolocator.getPositionStream(
           locationSettings: const LocationSettings(distanceFilter: 5))
       .listen((event) {
+    print("Listening from homeScreen;");
+
     if (isDriverOnline != null) {
       isDriverOnline!
           ? Geofire.setLocation(firebaseKey, event.latitude, event.longitude)
           : Geofire.removeLocation(myId);
 
       if (!isDriverOnline!) {
-        homeScreenStreamSubscription.cancel();
+        homeScreenStreamSubscription.cancel().then((value) {
+          print("1YEAhhhhh");
+        });
       }
     }
   });
@@ -31,5 +35,3 @@ late Function disableCreateTripButton;
 late Function updateEsimatedCost;
 DateTime? startingTime;
 double currentPrice = 75;
-
-late Function startTrip;

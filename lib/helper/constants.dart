@@ -10,7 +10,7 @@ import 'package:http/http.dart';
 
 bool? isDriverOnline;
 late StreamSubscription<Position> homeScreenStreamSubscription;
-late StreamSubscription driverStreamSubscription;
+late StreamSubscription<Position> driverStreamSubscription;
 
 late String firebaseKey;
 late String myId;

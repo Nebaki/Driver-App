@@ -100,6 +100,7 @@ class _ArrivedState extends State<Arrived> {
                   children: [
                     GestureDetector(
                         onTap: () {
+        
                           makePhoneCall(passengerPhoneNumber);
                         },
                         child: _buildItems(

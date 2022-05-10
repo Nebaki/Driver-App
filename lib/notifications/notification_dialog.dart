@@ -208,12 +208,12 @@ class _NotificationDialogState extends State<NotificationDialog> {
                 ),
               ),
               const SizedBox(
-                height: 15,
+                height: 12,
               ),
 
               const Divider(),
               const SizedBox(
-                height: 10,
+                height: 8,
               ),
               Row(
                 children: [
@@ -226,7 +226,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                       style: Theme.of(context).textTheme.caption)
                 ],
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 3),
               Row(
                 children: [
                   const Icon(
@@ -240,7 +240,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
               ),
               isLoading
                   ? const LinearProgressIndicator(
-                      minHeight: 2,
+                      minHeight: 1,
                     )
                   : Container()
             ],
@@ -325,9 +325,6 @@ class _NotificationDialogState extends State<NotificationDialog> {
                       if (timer != null) {
                         timer!.cancel();
                       }
-                      homeScreenStreamSubscription.cancel();
-
-                      Geofire.removeLocation(myId);
 
                       player.dispose();
                       isLoading = true;
@@ -350,14 +347,20 @@ class _NotificationDialogState extends State<NotificationDialog> {
     }, listener: (_, state) {
       if (state is RideRequestAccepted) {
         isLoading = false;
-        DirectionEvent event = DirectionLoad(destination: pickupLocation);
 
-        BlocProvider.of<DirectionBloc>(context).add(event);
+        homeScreenStreamSubscription.cancel().then((value) {
+          Geofire.removeLocation(firebaseKey);
 
-        widget.setIsArrivedWidget(true);
-        widget.setDestination(pickupLocation);
-        widget.callback(Arrived(widget.callback));
-        Navigator.pop(context);
+          value;
+          DirectionEvent event = DirectionLoad(destination: pickupLocation);
+
+          BlocProvider.of<DirectionBloc>(context).add(event);
+
+          widget.setIsArrivedWidget(true);
+          widget.setDestination(pickupLocation);
+          widget.callback(Arrived(widget.callback));
+          Navigator.pop(context);
+        });
       }
       if (state is RideRequestPassed) {
         Navigator.pop(context);
