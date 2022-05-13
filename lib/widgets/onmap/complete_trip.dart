@@ -2,6 +2,7 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
+import 'package:driverapp/screens/home/dialogs/circular_progress_indicator_dialog.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:driverapp/widgets/widgets.dart';
@@ -51,6 +52,8 @@ class _CompleteTripState extends State<CompleteTrip> {
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
         if (state is RideRequestCompleted) {
+          Navigator.pop(context);
+
           driverStreamSubscription.cancel().then((value) {
             ref.child(myId).remove();
             Navigator.pushReplacementNamed(context, CollectedCash.routeName,
@@ -81,8 +84,17 @@ class _CompleteTripState extends State<CompleteTrip> {
             child: Column(
               children: [
                 RiderDetail(text: 'Trip Started'),
-                BlocBuilder<RideRequestBloc, RideRequestState>(
-                    builder: (context, state) {
+                BlocConsumer<RideRequestBloc, RideRequestState>(
+                    listener: (context, state) {
+                  if (state is RideRequestLoading) {
+                    showDialog(
+                        // barrierDismissible: false,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CircularProggressIndicatorDialog();
+                        });
+                  }
+                }, builder: (context, state) {
                   if (state is RideRequestLoading) {
                     return const Padding(
                       padding:

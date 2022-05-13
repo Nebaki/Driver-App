@@ -82,5 +82,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         yield UserOperationFailure();
       }
     }
+    if (event is UserForgetPassword) {
+      yield UserLoading();
+
+      try {
+        await userRepository.forgetPassword(event.forgetPasswordInfo);
+        yield UserPasswordChanged();
+      } catch (_) {
+        yield UserOperationFailure();
+      }
+    }
+
+    if (event is UserCheckPhoneNumber) {
+      yield UserLoading();
+
+      try {
+        final phoneNumberExist =
+            await userRepository.checkPhoneNumber(event.phoneNumber);
+        yield UserPhoneNumbeChecked(phoneNumberExist);
+      } catch (_) {
+        print("Check error $_");
+        yield UserOperationFailure();
+      }
+    }
   }
 }

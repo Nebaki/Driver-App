@@ -140,7 +140,7 @@ class RideRequestDataProvider {
     }
   }
 
-  Future<void> startTrip(String id, String passengerFcm) async {
+  Future<void> startTrip(String id, String? passengerFcm) async {
     // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
     final response = await http.post(
       Uri.parse('$_maintenanceUrl/start-trip/$id'),
@@ -256,7 +256,7 @@ class RideRequestDataProvider {
         'Authorization': 'key=$token'
       },
       body: json.encode({
-        "data": {'response': 'Completed','price': currentPrice},
+        "data": {'response': 'Completed', 'price': currentPrice},
         "to": fcmId,
         "notification": {
           "title": "Trip Completed",

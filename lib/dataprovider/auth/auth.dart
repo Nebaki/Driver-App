@@ -34,7 +34,7 @@ class AuthDataProvider {
           key: 'phone_number', value: output['driver']['phone_number']);
       await secure_storage.write(
           key: 'name', value: output['driver']['first_name']);
-                await secure_storage.write(
+      await secure_storage.write(
           key: 'last_name', value: output['driver']['last_name']);
       await secure_storage.write(key: 'token', value: output['token']);
       await secure_storage.write(
@@ -64,6 +64,10 @@ class AuthDataProvider {
       await secure_storage.write(
           key: "avg_rate",
           value: output['driver']['avg_rate']['score'].toString());
+
+      await secure_storage.write(
+          key: "balance",
+          value: output['driver']['credit']['balance'].toString());
     } else {
       throw Exception('Failed to login.');
     }

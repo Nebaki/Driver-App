@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,6 +16,7 @@ class OfflineMode extends StatelessWidget {
   Function setDriverStatus;
   bool isDriverOn = false;
   OfflineMode(this.setDriverStatus, this.callback);
+  bool hasBalance = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,21 +32,31 @@ class OfflineMode extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 15),
             child: Container(
-              child: FloatingActionButton(
-                backgroundColor: Colors.red,
-                onPressed: () {
-                  isDriverOnline = true;
-                  // setDriverStatus(true);
-                  getLiveLocation();
-                  callback!(OnlinMode(callback, setDriverStatus));
-                },
-                child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 1.5),
-                        borderRadius: BorderRadius.circular(100)),
-                    child: const Text("Go")),
-              ),
+              child: BlocConsumer<BalanceBloc, BalanceState>(
+                  builder: (context, state) => FloatingActionButton(
+                        backgroundColor: Colors.red,
+                        onPressed: hasBalance
+                            ? () {
+                                isDriverOnline = true;
+                                getLiveLocation();
+                                callback!(OnlinMode(callback, setDriverStatus));
+                              }
+                            : null,
+                        child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.white, width: 1.5),
+                                borderRadius: BorderRadius.circular(100)),
+                            child: const Text("Go")),
+                      ),
+                  listener: (context, state) {
+                    if (state is BalanceLoadSuccess) {
+                      if (state.balance > 0) {
+                        hasBalance = true;
+                      }
+                    }
+                  }),
             ),
           ),
           Container(
@@ -93,7 +106,7 @@ class OfflineMode extends StatelessWidget {
                         color: Colors.grey.shade300,
                       ),
                       _items(
-                          num: "\$342",
+                          num: "$balance ETB",
                           text: "Wallet",
                           icon: Icons.wallet_giftcard),
                     ],

@@ -164,6 +164,9 @@ class ChangePassword extends StatelessWidget {
                                   border: OutlineInputBorder(
                                       borderSide: BorderSide.none)),
                               validator: (value) {
+                                if (value != _passwordInfo['new_password']) {
+                                  return 'Password must match';
+                                }
                                 if (value!.isEmpty) {
                                   return 'Please confirm the password';
                                 }

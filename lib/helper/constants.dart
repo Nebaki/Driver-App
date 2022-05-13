@@ -30,6 +30,7 @@ late LatLng droppOffLocation;
 late String distance;
 late String duration;
 late String price;
+late int balance;
 String? passengerProfilePictureUrl;
 final player = AssetsAudioPlayer();
 
@@ -75,3 +76,4 @@ List<String> drivers = [];
 
 String portName = 'DRIVER_BACKGROUND_lISTENER_PORT';
 const maintenanceUrl = 'https://mobiletaxi-api.herokuapp.com/api';
+String baseUrl = 'https://safeway-api.herokuapp.com/api';
