@@ -16,7 +16,7 @@ class OfflineMode extends StatelessWidget {
   Function setDriverStatus;
   bool isDriverOn = false;
   OfflineMode(this.setDriverStatus, this.callback);
-  bool hasBalance = false;
+  bool hasBalance = true;
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +32,18 @@ class OfflineMode extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 15),
             child: Container(
-              child: BlocConsumer<BalanceBloc, BalanceState>(
-                  builder: (context, state) => FloatingActionButton(
+              child: BlocBuilder<BalanceBloc, BalanceState>(
+                builder: (context, state) {
+                  if (state is BalanceLoadSuccess) {
+                    // return
+                    if (state.balance > 0) {
+                      return FloatingActionButton(
                         backgroundColor: Colors.red,
-                        onPressed: hasBalance
-                            ? () {
-                                isDriverOnline = true;
-                                getLiveLocation();
-                                callback!(OnlinMode(callback, setDriverStatus));
-                              }
-                            : null,
+                        onPressed: () {
+                          isDriverOnline = true;
+                          getLiveLocation();
+                          callback!(OnlinMode(callback, setDriverStatus));
+                        },
                         child: Container(
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
@@ -49,14 +51,21 @@ class OfflineMode extends StatelessWidget {
                                     Border.all(color: Colors.white, width: 1.5),
                                 borderRadius: BorderRadius.circular(100)),
                             child: const Text("Go")),
-                      ),
-                  listener: (context, state) {
-                    if (state is BalanceLoadSuccess) {
-                      if (state.balance > 0) {
-                        hasBalance = true;
-                      }
+                      );
                     }
-                  }),
+                  }
+                  return FloatingActionButton(
+                    backgroundColor: Colors.red,
+                    onPressed: null,
+                    child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 1.5),
+                            borderRadius: BorderRadius.circular(100)),
+                        child: const Text("Go")),
+                  );
+                },
+              ),
             ),
           ),
           Container(

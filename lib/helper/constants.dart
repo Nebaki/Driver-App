@@ -17,6 +17,7 @@ late String myId;
 late String myPictureUrl;
 late String myName;
 late String myVehicleCategory;
+late String myVehicleType;
 late double myAvgRate;
 String? passengerName;
 late String passengerPhoneNumber;
@@ -35,7 +36,6 @@ String? passengerProfilePictureUrl;
 final player = AssetsAudioPlayer();
 
 bool willScreenPop = true;
-late Function setWillScreenPop;
 late Function changeDestination;
 
 List<String> drivers = [];

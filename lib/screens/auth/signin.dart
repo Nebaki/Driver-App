@@ -40,6 +40,7 @@ class _SigninScreenState extends State<SigninScreen> {
         myName = state.auth.name!;
         myAvgRate = state.auth.avgRate!;
         balance = state.auth.balance!;
+        myVehicleType = state.auth.vehicleType!;
 
         myVehicleCategory = state.auth.vehicleCategory!;
         firebaseKey = '$myId,$myVehicleCategory';

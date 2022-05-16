@@ -139,8 +139,6 @@ class MyApp extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    //Firebase.initializeApp();
-
     return MultiRepositoryProvider(
         providers: [
           RepositoryProvider.value(value: placeDetailRepository),

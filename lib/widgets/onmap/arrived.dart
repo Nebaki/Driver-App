@@ -23,7 +23,6 @@ class _ArrivedState extends State<Arrived> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       disableCreateTripButton();
-      setWillScreenPop();
     });
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {

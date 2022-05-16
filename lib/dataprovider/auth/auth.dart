@@ -59,6 +59,9 @@ class AuthDataProvider {
 
       await secure_storage.write(
           key: "vehicle_category",
+          value: output["driver"]['vehicle']['category']['name'] ?? "");
+      await secure_storage.write(
+          key: "vehicle_type",
           value: output["driver"]['vehicle']['type'] ?? "");
 
       await secure_storage.write(
