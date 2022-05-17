@@ -56,7 +56,7 @@ class ListBuilder extends StatelessWidget {
   }
 
   Widget _showBottomMessage(BuildContext context, Credit credit) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.3,
       child: Column(
         children: <Widget>[
@@ -77,6 +77,27 @@ class ListBuilder extends StatelessWidget {
             credit.message!,
             style: const TextStyle(color: Colors.black),
           ),
+          Text(
+            credit.paymentMethod!,
+            style: const TextStyle(color: Colors.black),
+          ),
+          Text(
+            credit.status!,
+            style: const TextStyle(color: Colors.black),
+          ),
+          Text(
+            credit.depositedBy!.name!,
+            style: const TextStyle(color: Colors.black),
+          ),
+          Text(
+            credit.depositedBy!.phone!,
+            style: const TextStyle(color: Colors.black),
+          ),
+          Text(
+            credit.depositedBy!.email!,
+            style: const TextStyle(color: Colors.black),
+          ),
+
         ],
       ),
     );

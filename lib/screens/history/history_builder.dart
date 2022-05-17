@@ -65,12 +65,12 @@ class HistoryBuilder extends StatelessWidget {
                 size: 40,
               ),*/
               title: Text(
-                "From:  ${trip.pickUpAddress!}   To+ ${trip.dropOffAddress!}",
+                "From:  ${trip.pickUpAddress!}   To ${trip.dropOffAddress!}",
                 style: const TextStyle(color: Colors.black, fontSize: 16),
               ),
               subtitle: Text('Date: ${trip.createdAt}'),
               trailing:
-                  Text(trip.price!, style: const TextStyle(color: Colors.red)),
+                  Text(trip.price!.split(",")[0]+".ETB", style: const TextStyle(color: Colors.red)),
             ),
           ],
         ));

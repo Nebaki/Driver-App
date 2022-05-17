@@ -63,6 +63,7 @@ class ShowMessage{
               ),
               onPressed: () {
                 Navigator.pop(context);
+                Navigator.pop(context);
               },
               child: const Text('OK'),
             ),

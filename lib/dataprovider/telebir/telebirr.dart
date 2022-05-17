@@ -36,27 +36,41 @@ class TeleBirrDataProvider {
 
   Future<Result> confirmTransaction(String otn) async {
     String wait = "Please Wait we are processing";
+    Session().logSession("recharge", "otn $otn)");
     final response = await http
         .get(Uri.parse('$_baseUrl/confirm-telebirr/$otn'),
             headers: await RequestHeader().authorisedHeader())
         .timeout(const Duration(seconds: 60), onTimeout: () {
-      return http.Response(
-          'Error', 408); // Request Timeout response status code
+      return http.Response('Error', 408); // Request Timeout response status code
     });
     if (response.statusCode == 200) {
       String status = jsonDecode(response.body)["status"];
-      if (status == "1") {
-        if (exec < 3) {
-          exec += 1;
+      if (status == "2") {
+        Session().logSession("recharge", "success at $exec)");
+        wait = "Your Credit Recharged successfully";
+        return Result(response.statusCode.toString(), false, wait);
+      } else{
+        while(exec < 3){
+          Session().logSession("recharge", "at $exec)");
           await Future.delayed(const Duration(seconds: 5));
+          exec += 1;
           confirmTransaction(otn);
         }
-      } else if (status == "2") {
+        Session().logSession("recharge", "at run)");
+        wait = "Unable to confirm your payment";
         return Result(response.statusCode.toString(), false, wait);
       }
-      return Result(response.statusCode.toString(), false, wait);
     } else {
-      return Result(response.statusCode.toString(), false, wait);
+      Session().logSession("recharge", "failed ${response.statusCode}");
+      if(response.statusCode == 408){
+        while(exec < 3){
+          Session().logSession("recharge", "at 408)");
+          await Future.delayed(const Duration(seconds: 5));
+          exec += 1;
+          confirmTransaction(otn);
+        }
+      }
+      return Result(response.statusCode.toString(), false, "Unable to confirm your payment");
     }
   }
 }
