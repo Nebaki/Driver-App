@@ -3,6 +3,7 @@ import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
+import 'package:driverapp/screens/home/dialogs/circular_progress_indicator_dialog.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +23,12 @@ class _ArrivedState extends State<Arrived> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       disableCreateTripButton();
-      setWillScreenPop();
     });
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
         if (state is RideRequesChanged) {
+          Navigator.pop(context);
+
           widget.callback!(WaitingPassenger(widget.callback, true));
         }
       },
@@ -50,9 +52,24 @@ class _ArrivedState extends State<Arrived> {
             child: Column(
               children: [
                 RiderDetail(text: 'Picking up'),
-                BlocBuilder<RideRequestBloc, RideRequestState>(
-                    builder: (context, state) {
+                BlocConsumer<RideRequestBloc, RideRequestState>(
+                    listener: (context, state) {
                   if (state is RideRequestLoading) {
+                    showDialog(
+                        // barrierDismissible: false,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CircularProggressIndicatorDialog();
+                        });
+                  }
+                }, builder: (context, state) {
+                  if (state is RideRequestLoading) {
+                    // showDialog(
+                    //     barrierDismissible: false,
+                    //     context: context,
+                    //     builder: (BuildContext context) {
+                    //       return const CircularProggressIndicatorDialog();
+                    //     });
                     return const Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -100,7 +117,6 @@ class _ArrivedState extends State<Arrived> {
                   children: [
                     GestureDetector(
                         onTap: () {
-        
                           makePhoneCall(passengerPhoneNumber);
                         },
                         child: _buildItems(

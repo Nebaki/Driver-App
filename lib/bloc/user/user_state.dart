@@ -37,3 +37,10 @@ class UserPreferenceUploadSuccess extends UserState {}
 class UserOperationFailure extends UserState {}
 
 class UserPasswordChanged extends UserState {}
+
+class UserPhoneNumbeChecked extends UserState {
+  final bool phoneNumberExist;
+  const UserPhoneNumbeChecked(this.phoneNumberExist);
+  @override
+  List<Object> get props => [phoneNumberExist];
+}

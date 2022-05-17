@@ -17,6 +17,7 @@ late String myId;
 late String myPictureUrl;
 late String myName;
 late String myVehicleCategory;
+late String myVehicleType;
 late double myAvgRate;
 String? passengerName;
 late String passengerPhoneNumber;
@@ -30,11 +31,11 @@ late LatLng droppOffLocation;
 late String distance;
 late String duration;
 late String price;
+late int balance;
 String? passengerProfilePictureUrl;
 final player = AssetsAudioPlayer();
 
 bool willScreenPop = true;
-late Function setWillScreenPop;
 late Function changeDestination;
 
 List<String> drivers = [];
@@ -75,3 +76,4 @@ List<String> drivers = [];
 
 String portName = 'DRIVER_BACKGROUND_lISTENER_PORT';
 const maintenanceUrl = 'https://mobiletaxi-api.herokuapp.com/api';
+String baseUrl = 'https://safeway-api.herokuapp.com/api';

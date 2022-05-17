@@ -108,7 +108,7 @@ class _OnlinModeState extends State<OnlinMode> {
                         color: Colors.grey.shade300,
                       ),
                       _items(
-                          num: "\$342",
+                          num: "$balance ETB",
                           text: "Wallet",
                           icon: Icons.wallet_giftcard),
                     ],

@@ -167,6 +167,14 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                           myName = state.auth.name!;
                           myVehicleCategory = state.auth.vehicleCategory!;
                           firebaseKey = '$myId,$myVehicleCategory';
+                          balance = state.auth.balance!;
+                          myVehicleType = state.auth.vehicleType!;
+
+                          print('Keyyyyyyyyyyyyyy $firebaseKey');
+                          if (balance <= 0) {
+                            SystemNavigator.pop();
+                          }
+
                           setState(() {
                             isSuccess = true;
                           });

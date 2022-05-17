@@ -65,6 +65,9 @@ void main() async {
   final PassengerRepository passengerRepository = PassengerRepository(
       dataProvider: PassengerDataprovider(httpClient: http.Client()));
 
+  final BalanceRepository balanceRepository = BalanceRepository(
+      dataProvider: BalanceDataProvider(httpClient: http.Client()));
+
   runApp(MyApp(
     placeDetailRepository: placeDetailRepository,
     directionRepository: directionRepository,
@@ -75,6 +78,7 @@ void main() async {
     locationPredictionRepository: locationPredictionRepository,
     emergencyReportRepository: emergencyReportRepository,
     passengerRepository: passengerRepository,
+    balanceRepository: balanceRepository,
   ));
 }
 
@@ -114,11 +118,11 @@ class MyApp extends StatelessWidget {
   final DirectionRepository directionRepository;
   final PlaceDetailRepository placeDetailRepository;
   final LocationPredictionRepository locationPredictionRepository;
-
   final RideRequestRepository rideRequestRepository;
   final EmergencyReportRepository emergencyReportRepository;
   final ReverseLocationRepository reverseLocationRepository;
   final PassengerRepository passengerRepository;
+  final BalanceRepository balanceRepository;
 
   const MyApp(
       {Key? key,
@@ -130,12 +134,11 @@ class MyApp extends StatelessWidget {
       required this.rideRequestRepository,
       required this.locationPredictionRepository,
       required this.emergencyReportRepository,
-      required this.passengerRepository})
+      required this.passengerRepository,
+      required this.balanceRepository})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    //Firebase.initializeApp();
-
     return MultiRepositoryProvider(
         providers: [
           RepositoryProvider.value(value: placeDetailRepository),
@@ -146,7 +149,8 @@ class MyApp extends StatelessWidget {
           RepositoryProvider.value(value: locationPredictionRepository),
           RepositoryProvider.value(value: reverseLocationRepository),
           RepositoryProvider.value(value: emergencyReportRepository),
-          RepositoryProvider.value(value: passengerRepository)
+          RepositoryProvider.value(value: passengerRepository),
+          RepositoryProvider.value(value: balanceRepository)
         ],
         child: MultiBlocProvider(
             providers: [
@@ -178,7 +182,11 @@ class MyApp extends StatelessWidget {
                       reverseLocationRepository: reverseLocationRepository)),
               BlocProvider(
                   create: (context) =>
-                      PassengerBloc(passengerRepository: passengerRepository))
+                      PassengerBloc(passengerRepository: passengerRepository)),
+              BlocProvider(
+                  create: ((context) =>
+                      BalanceBloc(balanceRepository: balanceRepository)
+                        ..add(BalanceLoad())))
             ],
             child: MaterialApp(
               title: 'SafeWay',

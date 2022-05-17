@@ -2,6 +2,7 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
+import 'package:driverapp/screens/home/dialogs/circular_progress_indicator_dialog.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class WaitingPassenger extends StatelessWidget {
     return BlocConsumer<RideRequestBloc, RideRequestState>(
       listener: (context, state) {
         if (state is RideRequestStarted) {
+          Navigator.pop(context);
           callback!(CompleteTrip(callback));
           if (formPassenger) {
             changeDestination(droppOffLocation);
@@ -51,9 +53,24 @@ class WaitingPassenger extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 10),
                   child: RiderDetail(text: 'Picking up'),
                 ),
-                BlocBuilder<RideRequestBloc, RideRequestState>(
-                    builder: (context, state) {
+                BlocConsumer<RideRequestBloc, RideRequestState>(
+                    listener: (context, state) {
                   if (state is RideRequestLoading) {
+                    showDialog(
+                        // barrierDismissible: false,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CircularProggressIndicatorDialog();
+                        });
+                  }
+                }, builder: (context, state) {
+                  if (state is RideRequestLoading) {
+                    // showDialog(
+                    //     barrierDismissible: false,
+                    //     context: context,
+                    //     builder: (BuildContext context) {
+                    //       return const CircularProggressIndicatorDialog();
+                    //     });
                     return const Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -114,7 +131,7 @@ class WaitingPassenger extends StatelessWidget {
                         action: () {
                           // homeScreenStreamSubscription.cancel();
                           RideRequestEvent requestEvent =
-                              RideRequestStart(requestId, passengerFcm!);
+                              RideRequestStart(requestId, passengerFcm);
                           BlocProvider.of<RideRequestBloc>(context)
                               .add(requestEvent);
                         })

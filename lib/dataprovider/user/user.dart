@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 // import 'package:dio/dio.dart';
+import 'package:driverapp/helper/api_end_points.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
@@ -164,6 +165,40 @@ class UserDataProvider {
     print('response ${response.statusCode} ${response.body}');
     if (response.statusCode != 200) {
       throw 'Unable to change password';
+    }
+  }
+
+  Future<bool> checkPhoneNumber(String phoneNumber) async {
+    final http.Response response = await http.get(
+      Uri.parse(UserEndPoints.checkPhonenumberEndPoint(phoneNumber)),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+    );
+    print('response ${response.statusCode}');
+    if (response.statusCode == 200) {
+      return true;
+    } else if (response.statusCode == 404) {
+      return false;
+    } else {
+      throw 'Unable to check the phonenumber';
+    }
+  }
+
+  Future forgetPassword(Map<String, String> forgetPasswordInfo) async {
+    print(' Pasdre ${forgetPasswordInfo['new_passsword']}o');
+    final http.Response response =
+        await http.post(Uri.parse(UserEndPoints.forgetPasswordEndPoint()),
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+            },
+            body: json.encode({
+              'phone_number': forgetPasswordInfo['phone_number'],
+              'newPassword': forgetPasswordInfo['new_password']
+            }));
+    print('response ${response.statusCode}, ${response.body}');
+    if (response.statusCode != 200) {
+      throw 'Unable to rest password';
     }
   }
 }

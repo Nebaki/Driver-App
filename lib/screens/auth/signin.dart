@@ -39,17 +39,20 @@ class _SigninScreenState extends State<SigninScreen> {
         myPictureUrl = state.auth.profilePicture!;
         myName = state.auth.name!;
         myAvgRate = state.auth.avgRate!;
+        balance = state.auth.balance!;
+        myVehicleType = state.auth.vehicleType!;
 
         myVehicleCategory = state.auth.vehicleCategory!;
         firebaseKey = '$myId,$myVehicleCategory';
+        Navigator.pushReplacementNamed(context, HomeScreen.routeName,
+            arguments: HomeScreenArgument(isSelected: false, isOnline: false));
       }
 
       if (state is AuthSigningIn) {
         _isLoading = true;
       }
       if (state is AuthLoginSuccess) {
-        Navigator.pushReplacementNamed(context, HomeScreen.routeName,
-            arguments: HomeScreenArgument(isSelected: false, isOnline: false));
+        BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
       }
       if (state is AuthOperationFailure) {
         _isLoading = false;
@@ -70,7 +73,6 @@ class _SigninScreenState extends State<SigninScreen> {
             phoneNumber: _auth["phoneNumber"], password: _auth["password"]));
 
         BlocProvider.of<AuthBloc>(context).add(event);
-        BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
       }
     });
   }

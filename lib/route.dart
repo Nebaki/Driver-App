@@ -107,8 +107,13 @@ class AppRoute {
 
 class VerificationArgument {
   String verificationId;
-
-  VerificationArgument({required this.verificationId});
+  int? resendingToken;
+  String phoneNumber;
+  VerificationArgument({
+    required this.verificationId,
+    required this.resendingToken,
+    required this.phoneNumber,
+  });
 }
 
 class HomeScreenArgument {
@@ -147,4 +152,9 @@ class CollectedCashScreenArgument {
   final String name;
   final double price;
   CollectedCashScreenArgument({required this.name, required this.price});
+}
+
+class ResetPasswordArgument {
+  final String phoneNumber;
+  ResetPasswordArgument({required this.phoneNumber});
 }

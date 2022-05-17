@@ -87,10 +87,17 @@ class _CollectedCashState extends State<CollectedCash> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(
-                          context, HomeScreen.routeName,
+                      BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
+                      Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          HomeScreen.routeName,
+                          ((Route<dynamic> route) => false),
                           arguments: HomeScreenArgument(
                               isSelected: false, isOnline: true));
+                      // Navigator.pushReplacementNamed(
+                      //     context, HomeScreen.routeName,
+                      //     arguments: HomeScreenArgument(
+                      //         isSelected: false, isOnline: true));
                     },
                     child: const Text(
                       "Done",

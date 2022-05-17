@@ -3,23 +3,25 @@ import 'dart:convert';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
+import 'package:driverapp/widgets/widgets.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PushNotificationService {
-  Future initialize(
-      context, callback, setDestination, setIsArrivedWidget) async {
+  Future initialize(context, callback, setDestination, setIsArrivedWidget,
+      setDriverStatus) async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       player.open(Audio("assets/sounds/announcement-sound.mp3"));
 
-      if (message.data['status'] == 'Cancelled') {
+      if (message.data['response'] == 'Cancelled') {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Request Cancelled"),
         ));
+        callback(OnlinMode(callback, setDriverStatus));
       }
 
       print("Notification data is ::");
@@ -27,8 +29,6 @@ class PushNotificationService {
       if (message.data['passengerName'] != null) {
         final pickupList = json.decode(message.data['pickupLocation']);
         final droppOffList = json.decode(message.data['droppOffLocation']);
-        // final nextDrivers = json.decode(message.data['nextDrivers']);
-
         pickupLocation = LatLng(pickupList[0], pickupList[1]);
         droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
         passengerName = message.data['passengerName'];
@@ -42,6 +42,7 @@ class PushNotificationService {
         pickUpAddress = message.data['pickupAddress'];
         passengerProfilePictureUrl = message.data['profilePictureUrl'];
         final listOfDrivers = json.decode(message.data['nextDrivers']);
+
         showDialog(
             barrierDismissible: false,
             context: context,

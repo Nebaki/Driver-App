@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:driverapp/bloc/user/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/cancel_reason.dart';
+import 'package:driverapp/screens/home/dialogs/circular_progress_indicator_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
@@ -28,6 +30,15 @@ void getLiveLocation() async {
       }
     }
   });
+}
+
+void showRideRequestLoadingDialog(context, contextTwo) {
+  showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (contenxt2) {
+        return const CircularProggressIndicatorDialog();
+      });
 }
 
 Timer? timer;

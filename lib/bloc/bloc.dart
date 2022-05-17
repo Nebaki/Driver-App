@@ -7,3 +7,4 @@ export 'auth/bloc.dart';
 export 'riderequest/bloc.dart';
 export 'emergencyReport/emergency_report_bloc.dart';
 export 'passenger/passenger.dart';
+export 'balance/balance.dart';
