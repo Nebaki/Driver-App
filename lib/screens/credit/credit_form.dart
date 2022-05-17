@@ -23,73 +23,71 @@ class _TeleBirrDataState extends State<TeleBirrData> {
   bool _isLoading = false;
   final String title = "Wallet";
   Widget _amountBox() => TextFormField(
-      keyboardType: const TextInputType.numberWithOptions(
-          signed: true, decimal: true),
-      controller: amountController,
-      decoration: const InputDecoration(
-          alignLabelWithHint: true,
-          hintText: "Amount",
-          hintStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black45),
-          prefixIcon: Icon(
-            Icons.money,
-            size: 19,
-          ),
-          fillColor: Colors.white,
-          filled: true,
-          border: OutlineInputBorder(
-              borderSide:
-              BorderSide(style: BorderStyle.solid))),
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Please enter Amount';
-        } else if (int.parse(value) < 0) {
-          return 'Minimum Amount is 1.ETB';
-        }
-        return null;
-      },
-    );
-  Widget _startButton() => ElevatedButton(
-    onPressed: _isLoading
-        ? null
-        : () {
-      final form = _formkey.currentState;
-      if (form!.validate()) {
-        setState(() {
-          _isLoading = true;
-        });
-        form.save();
-        startTelebirr(amountController.value.text);
-      }
-    },
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Spacer(),
-        const Text("Start",
-            style: TextStyle(color: Colors.white)),
-        const Spacer(),
-        Align(
-          alignment: Alignment.centerRight,
-          child: _isLoading
-              ? const SizedBox(
-            height: 20,
-            width: 20,
-            child: CircularProgressIndicator(
-              color: Colors.white,
+        keyboardType:
+            const TextInputType.numberWithOptions(signed: true, decimal: true),
+        controller: amountController,
+        decoration: const InputDecoration(
+            alignLabelWithHint: true,
+            hintText: "Amount",
+            hintStyle:
+                TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
+            prefixIcon: Icon(
+              Icons.money,
+              size: 19,
             ),
-          )
-              : Container(),
-        )
-      ],
-    ),
-  );
+            fillColor: Colors.white,
+            filled: true,
+            border: OutlineInputBorder(
+                borderSide: BorderSide(style: BorderStyle.solid))),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return 'Please enter Amount';
+          } else if (int.parse(value) < 0) {
+            return 'Minimum Amount is 1.ETB';
+          }
+          return null;
+        },
+      );
+  Widget _startButton() => ElevatedButton(
+        onPressed: _isLoading
+            ? null
+            : () {
+                final form = _formkey.currentState;
+                if (form!.validate()) {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  form.save();
+                  startTelebirr(amountController.value.text);
+                }
+              },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Spacer(),
+            const Text("Start", style: TextStyle(color: Colors.white)),
+            const Spacer(),
+            Align(
+              alignment: Alignment.centerRight,
+              child: _isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    )
+                  : Container(),
+            )
+          ],
+        ),
+      );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: CreditAppBar(key: _appBar,title: "Recharge",appBar: AppBar(),widgets: []),
+        appBar: CreditAppBar(
+            key: _appBar, title: "Recharge", appBar: AppBar(), widgets: []),
         body: Form(
             key: _formkey,
             child: Center(
@@ -152,7 +150,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
   }
 
   void paymentProcess(Result result) {
-    if (result.code == "0") {
+    if (result.code == "200") {
       var confirm = sender.confirmTransaction("otn");
       confirm
           .then((value) => {ShowMessage(context, "Recharge", value.message)})
@@ -169,7 +167,8 @@ class _TeleBirrDataState extends State<TeleBirrData> {
     print("t-pack ${telePack.toString()}");
     teleBirrRequest(telePack).catchError(
       (onError) {
-        var result = Result("0",false, "there is an error: " + onError.toString());
+        var result =
+            Result("0", false, "there is an error: " + onError.toString());
         paymentProcess(result);
       },
     ).then((value) {
@@ -184,7 +183,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
     var json = jsonDecode(teleBirr);
     var code = json['CODE'];
     var message = json['MSG'];
-    var result = Result(code.toString(),false, message);
+    var result = Result(code.toString(), false, message);
     return result;
   }
 }
