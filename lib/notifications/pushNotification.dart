@@ -1,17 +1,18 @@
 import 'dart:convert';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PushNotificationService {
-  Future initialize(context, callback, setDestination, setIsArrivedWidget,
-      setDriverStatus) async {
+  Future initialize(context, setDestination, setDriverStatus) async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
@@ -21,7 +22,8 @@ class PushNotificationService {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Request Cancelled"),
         ));
-        callback(OnlinMode(callback, setDriverStatus));
+        BlocProvider.of<CurrentWidgetCubit>(context).changeWidget(OnlinMode());
+        // callback(OnlinMode());
       }
 
       print("Notification data is ::");
@@ -41,15 +43,15 @@ class PushNotificationService {
         droppOffAddress = message.data['droppOffAddress'];
         pickUpAddress = message.data['pickupAddress'];
         passengerProfilePictureUrl = message.data['profilePictureUrl'];
-        final listOfDrivers = json.decode(message.data['nextDrivers']);
-
+        final listOfDrivers = json.decode(message.data['nextDrivers']) as List;
+        listOfDrivers.removeAt(0);
         showDialog(
             barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
               // player.open(Audio("assets/sounds/announcement-sound.mp3"));
-              return NotificationDialog(callback, setDestination,
-                  setIsArrivedWidget, listOfDrivers, 40, true);
+              return NotificationDialog(
+                  setDestination, listOfDrivers, 40, true);
             });
       } else {}
 

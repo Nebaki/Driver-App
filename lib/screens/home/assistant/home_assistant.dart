@@ -21,7 +21,7 @@ void getLiveLocation() async {
     if (isDriverOnline != null) {
       isDriverOnline!
           ? Geofire.setLocation(firebaseKey, event.latitude, event.longitude)
-          : Geofire.removeLocation(myId);
+          : Geofire.removeLocation(firebaseKey);
 
       if (!isDriverOnline!) {
         homeScreenStreamSubscription.cancel().then((value) {

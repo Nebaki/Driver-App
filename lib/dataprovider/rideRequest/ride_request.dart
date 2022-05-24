@@ -151,9 +151,36 @@ class RideRequestDataProvider {
     );
 
     if (response.statusCode == 200) {
+      if (passengerFcm != null) {
+        startedNotification(passengerFcm);
+      }
       // sendNotification(passengerFcm, "Accepted");
     } else {
       throw Exception('Failed to respond to the request.');
+    }
+  }
+
+  Future startedNotification(String fcmToken) async {
+    final response = await http.post(
+      Uri.parse(_fcmUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$token'
+      },
+      body: json.encode({
+        "data": {'response': 'Started'},
+        "to": fcmToken,
+        "notification": {
+          "title": "Trip Started",
+          "body": "Your trip has been Cancelled."
+        }
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = (response.body);
+    } else {
+      throw Exception('Failed to send notification.');
     }
   }
 

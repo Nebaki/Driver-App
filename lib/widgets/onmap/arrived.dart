@@ -11,8 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Arrived extends StatefulWidget {
-  Function? callback;
-  Arrived(this.callback);
+  Arrived();
 
   @override
   State<Arrived> createState() => _ArrivedState();
@@ -24,148 +23,128 @@ class _ArrivedState extends State<Arrived> {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       disableCreateTripButton();
     });
-    return BlocConsumer<RideRequestBloc, RideRequestState>(
-      listener: (context, state) {
-        if (state is RideRequesChanged) {
-          Navigator.pop(context);
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: BlocConsumer<RideRequestBloc, RideRequestState>(
+        listener: (context, state) {
+          if (state is RideRequesChanged) {
+            Navigator.pop(context);
+            context
+                .read<CurrentWidgetCubit>()
+                .changeWidget(WaitingPassenger(true));
 
-          widget.callback!(WaitingPassenger(widget.callback, true));
-        }
-      },
-      builder: (context, state) {
-        return Positioned(
-          bottom: 0,
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: 3,
-                      color: Colors.grey,
-                      blurStyle: BlurStyle.outer,
-                      spreadRadius: 2)
-                ],
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20))),
-            child: Column(
-              children: [
-                RiderDetail(text: 'Picking up'),
-                BlocConsumer<RideRequestBloc, RideRequestState>(
-                    listener: (context, state) {
-                  if (state is RideRequestLoading) {
-                    showDialog(
-                        // barrierDismissible: false,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return CircularProggressIndicatorDialog();
-                        });
-                  }
-                }, builder: (context, state) {
-                  if (state is RideRequestLoading) {
-                    // showDialog(
-                    //     barrierDismissible: false,
-                    //     context: context,
-                    //     builder: (BuildContext context) {
-                    //       return const CircularProggressIndicatorDialog();
-                    //     });
-                    return const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: LinearProgressIndicator(
-                        backgroundColor: Colors.white,
-                        color: Colors.black,
-                        minHeight: 1,
-                      ),
-                    );
-                  }
-                  return Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      width: MediaQuery.of(context).size.width,
-                      child: Divider());
-                }),
-                BlocBuilder<DirectionBloc, DirectionState>(
-                    builder: (context, state) {
-                  if (state is DirectionLoading) {
-                    return const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: LinearProgressIndicator(
-                        backgroundColor: Colors.white,
-                        color: Colors.black,
-                        minHeight: 1,
-                      ),
-                    );
-                  }
-                  if (state is DirectionDistanceDurationLoading) {
-                    return const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: LinearProgressIndicator(
-                        backgroundColor: Colors.white,
-                        color: Colors.black,
-                        minHeight: 1,
-                      ),
-                    );
-                  }
-                  return Container();
-                }),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                        onTap: () {
-                          makePhoneCall(passengerPhoneNumber);
-                        },
-                        child: _buildItems(
-                            text: "Call", icon: Icons.call_end_outlined)),
-                    GestureDetector(
-                      onTap: () {
-                        sendTextMessage(passengerPhoneNumber);
-                      },
-                      child: _buildItems(
-                          text: "Message",
-                          icon: Icons.chat_bubble_outline_rounded),
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, CancelReason.routeName,
-                              arguments:
-                                  CancelReasonArgument(sendRequest: true));
-
-                          // widget.callback!(CancelTrip(widget.callback));
-                        },
-                        child: _buildItems(
-                            text: "Cancel Trip", icon: Icons.clear_outlined))
+            // widget.callback!(WaitingPassenger(widget.callback, true));
+          }
+        },
+        builder: (context, state) {
+          return Positioned(
+            bottom: 0,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        blurRadius: 3,
+                        color: Colors.grey,
+                        blurStyle: BlurStyle.outer,
+                        spreadRadius: 2)
                   ],
-                ),
-                Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 65,
-                    padding: const EdgeInsets.only(
-                        left: 30, right: 30, top: 10, bottom: 10),
-                    child: ElevatedButton(
-                        style: TextButton.styleFrom(
-                            backgroundColor: Colors.indigo.shade900),
-                        onPressed: () {
-                          RideRequestEvent requestEvent =
-                              RideRequestChangeStatus(
-                                  requestId, "Arrived", passengerFcm);
-                          BlocProvider.of<RideRequestBloc>(context)
-                              .add(requestEvent);
-                          // widget.callback!(WaitingPassenger(widget.callback));
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20))),
+              child: Column(
+                children: [
+                  RiderDetail(text: 'Picking up'),
+                  BlocConsumer<RideRequestBloc, RideRequestState>(
+                      listener: (context, state) {
+                    if (state is RideRequestLoading) {
+                      showDialog(
+                          // barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CircularProggressIndicatorDialog();
+                          });
+                    }
+                  }, builder: (context, state) {
+                    if (state is RideRequestLoading) {
+                      // showDialog(
+                      //     barrierDismissible: false,
+                      //     context: context,
+                      //     builder: (BuildContext context) {
+                      //       return const CircularProggressIndicatorDialog();
+                      //     });
+                      return const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        child: LinearProgressIndicator(
+                          backgroundColor: Colors.white,
+                          color: Colors.black,
+                          minHeight: 1,
+                        ),
+                      );
+                    }
+                    return Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        width: MediaQuery.of(context).size.width,
+                        child: Divider());
+                  }),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            makePhoneCall(passengerPhoneNumber);
+                          },
+                          child: _buildItems(
+                              text: "Call", icon: Icons.call_end_outlined)),
+                      GestureDetector(
+                        onTap: () {
+                          sendTextMessage(passengerPhoneNumber);
                         },
-                        child: const Text(
-                          "Arrived",
-                          style: TextStyle(color: Colors.white),
-                        )))
-              ],
+                        child: _buildItems(
+                            text: "Message",
+                            icon: Icons.chat_bubble_outline_rounded),
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, CancelReason.routeName,
+                                arguments:
+                                    CancelReasonArgument(sendRequest: true));
+
+                            // widget.callback!(CancelTrip(widget.callback));
+                          },
+                          child: _buildItems(
+                              text: "Cancel Trip", icon: Icons.clear_outlined))
+                    ],
+                  ),
+                  Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 65,
+                      padding: const EdgeInsets.only(
+                          left: 30, right: 30, top: 10, bottom: 10),
+                      child: ElevatedButton(
+                          style: TextButton.styleFrom(
+                              backgroundColor: Colors.indigo.shade900),
+                          onPressed: () {
+                            RideRequestEvent requestEvent =
+                                RideRequestChangeStatus(
+                                    requestId, "Arrived", passengerFcm);
+                            BlocProvider.of<RideRequestBloc>(context)
+                                .add(requestEvent);
+                            // widget.callback!(WaitingPassenger(widget.callback));
+                          },
+                          child: const Text(
+                            "Arrived",
+                            style: TextStyle(color: Colors.white),
+                          )))
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

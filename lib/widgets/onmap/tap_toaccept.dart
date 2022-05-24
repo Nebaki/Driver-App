@@ -79,7 +79,7 @@ class TapToAccept extends StatelessWidget {
                     left: 30, right: 30, top: 10, bottom: 10),
                 child: ElevatedButton(
                     onPressed: () {
-                      callback!(Arrived(callback));
+                      // callback!(Arrived(callback));
                     },
                     child: Text(
                       "Tap To Accept",

@@ -20,7 +20,7 @@ class IncomingRequest extends StatelessWidget {
                 child: FloatingActionButton(
                   backgroundColor: Colors.white,
                   onPressed: () {
-                    callback!(TapToAccept(callback));
+                    // callback!(TapToAccept(callback));
                   },
                   child: Container(
                       padding: EdgeInsets.all(20),

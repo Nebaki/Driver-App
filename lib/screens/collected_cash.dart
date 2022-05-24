@@ -87,13 +87,15 @@ class _CollectedCashState extends State<CollectedCash> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: ElevatedButton(
                     onPressed: () {
-                      BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
-                      Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          HomeScreen.routeName,
-                          ((Route<dynamic> route) => false),
-                          arguments: HomeScreenArgument(
-                              isSelected: false, isOnline: true));
+                      BlocProvider.of<DirectionBloc>(context)
+                          .add(DirectionChangeToInitialState());
+                      Navigator.pop(context);
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context,
+                      //     HomeScreen.routeName,
+                      //     ((Route<dynamic> route) => false),
+                      //     arguments: HomeScreenArgument(
+                      //         isSelected: false, isOnline: true));
                       // Navigator.pushReplacementNamed(
                       //     context, HomeScreen.routeName,
                       //     arguments: HomeScreenArgument(

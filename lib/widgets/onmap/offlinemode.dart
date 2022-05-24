@@ -11,13 +11,21 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class OfflineMode extends StatelessWidget {
-  Function? callback;
-  // Function getLiveLocation;
-  Function setDriverStatus;
   bool isDriverOn = false;
-  OfflineMode(this.setDriverStatus, this.callback);
+  OfflineMode();
   bool hasBalance = true;
-
+  // onWillPop: () async {
+  //         return false;
+  //         // switch (_currentWidget.toString()) {
+  //         //   case 'OnlinMode':
+  //         //     onCloseWarningDialog();
+  //         //     return false;
+  //         //   case 'OfflineMode':
+  //         //     return true;
+  //         //   default:
+  //         //     return false;
+  //         // }
+  //       },
   @override
   Widget build(BuildContext context) {
     if (isDriverOnline != null) {
@@ -42,7 +50,10 @@ class OfflineMode extends StatelessWidget {
                         onPressed: () {
                           isDriverOnline = true;
                           getLiveLocation();
-                          callback!(OnlinMode(callback, setDriverStatus));
+                          context
+                              .read<CurrentWidgetCubit>()
+                              .changeWidget(OnlinMode());
+                          // callback!(OnlinMode(callback, setDriverStatus));
                         },
                         child: Container(
                             padding: const EdgeInsets.all(20),

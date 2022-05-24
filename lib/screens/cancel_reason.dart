@@ -136,11 +136,14 @@ class _CancelReasonState extends State<CancelReason> {
                   ref.child(myId).remove();
 
                   isLoading = false;
+                  BlocProvider.of<DirectionBloc>(context)
+                      .add(DirectionChangeToInitialState());
+                  Navigator.pop(context);
 
-                  Navigator.pushNamedAndRemoveUntil(context,
-                      HomeScreen.routeName, ((Route<dynamic> route) => false),
-                      arguments: HomeScreenArgument(
-                          isSelected: false, isOnline: true));
+                  // Navigator.pushNamedAndRemoveUntil(context,
+                  //     HomeScreen.routeName, ((Route<dynamic> route) => false),
+                  //     arguments: HomeScreenArgument(
+                  //         isSelected: false, isOnline: true));
                 });
               }
               if (state is RideRequestOperationFailur) {

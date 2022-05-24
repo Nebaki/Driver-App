@@ -8,6 +8,8 @@ class DirectionState extends Equatable {
   List<Object> get props => [];
 }
 
+class DirectionInitialState extends DirectionState {}
+
 class DirectionLoading extends DirectionState {}
 
 class DirectionDistanceDurationLoading extends DirectionState {}
@@ -33,5 +35,3 @@ class DirectionDistanceDurationLoadSuccess extends DirectionState {
 }
 
 class DirectionDistanceDurationOperationFailur extends DirectionState {}
-
-class DrectionInitialState extends DirectionState {}

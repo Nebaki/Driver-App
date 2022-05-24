@@ -7,6 +7,8 @@ class RideRequestState extends Equatable {
   List<Object?> get props => [];
 }
 
+class InitState extends RideRequestState {}
+
 class RideRequestLoading extends RideRequestState {}
 
 class RideRequestSuccess extends RideRequestState {

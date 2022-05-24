@@ -168,8 +168,7 @@ class MyApp extends StatelessWidget {
                       placeDetailRepository: placeDetailRepository)),
               BlocProvider(
                   create: (context) => RideRequestBloc(
-                      rideRequestRepository: rideRequestRepository)
-                    ..add(RideRequestCheckStartedTrip())),
+                      rideRequestRepository: rideRequestRepository)),
               BlocProvider(
                   create: (context) => LocationPredictionBloc(
                       locationPredictionRepository:
@@ -186,7 +185,9 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                   create: ((context) =>
                       BalanceBloc(balanceRepository: balanceRepository)
-                        ..add(BalanceLoad())))
+                        ..add(BalanceLoad()))),
+              BlocProvider(create: (context) => CurrentWidgetCubit()),
+              BlocProvider(create: (context) => EstiMatedCostCubit(0))
             ],
             child: MaterialApp(
               title: 'SafeWay',
