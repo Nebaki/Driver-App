@@ -35,18 +35,6 @@ class RiderDetail extends StatelessWidget {
                 );
               }
               return Text(directionDuration, style: _textStyle);
-
-              // Padding(
-              //   padding: const EdgeInsets.only(right: 15),
-              //   child: SizedBox(
-              //     height: 20,
-              //     width: 20,
-              //     child: CircularProgressIndicator(
-              //       strokeWidth: 1,
-              //       color: Colors.indigo.shade900,
-              //     ),
-              //   ),
-              // );
             }),
             const SizedBox(width: 5),
             CircleAvatar(

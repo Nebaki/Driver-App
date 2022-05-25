@@ -1,3 +1,4 @@
+import 'package:driverapp/models/category/category.dart';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
@@ -17,22 +18,31 @@ class Auth extends Equatable {
   double? avgRate;
   int? balance;
   String? vehicleType;
+  // final Category category;
+  int? perKiloMeterCost;
+  int? perMinuteCost;
+  int? initialFare;
 
-  Auth(
-      {this.id,
-      this.token,
-      this.email,
-      this.emergencyContact,
-      this.name,
-      this.lastName,
-      required this.phoneNumber,
-      this.password,
-      this.pref,
-      this.profilePicture,
-      this.avgRate,
-      this.vehicleCategory,
-      this.balance,
-      this.vehicleType});
+  Auth({
+    this.id,
+    this.token,
+    this.email,
+    this.emergencyContact,
+    this.name,
+    this.lastName,
+    required this.phoneNumber,
+    this.password,
+    this.pref,
+    this.profilePicture,
+    this.avgRate,
+    this.vehicleCategory,
+    this.balance,
+    this.vehicleType,
+    // required this.category,
+    this.perKiloMeterCost,
+    this.perMinuteCost,
+    this.initialFare,
+  });
 
   @override
   List<Object?> get props => [phoneNumber, password];
@@ -58,7 +68,10 @@ class Auth extends Equatable {
           "car_type": storage["car_type"]
         },
         balance:
-            storage.containsKey('balance') ? int.parse(storage['balance']) : 0);
+            storage.containsKey('balance') ? int.parse(storage['balance']) : 0,
+        perMinuteCost: int.parse(storage['per_minute_cost']),
+        perKiloMeterCost: int.parse(storage['per_killo_meter_cost']),
+        initialFare: int.parse(storage['initial_fare']));
   }
 
   @override

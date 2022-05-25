@@ -224,14 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  // void callback(Widget nextwidget) {
-  //   setState(() {
-  //     _currentWidget = nextwidget;
-  //   });
-  // }
-
   final ReceivePort _port = ReceivePort();
-
   void setDestination(LatLng dest) {
     setState(() {
       destination = dest;
@@ -337,25 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }, listener: (context, state) {
             print('STAteeeeeeeeeeeeeeeeeeeeeeee is $state counter $counter');
             if (state is DirectionInitialState) {
-              resetScreen();
-
-              BlocListener<BalanceBloc, BalanceState>(
-                  listener: (context, state) {
-                if (state is BalanceLoadSuccess) {
-                  print("YATAR is here");
-                  if (state.balance > 0) {
-                    context
-                        .read<CurrentWidgetCubit>()
-                        .changeWidget(OnlinMode());
-                    // _currentWidget = OnlinMode();
-                    getLiveLocation();
-                  } else {
-                    context
-                        .read<CurrentWidgetCubit>()
-                        .changeWidget(OfflineMode());
-                  }
-                }
-              });
+              resetScreen(state.isBalanceSufficient);
             }
 
             if (state is DirectionLoadSuccess) {
@@ -755,8 +730,11 @@ class _HomeScreenState extends State<HomeScreen> {
               right: 10,
               child: ElevatedButton(
                   onPressed: () {
-                    debugPrint(startingTime.toString());
-                    BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
+                    debugPrint(initialFare.toString());
+                    debugPrint(costPerKilloMeter.toString());
+                    debugPrint(costPerMinute.toString());
+
+                    // BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
                   },
                   child: Text("Maintenance")))
         ],
@@ -768,7 +746,7 @@ class _HomeScreenState extends State<HomeScreen> {
     MarkerId markerId = MarkerId(id);
     Marker marker =
         Marker(markerId: markerId, icon: descriptor, position: position);
-    markers[markerId] = marker;
+    availablePassengersMarkers[markerId] = marker;
   }
 
   _getPolyline(String encodedString) {
@@ -801,7 +779,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //Future.delayed(Duration(seconds: 1), () {});
   }
 
-  void resetScreen() {
+  void resetScreen(bool isBalanceInsufficient) {
     _determinePosition().then((value) {
       _myController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
           zoom: 16.1746, target: LatLng(value.latitude, value.longitude))));
@@ -809,9 +787,16 @@ class _HomeScreenState extends State<HomeScreen> {
     currentPrice = 75;
     counter = 0;
     setState(() {
+      if (isBalanceInsufficient) {
+        context.read<CurrentWidgetCubit>().changeWidget(OnlinMode());
+        getLiveLocation();
+      } else {
+        context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
+      }
       _currentWidget = OnlinMode();
       markers.clear();
       polylines.clear();
+      availablePassengersMarkers.clear();
       // carMarker.clear();
       // showCarIcons = true;
     });
@@ -1497,7 +1482,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 internetServiceStatus! ? Navigator.pop(context) : null;
               }
             } else if (event == ConnectivityResult.mobile) {
-              Navigator.pop(context);
+              if (internetServiceStatus != null) {
+                internetServiceStatus! ? Navigator.pop(context) : null;
+              }
             }
           });
     }
@@ -1597,161 +1584,3 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 }
-
-// Positioned(
-//     top: 10,
-//     right: 10,
-//     child: ElevatedButton(
-//         onPressed: () {
-//           // showDialog(
-//           //     barrierDismissible: false,
-//           //     context: context,
-//           //     builder: (BuildContext context) {
-//           //       return NotificationDialog(
-//           //           "6228b3887ec0795442431d67",
-//           //           "message.data['passengerName']",
-//           //           LatLng(324.678, 234.67),
-//           //           "message.data['pickupAddress']",
-//           //           "message.data['dropOffAddress']",
-//           //           callback,
-//           //           setDestination,
-//           //           setIsArrivedWidget);
-//           //     });
-//         },
-//         child: Text("Maintenance")))
-
-// To be returned back
-// isArrivedwidget
-//     ? BlocBuilder<DirectionBloc, DirectionState>(
-//         buildWhen: (prevstate, state) {
-//         bool isDirectionLoading = true;
-//         print("here is the state---------------------");
-//         print(prevstate);
-//         print("The state ende");
-//         if (state is DirectionDistanceDurationLoading ||
-//             state is DirectionDistanceDurationLoadSuccess) {
-//           isDirectionLoading = false;
-//         }
-
-//         if (state is DirectionLoadSuccess) {
-//           isDirectionLoading = true;
-//         }
-
-//         print(isDirectionLoading);
-//         return isDirectionLoading;
-//       }, builder: (context, state) {
-//         bool isDialog = true;
-
-//         if (state is DirectionLoadSuccess) {
-//           isDialog = false;
-
-//           _getPolyline(state.direction.encodedPoints);
-
-//           _addMarker(
-//               destination,
-//               "destination",
-//               BitmapDescriptor.defaultMarkerWithHue(
-//                   BitmapDescriptor.hueGreen));
-//           return GoogleMap(
-//             mapType: MapType.normal,
-//             myLocationButtonEnabled: true,
-//             //myLocationEnabled: true,
-//             zoomControlsEnabled: false,
-//             zoomGesturesEnabled: false,
-//             rotateGesturesEnabled: false,
-//             scrollGesturesEnabled: false,
-//             initialCameraPosition: _addissAbaba,
-//             polylines: Set<Polyline>.of(polylines.values),
-//             markers: Set<Marker>.of(markers.values),
-//             onMapCreated: (GoogleMapController controller) {
-//               _myController = controller;
-//               showDriversOnMap();
-
-//               // _determinePosition().then((value) {
-//               //   setState(() {
-//               //     _addMarker(
-//               //         LatLng(value.latitude, value.longitude),
-//               //         "pickup",
-//               //         BitmapDescriptor.defaultMarkerWithHue(
-//               //             BitmapDescriptor.hueRed));
-//               //   });
-
-//               //   latLngBoundAnimator(
-//               //       LatLng(value.latitude, value.longitude));
-//               //   controller.animateCamera(
-//               //       CameraUpdate.newLatLngBounds(latLngBounds, 70));
-//               // });
-//             },
-//           );
-//         }
-
-//         return isDialog
-//             ? AlertDialog(
-//                 content: Row(
-//                   children: const [
-//                     CircularProgressIndicator(),
-//                     Text("finding direction")
-//                   ],
-//                 ),
-//               )
-//             : Container();
-//       })
-//     : GoogleMap(
-//         mapType: MapType.normal,
-//         myLocationButtonEnabled: true,
-//         myLocationEnabled: true,
-//         zoomControlsEnabled: false,
-//         zoomGesturesEnabled: false,
-//         scrollGesturesEnabled: false,
-//         rotateGesturesEnabled: false,
-//         initialCameraPosition: _addissAbaba,
-//         onMapCreated: (GoogleMapController controller) {
-//           _controller.complete(controller);
-//           _myController = controller;
-
-//           _determinePosition().then((value) {
-//             print('this is the value $value');
-//             controller.animateCamera(CameraUpdate.newCameraPosition(
-//                 CameraPosition(
-//                     zoom: 16.4746,
-//                     target:
-//                         LatLng(value.latitude, value.longitude))));
-//           });
-//         },
-//       ),
-// BlocBuilder<AuthBloc, AuthState>(
-//   builder: (_, state) {
-//     if (state is AuthDataLoadSuccess) {
-//       id = state.auth.id!;
-//       return Positioned(
-//           right: 25,
-//           top: 50,
-//           child: GestureDetector(
-//             onTap: () => _scaffoldKey.currentState!.openDrawer(),
-//             child: CircleAvatar(
-//                 radius: 20,
-//                 backgroundColor: Colors.grey.shade300,
-//                 child: ClipRRect(
-//                   borderRadius: BorderRadius.circular(100),
-//                   child: CachedNetworkImage(
-//                       imageUrl: state.auth.profilePicture!,
-//                       imageBuilder: (context, imageProvider) =>
-//                           Container(
-//                             decoration: BoxDecoration(
-//                               image: DecorationImage(
-//                                 image: imageProvider,
-//                                 fit: BoxFit.cover,
-//                               ),
-//                             ),
-//                           ),
-//                       placeholder: (context, url) =>
-//                           const CircularProgressIndicator(),
-//                       errorWidget: (context, url, error) =>
-//                           Image.asset(
-//                               'assets/icons/avatar-icon.png')),
-//                 )),
-//           ));
-//     }
-//     return Container();
-//   },
-// ),

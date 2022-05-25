@@ -8,7 +8,12 @@ class DirectionState extends Equatable {
   List<Object> get props => [];
 }
 
-class DirectionInitialState extends DirectionState {}
+class DirectionInitialState extends DirectionState {
+  final bool isBalanceSufficient;
+  const DirectionInitialState({required this.isBalanceSufficient});
+  @override
+  List<Object> get props => [isBalanceSufficient];
+}
 
 class DirectionLoading extends DirectionState {}
 

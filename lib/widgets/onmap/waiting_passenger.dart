@@ -11,6 +11,8 @@ import 'package:slider_button/slider_button.dart';
 
 class WaitingPassenger extends StatelessWidget {
   bool formPassenger;
+  bool isButtonDisabled = false;
+
   WaitingPassenger(this.formPassenger);
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,10 @@ class WaitingPassenger extends StatelessWidget {
                   DirectionLoad(destination: droppOffLocation);
 
               BlocProvider.of<DirectionBloc>(context).add(event);
+            }
+            if (state is RideRequestOperationFailur) {
+              isButtonDisabled = false;
+              Navigator.pop(context);
             }
           }
         },
@@ -135,7 +141,11 @@ class WaitingPassenger extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                                 fontSize: 17),
                           ),
+                          dismissible: false,
+                          disable: isButtonDisabled,
                           action: () {
+                            isButtonDisabled = true;
+
                             // homeScreenStreamSubscription.cancel();
                             RideRequestEvent requestEvent =
                                 RideRequestStart(requestId, passengerFcm);

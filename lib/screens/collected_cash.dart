@@ -81,30 +81,43 @@ class _CollectedCashState extends State<CollectedCash> {
                 ],
               ),
             ),
-            Container(
-                height: 45,
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ElevatedButton(
-                    onPressed: () {
-                      BlocProvider.of<DirectionBloc>(context)
-                          .add(DirectionChangeToInitialState());
-                      Navigator.pop(context);
-                      // Navigator.pushNamedAndRemoveUntil(
-                      //     context,
-                      //     HomeScreen.routeName,
-                      //     ((Route<dynamic> route) => false),
-                      //     arguments: HomeScreenArgument(
-                      //         isSelected: false, isOnline: true));
-                      // Navigator.pushReplacementNamed(
-                      //     context, HomeScreen.routeName,
-                      //     arguments: HomeScreenArgument(
-                      //         isSelected: false, isOnline: true));
-                    },
-                    child: const Text(
-                      "Done",
-                      style: TextStyle(color: Colors.white),
-                    )))
+            BlocBuilder<BalanceBloc, BalanceState>(builder: (context, state) {
+              if (state is BalanceLoadSuccess) {
+                return Container(
+                    height: 45,
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          if (state.balance > 0) {
+                            BlocProvider.of<DirectionBloc>(context).add(
+                                const DirectionChangeToInitialState(
+                                    isBalanceSuffiecient: true));
+                          } else {
+                            BlocProvider.of<DirectionBloc>(context).add(
+                                const DirectionChangeToInitialState(
+                                    isBalanceSuffiecient: false));
+                          }
+
+                          Navigator.pop(context);
+                          // Navigator.pushNamedAndRemoveUntil(
+                          //     context,
+                          //     HomeScreen.routeName,
+                          //     ((Route<dynamic> route) => false),
+                          //     arguments: HomeScreenArgument(
+                          //         isSelected: false, isOnline: true));
+                          // Navigator.pushReplacementNamed(
+                          //     context, HomeScreen.routeName,
+                          //     arguments: HomeScreenArgument(
+                          //         isSelected: false, isOnline: true));
+                        },
+                        child: const Text(
+                          "Done",
+                          style: TextStyle(color: Colors.white),
+                        )));
+              }
+              return Container();
+            }),
           ],
         ),
       ),

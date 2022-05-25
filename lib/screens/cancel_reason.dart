@@ -136,8 +136,9 @@ class _CancelReasonState extends State<CancelReason> {
                   ref.child(myId).remove();
 
                   isLoading = false;
-                  BlocProvider.of<DirectionBloc>(context)
-                      .add(DirectionChangeToInitialState());
+                  BlocProvider.of<DirectionBloc>(context).add(
+                      const DirectionChangeToInitialState(
+                          isBalanceSuffiecient: true));
                   Navigator.pop(context);
 
                   // Navigator.pushNamedAndRemoveUntil(context,

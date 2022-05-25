@@ -35,6 +35,9 @@ class _ArrivedState extends State<Arrived> {
 
             // widget.callback!(WaitingPassenger(widget.callback, true));
           }
+          if (state is RideRequestOperationFailur) {
+            Navigator.pop(context);
+          }
         },
         builder: (context, state) {
           return Positioned(

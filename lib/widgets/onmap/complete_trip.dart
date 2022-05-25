@@ -30,6 +30,8 @@ class _CompleteTripState extends State<CompleteTrip> {
     super.initState();
   }
 
+  bool isButtonDisabled = false;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -51,6 +53,14 @@ class _CompleteTripState extends State<CompleteTrip> {
                       name: passengerName!, price: currentPrice));
 
               resetData();
+            });
+          }
+
+          if (state is RideRequestOperationFailur) {
+            Navigator.pop(context);
+
+            setState(() {
+              isButtonDisabled = false;
             });
           }
         },
@@ -133,6 +143,8 @@ class _CompleteTripState extends State<CompleteTrip> {
                             semanticLabel:
                                 'Text to announce in accessibility modes',
                           )),
+                          dismissible: false,
+                          // disable: true,
                           label: const Text(
                             "Slide to Complete",
                             style: TextStyle(
@@ -140,29 +152,16 @@ class _CompleteTripState extends State<CompleteTrip> {
                                 fontWeight: FontWeight.w500,
                                 fontSize: 17),
                           ),
+                          disable: isButtonDisabled,
                           action: () {
+                            setState(() {
+                              isButtonDisabled = true;
+                            });
                             RideRequestEvent requestEvent = RideRequestComplete(
                                 requestId, 98.8, passengerFcm);
                             BlocProvider.of<RideRequestBloc>(context)
                                 .add(requestEvent);
-                          })
-                      // ElevatedButton(
-                      //     style: ButtonStyle(
-                      //         backgroundColor: MaterialStateProperty.all<Color>(
-                      //             Colors.indigo.shade900)),
-                      //     onPressed: () {
-                      //       RideRequestEvent requestEvent =
-                      //           RideRequestChangeStatus(
-                      //               requestId, "Completed", passengerFcm);
-                      //       BlocProvider.of<RideRequestBloc>(context)
-                      //           .add(requestEvent);
-                      //       // Navigator.pushNamed(context, CollectedCash.routeName);
-                      //     },
-                      //     child: Text(
-                      //       "Complete",
-                      //       style: TextStyle(color: Colors.white),
-                      //     ))
-                      )
+                          }))
                 ],
               ),
             ),
@@ -207,7 +206,8 @@ class _CompleteTripState extends State<CompleteTrip> {
   void resetData() {
     currentPrice = 75;
     passengerFcm = null;
-    passengerName = null;
+    passengerName = 'Loading';
+
     directionDuration = 'loading';
     distanceDistance = 'loading';
   }

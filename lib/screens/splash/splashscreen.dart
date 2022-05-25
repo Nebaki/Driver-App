@@ -81,6 +81,9 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                 firebaseKey = '$myId,$myVehicleCategory';
                 balance = state.auth.balance!;
                 myVehicleType = state.auth.vehicleType!;
+                initialFare = state.auth.initialFare!;
+                costPerKilloMeter = state.auth.perKiloMeterCost!;
+                costPerMinute = state.auth.perMinuteCost!;
 
                 checkInterNetServiceOnInit();
 
