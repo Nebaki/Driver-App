@@ -117,10 +117,17 @@ class _OnlinModeState extends State<OnlinMode> {
                         VerticalDivider(
                           color: Colors.grey.shade300,
                         ),
-                        _items(
-                            num: "$balance ETB",
-                            text: "Wallet",
-                            icon: Icons.wallet_giftcard),
+                        BlocBuilder<BalanceBloc, BalanceState>(
+                          builder: (context, state) {
+                            if (state is BalanceLoadSuccess) {
+                              return _items(
+                                  num: "${state.balance} ETB",
+                                  text: "Wallet",
+                                  icon: Icons.wallet_giftcard);
+                            }
+                            return Container();
+                          },
+                        ),
                       ],
                     ),
                   )
