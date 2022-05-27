@@ -7,7 +7,8 @@ class EmergencyReportBloc
     extends Bloc<EmergencyReportEvent, EmergencyReportState> {
   final EmergencyReportRepository emergencyReportRepository;
 
-  EmergencyReportBloc({required this.emergencyReportRepository}) : super(null);
+  EmergencyReportBloc({required this.emergencyReportRepository})
+      : super(EmergencyInitialState());
 
   @override
   Stream<EmergencyReportState> mapEventToState(
@@ -51,5 +52,7 @@ class EmergencyReportState extends Equatable {
 class EmergencyReportCreating extends EmergencyReportState {}
 
 class EmergencyReportCreated extends EmergencyReportState {}
+
+class EmergencyInitialState extends EmergencyReportState {}
 
 class EmergencyReportOperationFailur extends EmergencyReportState {}

@@ -140,6 +140,7 @@ class _CancelReasonState extends State<CancelReason> {
                       const DirectionChangeToInitialState(
                           isBalanceSuffiecient: true));
                   Navigator.pop(context);
+                  Navigator.pop(context);
 
                   // Navigator.pushNamedAndRemoveUntil(context,
                   //     HomeScreen.routeName, ((Route<dynamic> route) => false),

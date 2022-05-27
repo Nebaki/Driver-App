@@ -6,7 +6,7 @@ class LocationPredictionBloc
     extends Bloc<LocationPredictionEvent, LocationPredictionState> {
   final LocationPredictionRepository locationPredictionRepository;
   LocationPredictionBloc({required this.locationPredictionRepository})
-      : super(null);
+      : super(LocationPredictionInitialState());
 
   @override
   Stream<LocationPredictionState> mapEventToState(

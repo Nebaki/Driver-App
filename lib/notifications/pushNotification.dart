@@ -19,10 +19,19 @@ class PushNotificationService {
       player.open(Audio("assets/sounds/announcement-sound.mp3"));
 
       if (message.data['response'] == 'Cancelled') {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        if (isAccepted) {
+          BlocProvider.of<DirectionBloc>(context)
+              .add(DirectionChangeToInitialState(isBalanceSuffiecient: true));
+          isAccepted = false;
+        } else {
+          Navigator.pop(context);
+          BlocProvider.of<CurrentWidgetCubit>(context)
+              .changeWidget(OnlinMode());
+        }
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Request Cancelled"),
         ));
-        BlocProvider.of<CurrentWidgetCubit>(context).changeWidget(OnlinMode());
+
         // callback(OnlinMode());
       }
 

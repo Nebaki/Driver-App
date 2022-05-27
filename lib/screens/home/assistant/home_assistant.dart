@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void getLiveLocation() async {
   print("YATAR");
@@ -42,7 +43,7 @@ void showRideRequestLoadingDialog(context, contextTwo) {
 }
 
 Timer? timer;
-late Function disableCreateTripButton;
 late Function updateEsimatedCost;
 DateTime? startingTime;
 double currentPrice = 75;
+late LatLng destination;

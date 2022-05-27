@@ -18,17 +18,18 @@ class Arrived extends StatefulWidget {
 }
 
 class _ArrivedState extends State<Arrived> {
+  late bool isLoading;
+
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      disableCreateTripButton();
-    });
     return WillPopScope(
       onWillPop: () async => false,
       child: BlocConsumer<RideRequestBloc, RideRequestState>(
         listener: (context, state) {
           if (state is RideRequesChanged) {
-            Navigator.pop(context);
+            if (isLoading) {
+              Navigator.pop(context);
+            }
             context
                 .read<CurrentWidgetCubit>()
                 .changeWidget(WaitingPassenger(true));
@@ -36,7 +37,9 @@ class _ArrivedState extends State<Arrived> {
             // widget.callback!(WaitingPassenger(widget.callback, true));
           }
           if (state is RideRequestOperationFailur) {
-            Navigator.pop(context);
+            if (isLoading) {
+              Navigator.pop(context);
+            }
           }
         },
         builder: (context, state) {
@@ -62,11 +65,18 @@ class _ArrivedState extends State<Arrived> {
                   BlocConsumer<RideRequestBloc, RideRequestState>(
                       listener: (context, state) {
                     if (state is RideRequestLoading) {
+                      isLoading = true;
                       showDialog(
-                          // barrierDismissible: false,
+                          barrierDismissible: false,
                           context: context,
                           builder: (BuildContext context) {
-                            return CircularProggressIndicatorDialog();
+                            isLoading = true;
+                            return WillPopScope(
+                                onWillPop: () async {
+                                  isLoading = false;
+                                  return true;
+                                },
+                                child: CircularProggressIndicatorDialog());
                           });
                     }
                   }, builder: (context, state) {

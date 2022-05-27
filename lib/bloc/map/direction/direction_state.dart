@@ -15,6 +15,8 @@ class DirectionInitialState extends DirectionState {
   List<Object> get props => [isBalanceSufficient];
 }
 
+class DirectionInit extends DirectionState {}
+
 class DirectionLoading extends DirectionState {}
 
 class DirectionDistanceDurationLoading extends DirectionState {}

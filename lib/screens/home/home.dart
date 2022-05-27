@@ -32,6 +32,8 @@ import 'package:driverapp/widgets/widgets.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as toolkit;
 
+import 'dialogs/circular_progress_indicator_dialog.dart';
+
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
 
@@ -59,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late bool isFirstTime;
   late String serviceStatusValue;
   bool? internetServiceStatus;
-  late LatLng destination;
+  // late LatLng destination;
   late LatLngBounds latLngBounds;
   BitmapDescriptor? carMarkerIcon;
   late Position myPosition;
@@ -69,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
   StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
-  ConnectivityResult _connectionStatus = ConnectivityResult.bluetooth;
   final Connectivity _connectivity = Connectivity();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String phoneNum;
@@ -77,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isModal = false;
   bool isConModal = false;
   bool fromCreateManualTrip = false;
-  bool createTripButtonEnabled = true;
   bool stopNotficationListner = true;
   final pickupController = TextEditingController();
   DatabaseReference ref = FirebaseDatabase.instance.ref('bookedDrivers');
@@ -124,82 +124,9 @@ class _HomeScreenState extends State<HomeScreen> {
         Geofire.initialize('availableDrivers');
         break;
     }
-    // currentPrice = 75;
-
     super.initState();
-    // if (widget.args.isOnline) {
-    //   BlocListener(listener: (context, state) {
-    //     if (state is BalanceLoadSuccess) {
-    //       if (state.balance > 0) {
-    //         _currentWidget = OnlinMode();
-    //         getLiveLocation();
-    //       } else {
-    //         _currentWidget = OfflineMode();
-    //       }
-    //     }
-    //   });
-    //   _currentWidget = OnlinMode();
-    //   getLiveLocation();
-    // } else {
+    _listenBackGroundMessege();
     _currentWidget = OfflineMode();
-    // }
-
-    IsolateNameServer.registerPortWithName(_port.sendPort, portName);
-    _port.listen((message) {
-      print("Yow we are right here!@#");
-
-      final listOfDrivers = json.decode(message.data['nextDrivers']);
-      nextDrivers = listOfDrivers;
-      stopNotficationListner = false;
-      waitingTimer = 40;
-      const oneSec = Duration(seconds: 1);
-      timer = Timer.periodic(
-        oneSec,
-        (Timer timer) {
-          print("Timer starteddd");
-
-          if (waitingTimer == 0) {
-            if (nextDrivers.isNotEmpty) {
-              UserEvent event = UserLoadById(nextDrivers[0]);
-              BlocProvider.of<UserBloc>(context).add(event);
-            } else {
-              BlocProvider.of<RideRequestBloc>(context)
-                  .add(RideRequestTimeOut(requestId));
-              Navigator.pop(context);
-            }
-            print("Yeah right now on action");
-            timer.cancel();
-          } else {
-            waitingTimer--;
-          }
-        },
-      );
-      final pickupList = json.decode(message.data['pickupLocation']);
-      final droppOffList = json.decode(message.data['droppOffLocation']);
-      pickupLocation = LatLng(pickupList[0], pickupList[1]);
-      droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
-      passengerName = message.data['passengerName'];
-      passengerPhoneNumber = message.data['passengerPhoneNumber'];
-      requestId = message.data['requestId'];
-      passengerFcm = message.data['passengerFcm'];
-      distance = message.data['distance'];
-      duration = message.data['duration'];
-      price = message.data['price'];
-      droppOffAddress = message.data['droppOffAddress'];
-      pickUpAddress = message.data['pickupAddress'];
-      passengerProfilePictureUrl = message.data['profilePictureUrl'];
-      print(
-          "Yeah we are still listeninggg here on the push notification class $waitingTimer");
-
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            // player.open(Audio("assets/sounds/announcement-sound.mp3"));
-            return NotificationDialog(setDestination, [], waitingTimer, false);
-          });
-    });
-
     _checkLocationServiceOnInit();
     _toggleLocationServiceStatusStream();
     _toggleInternetServiceStatusStream();
@@ -220,7 +147,6 @@ class _HomeScreenState extends State<HomeScreen> {
     IsolateNameServer.removePortNameMapping(portName);
     _serviceStatusStreamSubscription!.cancel();
     _connectivitySubscription!.cancel();
-    // s.cancel();
     super.dispose();
   }
 
@@ -239,6 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late List<dynamic> nextDrivers;
   bool loadPoly = true;
+
   void passRequest(driverFcm, nextDriver) {
     RideRequestEvent event = RideRequestPass(driverFcm, nextDriver);
     BlocProvider.of<RideRequestBloc>(context).add(event);
@@ -246,16 +173,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    changeDestination = (LatLng dest) {
-      setState(() {
-        destination = dest;
-      });
-    };
-    disableCreateTripButton = () {
-      setState(() {
-        createTripButtonEnabled = false;
-      });
-    };
     createMarkerIcon();
 
     return Scaffold(
@@ -333,6 +250,17 @@ class _HomeScreenState extends State<HomeScreen> {
               resetScreen(state.isBalanceSufficient);
             }
 
+            if (state is DirectionLoading) {
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WillPopScope(
+                        onWillPop: () async => false,
+                        child: CircularProggressIndicatorDialog());
+                  });
+            }
+
             if (state is DirectionLoadSuccess) {
               counter++;
 
@@ -379,6 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
               WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
                 changeCameraView();
               });
+              Navigator.pop(context);
             }
           }),
           Positioned(
@@ -421,14 +350,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       )),
                 ),
               )),
-
           BlocConsumer<CurrentWidgetCubit, Widget>(
               builder: (context, state) => _currentWidget,
               listener: (context, state) {
                 _currentWidget = state;
               }),
-
-          // _currentWidget,
           Align(
               alignment: Alignment.centerRight,
               child: SizedBox(
@@ -453,83 +379,91 @@ class _HomeScreenState extends State<HomeScreen> {
                             )),
                       ),
                     ),
-                    createTripButtonEnabled
-                        ? BlocConsumer<LocationBloc, ReverseLocationState>(
-                            builder: (context, state) => Align(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                height: 45,
-                                child: BlocConsumer<BalanceBloc, BalanceState>(
-                                    builder: (context, state) =>
-                                        FloatingActionButton(
-                                          heroTag: 'createTrip',
-                                          backgroundColor: Colors.grey.shade300,
-                                          onPressed: hasBalance
-                                              ? () {
-                                                  BlocProvider.of<LocationBloc>(
-                                                          context)
-                                                      .add(
-                                                          ReverseLocationLoad());
-                                                }
-                                              : null,
-                                          child: Container(
-                                              padding: const EdgeInsets.all(2),
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
+                    BlocBuilder<DisableButtonCubit, bool>(
+                        builder: (context, state) => !state
+                            ? BlocConsumer<LocationBloc, ReverseLocationState>(
+                                builder: (context, state) => Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    height: 45,
+                                    child: BlocConsumer<BalanceBloc,
+                                            BalanceState>(
+                                        builder: (context, state) =>
+                                            FloatingActionButton(
+                                              heroTag: 'createTrip',
+                                              backgroundColor:
+                                                  Colors.grey.shade300,
+                                              onPressed: hasBalance
+                                                  ? () {
+                                                      BlocProvider.of<
+                                                                  LocationBloc>(
+                                                              context)
+                                                          .add(
+                                                              ReverseLocationLoad());
+                                                    }
+                                                  : null,
+                                              child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(2),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors
+                                                              .indigo.shade900,
+                                                          width: 1.5),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                  child: Icon(Icons.trip_origin,
                                                       color: Colors
-                                                          .indigo.shade900,
-                                                      width: 1.5),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: Icon(Icons.trip_origin,
-                                                  color:
-                                                      Colors.indigo.shade900)),
-                                        ),
-                                    listener: (context, state) {
-                                      if (state is BalanceLoadSuccess) {
-                                        if (state.balance > 0) {
-                                          hasBalance = true;
-                                        } else {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return const InsufficentBalanceDialog();
-                                              });
-                                        }
-                                      }
-                                    }),
-                              ),
-                            ),
-                            listener: (context, state) {
-                              if (state is ReverseLocationLoadSuccess) {
-                                Geolocator.getCurrentPosition().then((value) {
-                                  pickupLocation =
-                                      LatLng(value.latitude, value.longitude);
-                                });
-                                Navigator.pop(context);
-                                pickUpAddress = state.location.address1;
-
-                                pickupController.text = state.location.address1;
-
-                                _buildSheet(state.location.address1);
-                              }
-                              if (state is ReverseLocationLoading) {
-                                showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return WillPopScope(
-                                        onWillPop: () async => false,
-                                        child: const AlertDialog(
-                                            content: Text(
-                                                "Loading Your current Location")),
-                                      );
+                                                          .indigo.shade900)),
+                                            ),
+                                        listener: (context, state) {
+                                          if (state is BalanceLoadSuccess) {
+                                            if (state.balance > 0) {
+                                              hasBalance = true;
+                                            } else {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return const InsufficentBalanceDialog();
+                                                  });
+                                            }
+                                          }
+                                        }),
+                                  ),
+                                ),
+                                listener: (context, state) {
+                                  if (state is ReverseLocationLoadSuccess) {
+                                    Geolocator.getCurrentPosition()
+                                        .then((value) {
+                                      pickupLocation = LatLng(
+                                          value.latitude, value.longitude);
                                     });
-                              }
-                            },
-                          )
-                        : Container(),
+                                    Navigator.pop(context);
+                                    pickUpAddress = state.location.address1;
+
+                                    pickupController.text =
+                                        state.location.address1;
+
+                                    _buildSheet(state.location.address1);
+                                  }
+                                  if (state is ReverseLocationLoading) {
+                                    showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return WillPopScope(
+                                            onWillPop: () async => false,
+                                            child: const AlertDialog(
+                                                content: Text(
+                                                    "Loading Your current Location")),
+                                          );
+                                        });
+                                  }
+                                },
+                              )
+                            : Container()),
                     Align(
                       alignment: Alignment.centerRight,
                       child: SizedBox(
@@ -638,101 +572,114 @@ class _HomeScreenState extends State<HomeScreen> {
                                 backgroundColor: Colors.red.shade900));
                           }
                         }),
-                    BlocConsumer<PassengerBloc, PassengerState>(
-                      builder: (context, state) => Align(
-                        alignment: Alignment.centerRight,
-                        child: SizedBox(
-                          height: 45,
-                          child: FloatingActionButton(
-                              heroTag: 'neabyOpportunities',
-                              backgroundColor: Colors.grey.shade300,
-                              onPressed: () {
-                                if (showNearbyOpportunity) {
-                                  BlocProvider.of<PassengerBloc>(context)
-                                      .add(const LoadAvailablePassengers());
-                                  showNearbyOpportunity = false;
-                                } else {
-                                  setState(() {
-                                    availablePassengersMarkers.clear();
-                                    showNearbyOpportunity = true;
-                                  });
+                    BlocBuilder<DisableButtonCubit, bool>(
+                      builder: (context, state) => !state
+                          ? BlocConsumer<PassengerBloc, PassengerState>(
+                              builder: (context, state) => Align(
+                                alignment: Alignment.centerRight,
+                                child: SizedBox(
+                                  height: 45,
+                                  child: FloatingActionButton(
+                                      heroTag: 'neabyOpportunities',
+                                      backgroundColor: Colors.grey.shade300,
+                                      onPressed: () {
+                                        if (showNearbyOpportunity) {
+                                          BlocProvider.of<PassengerBloc>(
+                                                  context)
+                                              .add(
+                                                  const LoadAvailablePassengers());
+                                          showNearbyOpportunity = false;
+                                        } else {
+                                          setState(() {
+                                            availablePassengersMarkers.clear();
+                                            showNearbyOpportunity = true;
+                                          });
+                                        }
+                                      },
+                                      child: Icon(
+                                          showNearbyOpportunity
+                                              ? Icons.golf_course
+                                              : Icons.close,
+                                          color: Colors.red.shade900,
+                                          size: 30)),
+                                ),
+                              ),
+                              listener: (context, state) {
+                                if (state is PassengerOperationFailure) {
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: const Text("Operation failure"),
+                                    backgroundColor: Colors.red.shade900,
+                                  ));
+                                }
+                                if (state is AvailablePassengersLoading) {
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return WillPopScope(
+                                          onWillPop: () async => false,
+                                          child: Dialog(
+                                              elevation: 0,
+                                              insetPadding:
+                                                  const EdgeInsets.all(0),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: const [
+                                                  LinearProgressIndicator(
+                                                    minHeight: 1,
+                                                  ),
+                                                ],
+                                              )),
+                                        );
+                                      });
+                                }
+                                if (state is LoadAvailablePassengersSuccess) {
+                                  Navigator.pop(context);
+                                  final icon =
+                                      BitmapDescriptor.defaultMarkerWithHue(
+                                          BitmapDescriptor.hueGreen);
+                                  if (state.passenger != null) {
+                                    for (Passenger p in state.passenger) {
+                                      print('e is this $p');
+                                      MarkerId markerId = MarkerId(p.ID!);
+                                      Marker marker = RippleMarker(
+                                        markerId: markerId,
+                                        position: p.location!,
+                                        icon: icon,
+                                        ripple: true,
+                                      );
+                                      setState(() {
+                                        availablePassengersMarkers[markerId] =
+                                            marker;
+                                      });
+                                    }
+                                  } else {
+                                    print('it is empty');
+                                  }
                                 }
                               },
-                              child: Icon(
-                                  showNearbyOpportunity
-                                      ? Icons.golf_course
-                                      : Icons.close,
-                                  color: Colors.red.shade900,
-                                  size: 30)),
-                        ),
-                      ),
-                      listener: (context, state) {
-                        if (state is PassengerOperationFailure) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: const Text("Operation failure"),
-                            backgroundColor: Colors.red.shade900,
-                          ));
-                        }
-                        if (state is AvailablePassengersLoading) {
-                          showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (BuildContext context) {
-                                return WillPopScope(
-                                  onWillPop: () async => false,
-                                  child: Dialog(
-                                      elevation: 0,
-                                      insetPadding: const EdgeInsets.all(0),
-                                      backgroundColor: Colors.transparent,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: const [
-                                          LinearProgressIndicator(
-                                            minHeight: 1,
-                                          ),
-                                        ],
-                                      )),
-                                );
-                              });
-                        }
-                        if (state is LoadAvailablePassengersSuccess) {
-                          Navigator.pop(context);
-                          final icon = BitmapDescriptor.defaultMarkerWithHue(
-                              BitmapDescriptor.hueGreen);
-                          if (state.passenger != null) {
-                            for (Passenger p in state.passenger) {
-                              print('e is this $p');
-                              MarkerId markerId = MarkerId(p.ID!);
-                              Marker marker = RippleMarker(
-                                markerId: markerId,
-                                position: p.location!,
-                                icon: icon,
-                                ripple: true,
-                              );
-                              setState(() {
-                                availablePassengersMarkers[markerId] = marker;
-                              });
-                            }
-                          } else {
-                            print('it is empty');
-                          }
-                        }
-                      },
+                            )
+                          : Container(),
                     )
                   ],
                 ),
               )),
-
           Positioned(
               top: 10,
               right: 10,
               child: ElevatedButton(
                   onPressed: () {
-                    debugPrint(initialFare.toString());
-                    debugPrint(costPerKilloMeter.toString());
-                    debugPrint(costPerMinute.toString());
+                    BlocProvider.of<UserBloc>(context)
+                        .add(UserLoadById("62137c978cd9abb86406b887"));
+
+                    // debugPrint(initialFare.toString());
+                    // debugPrint(costPerKilloMeter.toString());
+                    // debugPrint(costPerMinute.toString());
 
                     // BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
                   },
@@ -780,11 +727,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void resetScreen(bool isBalanceInsufficient) {
+    context.read<DisableButtonCubit>().enableButton();
     _determinePosition().then((value) {
       _myController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
           zoom: 16.1746, target: LatLng(value.latitude, value.longitude))));
     });
     currentPrice = 75;
+    driverStreamSubscription.cancel();
     counter = 0;
     setState(() {
       if (isBalanceInsufficient) {
@@ -793,6 +742,8 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
       }
+      isAccepted = false;
+
       _currentWidget = OnlinMode();
       markers.clear();
       polylines.clear();
@@ -964,6 +915,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: BlocBuilder<PlaceDetailBloc, PlaceDetailState>(
                 builder: (_, state) {
               if (state is PlaceDetailLoadSuccess) {
+                context.read<DisableButtonCubit>().disableButton();
+
                 droppOffAddress = state.placeDetail.placeName;
                 fromCreateManualTrip = true;
                 destination =
@@ -987,7 +940,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 Future.delayed(Duration(seconds: 1), () {
                   setState(() {
-                    createTripButtonEnabled = false;
+                    // createTripButtonEnabled = false;
                     _currentWidget = WaitingPassenger(false);
                     Navigator.pop(context);
                   });
@@ -1582,5 +1535,59 @@ class _HomeScreenState extends State<HomeScreen> {
     if (result == ConnectivityResult.none) {
       internetServiceButtomSheet();
     }
+  }
+
+  void _listenBackGroundMessege() {
+    IsolateNameServer.registerPortWithName(_port.sendPort, portName);
+    _port.listen((message) {
+      final listOfDrivers = json.decode(message.data['nextDrivers']) as List;
+      listOfDrivers.removeAt(0);
+      print("List Of Drivers : $listOfDrivers");
+
+      nextDrivers = listOfDrivers;
+      // nextDrivers = listOfDrivers;
+      stopNotficationListner = false;
+      waitingTimer = 40;
+      const oneSec = Duration(seconds: 1);
+      timer = Timer.periodic(
+        oneSec,
+        (Timer timer) {
+          if (waitingTimer == 0) {
+            if (listOfDrivers.isNotEmpty) {
+              UserEvent event = UserLoadById(listOfDrivers[0]);
+              BlocProvider.of<UserBloc>(context).add(event);
+            } else {
+              BlocProvider.of<RideRequestBloc>(context)
+                  .add(RideRequestTimeOut(requestId));
+              Navigator.pop(context);
+            }
+            timer.cancel();
+          } else {
+            waitingTimer--;
+          }
+        },
+      );
+      final pickupList = json.decode(message.data['pickupLocation']);
+      final droppOffList = json.decode(message.data['droppOffLocation']);
+      pickupLocation = LatLng(pickupList[0], pickupList[1]);
+      droppOffLocation = LatLng(droppOffList[0], droppOffList[1]);
+      passengerName = message.data['passengerName'];
+      passengerPhoneNumber = message.data['passengerPhoneNumber'];
+      requestId = message.data['requestId'];
+      passengerFcm = message.data['passengerFcm'];
+      distance = message.data['distance'];
+      duration = message.data['duration'];
+      price = message.data['price'];
+      droppOffAddress = message.data['droppOffAddress'];
+      pickUpAddress = message.data['pickupAddress'];
+
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return NotificationDialog(
+                setDestination, nextDrivers, waitingTimer, false);
+          });
+    });
   }
 }

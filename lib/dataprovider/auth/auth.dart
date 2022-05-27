@@ -114,6 +114,7 @@ class AuthDataProvider {
   }
 
   Future logOut() async {
+    await FirebaseMessaging.instance.deleteToken();
     await secure_storage.deleteAll();
   }
 

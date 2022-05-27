@@ -8,6 +8,7 @@ class ChangePassword extends StatelessWidget {
   final _formkey = GlobalKey<FormState>();
   final Map<String, String> _passwordInfo = {};
   bool _isLoading = false;
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +115,7 @@ class ChangePassword extends StatelessWidget {
                                   blurStyle: BlurStyle.normal)
                             ]),
                             child: TextFormField(
+                              controller: passwordController,
                               decoration: const InputDecoration(
                                   hintText: "New Password",
                                   hintStyle: TextStyle(
@@ -164,7 +166,7 @@ class ChangePassword extends StatelessWidget {
                                   border: OutlineInputBorder(
                                       borderSide: BorderSide.none)),
                               validator: (value) {
-                                if (value != _passwordInfo['new_password']) {
+                                if (value != passwordController.text) {
                                   return 'Password must match';
                                 }
                                 if (value!.isEmpty) {

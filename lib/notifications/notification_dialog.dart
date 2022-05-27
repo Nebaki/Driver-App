@@ -340,6 +340,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
         );
       }, listener: (_, state) {
         if (state is RideRequestAccepted) {
+          isAccepted = true;
           setState(() {
             _isLoading = false;
           });
@@ -356,6 +357,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
             BlocProvider.of<CurrentWidgetCubit>(context)
                 .changeWidget(Arrived());
             Navigator.pop(context);
+            context.read<DisableButtonCubit>().disableButton();
           });
         }
         if (state is RideRequestPassed) {

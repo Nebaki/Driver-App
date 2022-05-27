@@ -31,6 +31,7 @@ class _CompleteTripState extends State<CompleteTrip> {
   }
 
   bool isButtonDisabled = false;
+  late bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,9 @@ class _CompleteTripState extends State<CompleteTrip> {
         listener: (context, state) {
           if (state is RideRequestCompleted) {
             startingTime = null;
-            Navigator.pop(context);
+            if (isLoading) {
+              Navigator.pop(context);
+            }
             BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
 
             // BlocProvider.of<CurrentWidgetCubit>(context)
@@ -57,8 +60,9 @@ class _CompleteTripState extends State<CompleteTrip> {
           }
 
           if (state is RideRequestOperationFailur) {
-            Navigator.pop(context);
-
+            if (isLoading) {
+              Navigator.pop(context);
+            }
             setState(() {
               isButtonDisabled = false;
             });
@@ -87,11 +91,17 @@ class _CompleteTripState extends State<CompleteTrip> {
                   BlocConsumer<RideRequestBloc, RideRequestState>(
                       listener: (context, state) {
                     if (state is RideRequestLoading) {
+                      isLoading = true;
                       showDialog(
-                          // barrierDismissible: false,
+                          barrierDismissible: false,
                           context: context,
                           builder: (BuildContext context) {
-                            return CircularProggressIndicatorDialog();
+                            return WillPopScope(
+                                onWillPop: () async {
+                                  isLoading = false;
+                                  return true;
+                                },
+                                child: CircularProggressIndicatorDialog());
                           });
                     }
                   }, builder: (context, state) {
@@ -206,7 +216,7 @@ class _CompleteTripState extends State<CompleteTrip> {
   void resetData() {
     currentPrice = 75;
     passengerFcm = null;
-    passengerName = 'Loading';
+    passengerName = null;
 
     directionDuration = 'loading';
     distanceDistance = 'loading';

@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EstiMatedCostCubit extends Cubit<double> {
-  EstiMatedCostCubit(state) : super(75);
+  EstiMatedCostCubit(state) : super(initialFare.toDouble());
   updateEstimatedCost(
       LatLng pickupLocation, LatLng currentLocation, DateTime startingTime) {
     double cost = (initialFare +

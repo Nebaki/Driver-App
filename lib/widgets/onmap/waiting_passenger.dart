@@ -9,11 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slider_button/slider_button.dart';
 
-class WaitingPassenger extends StatelessWidget {
+class WaitingPassenger extends StatefulWidget {
   bool formPassenger;
-  bool isButtonDisabled = false;
 
   WaitingPassenger(this.formPassenger);
+
+  @override
+  State<WaitingPassenger> createState() => _WaitingPassengerState();
+}
+
+class _WaitingPassengerState extends State<WaitingPassenger> {
+  bool isButtonDisabled = false;
+
+  late bool isLoading;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -23,21 +32,28 @@ class WaitingPassenger extends StatelessWidget {
           if (state is RideRequestStarted) {
             startingTime = DateTime.now();
 
-            Navigator.pop(context);
+            if (isLoading) {
+              Navigator.pop(context);
+            }
             context.read<CurrentWidgetCubit>().changeWidget(CompleteTrip());
-            // callback!(CompleteTrip(callback));
-            if (formPassenger) {
-              changeDestination(droppOffLocation);
+            if (widget.formPassenger) {
+              //to be removed
+              destination = droppOffLocation;
 
               DirectionEvent event =
                   DirectionLoad(destination: droppOffLocation);
 
               BlocProvider.of<DirectionBloc>(context).add(event);
             }
-            if (state is RideRequestOperationFailur) {
-              isButtonDisabled = false;
+          }
+
+          if (state is RideRequestOperationFailur) {
+            if (isLoading) {
               Navigator.pop(context);
             }
+            setState(() {
+              isButtonDisabled = false;
+            });
           }
         },
         builder: (context, state) {
@@ -67,11 +83,17 @@ class WaitingPassenger extends StatelessWidget {
                   BlocConsumer<RideRequestBloc, RideRequestState>(
                       listener: (context, state) {
                     if (state is RideRequestLoading) {
+                      isLoading = true;
                       showDialog(
-                          // barrierDismissible: false,
+                          barrierDismissible: false,
                           context: context,
                           builder: (BuildContext context) {
-                            return CircularProggressIndicatorDialog();
+                            return WillPopScope(
+                                onWillPop: () async {
+                                  isLoading = false;
+                                  return true;
+                                },
+                                child: CircularProggressIndicatorDialog());
                           });
                     }
                   }, builder: (context, state) {
