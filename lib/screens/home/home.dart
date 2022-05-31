@@ -45,6 +45,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  
   late Widget _currentWidget;
   late double currentLat;
   late double currentLng;
@@ -61,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late bool isFirstTime;
   late String serviceStatusValue;
   bool? internetServiceStatus;
-  // late LatLng destination;
   late LatLngBounds latLngBounds;
   BitmapDescriptor? carMarkerIcon;
   late Position myPosition;
@@ -284,6 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     phoneNumber: phoneNum,
                     dropOffLocation: destination,
                     droppOffAddress: droppOffAddress,
+                    pickUpAddress: pickUpAddress,
                     name: 'Kebadu',
                     direction: state.direction.encodedPoints,
                     distance: (state.direction.distanceValue / 1000)

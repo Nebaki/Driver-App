@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:driverapp/dataprovider/dataproviders.dart';
+import 'package:driverapp/helper/api_end_points.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:http/http.dart' as http;
@@ -20,8 +21,7 @@ class RideRequestDataProvider {
   RideRequestDataProvider({required this.httpClient});
   Future<RideRequest> checkStartedTrip() async {
     final http.Response response = await http.get(
-        Uri.parse(
-            'https://mobiletaxi-api.herokuapp.com/api/ride-requests/check-driver-started-trip'),
+        Uri.parse(RideRequestEndPoints.checkDriverStartedTripEndPoint()),
         headers: <String, String>{
           'Content-Type': "application/json",
           'x-access-token': '${await authDataProvider.getToken()}'
@@ -45,7 +45,7 @@ class RideRequestDataProvider {
 
   Future<RideRequest> createRequest(RideRequest request) async {
     final response = await http.post(
-      Uri.parse('$_maintenanceUrl/create-manual-ride-request'),
+      Uri.parse(RideRequestEndPoints.createManualRideRequestEndPoint()),
       headers: <String, String>{
         'Content-Type': 'application/json',
         "x-access-token": '${await authDataProvider.getToken()}'
@@ -53,12 +53,12 @@ class RideRequestDataProvider {
       body: json.encode({
         'phone_number': request.phoneNumber,
         'name': 'request.name',
-        "pickup_address": "meskel flower",
-        'droppoff_location': [
-          request.dropOffLocation!.longitude,
-          request.dropOffLocation!.latitude
+        "pickup_address": request.pickUpAddress,
+        'drop_off_location': [
+          request.dropOffLocation!.latitude,
+          request.dropOffLocation!.longitude
         ],
-        "droppoff_address": request.droppOffAddress,
+        "drop_off_address": request.droppOffAddress,
         'pickup_location': [
           request.pickupLocation!.latitude,
           request.pickupLocation!.longitude
@@ -126,7 +126,7 @@ class RideRequestDataProvider {
   Future<void> acceptRequest(String id, String passengerFcm) async {
     // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
     final response = await http.post(
-      Uri.parse('$_maintenanceUrl/accept-ride-request/$id'),
+      Uri.parse(RideRequestEndPoints.acceptRideRequestEndPoint(id)),
       headers: <String, String>{
         'Content-Type': 'application/json',
         "x-access-token": '${await authDataProvider.getToken()}'
@@ -143,7 +143,7 @@ class RideRequestDataProvider {
   Future<void> startTrip(String id, String? passengerFcm) async {
     // final response = await http.get(Uri.parse("$_baseUrl/get-rideRequest"));
     final response = await http.post(
-      Uri.parse('$_maintenanceUrl/start-trip/$id'),
+      Uri.parse(RideRequestEndPoints.startTripEndPoint(id)),
       headers: <String, String>{
         'Content-Type': 'application/json',
         "x-access-token": '${await authDataProvider.getToken()}'
@@ -238,13 +238,13 @@ class RideRequestDataProvider {
 
   Future cancelRideRequest(
       String id, String cancelReason, String? fcmId, bool sendRequest) async {
-    final http.Response response =
-        await http.post(Uri.parse('$_baseUrl/cancel-ride-request/$id'),
-            headers: <String, String>{
-              "Content-Type": "application/json",
-              "x-access-token": "${await authDataProvider.getToken()}"
-            },
-            body: json.encode({'cancel_reason': cancelReason}));
+    final http.Response response = await http.post(
+        Uri.parse(RideRequestEndPoints.cancelRideRequestEndPoint(id)),
+        headers: <String, String>{
+          "Content-Type": "application/json",
+          "x-access-token": "${await authDataProvider.getToken()}"
+        },
+        body: json.encode({'cancel_reason': cancelReason}));
     print("Statusss issss ${response.statusCode}', ${fcmId}, ${sendRequest}");
 
     if (response.statusCode == 200) {
@@ -257,13 +257,13 @@ class RideRequestDataProvider {
   }
 
   Future completeTrip(String id, double price, String? fcmId) async {
-    final http.Response response =
-        await http.post(Uri.parse('$_maintenanceUrl/end-trip/$id'),
-            headers: <String, String>{
-              "Content-Type": "application/json",
-              "x-access-token": "${await authDataProvider.getToken()}"
-            },
-            body: json.encode({'price': currentPrice}));
+    final http.Response response = await http.post(
+        Uri.parse(RideRequestEndPoints.completeTripEndPoint(id)),
+        headers: <String, String>{
+          "Content-Type": "application/json",
+          "x-access-token": "${await authDataProvider.getToken()}"
+        },
+        body: json.encode({'price': currentPrice}));
 
     if (response.statusCode == 200) {
       print("fcm_issddddddd $fcmId");
