@@ -35,7 +35,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   void prepareRequest(BuildContext context) {
     var sender = HistoryDataProvider(httpClient: http.Client());
-    var res = sender.loadCreditHistoryDB("0922877115");
+    var res = sender.loadTripHistoryDB("0922877115");
     res.then((value) => {
           setState(() {
             _isMessageLoading = false;
@@ -45,7 +45,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
   void syncHistory(){
     var sender = HistoryDataProvider(httpClient: http.Client());
-    var res = sender.loadCreditHistory("0922877115");
+    var res = sender.loadTripHistory("0922877115");
     res.then((value) => {
         ShowToast(context,value).show(),
         prepareRequest(context),

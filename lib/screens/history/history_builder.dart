@@ -65,12 +65,12 @@ class HistoryBuilder extends StatelessWidget {
                 size: 40,
               ),*/
               title: Text(
-                "From:  ${trip.pickUpAddress!}   To+ ${trip.dropOffAddress!}",
+                "From:  ${trip.pickUpAddress!}   To ${trip.dropOffAddress!}",
                 style: const TextStyle(color: Colors.black, fontSize: 16),
               ),
               subtitle: Text('Date: ${trip.createdAt}'),
               trailing:
-                  Text(trip.price!, style: const TextStyle(color: Colors.red)),
+                  Text(trip.price!.split(",")[0]+".ETB", style: const TextStyle(color: Colors.red)),
             ),
           ],
         ));
@@ -160,7 +160,7 @@ class ImageUtils {
           if (value)
             {
               print("img: dir exist"),
-              writeImageImage(tempDir!, uint8list, name)
+              writeImage(tempDir!, uint8list, name)
             }
           else
             {print("img: dir not exist"), createDir(tempDir!, uint8list, name)}
@@ -174,7 +174,7 @@ class ImageUtils {
     return f;
   }
 
-  Future<void> writeImageImage(
+  Future<void> writeImage(
       Directory directory, Uint8List uint8list, String filename) async {
     print("img-w: ${directory.path}");
     File file = await File('${directory.path}/historyIMG/$filename.png')
@@ -189,7 +189,7 @@ class ImageUtils {
         .create(recursive: true)
         .then((value) => {
               print("img-c: ${value.path} created"),
-              writeImageImage(directory, uint8list, name)
+              writeImage(directory, uint8list, name)
             });
   }
 

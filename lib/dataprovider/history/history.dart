@@ -11,12 +11,12 @@ import '../header/header.dart';
 import 'package:http/http.dart' as http;
 
 class HistoryDataProvider {
-  final _baseUrl = RequestHeader.baseURL + 'ride-requests';
+  final _baseUrl = RequestHeader.baseURLX + 'ride-requests';
   final http.Client httpClient;
 
   HistoryDataProvider({required this.httpClient});
 
-  Future<String> loadCreditHistory(String user) async {
+  Future<String> loadTripHistory(String user) async {
     final http.Response response = await http.get(
         Uri.parse('$_baseUrl/get-driver-trips'),
         headers: await RequestHeader().authorisedHeader());
@@ -26,12 +26,12 @@ class HistoryDataProvider {
 
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
-      Session().logSession("trans ${trips.length}", response.body);
-      //HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
-      return "Unable to update history";
+      Session().logSession("s-trans ${trips.length}", response.body);
+      return HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
+      //return "Unable to update history";
       //return CreditStore.fromJson(jsonDecode(response.body));
     } else {
-      Session().logSession("trans", response.statusCode.toString());
+      Session().logSession("s-trans", response.statusCode.toString());
       Trip trip;
       List<Trip> trips = [];
       int i = 0;
@@ -67,7 +67,7 @@ class HistoryDataProvider {
       //return trips;
     }
   }
-  Future<List<Trip>> loadCreditHistoryDB(String user) async {
+  Future<List<Trip>> loadTripHistoryDB(String user) async {
       return HistoryDB().trips();
     }
 

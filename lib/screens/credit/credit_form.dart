@@ -149,11 +149,13 @@ class _TeleBirrDataState extends State<TeleBirrData> {
     }
   }
 
-  void paymentProcess(Result result) {
-    if (result.code == "200") {
-      var confirm = sender.confirmTransaction("otn");
+  void paymentProcess(Result result, String? outTradeNumber) {
+    if (result.code == "0") {
+      var confirm = sender.confirmTransaction(outTradeNumber!);
       confirm
-          .then((value) => {ShowMessage(context, "Recharge", value.message)})
+          .then((value) => {
+            ShowMessage(context, "Recharge", value.message)}
+      )
           .onError((error, stackTrace) =>
               {ShowMessage(context, "Recharge", error.toString())});
     } else {
@@ -169,10 +171,10 @@ class _TeleBirrDataState extends State<TeleBirrData> {
       (onError) {
         var result =
             Result("0", false, "there is an error: " + onError.toString());
-        paymentProcess(result);
+        paymentProcess(result,telePack.outTradeNumber);
       },
     ).then((value) {
-      paymentProcess(value);
+      paymentProcess(value,telePack.outTradeNumber);
     }).whenComplete(() {});
   }
 
