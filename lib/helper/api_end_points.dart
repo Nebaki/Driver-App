@@ -40,3 +40,30 @@ class UserEndPoints {
     return '$baseUrl/$middle/forget-password';
   }
 }
+
+class RideRequestEndPoints {
+  static String middle = "ride-requests";
+  static String checkDriverStartedTripEndPoint() {
+    return '$baseUrl/$middle/check-driver-started-trip';
+  }
+
+  static String createManualRideRequestEndPoint() {
+    return '$baseUrl/$middle/create-manual-ride-request';
+  }
+
+  static String acceptRideRequestEndPoint(String id) {
+    return '$baseUrl/$middle/accept-ride-request/$id';
+  }
+
+  static String startTripEndPoint(String id) {
+    return '$baseUrl/$middle/start-trip/$id';
+  }
+
+  static String cancelRideRequestEndPoint(String id) {
+    return '$baseUrl/$middle/cancel-ride-request/$id';
+  }
+
+  static String completeTripEndPoint(String id) {
+    return '$baseUrl/$middle/end-trip/$id';
+  }
+}

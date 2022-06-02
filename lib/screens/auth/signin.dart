@@ -41,6 +41,9 @@ class _SigninScreenState extends State<SigninScreen> {
         myAvgRate = state.auth.avgRate!;
         balance = state.auth.balance!;
         myVehicleType = state.auth.vehicleType!;
+        initialFare = state.auth.initialFare!;
+        costPerKilloMeter = state.auth.perKiloMeterCost!;
+        costPerMinute = state.auth.perMinuteCost!;
 
         myVehicleCategory = state.auth.vehicleCategory!;
         firebaseKey = '$myId,$myVehicleCategory';

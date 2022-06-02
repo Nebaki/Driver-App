@@ -32,6 +32,8 @@ class DirectionDistanceDurationLoad extends DirectionEvent {
 }
 
 class DirectionChangeToInitialState extends DirectionEvent {
+  final bool isBalanceSuffiecient;
+  const DirectionChangeToInitialState({required this.isBalanceSuffiecient});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [isBalanceSuffiecient];
 }

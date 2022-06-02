@@ -59,7 +59,7 @@ class CancelTrip extends StatelessWidget {
                       )),
                     ),
                     onPressed: () {
-                      callback!(Arrived(callback));
+                      // callback!(Arrived(callback));
                     },
                     child: const Text(
                       "No",

@@ -5,7 +5,8 @@ import '../../models/models.dart';
 
 class PassengerBloc extends Bloc<PassengerEvent, PassengerState> {
   final PassengerRepository passengerRepository;
-  PassengerBloc({required this.passengerRepository}) : super(null);
+  PassengerBloc({required this.passengerRepository})
+      : super(PassengerInitialState());
 
   @override
   Stream<PassengerState> mapEventToState(PassengerEvent event) async* {
@@ -39,6 +40,8 @@ class PassengerState extends Equatable {
 }
 
 class AvailablePassengersLoading extends PassengerState {}
+
+class PassengerInitialState extends PassengerState {}
 
 class LoadAvailablePassengersSuccess extends PassengerState {
   final List<Passenger> passenger;

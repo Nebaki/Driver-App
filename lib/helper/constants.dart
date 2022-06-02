@@ -18,6 +18,9 @@ late String myPictureUrl;
 late String myName;
 late String myVehicleCategory;
 late String myVehicleType;
+late int initialFare;
+late int costPerMinute;
+late int costPerKilloMeter;
 late double myAvgRate;
 String? passengerName;
 late String passengerPhoneNumber;
@@ -34,46 +37,8 @@ late String price;
 late int balance;
 String? passengerProfilePictureUrl;
 final player = AssetsAudioPlayer();
-
-bool willScreenPop = true;
-late Function changeDestination;
-
+bool isAccepted = false;
 List<String> drivers = [];
-// late Timer _timer;
-
-// int waitingTimer = 60;
-
-// void startTimer() {
-//   const oneSec = Duration(seconds: 1);
-//   _timer = Timer.periodic(
-//     oneSec,
-//     (Timer timer) {
-//       print("Timer starteddd");
-
-//       if (timer == 0) {
-//         print("Yeah right now on action");
-
-//         // pla/yer.dispose();
-//         // UserEvent event = UserLoadById(myId);
-//         // BlocProvider.of<UserBloc>(context).add(event);
-
-//         // RideRequestEvent requestEvent =
-//         //     RideRequestChangeStatus(requestId, "Cancelled", passengerFcm);
-//         // BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
-//         timer.cancel();
-//       } else {
-//         waitingTimer--;
-//       }
-//     },
-//   );
-// }
-
-// late Function dialog;
-
-// void stopTimer() {
-//   _timer.cancel();
-// }
-
 String portName = 'DRIVER_BACKGROUND_lISTENER_PORT';
 const maintenanceUrl = 'https://mobiletaxi-api.herokuapp.com/api';
 String baseUrl = 'https://safeway-api.herokuapp.com/api';

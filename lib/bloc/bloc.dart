@@ -8,3 +8,6 @@ export 'riderequest/bloc.dart';
 export 'emergencyReport/emergency_report_bloc.dart';
 export 'passenger/passenger.dart';
 export 'balance/balance.dart';
+export 'currentwidget/current_widget_bloc.dart';
+export 'estimatedcost/estimated_cost.dart';
+export 'disablebutton/disable_button.dart';

@@ -42,14 +42,15 @@ class User extends Equatable {
       ];
 
   factory User.fromJson(Map<String, dynamic> json) {
+    print("Json : $json");
     return User(
-        id: json["driver"]["id"],
-        email: json["driver"]["email"],
-        gender: json["driver"]["gender"],
-        phoneNumber: json["driver"]["phone_number"],
-        emergencyContact: json["driver"]["emergency_contact"],
-        profileImage: json["driver"]["profile_image"],
-        fcm: json['driver']['fcm_id']);
+        id: json["id"],
+        email: json["email"],
+        gender: json["gender"],
+        phoneNumber: json["phone_number"],
+        emergencyContact: json["emergency_contact"],
+        profileImage: json["profile_image"],
+        fcm: json['fcm_id']);
   }
 
   @override

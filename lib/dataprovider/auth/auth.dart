@@ -61,6 +61,19 @@ class AuthDataProvider {
           key: "vehicle_category",
           value: output["driver"]['vehicle']['category']['name'] ?? "");
       await secure_storage.write(
+          key: "per_minute_cost",
+          value: output["driver"]['vehicle']['category']['per_minute_cost']
+              .toString());
+      await secure_storage.write(
+          key: "per_killo_meter_cost",
+          value: output["driver"]['vehicle']['category']['per_kilometer_cost']
+              .toString());
+      await secure_storage.write(
+          key: "initial_fare",
+          value: output["driver"]['vehicle']['category']['initial_fare']
+              .toString());
+
+      await secure_storage.write(
           key: "vehicle_type",
           value: output["driver"]['vehicle']['type'] ?? "");
 
@@ -101,6 +114,7 @@ class AuthDataProvider {
   }
 
   Future logOut() async {
+    await FirebaseMessaging.instance.deleteToken();
     await secure_storage.deleteAll();
   }
 

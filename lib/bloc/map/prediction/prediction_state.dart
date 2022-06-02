@@ -8,6 +8,8 @@ class LocationPredictionState extends Equatable {
   List<Object> get props => [];
 }
 
+class LocationPredictionInitialState extends LocationPredictionState {}
+
 class LocationPredictionLoading extends LocationPredictionState {}
 
 class LocationPredictionLoadSuccess extends LocationPredictionState {

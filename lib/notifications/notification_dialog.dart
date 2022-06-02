@@ -12,9 +12,7 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NotificationDialog extends StatefulWidget {
-  final Function callback;
   final Function setDestination;
-  final Function setIsArrivedWidget;
   final List<dynamic> nextDrivers;
   final bool passRequest;
   int timer;
@@ -26,8 +24,8 @@ class NotificationDialog extends StatefulWidget {
   // final String passengerFcm;
   // final LatLng droppOffPos;
 
-  NotificationDialog(this.callback, this.setDestination,
-      this.setIsArrivedWidget, this.nextDrivers, this.timer, this.passRequest);
+  NotificationDialog(
+      this.setDestination, this.nextDrivers, this.timer, this.passRequest);
 
   @override
   State<NotificationDialog> createState() => _NotificationDialogState();
@@ -36,7 +34,7 @@ class NotificationDialog extends StatefulWidget {
 class _NotificationDialogState extends State<NotificationDialog> {
   List<String> drivers = [];
   Timer? _timer;
-
+  bool _isLoading = false;
   void startTimer() {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
@@ -95,284 +93,287 @@ class _NotificationDialogState extends State<NotificationDialog> {
     //       RideRequestChangeStatus(requestId, "Cancelled", passengerFcm);
     //   BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
     // }
-    bool isLoading = false;
 
-    return BlocConsumer<RideRequestBloc, RideRequestState>(
-        builder: (context, state) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Column(
-          children: [
-            const Text(
-              "New Ride Request",
-              style: TextStyle(fontSize: 20),
-            ),
-            Text(widget.timer.toString(), style: const TextStyle(fontSize: 20))
-          ],
-        ),
-        content: SizedBox(
-          height: 170,
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: BlocConsumer<RideRequestBloc, RideRequestState>(
+          builder: (context, state) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Column(
             children: [
-              // Center(
-              //   child: Icon(
-              //     Icons.request_page,
-              //     size: 50,
-              //     color: Colors.indigo.shade900,
-              //   ),
-              // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey.shade300,
-                        child: const Icon(
-                          Icons.person,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(passengerName!,
-                          style: Theme.of(context).textTheme.bodyLarge),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Duration',
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        "$duration min",
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ],
-                  ),
-                ],
+              const Text(
+                "New Ride Request",
+                style: TextStyle(fontSize: 20),
               ),
-              const Divider(),
-
-              Padding(
-                padding: const EdgeInsets.only(right: 60),
-                child: Row(
+              Text(widget.timer.toString(),
+                  style: const TextStyle(fontSize: 20))
+            ],
+          ),
+          content: SizedBox(
+            height: 170,
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Center(
+                //   child: Icon(
+                //     Icons.request_page,
+                //     size: 50,
+                //     color: Colors.indigo.shade900,
+                //   ),
+                // ),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Text(
-                          'Distance',
-                          style: Theme.of(context).textTheme.caption,
+                        CircleAvatar(
+                          backgroundColor: Colors.grey.shade300,
+                          child: const Icon(
+                            Icons.person,
+                            color: Colors.black,
+                          ),
                         ),
                         const SizedBox(
-                          height: 5,
+                          width: 5,
                         ),
-                        Text(
-                          "$distance km",
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
+                        Text(passengerName!,
+                            style: Theme.of(context).textTheme.bodyLarge),
                       ],
                     ),
+                    const SizedBox(
+                      height: 5,
+                    ),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Price',
+                          'Duration',
                           style: Theme.of(context).textTheme.caption,
                         ),
                         const SizedBox(
                           height: 5,
                         ),
                         Text(
-                          "ETB $price",
+                          "$duration min",
                           style: Theme.of(context).textTheme.titleSmall,
-                        )
+                        ),
                       ],
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(
-                height: 12,
-              ),
+                const Divider(),
 
-              const Divider(),
-              const SizedBox(
-                height: 8,
-              ),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.location_on,
-                    color: Colors.green,
-                    size: 15,
+                Padding(
+                  padding: const EdgeInsets.only(right: 60),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Distance',
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "$distance km",
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Price',
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "ETB $price",
+                            style: Theme.of(context).textTheme.titleSmall,
+                          )
+                        ],
+                      ),
+                    ],
                   ),
-                  Text(pickUpAddress,
-                      style: Theme.of(context).textTheme.caption)
-                ],
-              ),
-              const SizedBox(height: 3),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.location_on,
-                    color: Colors.red,
-                    size: 15,
-                  ),
-                  Text(droppOffAddress,
-                      style: Theme.of(context).textTheme.caption)
-                ],
-              ),
-              isLoading
-                  ? const LinearProgressIndicator(
-                      minHeight: 1,
-                    )
-                  : Container()
-            ],
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+
+                const Divider(),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on,
+                      color: Colors.green,
+                      size: 15,
+                    ),
+                    Text(pickUpAddress,
+                        style: Theme.of(context).textTheme.caption)
+                  ],
+                ),
+                const SizedBox(height: 3),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on,
+                      color: Colors.red,
+                      size: 15,
+                    ),
+                    Text(droppOffAddress,
+                        style: Theme.of(context).textTheme.caption)
+                  ],
+                ),
+                _isLoading
+                    ? const LinearProgressIndicator(
+                        minHeight: 1,
+                      )
+                    : Container()
+              ],
+            ),
           ),
-        ),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              SizedBox(
-                width: 100,
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromRGBO(244, 201, 60, 1)),
-                    ),
-                    // style: ButtonStyle(
-                    //     side: MaterialStateProperty.all<BorderSide>(
-                    //         const BorderSide(width: 1, color: Colors.red))),
-                    onPressed: () {
-                      if (_timer != null) {
-                        _timer!.cancel();
-                      }
-                      if (timer != null) {
-                        timer!.cancel();
-                      }
-                      print(myId);
-                      player.stop();
-                      player.dispose();
-                      if (widget.nextDrivers.isNotEmpty) {
-                        UserEvent event = UserLoadById(widget.nextDrivers[0]);
-                        BlocProvider.of<UserBloc>(context).add(event);
-                      } else {
-                        BlocProvider.of<RideRequestBloc>(context)
-                            .add(RideRequestTimeOut(requestId));
-                        Navigator.pop(context);
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10))),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromRGBO(244, 201, 60, 1)),
+                      ),
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              if (_timer != null) {
+                                _timer!.cancel();
+                              }
+                              if (timer != null) {
+                                timer!.cancel();
+                              }
+                              player.stop();
+                              player.dispose();
+                              if (widget.nextDrivers.isNotEmpty) {
+                                UserEvent event =
+                                    UserLoadById(widget.nextDrivers[0]);
+                                BlocProvider.of<UserBloc>(context).add(event);
+                              } else {
+                                BlocProvider.of<RideRequestBloc>(context)
+                                    .add(RideRequestTimeOut(requestId));
+                                Navigator.pop(context);
+                              }
+                            },
+                      child: const Text("Skip",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal))),
+                ),
+                BlocConsumer<UserBloc, UserState>(
+                  listener: (context, state) {
+                    if (state is UsersLoadSuccess) {
+                      passRequest(state.user.fcm, widget.nextDrivers);
+                    }
+                  },
+                  buildWhen: (previous, current) => false,
+                  builder: (context, state) {
+                    return Container();
+                  },
+                ),
+                SizedBox(
+                  width: 100,
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10))),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromRGBO(244, 201, 60, 1)),
+                      ),
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              _timer!.cancel();
+                              if (timer != null) {
+                                timer!.cancel();
+                              }
 
-                        // Navigator.pushNamed(context, CancelReason.routeName,
-                        //     arguments: CancelReasonArgument(sendRequest: true));
-                        // Navigator.pop(context);
-                      }
+                              player.dispose();
+                              setState(() {
+                                _isLoading = true;
+                              });
 
-                      // RideRequestEvent requestEvent = RideRequestChangeStatus(
-                      //     requestId, "Cancelled", passengerFcm);
-                      // BlocProvider.of<RideRequestBloc>(context)
-                      //     .add(requestEvent);
-                      // Navigator.pop(context);
-                    },
-                    child: const Text("Skip",
+                              RideRequestEvent requestEvent =
+                                  RideRequestAccept(requestId, passengerFcm!);
+                              BlocProvider.of<RideRequestBloc>(context)
+                                  .add(requestEvent);
+                            },
+                      child: const Text(
+                        "Accept",
                         style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal))),
-              ),
-              BlocConsumer<UserBloc, UserState>(
-                listener: (context, state) {
-                  if (state is UsersLoadSuccess) {
-                    print("Succceeeeeeeeeeeeessssssssss ${widget.nextDrivers}");
-                    widget.nextDrivers.removeAt(0);
-                    passRequest(state.user.fcm, widget.nextDrivers);
-                  }
-                },
-                buildWhen: (previous, current) => false,
-                builder: (context, state) {
-                  return Container();
-                },
-              ),
-              SizedBox(
-                width: 100,
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromRGBO(244, 201, 60, 1)),
-                    ),
-                    onPressed: () {
-                      _timer!.cancel();
-                      if (timer != null) {
-                        timer!.cancel();
-                      }
+                            color: Colors.black, fontWeight: FontWeight.normal),
+                      )),
+                )
+              ],
+            )
+          ],
+        );
+      }, listener: (_, state) {
+        if (state is RideRequestAccepted) {
+          isAccepted = true;
+          setState(() {
+            _isLoading = false;
+          });
 
-                      player.dispose();
-                      isLoading = true;
+          homeScreenStreamSubscription.cancel().then((value) {
+            Geofire.removeLocation(firebaseKey);
 
-                      RideRequestEvent requestEvent =
-                          RideRequestAccept(requestId, passengerFcm!);
-                      BlocProvider.of<RideRequestBloc>(context)
-                          .add(requestEvent);
-                    },
-                    child: const Text(
-                      "Accept",
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.normal),
-                    )),
-              )
-            ],
-          )
-        ],
-      );
-    }, listener: (_, state) {
-      if (state is RideRequestAccepted) {
-        isLoading = false;
+            value;
+            DirectionEvent event = DirectionLoad(destination: pickupLocation);
 
-        homeScreenStreamSubscription.cancel().then((value) {
-          Geofire.removeLocation(firebaseKey);
+            BlocProvider.of<DirectionBloc>(context).add(event);
 
-          value;
-          DirectionEvent event = DirectionLoad(destination: pickupLocation);
-
-          BlocProvider.of<DirectionBloc>(context).add(event);
-
-          widget.setIsArrivedWidget(true);
-          widget.setDestination(pickupLocation);
-          widget.callback(Arrived(widget.callback));
+            widget.setDestination(pickupLocation);
+            BlocProvider.of<CurrentWidgetCubit>(context)
+                .changeWidget(Arrived());
+            Navigator.pop(context);
+            context.read<DisableButtonCubit>().disableButton();
+          });
+        }
+        if (state is RideRequestPassed) {
           Navigator.pop(context);
-        });
-      }
-      if (state is RideRequestPassed) {
-        Navigator.pop(context);
-      }
-      if (state is RideRequestOperationFailur) {
-        isLoading = false;
+        }
+        if (state is RideRequestOperationFailur) {
+          setState(() {
+            _isLoading = false;
+          });
 
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const Text("Operation Failure please try again"),
-            backgroundColor: Colors.red.shade900));
-      }
-    });
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: const Text("Operation Failure please try again"),
+              backgroundColor: Colors.red.shade900));
+        }
+      }),
+    );
   }
 
   void passRequest(driverFcm, nextDriver) {

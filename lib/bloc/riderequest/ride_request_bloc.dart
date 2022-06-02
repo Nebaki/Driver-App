@@ -5,8 +5,7 @@ import 'package:driverapp/repository/repositories.dart';
 class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
   final RideRequestRepository rideRequestRepository;
 
-  RideRequestBloc({required this.rideRequestRepository})
-      : super(RideRequestLoading());
+  RideRequestBloc({required this.rideRequestRepository}) : super(InitState());
 
   @override
   Stream<RideRequestState> mapEventToState(RideRequestEvent event) async* {

@@ -55,10 +55,10 @@ class RideRequest extends Equatable {
         pickupLocation:
             LatLng(json["pickup_location"][0], json["pickup_location"][1]),
         dropOffLocation:
-            LatLng(json["droppoff_location"][1], json["droppoff_location"][0]),
+            LatLng(json["drop_off_location"][0], json["drop_off_location"][1]),
         direction: json['direction'],
         pickUpAddress: json["pickup_address"] ?? '',
-        droppOffAddress: json["droppoff_address"] ?? '',
+        droppOffAddress: json["drop_off_address"] ?? '',
         status: json['status'],
         price: json['price'].toString(),
         distance: json['distance'].toString(),

@@ -35,6 +35,7 @@ void main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   Bloc.observer = SimpleBlocObserver();
+
   Wakelock.enable();
 
   final UserRepository userRepository =
@@ -67,6 +68,20 @@ void main() async {
 
   final BalanceRepository balanceRepository = BalanceRepository(
       dataProvider: BalanceDataProvider(httpClient: http.Client()));
+  // BlocOverrides.runZoned(
+  //     () => runApp(MyApp(
+  //           placeDetailRepository: placeDetailRepository,
+  //           directionRepository: directionRepository,
+  //           authRepository: authRepository,
+  //           userRepository: userRepository,
+  //           reverseLocationRepository: reverseLocationRepository,
+  //           rideRequestRepository: rideRequestRepository,
+  //           locationPredictionRepository: locationPredictionRepository,
+  //           emergencyReportRepository: emergencyReportRepository,
+  //           passengerRepository: passengerRepository,
+  //           balanceRepository: balanceRepository,
+  //         )),
+  //     blocObserver: SimpleBlocObserver());
 
   runApp(MyApp(
     placeDetailRepository: placeDetailRepository,
@@ -168,8 +183,7 @@ class MyApp extends StatelessWidget {
                       placeDetailRepository: placeDetailRepository)),
               BlocProvider(
                   create: (context) => RideRequestBloc(
-                      rideRequestRepository: rideRequestRepository)
-                    ..add(RideRequestCheckStartedTrip())),
+                      rideRequestRepository: rideRequestRepository)),
               BlocProvider(
                   create: (context) => LocationPredictionBloc(
                       locationPredictionRepository:
@@ -186,7 +200,10 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                   create: ((context) =>
                       BalanceBloc(balanceRepository: balanceRepository)
-                        ..add(BalanceLoad())))
+                        ..add(BalanceLoad()))),
+              BlocProvider(create: (context) => CurrentWidgetCubit()),
+              BlocProvider(create: (context) => EstiMatedCostCubit(0)),
+              BlocProvider(create: (context) => DisableButtonCubit())
             ],
             child: MaterialApp(
               title: 'SafeWay',
