@@ -87,7 +87,7 @@ class CreditDataProvider {
         headers: await RequestHeader().authorisedHeader());
     if (response.statusCode == 200) {
       var balance = jsonDecode(response.body);
-      Session().logSession("balance", balance["balance"].toString());
+      Session().logSession("daily", balance["balance"].toString());
       return Result(
           response.statusCode.toString(), true, balance["balance"].toString());
     } else {

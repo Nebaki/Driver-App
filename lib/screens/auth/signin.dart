@@ -10,14 +10,19 @@ import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
+import 'dart:math' as math;
+
+import '../../utils/painter.dart';
 
 class SigninScreen extends StatefulWidget {
   static const routeName = '/signin';
+
   @override
   _SigninScreenState createState() => _SigninScreenState();
 }
 
-class _SigninScreenState extends State<SigninScreen> {
+class _SigninScreenState extends State<SigninScreen>
+    with SingleTickerProviderStateMixin {
   String number = "+251934540217";
   String password = "1111";
   late String phoneNumber;
@@ -26,8 +31,58 @@ class _SigninScreenState extends State<SigninScreen> {
   final Map<String, dynamic> _auth = {};
 
   final _formkey = GlobalKey<FormState>();
+  final _graphics = GlobalKey<FormState>();
 
   bool _isLoading = false;
+
+
+/*
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Visualizer'),
+      ),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: CustomPaint(
+                foregroundPainter: PointPainter(_radius, animation.value),
+                painter: ShapePainter(_sides,_radius,_radians),
+                child: Container(),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: Text('Size'),
+            ),
+            Slider(
+              value: _radius,
+              min: 10.0,
+              max: MediaQuery
+                  .of(context)
+                  .size
+                  .width / 2,
+              onChanged: (value) {
+                setState(() {
+                  _radius = value;
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+*/
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +123,7 @@ class _SigninScreenState extends State<SigninScreen> {
     }));
   }
 
+
   void signIn() {
     checkInternetConnection(context).then((value) {
       if (value) {
@@ -85,17 +141,15 @@ class _SigninScreenState extends State<SigninScreen> {
       Form(
         key: _formkey,
         child: Container(
-          height: 600,
+          //color: Colors.black26,
+          //height: 600,
           child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+              padding: const EdgeInsets.all(0),
               child: ListView(
                 children: [
-                  const Text(
-                    "Sign In",
-                    style: TextStyle(fontSize: 25),
-                  ),
+                  /*
                   Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.fromLTRB(50, 120, 50, 20),
                     child: InternationalPhoneNumberInput(
                       onSaved: (value) {
                         print("Valllllllllllllllllllllllllllllllll");
@@ -131,10 +185,77 @@ class _SigninScreenState extends State<SigninScreen> {
                           border:
                               OutlineInputBorder(borderSide: BorderSide.none)),
                     ),
+                  ),*/
+                  Padding(
+                    padding: const EdgeInsets.only(left: 45, right: 40, top: 150),
+                    child: const Text(
+                      "Sign In",
+                      style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),
+                    ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding:
+                        const EdgeInsets.only(left: 40, right: 40, top: 10),
                     child: TextFormField(
+                      maxLength: 9,
+                      maxLines: 1,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          signed: true, decimal: true),
+                      style: TextStyle(fontSize: 18),
+                      enabled: phoneEnabled,
+                      decoration: InputDecoration(
+                        counterText: "",
+                          prefixIconConstraints:
+                              BoxConstraints(minWidth: 0, minHeight: 0),
+                          alignLabelWithHint: true,
+                          hintText: "Phone number",
+                          //labelText: "Phone number",
+                          hintStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black45),
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                            child: Text(
+                              "+251",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                          ),
+                          suffix: Text("$textLength/9"),
+                          fillColor: Colors.white,
+                          filled: true,
+                          border:
+                              OutlineInputBorder(borderSide: BorderSide.none)),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter Your Phone number';
+                        } else if (value.length < 9) {
+                          return 'Phone no. length must not be less than 8 digits';
+                        } else if (value.length > 9) {
+                          return 'Phone no. length must not be greater than 9 digits';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        if(value.length >= 9){
+
+                        }
+                        setState(() {
+                          textLength = value.length;
+                        });
+                      },
+                      onSaved: (value) {
+                        _auth["phoneNumber"] = value;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 40, right: 40, bottom: 10, top: 10),
+                    child: TextFormField(
+                      style: TextStyle(fontSize: 18),
                       decoration: const InputDecoration(
                           alignLabelWithHint: true,
                           hintText: "Password",
@@ -143,7 +264,7 @@ class _SigninScreenState extends State<SigninScreen> {
                               color: Colors.black45),
                           prefixIcon: Icon(
                             Icons.vpn_key,
-                            size: 19,
+                            size: 22,
                           ),
                           fillColor: Colors.white,
                           filled: true,
@@ -165,9 +286,9 @@ class _SigninScreenState extends State<SigninScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: SizedBox(
-                      height: 40,
+                      height: 50,
                       width: MediaQuery.of(context).size.width,
                       child: ElevatedButton(
                         onPressed: _isLoading
@@ -219,10 +340,44 @@ class _SigninScreenState extends State<SigninScreen> {
                           )),
                     ),
                   ),
+                  /*CustomPaint(
+                    key: _graphics,
+                  painter: ShapePainter(_sides,_radius,_radians)
+                  ),*/
                 ],
               )),
         ),
       )
     ]);
+  }
+  var _sides = 5.0;
+  var _radius = 100.0;
+  var _radians = 0.0;
+  late Animation<double> animation;
+  late AnimationController controller;
+  var textLength = 0;
+  var phoneEnabled = true;
+  @override
+  void initState() {
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 8),
+    );
+
+    Tween<double> _rotationTween = Tween(begin: -math.pi, end: math.pi);
+
+    animation = _rotationTween.animate(controller)
+      ..addListener(() {
+        setState(() {});
+      })
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          controller.repeat();
+        } else if (status == AnimationStatus.dismissed) {
+          controller.forward();
+        }
+      });
+
+    controller.forward();
   }
 }
