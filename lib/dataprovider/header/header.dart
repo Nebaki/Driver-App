@@ -1,5 +1,5 @@
 import '../../screens/credit/telebirr_data.dart';
-import '../../utils/constants.dart';
+import '../../utils/constants/constants.dart';
 import '../../utils/session.dart';
 import '../auth/auth.dart';
 

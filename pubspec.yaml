@@ -62,7 +62,7 @@ dependencies:
   firebase_database: ^9.0.9
   vibration: ^1.7.4-nullsafety.0
   flutter_spinkit: ^5.1.0
-
+  simple_animations: ^4.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -79,7 +79,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
+  fonts:
+  - family: Sifonn
+    fonts:
+      - asset: assets/fonts/sifonn_basic.otf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
