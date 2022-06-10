@@ -12,8 +12,6 @@ import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'dart:math' as math;
 
-import '../../utils/properties/properties.dart';
-import '../../utils/ui_tool/animation.dart';
 import '../../utils/painter.dart';
 import '../../utils/ui_tool/text_view.dart';
 
@@ -38,13 +36,50 @@ class _SigninScreenState extends State<SigninScreen>
 
   bool _isLoading = false;
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
-      return _buildSignInForm();
+      return Stack(children: [
+        Opacity(
+          opacity: 0.5,
+          child: ClipPath(
+            clipper: WaveClipper(),
+            child: Container(
+              height: 180,
+              color: Colors.deepOrangeAccent,
+            ),
+          ),
+        ),
+        ClipPath(
+          clipper: WaveClipper(),
+          child: Container(
+            height: 160,
+            color: Colors.deepOrangeAccent,
+          ),
+        ),
+        Opacity(
+          opacity: 0.5,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 100,
+              color: Colors.deepOrangeAccent,
+              child: ClipPath(
+                clipper: WaveClipperBottom(),
+                child: Container(
+                  height: 100,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _buildSignInForm(),
+        ),
+      ]);
     }, listener: (_, state) {
       if (state is AuthDataLoadSuccess) {
         myId = state.auth.id!;
@@ -80,8 +115,6 @@ class _SigninScreenState extends State<SigninScreen>
     }));
   }
 
-
-
   void signIn() {
     checkInternetConnection(context).then((value) {
       if (value) {
@@ -93,7 +126,6 @@ class _SigninScreenState extends State<SigninScreen>
       }
     });
   }
-
 
   Widget _buildSignInForm() {
     return Stack(children: [
@@ -108,7 +140,8 @@ class _SigninScreenState extends State<SigninScreen>
                 children: [
                   Padding(
                     padding: EdgeInsets.only(left: 45, right: 40, top: 150),
-                    child: CreateText(text: "Sign In",size: 1,weight: 2).build(),
+                    child:
+                        CreateText(text: "Sign In", size: 1, weight: 2).build(),
                   ),
                   Padding(
                     padding:
@@ -121,7 +154,7 @@ class _SigninScreenState extends State<SigninScreen>
                       style: TextStyle(fontSize: 18),
                       enabled: phoneEnabled,
                       decoration: InputDecoration(
-                        counterText: "",
+                          counterText: "",
                           prefixIconConstraints:
                               BoxConstraints(minWidth: 0, minHeight: 0),
                           alignLabelWithHint: true,
@@ -156,9 +189,7 @@ class _SigninScreenState extends State<SigninScreen>
                         return null;
                       },
                       onChanged: (value) {
-                        if(value.length >= 9){
-
-                        }
+                        if (value.length >= 9) {}
                         setState(() {
                           textLength = value.length;
                         });
@@ -222,7 +253,8 @@ class _SigninScreenState extends State<SigninScreen>
                           children: [
                             const Spacer(),
                             const Text("Sign In",
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                    fontFamily: 'Sifonn',color: Colors.white)),
                             const Spacer(),
                             Align(
                               alignment: Alignment.centerRight,
@@ -267,6 +299,9 @@ class _SigninScreenState extends State<SigninScreen>
       )
     ]);
   }
+
   var textLength = 0;
   var phoneEnabled = true;
 }
+
+

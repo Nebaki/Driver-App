@@ -6,17 +6,19 @@ import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
 
+import '../../utils/settings/settings_ui.dart';
+
 class SettingScreen extends StatelessWidget {
   static const routeName = "/settings";
 
   final _textStyle =
       const TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
-  @override
+  /*@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 5,
+        elevation: 1,
         centerTitle: true,
         leading: IconButton(
             onPressed: () {
@@ -76,7 +78,7 @@ class SettingScreen extends StatelessWidget {
                               ),
                             ),
                             placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
+                            const CircularProgressIndicator(),
                             errorWidget: (context, url, error) => Icon(
                               Icons.person,
                               size: 50,
@@ -134,9 +136,9 @@ class SettingScreen extends StatelessWidget {
                                         lastName: state.auth.lastName,
                                         email: state.auth.email,
                                         emergencyContact:
-                                            state.auth.emergencyContact,
+                                        state.auth.emergencyContact,
                                         profilePicture:
-                                            state.auth.profilePicture)));
+                                        state.auth.profilePicture)));
                           },
                           child: const Text("Edit Profile")),
                       TextButton(
@@ -201,7 +203,7 @@ class SettingScreen extends StatelessWidget {
                     ),
                     Container(
                       padding:
-                          const EdgeInsets.only(left: 10, bottom: 20, top: 10),
+                      const EdgeInsets.only(left: 10, bottom: 20, top: 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -354,6 +356,109 @@ class SettingScreen extends StatelessWidget {
       }),
     );
   }
+  */
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 1,
+        centerTitle: true,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.clear,
+              color: Colors.black,
+            )),
+        title: const Text(
+          "Settings",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: BlocBuilder<AuthBloc, AuthState>(builder: (_, state) {
+        String name;
+        String phoneNumber;
+        print("Loadinggggggggggggggggggggggggg $state");
+        if (state is AuthDataLoadSuccess) {
+          print("Loadinggggggggggggggggggggggggg ${state.auth.email}");
+
+          name = state.auth.name!;
+          phoneNumber = state.auth.phoneNumber;
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SettingsList(
+              sections: [
+                SettingsSection(
+                  title: 'Section',
+                  tiles: [
+                    SettingsTile(
+                      title: 'Language',
+                      subtitle: 'English',
+                      leading: Icon(Icons.language),
+                      onPressed: (BuildContext context) {},
+                    ),
+                    SettingsTile.switchTile(
+                      title: 'Use fingerprint',
+                      leading: Icon(Icons.fingerprint),
+                      switchValue: value,
+                      onToggle: (bool value) {
+
+                      },
+                    ),
+                  ],
+                ),
+                SettingsSection(
+                  title: 'Section',
+                  tiles: [
+                    SettingsTile(
+                      title: 'Language',
+                      subtitle: 'English',
+                      leading: Icon(Icons.language),
+                      onPressed: (BuildContext context) {},
+                    ),
+                    SettingsTile.switchTile(
+                      title: 'Use fingerprint',
+                      leading: Icon(Icons.fingerprint),
+                      switchValue: value,
+                      onToggle: (bool value) {
+
+                      },
+                    ),
+                  ],
+                ),
+                SettingsSection(
+                  title: 'Section',
+                  tiles: [
+                    SettingsTile(
+                      title: 'Language',
+                      subtitle: 'English',
+                      leading: Icon(Icons.language),
+                      onPressed: (BuildContext context) {},
+                    ),
+                    SettingsTile.switchTile(
+                      title: 'Use fingerprint',
+                      leading: Icon(Icons.fingerprint),
+                      switchValue: value,
+                      onToggle: (bool value) {
+
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (state is AuthDataLoading) {}
+        return Container();
+      }),
+    );
+  }
+  var value = false;
+
 
   Widget _menuItem(
       {required BuildContext context,
