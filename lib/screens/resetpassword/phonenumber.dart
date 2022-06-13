@@ -171,12 +171,15 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                           style: TextStyle(fontSize: 18),
                           enabled: phoneEnabled,
                           decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
+                              ),
                               counterText: "",
                               prefixIconConstraints:
                               BoxConstraints(minWidth: 0, minHeight: 0),
                               alignLabelWithHint: true,
-                              hintText: "9--------",
-                              //labelText: "Phone number",
+                              //hintText: "9--------",
+                              labelText: "Phone number",
                               hintStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black45),
@@ -269,7 +272,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                       ),*/
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(40),
+                          padding: const EdgeInsets.only(left: 40,right: 40,top: 10,bottom: 10),
                           child: SizedBox(
                             height: 50,
                             width: MediaQuery.of(context).size.width,
@@ -298,11 +301,12 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                                       Navigator.pop(context);
                                                       checkPhoneNumber(
                                                           phoneController);
-                                                      // Navigator
-                                                      //     .pushReplacementNamed(
-                                                      //         context,
-                                                      //         PhoneVerification
-                                                      //             .routeName);
+                                                       /*Navigator
+                                                           .pushReplacementNamed(
+                                                               context,
+                                                           ResetPassword
+                                                                   .routeName);
+                                                       */
                                                     },
                                                     child: const Text(
                                                         "Send Code")),
@@ -359,6 +363,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                               }
                             }
                             if (state is UserOperationFailure) {
+
                               setState(() {
                                 showLoading = false;
                               });

@@ -154,12 +154,18 @@ class _SigninScreenState extends State<SigninScreen>
                       style: TextStyle(fontSize: 18),
                       enabled: phoneEnabled,
                       decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
+                          ),
+                          /*enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 5.0),
+                          ),*/
                           counterText: "",
                           prefixIconConstraints:
                               BoxConstraints(minWidth: 0, minHeight: 0),
                           alignLabelWithHint: true,
-                          hintText: "Phone number",
-                          //labelText: "Phone number",
+                          //hintText: "Phone number",
+                          labelText: "Phone number",
                           hintStyle: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black45),
@@ -205,8 +211,12 @@ class _SigninScreenState extends State<SigninScreen>
                     child: TextFormField(
                       style: TextStyle(fontSize: 18),
                       decoration: const InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
+                          ),
                           alignLabelWithHint: true,
-                          hintText: "Password",
+                          //hintText: "Password",
+                          labelText: "Password",
                           hintStyle: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black45),
