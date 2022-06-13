@@ -83,11 +83,12 @@ class CreditDataProvider {
 
   Future<Result> dailyEarning() async {
     final http.Response response = await httpClient.get(
-        Uri.parse('$_baseUrl/get-drivers-todays-earning'),
+        Uri.parse('$_baseUrl/get-my-todays-earning'),
         headers: await RequestHeader().authorisedHeader());
     if (response.statusCode == 200) {
       var balance = jsonDecode(response.body);
-      Session().logSession("daily", balance["balance"].toString());
+      Session().logSession("daily-earning", balance["totalEarnings"].toString());
+      Session().logSession("daily-history", balance["rideRequests"].toString());
       return Result(
           response.statusCode.toString(), true, balance["balance"].toString());
     } else {
