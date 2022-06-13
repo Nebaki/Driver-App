@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../../dataprovider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
 
+import '../../utils/painter.dart';
 import 'telebirr_data.dart';
 
 class TeleBirrData extends StatefulWidget {
@@ -27,10 +28,12 @@ class _TeleBirrDataState extends State<TeleBirrData> {
             const TextInputType.numberWithOptions(signed: true, decimal: true),
         controller: amountController,
         decoration: const InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderSide:
+              BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
+            ),
             alignLabelWithHint: true,
-            hintText: "Amount",
-            hintStyle:
-                TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
+            labelText: "Amount",
             prefixIcon: Icon(
               Icons.money,
               size: 19,
@@ -88,33 +91,90 @@ class _TeleBirrDataState extends State<TeleBirrData> {
         backgroundColor: Colors.white,
         appBar: CreditAppBar(
             key: _appBar, title: "Recharge", appBar: AppBar(), widgets: []),
-        body: Form(
-            key: _formkey,
-            child: Center(
-              child: Column(
-                children: [
-                  const Padding(
-                      padding: EdgeInsets.only(left: 40, right: 40, top: 10),
-                      child: Text(
-                        "Credit Amount",
-                        style: TextStyle(fontSize: 25),
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 40, right: 40, top: 5),
-                    child: _amountBox(),
+        body: Stack(
+          children: [
+            Opacity(
+              opacity: 0.5,
+              child: ClipPath(
+                clipper: WaveClipper(),
+                child: Container(
+                  height: 350,
+                  color: Colors.deepOrangeAccent,
+                ),
+              ),
+            ),
+            ClipPath(
+              clipper: WaveClipper(),
+              child: Container(
+                height: 200,
+                color: Colors.deepOrangeAccent,
+              ),
+            ),
+            Opacity(
+              opacity: 0.5,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 150,
+                  color: Colors.deepOrangeAccent,
+                  child: ClipPath(
+                    clipper: WaveClipperBottom(),
+                    child: Container(
+                      height: 60,
+                      color: Colors.white,
+                    ),
                   ),
+                ),
+              ),
+            ),
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
                   Padding(
-                    padding:
-                        const EdgeInsets.only(left: 40, right: 40, top: 10),
-                    child: SizedBox(
-                      height: 40,
-                      width: MediaQuery.of(context).size.width,
-                      child: _startButton(),
+                    padding: const EdgeInsets.all(15.0),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height / 3,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        elevation: 5.0,
+                        child: Form(
+                            key: _formkey,
+                            child: Center(
+                              child: Column(
+                                children: [
+                                  const Padding(
+                                      padding: EdgeInsets.only(left: 40, right: 40, top: 10),
+                                      child: Text(
+                                        "Credit Amount",
+                                        style: TextStyle(fontSize: 25),
+                                      )),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 40, right: 40, top: 5),
+                                    child: _amountBox(),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 40, right: 40, top: 10),
+                                    child: SizedBox(
+                                      height: 40,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: _startButton(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ),
                     ),
                   ),
                 ],
               ),
-            )));
+            ),
+          ],
+        ));
   }
 
   var sender = TeleBirrDataProvider(httpClient: http.Client());

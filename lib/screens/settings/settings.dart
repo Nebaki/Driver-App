@@ -352,6 +352,12 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
+    List profileItems = [
+      {'count': '$balance.ETB', 'name': 'Balance'},
+      {'count': rating.toString(), 'name': 'Rating'},
+      /* {'count': '267', 'name': 'Track'},
+  {'count': '39', 'name': 'Coupons'},*/
+    ];
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25.0),
@@ -500,7 +506,7 @@ class Profile extends StatelessWidget {
             ),
             Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 for (var item in profileItems)
                   Column(
@@ -520,7 +526,7 @@ class Profile extends StatelessWidget {
                         item['name'],
                         style: TextStyle(
                           //color: Colors.white70,
-                          fontSize: 13.0,
+                          fontSize: 11.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -569,10 +575,3 @@ class ProfileImage extends StatelessWidget {
     );
   }
 }
-
-const List profileItems = [
-  {'count': '846.ETB', 'name': 'Balance'},
-  {'count': '4.5', 'name': 'Rating'},
-  {'count': '267', 'name': 'Track'}, /*
-  {'count': '39', 'name': 'Coupons'},*/
-];

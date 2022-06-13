@@ -78,7 +78,7 @@ class ResetPassword extends StatelessWidget {
                     children: [
                       const Padding(
                         padding: const EdgeInsets.only(
-                            left: 20, right: 40, top: 150),
+                            left: 15, right: 15, top: 150),
                         child: Text(
                           "Reset Password",
                           style: TextStyle(
@@ -89,7 +89,7 @@ class ResetPassword extends StatelessWidget {
                       ),
                       Padding(
                         padding:
-                            const EdgeInsets.only(top: 15, right: 40, left: 40),
+                            const EdgeInsets.only(top: 15, right: 15, left: 15),
                         child: TextFormField(
                           controller: newPasswordController,
                           decoration: const InputDecoration(
@@ -118,7 +118,7 @@ class ResetPassword extends StatelessWidget {
                       ),
                       Padding(
                         padding:
-                            const EdgeInsets.only(top: 5, right: 40, left: 40),
+                            const EdgeInsets.only(top: 5, right: 15, left: 15),
                         child: TextFormField(
                           controller: confirmPasswordController,
                           decoration: const InputDecoration(
@@ -151,7 +151,7 @@ class ResetPassword extends StatelessWidget {
                       ),
                       Padding(
                         padding:
-                            const EdgeInsets.only(top: 5, right: 40, left: 40),
+                            const EdgeInsets.only(top: 5, right: 15, left: 15),
                         child: SizedBox(
                           height: 50,
                           width: MediaQuery.of(context).size.width,

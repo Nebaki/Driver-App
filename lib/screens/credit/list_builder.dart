@@ -73,29 +73,53 @@ class ListBuilder extends StatelessWidget {
             trailing:
                 Text(credit.amount!, style: const TextStyle(color: Colors.red)),
           ),
-          Text(
-            credit.message!,
-            style: const TextStyle(color: Colors.black),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              credit.message!,
+              style: const TextStyle(color: Colors.black),
+            ),
           ),
-          Text(
-            credit.paymentMethod!,
-            style: const TextStyle(color: Colors.black),
-          ),
-          Text(
-            credit.status!,
-            style: const TextStyle(color: Colors.black),
-          ),
-          Text(
-            credit.depositedBy!.name!,
-            style: const TextStyle(color: Colors.black),
-          ),
-          Text(
-            credit.depositedBy!.phone!,
-            style: const TextStyle(color: Colors.black),
-          ),
-          Text(
-            credit.depositedBy!.email!,
-            style: const TextStyle(color: Colors.black),
+
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Payed with: ",
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      Text(
+                        credit.paymentMethod!,
+                        style: const TextStyle(color: Colors.deepOrangeAccent),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Payment status: ",
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      Text(
+                        credit.status!,
+                        style: const TextStyle(color: Colors.deepOrangeAccent),
+                      ),
+
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text("Deposied by: ${credit.depositedBy!.name!},"
+                          " ${credit.depositedBy!.phone!}, ${credit.depositedBy!.email!}"),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
 
         ],

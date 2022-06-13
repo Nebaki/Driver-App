@@ -139,13 +139,13 @@ class _SigninScreenState extends State<SigninScreen>
               child: ListView(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 45, right: 40, top: 150),
+                    padding: EdgeInsets.only(left: 15, right: 15, top: 150),
                     child:
                         CreateText(text: "Sign In", size: 1, weight: 2).build(),
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(left: 40, right: 40, top: 10),
+                        const EdgeInsets.only(left: 15, right: 15, top: 10),
                     child: TextFormField(
                       maxLength: 9,
                       maxLines: 1,
@@ -182,8 +182,10 @@ class _SigninScreenState extends State<SigninScreen>
                           suffix: Text("$textLength/9"),
                           fillColor: Colors.white,
                           filled: true,
-                          border:
-                              OutlineInputBorder(borderSide: BorderSide.none)),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(style: BorderStyle.solid)
+                          ),
+                      ),
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter Your Phone number';
@@ -206,8 +208,8 @@ class _SigninScreenState extends State<SigninScreen>
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 40, right: 40, bottom: 10, top: 10),
+                    padding:
+                    const EdgeInsets.only(left: 15, right: 15, top: 10,bottom: 10),
                     child: TextFormField(
                       style: TextStyle(fontSize: 18),
                       decoration: const InputDecoration(
@@ -226,8 +228,9 @@ class _SigninScreenState extends State<SigninScreen>
                           ),
                           fillColor: Colors.white,
                           filled: true,
-                          border:
-                              OutlineInputBorder(borderSide: BorderSide.none)),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(style: BorderStyle.solid))
+                      ),
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter Your Password';
@@ -244,7 +247,7 @@ class _SigninScreenState extends State<SigninScreen>
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: SizedBox(
                       height: 50,
                       width: MediaQuery.of(context).size.width,

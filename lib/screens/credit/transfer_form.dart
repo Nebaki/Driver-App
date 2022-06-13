@@ -10,6 +10,7 @@ import '../../dataprovider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
 
 import '../../route.dart';
+import '../../utils/painter.dart';
 
 class TransferMoney extends StatefulWidget {
   static const routeName = "/transfer";
@@ -36,8 +37,12 @@ class _TransferState extends State<TransferMoney> {
           const TextInputType.numberWithOptions(signed: true, decimal: true),
       controller: amountController,
       decoration: const InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderSide:
+            BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
+          ),
           alignLabelWithHint: true,
-          hintText: "Amount",
+          labelText: "Amount",
           hintStyle:
               TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
           prefixIcon: Icon(
@@ -51,10 +56,11 @@ class _TransferState extends State<TransferMoney> {
               )),
       validator: (value) {
         if (value!.isEmpty) {
-            return 'Please enter Amount';
+          return 'Please enter Amount';
         } else if (int.parse(value) < 1) {
           return 'Please enter valid amount';
-        } else if (int.parse(value) > int.parse(widget.balance.balance.split(".")[0])) {
+        } else if (int.parse(value) >
+            int.parse(widget.balance.balance.split(".")[0])) {
           return 'Insufficient balance, please recharge';
         }
         return null;
@@ -62,47 +68,69 @@ class _TransferState extends State<TransferMoney> {
     );
   }
 
+  late String phoneValue;
+
   Widget _phoneBox() {
-    return Container(
-      padding: const EdgeInsets.only(left: 5, right: 5, top: 2),
-      decoration: const BoxDecoration(
-          //border: Border.all(),
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(3))),
-      child: InternationalPhoneNumberInput(
-        textFieldController: phoneController,
-        onSaved: (value) {
-          print(value);
-          //_auth["phoneNumber"] = value.toString();
-        },
-        onInputChanged: (PhoneNumber number) {
-          print(number.phoneNumber);
-        },
-        onInputValidated: (bool value) {
-          print(value);
-        },
-        selectorConfig: const SelectorConfig(
-            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-            trailingSpace: false),
-        ignoreBlank: false,
-        autoValidateMode: AutovalidateMode.onUserInteraction,
-        selectorTextStyle: const TextStyle(color: Colors.black),
-        initialValue: PhoneNumber(isoCode: "ET"),
-        formatInput: true,
+    return Padding(
+      padding: const EdgeInsets.only(left: 40, right: 40, top: 10),
+      child: TextFormField(
+        maxLength: 9,
+        maxLines: 1,
         keyboardType:
             const TextInputType.numberWithOptions(signed: true, decimal: true),
-        inputBorder: const OutlineInputBorder(borderSide: BorderSide.none),
-        spaceBetweenSelectorAndTextField: 0,
-        inputDecoration: const InputDecoration(
-            hintText: "Phone Number",
-            hintStyle:
-                TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
+        style: TextStyle(fontSize: 18),
+        enabled: phoneEnabled,
+        decoration: InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
+            ),
+            counterText: "",
+            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+            alignLabelWithHint: true,
+            //hintText: "9--------",
+            labelText: "Phone number",
+            hintStyle: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black45),
+            prefixIcon: const Padding(
+              padding: EdgeInsets.only(left: 5.0, right: 5.0),
+              child: Text(
+                "+251",
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+            ),
+            suffix: Text("$textLength/9"),
             fillColor: Colors.white,
             filled: true,
             border: OutlineInputBorder(borderSide: BorderSide.none)),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return 'Please enter Your Phone number';
+          } else if (value.length < 9) {
+            return 'Phone no. length must not be less than 8 digits';
+          } else if (value.length > 9) {
+            return 'Phone no. length must not be greater than 9 digits';
+          }
+          return null;
+        },
+        onChanged: (value) {
+          if (value.length >= 9) {}
+          setState(() {
+            textLength = value.length;
+          });
+        },
+        onSaved: (value) {
+          phoneValue = "+251$value";
+        },
       ),
     );
   }
+
+  var textLength = 0;
+  var phoneEnabled = true;
 
   Widget _transferButton() {
     return ElevatedButton(
@@ -148,51 +176,92 @@ class _TransferState extends State<TransferMoney> {
         backgroundColor: Colors.white,
         appBar: CreditAppBar(
             key: _appBarKey, title: "Transfer", appBar: AppBar(), widgets: []),
-        body: Form(
-            key: _formKey,
-            child: Card(
-              margin: const EdgeInsets.only(left: 10, right: 10, top: 50),
-              elevation: 0.3,
-              child: Container(
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 2,
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 50),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                        padding: EdgeInsets.only(left: 40, right: 40, top: 10),
-                        child: Text(
-                          "Send Money",
-                          style: TextStyle(fontSize: 25),
-                        )),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 40, right: 40, top: 5),
-                      //padding: const EdgeInsets.all(10),
-                      child: _phoneBox(),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 40, right: 40, top: 5),
-                      child: _amountBox(),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 40, right: 40, top: 10),
-                      child: SizedBox(
-                        height: 40,
-                        width: MediaQuery.of(context).size.width,
-                        child: _transferButton(),
-                      ),
-                    ),
-                  ],
+        body: Stack(
+          children: [
+            Opacity(
+              opacity: 0.5,
+              child: ClipPath(
+                clipper: WaveClipper(),
+                child: Container(
+                  height: 350,
+                  color: Colors.deepOrangeAccent,
                 ),
               ),
-            )));
+            ),
+            ClipPath(
+              clipper: WaveClipper(),
+              child: Container(
+                height: 200,
+                color: Colors.deepOrangeAccent,
+              ),
+            ),
+            Opacity(
+              opacity: 0.5,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 150,
+                  color: Colors.deepOrangeAccent,
+                  child: ClipPath(
+                    clipper: WaveClipperBottom(),
+                    child: Container(
+                      height: 60,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+                elevation: 5.0,
+                child: Form(
+                  key: _formKey,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height / 2.5,
+                    padding:
+                        const EdgeInsets.only(left: 10, right: 10, top: 50),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                            padding:
+                                EdgeInsets.only(left: 40, right: 40, top: 10),
+                            child: Text(
+                              "Send Money",
+                              style: TextStyle(fontSize: 25),
+                            )),
+                        _phoneBox(),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 40, right: 40, top: 5),
+                          child: _amountBox(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 40, right: 40, top: 10),
+                          child: SizedBox(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width,
+                            child: _transferButton(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ));
   }
 
   var transfer = CreditDataProvider(httpClient: http.Client());
@@ -215,7 +284,7 @@ class _TransferState extends State<TransferMoney> {
             });
   }
 
-  /*void reloadBalance() {
+/*void reloadBalance() {
     var confirm = transfer.loadBalance();
     confirm
         .then((value) => {ShowMessage(context, "Balance", value.message)})

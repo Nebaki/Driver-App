@@ -152,7 +152,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Padding(
-                        padding: const EdgeInsets.only(left: 45, right: 40, top: 150),
+                        padding: const EdgeInsets.only(left: 15, right: 10, top: 150),
                         child: Text(
                           "Enter mobile number",
                           style: TextStyle(
@@ -162,7 +162,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                       ),
                       Padding(
                         padding:
-                        const EdgeInsets.only(left: 40, right: 40, top: 10),
+                        const EdgeInsets.only(left: 15, right: 15, top: 10),
                         child: TextFormField(
                           maxLength: 9,
                           maxLines: 1,
@@ -272,7 +272,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                       ),*/
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 40,right: 40,top: 10,bottom: 10),
+                          padding: const EdgeInsets.only(left: 15,right: 15,top: 10,bottom: 10),
                           child: SizedBox(
                             height: 50,
                             width: MediaQuery.of(context).size.width,
