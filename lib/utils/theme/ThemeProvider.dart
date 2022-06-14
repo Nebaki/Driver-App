@@ -20,6 +20,14 @@ class ThemeProvider extends ChangeNotifier {
       _active = ColorProvider().primaryDeepPurple;
     } else if (theme == 3) {
       _active = ColorProvider().primaryDeepOrange;
+    } else if (theme == 4) {
+      _active = ColorProvider().primaryDeepBlue;
+    } else if (theme == 5) {
+      _active = ColorProvider().primaryDeepBlack;
+    } else if (theme == 6) {
+      _active = ColorProvider().primaryDeepTeal;
+    } else if (theme == 7) {
+      _active = ColorProvider().primaryDeepCheetah;
     } else {
       _active = ColorProvider().primaryDeepGreen;
     }
@@ -43,6 +51,14 @@ class ThemeProvider extends ChangeNotifier {
       _active = ColorProvider().primaryDeepPurple;
     } else if (theme == 3) {
       _active = ColorProvider().primaryDeepOrange;
+    } else if (theme == 4) {
+      _active = ColorProvider().primaryDeepBlue;
+    } else if (theme == 5) {
+      _active = ColorProvider().primaryDeepBlack;
+    } else if (theme == 6) {
+      _active = ColorProvider().primaryDeepTeal;
+    } else if (theme == 7) {
+      _active = ColorProvider().primaryDeepCheetah;
     } else {
       _active = ColorProvider().primaryDeepGreen;
     }
@@ -65,6 +81,14 @@ class ThemeProvider extends ChangeNotifier {
         return ColorProvider().primaryDeepPurple;
       case 3:
         return ColorProvider().primaryDeepOrange;
+      case 4:
+        return ColorProvider().primaryDeepBlue;
+      case 5:
+        return ColorProvider().primaryDeepBlack;
+      case 6:
+        return ColorProvider().primaryDeepTeal;
+      case 7:
+        return ColorProvider().primaryDeepCheetah;
     }
     return ColorProvider().primaryDeepGreen;
   }

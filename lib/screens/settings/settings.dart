@@ -360,8 +360,120 @@ class _SettingScreenState extends State<SettingScreen> {
                         Container(
                           padding: const EdgeInsets.only(
                               left: 10, bottom: 20, top: 10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      themeProvider.changeTheme(0);
+                                    },
+                                    child: Container(
+                                      color: ColorProvider().primaryDeepGreen,
+                                      height: 50,
+                                      width: 50,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      themeProvider.changeTheme(1);
+                                    },
+                                    child: Container(
+                                      color: ColorProvider().primaryDeepRed,
+                                      height: 50,
+                                      width: 50,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      themeProvider.changeTheme(2);
+                                    },
+                                    child: Container(
+                                      color: ColorProvider().primaryDeepPurple,
+                                      height: 50,
+                                      width: 50,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      themeProvider.changeTheme(3);
+                                    },
+                                    child: Container(
+                                      color: ColorProvider().primaryDeepOrange,
+                                      height: 50,
+                                      width: 50,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      themeProvider.changeTheme(4);
+                                    },
+                                    child: Container(
+                                      color: ColorProvider().primaryDeepBlue,
+                                      height: 50,
+                                      width: 50,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      themeProvider.changeTheme(5);
+                                    },
+                                    child: Container(
+                                      color: ColorProvider().primaryDeepBlack,
+                                      height: 50,
+                                      width: 50,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      themeProvider.changeTheme(6);
+                                    },
+                                    child: Container(
+                                      color: ColorProvider().primaryDeepTeal,
+                                      height: 50,
+                                      width: 50,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      themeProvider.changeTheme(7);
+                                    },
+                                    child: Container(
+                                      color: ColorProvider().primaryDeepCheetah,
+                                      height: 50,
+                                      width: 50,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          /*child: ListView(
+                            scrollDirection: Axis.horizontal,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -402,7 +514,6 @@ class _SettingScreenState extends State<SettingScreen> {
                                   ),
                                 ),
                               ),
-
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: GestureDetector(
@@ -416,9 +527,48 @@ class _SettingScreenState extends State<SettingScreen> {
                                   ),
                                 ),
                               ),
-
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(4);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepBlue,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(5);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepBlack,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(6);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepTeal,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
                             ],
-                          ),
+                          )
+                            */
                         ),
                       ],
                     ),
