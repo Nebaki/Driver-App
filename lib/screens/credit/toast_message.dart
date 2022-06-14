@@ -27,9 +27,10 @@ class CreditAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       elevation: 0.5,
       backgroundColor: Colors.deepOrangeAccent,
+      iconTheme: IconThemeData(color: Colors.white),
       title: Text(
         title,
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
       centerTitle: false,
     );

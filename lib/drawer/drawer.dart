@@ -192,7 +192,7 @@ class NavDrawer extends StatelessWidget {
             // ),
             Container(
               padding: EdgeInsets.only(top: 20),
-              height: MediaQuery.of(context).size.height - 200,
+              height: MediaQuery.of(context).size.height - 250,
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 children: [
@@ -305,6 +305,45 @@ class NavDrawer extends StatelessWidget {
                 ],
               ),
             ),
+            Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    BlocProvider.of<AuthBloc>(context).add(LogOut());
+                    Navigator.pushReplacementNamed(
+                        context, SigninScreen.routeName);
+                  },
+                  child: Row(
+                      children: [
+                        Icon(Icons.logout),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Logout",style: TextStyle(color: Colors.white),),
+                        ),
+                      ],
+                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, SettingScreen.routeName);
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.settings),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Settings",style: TextStyle(color: Colors.white),),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ]
+            ),
             const SizedBox(
               height: 15,
               child: Center(
@@ -318,6 +357,7 @@ class NavDrawer extends StatelessWidget {
       ),
     ));
   }
+
 
   Widget _menuItem({
     required BuildContext context,

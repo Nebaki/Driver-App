@@ -139,7 +139,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25.0),
                         ),
-                        elevation: 5.0,
+                        elevation: 1.0,
                         child: Form(
                             key: _formkey,
                             child: Center(

@@ -253,7 +253,7 @@ class SettingScreen extends StatelessWidget {
                       //   ),
                       // ),
                       Card(
-                        elevation: 5,
+                        elevation: 2,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25.0),
                         ),
@@ -362,7 +362,7 @@ class Profile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25.0),
       ),
-      elevation: 5.0,
+      elevation: 2.0,
       child: Container(
         height: deviceSize.height * 0.3,
         padding: const EdgeInsets.symmetric(horizontal: 20.0),

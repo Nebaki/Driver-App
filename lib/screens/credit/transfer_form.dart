@@ -218,7 +218,7 @@ class _TransferState extends State<TransferMoney> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25.0),
                 ),
-                elevation: 5.0,
+                elevation: 1.0,
                 child: Form(
                   key: _formKey,
                   child: Container(

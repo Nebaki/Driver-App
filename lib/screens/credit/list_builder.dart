@@ -21,7 +21,7 @@ class ListBuilder extends StatelessWidget {
 
   Widget _buildListItems(BuildContext context, Credit credit, int item) {
     return Card(
-        elevation: 4,
+        elevation: 2,
         child: Column(
           children: [
             ListTile(
