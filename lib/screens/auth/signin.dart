@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:driverapp/functions/functions.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -10,9 +11,11 @@ import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
 import '../../utils/painter.dart';
+import '../../utils/theme/ThemeProvider.dart';
 import '../../utils/ui_tool/text_view.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -28,6 +31,19 @@ class _SigninScreenState extends State<SigninScreen>
   String password = "1111";
   late String phoneNumber;
   late String pass;
+  int _currentThemeIndex = 2;
+
+  late ThemeProvider themeProvider;
+
+  @override
+  void initState() {
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    _loadPreTheme();
+  }
+
+  _loadPreTheme() {
+    _currentThemeIndex = themeProvider.getThemeIndex();
+  }
 
   final Map<String, dynamic> _auth = {};
 
@@ -47,7 +63,7 @@ class _SigninScreenState extends State<SigninScreen>
             clipper: WaveClipper(),
             child: Container(
               height: 180,
-              color: Colors.deepOrangeAccent,
+              color: themeProvider.getColor,
             ),
           ),
         ),
@@ -55,7 +71,7 @@ class _SigninScreenState extends State<SigninScreen>
           clipper: WaveClipper(),
           child: Container(
             height: 160,
-            color: Colors.deepOrangeAccent,
+            color: themeProvider.getColor,
           ),
         ),
         Opacity(
@@ -64,7 +80,7 @@ class _SigninScreenState extends State<SigninScreen>
             alignment: Alignment.bottomCenter,
             child: Container(
               height: 100,
-              color: Colors.deepOrangeAccent,
+              color: themeProvider.getColor,
               child: ClipPath(
                 clipper: WaveClipperBottom(),
                 child: Container(

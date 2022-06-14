@@ -5,9 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:provider/provider.dart';
 
 import '../../route.dart';
+import '../../utils/colors.dart';
 import '../../utils/painter.dart';
+import '../../utils/theme/ThemeProvider.dart';
 
 enum ResetMobileVerficationState { SHOW_MOBILE_FORM_STATE, SHOW_OTP_FORM_STATE }
 
@@ -28,6 +31,19 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
   String verificationId = "";
   String userInput = "";
   bool showLoading = false;
+  int _currentThemeIndex = 2;
+
+  late ThemeProvider themeProvider;
+
+  @override
+  void initState() {
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    _loadPreTheme();
+  }
+
+  _loadPreTheme() {
+    _currentThemeIndex = themeProvider.getThemeIndex();
+  }
 
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
@@ -92,7 +108,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
             clipper: WaveClipper(),
             child: Container(
               height: 180,
-              color: Colors.deepOrangeAccent,
+              color: themeProvider.getColor,
             ),
           ),
         ),
@@ -100,7 +116,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
           clipper: WaveClipper(),
           child: Container(
             height: 160,
-            color: Colors.deepOrangeAccent,
+            color: themeProvider.getColor,
           ),
         ),
         Opacity(
@@ -109,7 +125,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
             alignment: Alignment.bottomCenter,
             child: Container(
               height: 100,
-              color: Colors.deepOrangeAccent,
+              color: themeProvider.getColor,
               child: ClipPath(
                 clipper: WaveClipperBottom(),
                 child: Container(
@@ -196,8 +212,9 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                               suffix: Text("$textLength/9"),
                               fillColor: Colors.white,
                               filled: true,
-                              border:
-                              OutlineInputBorder(borderSide: BorderSide.none)),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(style: BorderStyle.solid))
+                          ),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter Your Phone number';

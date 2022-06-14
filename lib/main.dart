@@ -4,12 +4,15 @@ import 'dart:ui';
 
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/repository/passenger.dart';
+import 'package:driverapp/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:driverapp/bloc/bloc.dart';
@@ -18,7 +21,10 @@ import 'package:driverapp/dataprovider/dataproviders.dart';
 import 'package:driverapp/repository/repositories.dart';
 import 'package:driverapp/route.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
+
+import 'utils/theme/ThemeProvider.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // await Firebase.initializeApp();
@@ -32,11 +38,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.deepOrange,
-    // navigation bar color
-    //statusBarColor: _themeColor(theme),
-  ));
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   Bloc.observer = SimpleBlocObserver();
@@ -88,18 +89,25 @@ void main() async {
   //         )),
   //     blocObserver: SimpleBlocObserver());
 
-  runApp(MyApp(
-    placeDetailRepository: placeDetailRepository,
-    directionRepository: directionRepository,
-    authRepository: authRepository,
-    userRepository: userRepository,
-    reverseLocationRepository: reverseLocationRepository,
-    rideRequestRepository: rideRequestRepository,
-    locationPredictionRepository: locationPredictionRepository,
-    emergencyReportRepository: emergencyReportRepository,
-    passengerRepository: passengerRepository,
-    balanceRepository: balanceRepository,
-  ));
+
+  final secure_storage = const FlutterSecureStorage();
+  String? theme = await secure_storage.read(key: "theme");
+  runApp(
+    ChangeNotifierProvider(
+        create: (BuildContext context) => ThemeProvider(theme: int.parse(theme ?? "0")),
+        child: MyApp(
+          placeDetailRepository: placeDetailRepository,
+          directionRepository: directionRepository,
+          authRepository: authRepository,
+          userRepository: userRepository,
+          reverseLocationRepository: reverseLocationRepository,
+          rideRequestRepository: rideRequestRepository,
+          locationPredictionRepository: locationPredictionRepository,
+          emergencyReportRepository: emergencyReportRepository,
+          passengerRepository: passengerRepository,
+          balanceRepository: balanceRepository,
+        ))
+      );
 }
 
 class MyApp extends StatelessWidget {
@@ -157,6 +165,7 @@ class MyApp extends StatelessWidget {
       required this.passengerRepository,
       required this.balanceRepository})
       : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
@@ -210,64 +219,68 @@ class MyApp extends StatelessWidget {
               BlocProvider(create: (context) => EstiMatedCostCubit(0)),
               BlocProvider(create: (context) => DisableButtonCubit())
             ],
-            child: MaterialApp(
-              title: 'SafeWay',
-              theme: ThemeData(
-                  floatingActionButtonTheme:
-                      const FloatingActionButtonThemeData(
-                          sizeConstraints:
-                              BoxConstraints(minWidth: 80, minHeight: 80),
-                          extendedPadding: EdgeInsets.all(50),
-                          foregroundColor: Colors.white,
-                          extendedTextStyle: TextStyle(
-                              color: Colors.white,
-                              fontSize: 26,
-                              fontWeight: FontWeight.w300)),
-
-                  //F48221
-                  primaryColor: const Color.fromRGBO(254, 79, 5, 1),
-                  textTheme: const TextTheme(
-                      button: TextStyle(
-                        color: Color.fromRGBO(254, 79, 5, 1),
-                      ),
-                      subtitle1: TextStyle(color: Colors.black38, fontSize: 14),
-                      headline5:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                      bodyText2: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal)),
-                  iconTheme: const IconThemeData(
-                    color: Colors.white,
-                  ),
-                  textButtonTheme: TextButtonThemeData(
-                      style: ButtonStyle(
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
-                    textStyle: MaterialStateProperty.all<TextStyle>(
-                        const TextStyle(color: Colors.black)),
-                  )),
-                  elevatedButtonTheme: ElevatedButtonThemeData(
-                    style: ButtonStyle(
-                        textStyle: MaterialStateProperty.all<TextStyle>(
-                            const TextStyle(
+            child: Consumer<ThemeProvider>(
+                builder: (context, themeProvider, child) {
+              return MaterialApp(
+                title: 'SafeWay',
+                theme: ThemeData(
+                    floatingActionButtonTheme:
+                        const FloatingActionButtonThemeData(
+                            sizeConstraints:
+                                BoxConstraints(minWidth: 80, minHeight: 80),
+                            extendedPadding: EdgeInsets.all(50),
+                            foregroundColor: Colors.white,
+                            extendedTextStyle: TextStyle(
                                 color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 20)),
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            const Color.fromRGBO(254, 79, 5, 1)),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ))),
-                  ),
-                  colorScheme: ColorScheme.fromSwatch(
-                    primarySwatch: Colors.orange,
-                  ).copyWith(secondary: Colors.grey.shade600)),
-              onGenerateRoute: AppRoute.generateRoute,
-            )));
+                                fontSize: 26,
+                                fontWeight: FontWeight.w300)),
+
+                    //F48221
+                    primaryColor: const Color.fromRGBO(254, 79, 5, 1),
+                    textTheme: const TextTheme(
+                        button: TextStyle(
+                          color: Color.fromRGBO(254, 79, 5, 1),
+                        ),
+                        subtitle1:
+                            TextStyle(color: Colors.black38, fontSize: 14),
+                        headline5: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 24),
+                        bodyText2: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal)),
+                    iconTheme: const IconThemeData(
+                      color: Colors.white,
+                    ),
+                    textButtonTheme: TextButtonThemeData(
+                        style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                      textStyle: MaterialStateProperty.all<TextStyle>(
+                          const TextStyle(color: Colors.black)),
+                    )),
+                    elevatedButtonTheme: ElevatedButtonThemeData(
+                      style: ButtonStyle(
+                          textStyle: MaterialStateProperty.all<TextStyle>(
+                              const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 20)),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              themeProvider.getColor),
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ))),
+                    ),
+                    colorScheme: ColorScheme.fromSwatch(
+                      primarySwatch: Colors.orange,
+                    ).copyWith(secondary: Colors.grey.shade600)),
+                onGenerateRoute: AppRoute.generateRoute,
+              );
+            })));
   }
 }

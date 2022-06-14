@@ -1,4 +1,8 @@
+import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../utils/colors.dart';
 
 class ShowToast{
   BuildContext context;
@@ -24,9 +28,10 @@ class CreditAppBar extends StatelessWidget implements PreferredSizeWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
+    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     return AppBar(
       elevation: 0.5,
-      backgroundColor: Colors.deepOrangeAccent,
+      backgroundColor: themeProvider.getColor,
       iconTheme: IconThemeData(color: Colors.white),
       title: Text(
         title,

@@ -6,11 +6,14 @@ import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:provider/provider.dart';
 import '../../dataprovider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
 
 import '../../route.dart';
+import '../../utils/colors.dart';
 import '../../utils/painter.dart';
+import '../../utils/theme/ThemeProvider.dart';
 
 class TransferMoney extends StatefulWidget {
   static const routeName = "/transfer";
@@ -30,6 +33,19 @@ class _TransferState extends State<TransferMoney> {
   TextEditingController amountController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   bool _isLoading = false;
+  int _currentThemeIndex = 2;
+
+  late ThemeProvider themeProvider;
+
+  @override
+  void initState() {
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    _loadPreTheme();
+  }
+
+  _loadPreTheme() {
+    _currentThemeIndex = themeProvider.getThemeIndex();
+  }
 
   Widget _amountBox() {
     return TextFormField(
@@ -52,8 +68,7 @@ class _TransferState extends State<TransferMoney> {
           fillColor: Colors.white,
           filled: true,
           border: OutlineInputBorder(
-              borderSide: BorderSide.none //BorderSide(style: BorderStyle.none)
-              )),
+              borderSide: BorderSide(style: BorderStyle.solid))),
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please enter Amount';
@@ -72,7 +87,7 @@ class _TransferState extends State<TransferMoney> {
 
   Widget _phoneBox() {
     return Padding(
-      padding: const EdgeInsets.only(left: 40, right: 40, top: 10),
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: TextFormField(
         maxLength: 9,
         maxLines: 1,
@@ -105,7 +120,8 @@ class _TransferState extends State<TransferMoney> {
             suffix: Text("$textLength/9"),
             fillColor: Colors.white,
             filled: true,
-            border: OutlineInputBorder(borderSide: BorderSide.none)),
+            border: OutlineInputBorder(
+                borderSide: BorderSide(style: BorderStyle.solid))),
         validator: (value) {
           if (value!.isEmpty) {
             return 'Please enter Your Phone number';
@@ -184,7 +200,7 @@ class _TransferState extends State<TransferMoney> {
                 clipper: WaveClipper(),
                 child: Container(
                   height: 350,
-                  color: Colors.deepOrangeAccent,
+                  color: themeProvider.getColor,
                 ),
               ),
             ),
@@ -192,7 +208,7 @@ class _TransferState extends State<TransferMoney> {
               clipper: WaveClipper(),
               child: Container(
                 height: 200,
-                color: Colors.deepOrangeAccent,
+                color: themeProvider.getColor,
               ),
             ),
             Opacity(
@@ -201,7 +217,7 @@ class _TransferState extends State<TransferMoney> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   height: 150,
-                  color: Colors.deepOrangeAccent,
+                  color: themeProvider.getColor,
                   child: ClipPath(
                     clipper: WaveClipperBottom(),
                     child: Container(
@@ -212,49 +228,52 @@ class _TransferState extends State<TransferMoney> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                ),
-                elevation: 1.0,
-                child: Form(
-                  key: _formKey,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 2.5,
-                    padding:
-                        const EdgeInsets.only(left: 10, right: 10, top: 50),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                            padding:
-                                EdgeInsets.only(left: 40, right: 40, top: 10),
-                            child: Text(
-                              "Send Money",
-                              style: TextStyle(fontSize: 25),
-                            )),
-                        _phoneBox(),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 40, right: 40, top: 5),
-                          child: _amountBox(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 40, right: 40, top: 10),
-                          child: SizedBox(
-                            height: 40,
-                            width: MediaQuery.of(context).size.width,
-                            child: _transferButton(),
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                  elevation: 1.0,
+                  child: Form(
+                    key: _formKey,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 2.55,
+                      padding:
+                          const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                              padding:
+                                  EdgeInsets.only(left: 40, right: 40, top: 10),
+                              child: Text(
+                                "Send Money",
+                                style: TextStyle(fontSize: 25),
+                              )),
+                          _phoneBox(),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 5),
+                            child: _amountBox(),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 10),
+                            child: SizedBox(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width,
+                              child: _transferButton(),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

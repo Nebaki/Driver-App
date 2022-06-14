@@ -6,9 +6,12 @@ import 'package:driverapp/screens/credit/transfer_form.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/credit/credit.dart';
+import '../../utils/colors.dart';
 import '../../utils/painter.dart';
+import '../../utils/theme/ThemeProvider.dart';
 import 'toast_message.dart';
 
 class Walet extends StatefulWidget {
@@ -24,6 +27,12 @@ class _WaletState extends State<Walet> {
     color: Colors.white,
     fontWeight: FontWeight.bold,
   );
+  int _currentThemeIndex = 2;
+
+  late ThemeProvider themeProvider;
+  _loadPreTheme() {
+    _currentThemeIndex = themeProvider.getThemeIndex();
+  }
 
   @override
   void initState() {
@@ -31,6 +40,8 @@ class _WaletState extends State<Walet> {
     _isMessageLoading = true;
     reloadBalance();
     prepareRequest(context);
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    _loadPreTheme();
     super.initState();
   }
 
@@ -48,7 +59,7 @@ class _WaletState extends State<Walet> {
               clipper: WaveClipper(),
               child: Container(
                 height: 250,
-                color: Colors.deepOrangeAccent,
+                color: themeProvider.getColor,
               ),
             ),
           ),
@@ -56,7 +67,7 @@ class _WaletState extends State<Walet> {
             clipper: WaveClipper(),
             child: Container(
               height: 160,
-              color: Colors.deepOrangeAccent,
+              color: themeProvider.getColor,
             ),
           ),
           Opacity(
@@ -65,7 +76,7 @@ class _WaletState extends State<Walet> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 height: 150,
-                color: Colors.deepOrangeAccent,
+                color: themeProvider.getColor,
                 child: ClipPath(
                   clipper: WaveClipperBottom(),
                   child: Container(
@@ -105,8 +116,8 @@ class _WaletState extends State<Walet> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: _isBalanceLoading
-                                ? const SpinKitThreeBounce(
-                                    color: Colors.deepOrange,
+                                ?  SpinKitThreeBounce(
+                                    color: themeProvider.getColor,
                                     size: 30,
                                   )
                                 : Text(
@@ -123,8 +134,8 @@ class _WaletState extends State<Walet> {
                           Card(
                               elevation: 0,
                               child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.deepOrange,
+                                decoration:  BoxDecoration(
+                                    color: themeProvider.getColor,
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 //color: Colors.deepOrange,
@@ -173,11 +184,11 @@ class _WaletState extends State<Walet> {
                       ),
                     ),
                   ),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.only(top: 20, left: 20, bottom: 10),
                     child: Text(
                       "Recent Messages",
-                      style: TextStyle(color: Colors.deepOrange),
+                      style: TextStyle(color: themeProvider.getColor),
                     ),
                   ),
                   Container(
@@ -188,14 +199,14 @@ class _WaletState extends State<Walet> {
                             topRight: Radius.circular(10))),
                     height: MediaQuery.of(context).size.height - 324,
                     child: _isMessageLoading
-                        ? const Align(
+                        ? Align(
                             alignment: Alignment.center,
                             child: SizedBox(
                               height: 50,
                               width: 50,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.red,
+                                color: themeProvider.getColor,
                               ),
                             ))
                         : ListBuilder(_items!),

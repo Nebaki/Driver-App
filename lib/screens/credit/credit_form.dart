@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import '../../dataprovider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
 
+import '../../utils/colors.dart';
 import '../../utils/painter.dart';
+import '../../utils/theme/ThemeProvider.dart';
 import 'telebirr_data.dart';
 
 class TeleBirrData extends StatefulWidget {
@@ -19,6 +22,19 @@ class TeleBirrData extends StatefulWidget {
 class _TeleBirrDataState extends State<TeleBirrData> {
   final _formkey = GlobalKey<FormState>();
   final _appBar = GlobalKey<FormState>();
+  int _currentThemeIndex = 2;
+
+  late ThemeProvider themeProvider;
+
+  @override
+  void initState() {
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    _loadPreTheme();
+  }
+
+  _loadPreTheme() {
+    _currentThemeIndex = themeProvider.getThemeIndex();
+  }
 
   TextEditingController amountController = TextEditingController();
   bool _isLoading = false;
@@ -41,7 +57,8 @@ class _TeleBirrDataState extends State<TeleBirrData> {
             fillColor: Colors.white,
             filled: true,
             border: OutlineInputBorder(
-                borderSide: BorderSide(style: BorderStyle.solid))),
+                borderSide: BorderSide(style: BorderStyle.solid))
+        ),
         validator: (value) {
           if (value!.isEmpty) {
             return 'Please enter Amount';
@@ -99,7 +116,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                 clipper: WaveClipper(),
                 child: Container(
                   height: 350,
-                  color: Colors.deepOrangeAccent,
+                  color: themeProvider.getColor,
                 ),
               ),
             ),
@@ -107,7 +124,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
               clipper: WaveClipper(),
               child: Container(
                 height: 200,
-                color: Colors.deepOrangeAccent,
+                color: themeProvider.getColor,
               ),
             ),
             Opacity(
@@ -116,7 +133,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   height: 150,
-                  color: Colors.deepOrangeAccent,
+                  color: themeProvider.getColor,
                   child: ClipPath(
                     clipper: WaveClipperBottom(),
                     child: Container(
@@ -127,52 +144,49 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                 ),
               ),
             ),
-            SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height / 3,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        elevation: 1.0,
-                        child: Form(
-                            key: _formkey,
-                            child: Center(
-                              child: Column(
-                                children: [
-                                  const Padding(
-                                      padding: EdgeInsets.only(left: 40, right: 40, top: 10),
-                                      child: Text(
-                                        "Credit Amount",
-                                        style: TextStyle(fontSize: 25),
-                                      )),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 40, right: 40, top: 5),
-                                    child: _amountBox(),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(left: 40, right: 40, top: 10),
-                                    child: SizedBox(
-                                      height: 40,
-                                      width: MediaQuery.of(context).size.width,
-                                      child: _startButton(),
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height / 3,
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          elevation: 1.0,
+                          child: Form(
+                              key: _formkey,
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    const Padding(
+                                        padding: EdgeInsets.only(left: 40, right: 40, top: 10),
+                                        child: Text(
+                                          "Credit Amount",
+                                          style: TextStyle(fontSize: 25),
+                                        )),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
+                                      child: _amountBox(),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 10, right: 10, top: 10),
+                                      child: SizedBox(
+                                        height: 50,
+                                        width: MediaQuery.of(context).size.width,
+                                        child: _startButton(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
             ),
+
           ],
         ));
   }

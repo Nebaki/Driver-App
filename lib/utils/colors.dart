@@ -7,6 +7,12 @@ class ColorProvider{
   var secondaryColor = Colors.orange;
   var secondaryDarkColor = Colors.deepOrange;
 
+
+  var primaryDeepOrange = Colors.deepOrangeAccent;
+  var primaryDeepGreen = Colors.green;
+  var primaryDeepPurple = Colors.deepPurpleAccent;
+  var primaryDeepRed = Colors.red;
+
   var primaryTextColor = Colors.black54;
   var primaryDarkTextColor = Colors.black;
 

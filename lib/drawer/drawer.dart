@@ -6,12 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
+import '../utils/colors.dart';
 import '../utils/painter.dart';
+import '../utils/theme/ThemeProvider.dart';
 
 class NavDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     var height = MediaQuery.of(context).size.height;
     return Drawer(
         child: Material(
@@ -24,7 +28,7 @@ class NavDrawer extends StatelessWidget {
               clipper: WaveClipperD(),
               child: Container(
                 height: 250,
-                color: Colors.deepOrangeAccent,
+                color: themeProvider.getColor,
               ),
             ),
           ),
@@ -32,7 +36,7 @@ class NavDrawer extends StatelessWidget {
             clipper: WaveClipperD(),
             child: Container(
               height: 220,
-              color: Colors.deepOrangeAccent,
+              color: themeProvider.getColor,
             ),
           ),
           Opacity(
@@ -41,7 +45,7 @@ class NavDrawer extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 height: height * 0.8,
-                color: Colors.deepOrangeAccent,
+                color: themeProvider.getColor,
                 child: ClipPath(
                   clipper: WaveClipperBottomD(),
                   child: Container(
@@ -362,10 +366,10 @@ class NavDrawer extends StatelessWidget {
                             },
                             child: Row(
                               children: [
-                                Icon(Icons.logout,color: Colors.deepOrangeAccent,),
+                                Icon(Icons.logout,color: themeProvider.getColor,),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text("Logout",style: TextStyle(color: Colors.deepOrangeAccent),),
+                                  child: Text("Logout",style: TextStyle(color: themeProvider.getColor),),
                                 ),
                               ],
                             ),
@@ -382,10 +386,10 @@ class NavDrawer extends StatelessWidget {
                             },
                             child: Row(
                               children: [
-                                Icon(Icons.settings,color: Colors.deepOrangeAccent,),
+                                Icon(Icons.settings,color: themeProvider.getColor,),
                                 Padding(
                                   padding: const EdgeInsets.all(3.0),
-                                  child: Text("Settings",style: TextStyle(color: Colors.deepOrangeAccent),),
+                                  child: Text("Settings",style: TextStyle(color: themeProvider.getColor),),
                                 ),
                               ],
                             ),
@@ -739,10 +743,10 @@ class NavDrawer extends StatelessWidget {
                           },
                           child: Row(
                               children: [
-                                Icon(Icons.settings,color: Colors.deepOrangeAccent,),
+                                Icon(Icons.settings,color: themeProvider.getColor,),
                                 Padding(
                                   padding: const EdgeInsets.all(3.0),
-                                  child: Text("Settings",style: TextStyle(color: Colors.deepOrangeAccent),),
+                                  child: Text("Settings",style: TextStyle(color: themeProvider.getColor),),
                                 ),
                               ],
                             ),

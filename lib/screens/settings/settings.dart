@@ -5,21 +5,43 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
+import 'package:provider/provider.dart';
 
+import '../../utils/colors.dart';
 import '../../utils/painter.dart';
 import '../../utils/settings/settings_ui.dart';
+import '../../utils/theme/ThemeProvider.dart';
 
-class SettingScreen extends StatelessWidget {
+class SettingScreen extends StatefulWidget {
   static const routeName = "/settings";
 
+  @override
+  State<SettingScreen> createState() => _SettingScreenState();
+}
+
+class _SettingScreenState extends State<SettingScreen> {
   final _textStyle =
-  const TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
+      const TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
+
+  int _currentThemeIndex = 2;
+
+  late ThemeProvider themeProvider;
+
+  @override
+  void initState() {
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    _loadPreTheme();
+  }
+
+  _loadPreTheme() {
+    _currentThemeIndex = themeProvider.getThemeIndex();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepOrangeAccent,
+        backgroundColor: themeProvider.getColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
@@ -59,7 +81,7 @@ class SettingScreen extends StatelessWidget {
                 clipper: WaveClipper(),
                 child: Container(
                   height: 250,
-                  color: Colors.deepOrangeAccent,
+                  color: themeProvider.getColor,
                 ),
               ),
             ),
@@ -67,7 +89,7 @@ class SettingScreen extends StatelessWidget {
               clipper: WaveClipper(),
               child: Container(
                 height: 160,
-                color: Colors.deepOrangeAccent,
+                color: themeProvider.getColor,
               ),
             ),
             Opacity(
@@ -76,7 +98,7 @@ class SettingScreen extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   height: 150,
-                  color: Colors.deepOrangeAccent,
+                  color: themeProvider.getColor,
                   child: ClipPath(
                     clipper: WaveClipperBottom(),
                     child: Container(
@@ -89,24 +111,25 @@ class SettingScreen extends StatelessWidget {
             ),
             SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 20, left: 5, right: 5),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15.0),
-                        child: Profile(
-                          id: state.auth.id,
-                          emergencyContact: state.auth.emergencyContact,
-                          imgUrl: state.auth.profilePicture!,
-                          name: name,
-                          email: email,
-                          balance: balance,
-                          phone: phoneNumber,
-                          rating: rating,
-                          lastName: lastName,
-                        ),
-                      ),
-                      /*Card(
+              padding: const EdgeInsets.only(top: 20, left: 5, right: 5),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: Profile(
+                      id: state.auth.id,
+                      emergencyContact: state.auth.emergencyContact,
+                      imgUrl: state.auth.profilePicture!,
+                      name: name,
+                      email: email,
+                      balance: balance,
+                      phone: phoneNumber,
+                      rating: rating,
+                      lastName: lastName,
+                      themeProvider: themeProvider,
+                    ),
+                  ),
+                  /*Card(
                     elevation: 3,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,103 +241,191 @@ class SettingScreen extends StatelessWidget {
                       ],
                     ),
                   )*/
-                      // Card(
-                      //   elevation: 3,
-                      //   child: Column(
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     children: [
-                      //       Padding(
-                      //         padding: const EdgeInsets.only(top: 8, left: 5),
-                      //         child: Text(
-                      //           "Legal",
-                      //           style: _textStyle,
-                      //         ),
-                      //       ),
-                      //       const Divider(
-                      //         color: Colors.red,
-                      //         thickness: 1.5,
-                      //       ),
-                      //       Container(
-                      //         padding:
-                      //             const EdgeInsets.only(left: 10, bottom: 20, top: 10),
-                      //         child: Column(
-                      //           crossAxisAliimgUrlgnment: CrossAxisAlignment.start,
-                      //           children: [
-                      //             Text(
-                      //               "Contact Us",
-                      //               style: _textStyle,
-                      //             ),
-                      //             Text("Privacy Policy", style: _textStyle),
-                      //             Text("Terms & Conditions", style: _textStyle),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0),
+                  // Card(
+                  //   elevation: 3,
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(top: 8, left: 5),
+                  //         child: Text(
+                  //           "Legal",
+                  //           style: _textStyle,
+                  //         ),
+                  //       ),
+                  //       const Divider(
+                  //         color: Colors.red,
+                  //         thickness: 1.5,
+                  //       ),
+                  //       Container(
+                  //         padding:
+                  //             const EdgeInsets.only(left: 10, bottom: 20, top: 10),
+                  //         child: Column(
+                  //           crossAxisAliimgUrlgnment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             Text(
+                  //               "Contact Us",
+                  //               style: _textStyle,
+                  //             ),
+                  //             Text("Privacy Policy", style: _textStyle),
+                  //             Text("Terms & Conditions", style: _textStyle),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15, left: 15),
+                          child: Text(
+                            "Preference",
+                            style: _textStyle,
+                          ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 15, left: 15),
+                        Divider(
+                          color: themeProvider.getColor,
+                          thickness: 1.5,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(
+                              left: 10, bottom: 20, top: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text.rich(TextSpan(
+                                  text: "Preferable Gender: ",
+                                  style: _textStyle,
+                                  children: [
+                                    TextSpan(
+                                        text: state.auth.pref!["gender"],
+                                        style: const TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            fontWeight: FontWeight.w300))
+                                  ])),
+                            ],
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                              onPressed: () {
+                                //print(state.auth.);
+                                Navigator.pushNamed(
+                                    context, PreferenceScreen.routeNAme,
+                                    arguments: PreferenceArgument(
+                                        gender: state.auth.pref!['gender'],
+                                        min_rate: double.parse(
+                                          state.auth.pref!['min_rate'],
+                                        ),
+                                        carType: state.auth.pref!["car_type"]));
+                                // Navigator.pushNamed(
+                                //     context, PreferenceScreen.routeNAme);
+                              },
                               child: Text(
-                                "Preference",
-                                style: _textStyle,
-                              ),
-                            ),
-                            const Divider(
-                              color: Colors.red,
-                              thickness: 1.5,
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(
-                                  left: 10, bottom: 20, top: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text.rich(TextSpan(
-                                      text: "Preferable Gender: ",
-                                      style: _textStyle,
-                                      children: [
-                                        TextSpan(
-                                            text: state.auth.pref!["gender"],
-                                            style: const TextStyle(
-                                                fontStyle: FontStyle.italic,
-                                                fontWeight: FontWeight.w300))
-                                      ])),
-                                ],
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                  onPressed: () {
-                                    //print(state.auth.);
-                                    Navigator.pushNamed(
-                                        context, PreferenceScreen.routeNAme,
-                                        arguments: PreferenceArgument(
-                                            gender: state.auth.pref!['gender'],
-                                            min_rate: double.parse(
-                                              state.auth.pref!['min_rate'],
-                                            ),
-                                            carType: state.auth
-                                                .pref!["car_type"]));
-                                    // Navigator.pushNamed(
-                                    //     context, PreferenceScreen.routeNAme);
-                                  },
-                                  child: const Text("Edit Preference")),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
+                                "Edit Preference",
+                                style: TextStyle(
+                                    color: themeProvider.getColor),
+                              )),
+                        )
+                      ],
+                    ),
                   ),
-                ))
+                  Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15, left: 15),
+                          child: Text(
+                            "Theme",
+                            style: _textStyle,
+                          ),
+                        ),
+                        Divider(
+                          color: themeProvider.getColor,
+                          thickness: 1.5,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(
+                              left: 10, bottom: 20, top: 10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(0);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepGreen,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(1);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepRed,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(2);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepPurple,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(3);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepOrange,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ))
           ]);
         }
 
@@ -325,7 +436,6 @@ class SettingScreen extends StatelessWidget {
   }
 
   var value = false;
-
 }
 
 class Profile extends StatelessWidget {
@@ -338,16 +448,19 @@ class Profile extends StatelessWidget {
   double? rating;
   String? id;
   String? emergencyContact;
+  ThemeProvider themeProvider;
 
   Profile(
-      {required this.id,required this.emergencyContact,
-        required this.imgUrl,
+      {required this.id,
+      required this.emergencyContact,
+      required this.imgUrl,
       required this.name,
       required this.email,
       required this.lastName,
       required this.phone,
       this.balance,
-      this.rating});
+      this.rating,
+      required this.themeProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -382,6 +495,7 @@ class Profile extends StatelessWidget {
                   height: 60.0,
                   width: 60.0,
                   imgUrl: this.imgUrl,
+                  themeProvider: themeProvider,
                 ),
                 SizedBox(
                   width: 15.0,
@@ -414,37 +528,31 @@ class Profile extends StatelessWidget {
                 ),
                 IconButton(
                     onPressed: () {
-                      Navigator.pushNamed(
-                          context, EditProfile.routeName,
+                      Navigator.pushNamed(context, EditProfile.routeName,
                           arguments: EditProfileArgument(
                               auth: Auth(
-                                  phoneNumber:
-                                  phone,
+                                  phoneNumber: phone,
                                   id: id,
                                   name: name,
                                   lastName: lastName,
                                   email: email,
-                                  emergencyContact:
-                                  emergencyContact,
+                                  emergencyContact: emergencyContact,
                                   profilePicture: imgUrl)));
-
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.border_color,
-                      color: Colors.deepOrangeAccent,
+                      color: themeProvider.getColor,
                       size: 20.0,
                     )),
                 IconButton(
                     onPressed: () {
-                      Navigator.pushNamed(
-                          context, ChangePassword.routeName);
+                      Navigator.pushNamed(context, ChangePassword.routeName);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.password,
-                      color: Colors.deepOrangeAccent,
+                      color: themeProvider.getColor,
                       size: 20.0,
                     )),
-
               ],
             ),
             SizedBox(
@@ -500,8 +608,8 @@ class Profile extends StatelessWidget {
             SizedBox(
               height: 5.0,
             ),
-            const Divider(
-              color: Colors.red,
+            Divider(
+              color: themeProvider.getColor,
               thickness: 1.5,
             ),
             Row(
@@ -534,9 +642,7 @@ class Profile extends StatelessWidget {
                   ),
               ],
             ),
-            Row(
-
-            )
+            Row()
           ],
         ),
       ),
@@ -548,12 +654,12 @@ class ProfileImage extends StatelessWidget {
   final double height, width;
   final Color color;
   final String imgUrl;
-
+  ThemeProvider themeProvider;
   ProfileImage(
       {this.height = 100.0,
       this.width = 100.0,
       this.color = Colors.white,
-      required this.imgUrl});
+      required this.imgUrl, required this.themeProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -562,7 +668,7 @@ class ProfileImage extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.red,
+        color: themeProvider.getColor,
         image: DecorationImage(
           image: NetworkImage("devMausam"),
           fit: BoxFit.contain,

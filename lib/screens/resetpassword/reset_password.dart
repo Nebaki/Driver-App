@@ -1,13 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../utils/colors.dart';
 import '../../utils/painter.dart';
+import '../../utils/theme/ThemeProvider.dart';
 
-class ResetPassword extends StatelessWidget {
+class ResetPassword extends StatefulWidget {
   static const routeName = "/resetpassword";
+
+  @override
+  State<ResetPassword> createState() => _ResetPasswordState();
+}
+
+class _ResetPasswordState extends State<ResetPassword> {
   final _formkey = GlobalKey<FormState>();
 
   final newPasswordController = TextEditingController();
+
   final confirmPasswordController = TextEditingController();
+  int _currentThemeIndex = 2;
+
+  late ThemeProvider themeProvider;
+
+  @override
+  void initState() {
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    _loadPreTheme();
+  }
+
+  _loadPreTheme() {
+    _currentThemeIndex = themeProvider.getThemeIndex();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +42,7 @@ class ResetPassword extends StatelessWidget {
             clipper: WaveClipper(),
             child: Container(
               height: 180,
-              color: Colors.deepOrangeAccent,
+              color: themeProvider.getColor,
             ),
           ),
         ),
@@ -27,7 +50,7 @@ class ResetPassword extends StatelessWidget {
           clipper: WaveClipper(),
           child: Container(
             height: 160,
-            color: Colors.deepOrangeAccent,
+            color: themeProvider.getColor,
           ),
         ),
         Opacity(
@@ -36,7 +59,7 @@ class ResetPassword extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: Container(
               height: 100,
-              color: Colors.deepOrangeAccent,
+              color: themeProvider.getColor,
               child: ClipPath(
                 clipper: WaveClipperBottom(),
                 child: Container(
