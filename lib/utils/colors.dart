@@ -15,7 +15,7 @@ class ColorProvider{
   var primaryDeepBlue = Colors.blue;
   var primaryDeepBlack = Colors.black54;
   var primaryDeepTeal = Colors.teal;
-  var primaryDeepCheetah = Color(0xFF00cd34);;
+  var primaryDeepCheetah = Color(0xFF00cd34);
 
   var primaryTextColor = Colors.black54;
   var primaryDarkTextColor = Colors.black;
