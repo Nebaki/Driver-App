@@ -14,19 +14,17 @@ import 'package:provider/provider.dart';
 import '../../utils/theme/ThemeProvider.dart';
 
 class OfflineMode extends StatefulWidget {
-  Color theme;
-  OfflineMode({required this.theme});
+  //Color theme;
+  OfflineMode(/*{required this.theme}*/);
 
   @override
-  State<OfflineMode> createState() => _OfflineModeState(theme);
+  State<OfflineMode> createState() => _OfflineModeState();
 }
 
 class _OfflineModeState extends State<OfflineMode> {
   bool isDriverOn = false;
 
   bool hasBalance = true;
-  Color theme;
-  _OfflineModeState(this.theme);
 
   // onWillPop: () async {
   @override
@@ -49,13 +47,12 @@ class _OfflineModeState extends State<OfflineMode> {
                     // return
                     if (state.balance > 0) {
                       return FloatingActionButton(
-                        backgroundColor: theme,
                         onPressed: () {
                           isDriverOnline = true;
                           getLiveLocation();
                           context
                               .read<CurrentWidgetCubit>()
-                              .changeWidget(OnlinMode(theme: theme,));
+                              .changeWidget(OnlinMode());
                           // callback!(OnlinMode(callback, setDriverStatus));
                         },
                         child: Container(
@@ -69,12 +66,12 @@ class _OfflineModeState extends State<OfflineMode> {
                     }
                   }
                   return FloatingActionButton(
-                    backgroundColor: theme,
                     onPressed: null,
                     child: Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 1.5),
+                            color: Theme.of(context).primaryColor,
+                            border: Border.all(color: Colors.black, width: 1.5),
                             borderRadius: BorderRadius.circular(100)),
                         child: const Text("Go")),
                   );
@@ -161,7 +158,7 @@ class _OfflineModeState extends State<OfflineMode> {
             borderRadius: BorderRadius.circular(100),
             child: Container(
               padding: EdgeInsets.all(5),
-              color: theme,
+              color: Theme.of(context).primaryColor,
               child: Icon(
                 icon,
                 color: Colors.white,

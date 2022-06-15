@@ -116,6 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
   );
   int waitingTimer = 40;
 
+  late ThemeProvider themeProvider;
   @override
   void initState() {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
@@ -130,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     super.initState();
     _listenBackGroundMessege();
-    _currentWidget = OfflineMode(theme: themeProvider.getColor);
+    _currentWidget = OfflineMode(/*theme: themeProvider.getColor*/);
     _checkLocationServiceOnInit();
     _toggleLocationServiceStatusStream();
     _toggleInternetServiceStatusStream();
@@ -144,7 +145,6 @@ class _HomeScreenState extends State<HomeScreen> {
         : null;
 
   }
-  late ThemeProvider themeProvider;
 
   @override
   void dispose() {
@@ -351,7 +351,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const CircularProgressIndicator(),
                             errorWidget: (context, url, error) => Icon(
                                   Icons.person,
-                                  color: themeProvider.getColor,
                                   size: 30,
                                 )),
                       )),
@@ -381,7 +380,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             child: Icon(
                               Icons.call,
-                              color: themeProvider.getColor,
                               size: 30,
                             )),
                       ),
@@ -419,8 +417,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10)),
-                                                  child: Icon(Icons.trip_origin,
-                                                      color: themeProvider.getColor)),
+                                                  child: Icon(Icons.trip_origin,)),
                                             ),
                                         listener: (context, state) {
                                           if (state is BalanceLoadSuccess) {
@@ -482,8 +479,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       zoom: 16.4746,
                                       target: LatLng(currentLat, currentLng))));
                             },
-                            child: Icon(Icons.gps_fixed,
-                                color: themeProvider.getColor, size: 30)),
+                            child: Icon(Icons.gps_fixed, size: 30)),
                       ),
                     ),
                     BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
@@ -501,7 +497,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Text(
                                       'SOS',
                                       style: TextStyle(
-                                          color: themeProvider.getColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18),
 
@@ -527,7 +522,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                             width: 20,
                                             child: CircularProgressIndicator(
                                               strokeWidth: 1,
-                                              color: themeProvider.getColor,
                                             ),
                                           ),
                                           SizedBox(
@@ -605,7 +599,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           showNearbyOpportunity
                                               ? Icons.golf_course
                                               : Icons.close,
-                                          color: themeProvider.getColor,
                                           size: 30)),
                                 ),
                               ),
@@ -742,14 +735,14 @@ class _HomeScreenState extends State<HomeScreen> {
     counter = 0;
     setState(() {
       if (isBalanceInsufficient) {
-        context.read<CurrentWidgetCubit>().changeWidget(OnlinMode(theme: themeProvider.getColor,));
+        context.read<CurrentWidgetCubit>().changeWidget(OnlinMode());
         getLiveLocation();
       } else {
-        context.read<CurrentWidgetCubit>().changeWidget(OfflineMode(theme: themeProvider.getColor));
+        context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
       }
       isAccepted = false;
 
-      _currentWidget = OnlinMode(theme: themeProvider.getColor,);
+      _currentWidget = OnlinMode();
       markers.clear();
       polylines.clear();
       availablePassengersMarkers.clear();
@@ -1064,7 +1057,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _buildSheet(String address) {
     showModalBottomSheet(
-        backgroundColor: Colors.black,
+        //backgroundColor: Colors.black,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30), topRight: Radius.circular(30))),
@@ -1081,8 +1074,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     padding: const EdgeInsets.only(
                         top: 20, left: 20, right: 20, bottom: 10),
-                    decoration: const BoxDecoration(
-                        color: Colors.black,
+                    decoration: BoxDecoration(
+                        color: themeProvider.getColor,
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(30),
                             topRight: Radius.circular(30))),
@@ -1140,7 +1133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 decoration: InputDecoration(
                                     prefixIcon: Icon(
                                       Icons.phone,
-                                      color: themeProvider.getColor,
+                                      //color: themeProvider.getColor,
                                     ),
                                     labelText: "Phone Number"),
                               ),
@@ -1163,12 +1156,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                       },
                                       icon: Icon(
                                         Icons.clear,
-                                        color: themeProvider.getColor,
+                                        //color: themeProvider.getColor,
                                         size: 20,
                                       )),
                                   prefixIcon: Icon(
                                     Icons.location_on,
-                                    color: themeProvider.getColor,
+                                    //color: themeProvider.getColor,
                                   ),
                                   labelText: "Current Location"),
                             ),
@@ -1184,7 +1177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               decoration: InputDecoration(
                                   prefixIcon: Icon(
                                     Icons.location_on,
-                                    color: themeProvider.getColor,
+                                    //color: themeProvider.getColor,
                                   ),
                                   labelText: "Pick Location"),
                             ),

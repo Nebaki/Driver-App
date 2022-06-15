@@ -8,17 +8,13 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 
 class OnlinMode extends StatefulWidget{
 
-  Color theme;
-  OnlinMode({required this.theme});
+  OnlinMode();
 
   @override
-  State<OnlinMode> createState() => _OnlinModeState(theme);
+  State<OnlinMode> createState() => _OnlinModeState();
 }
 
 class _OnlinModeState extends State<OnlinMode> {
-  Color theme;
-  _OnlinModeState(this.theme);
-
   @override
   void dispose() {
     super.dispose();
@@ -59,7 +55,7 @@ class _OnlinModeState extends State<OnlinMode> {
                           isDriverOnline = false;
                           context
                               .read<CurrentWidgetCubit>()
-                              .changeWidget(OfflineMode(theme: theme,));
+                              .changeWidget(OfflineMode());
                           // widget.callback!(OfflineMode(
                           //     widget.setDriverStatus, widget.callback));
                         },
@@ -69,7 +65,7 @@ class _OnlinModeState extends State<OnlinMode> {
                                 border:
                                     Border.all(color: Colors.white, width: 1.5),
                                 borderRadius: BorderRadius.circular(100)),
-                            child: Text("Off")),
+                            child: Text("Off",style: TextStyle(color: Colors.white),)),
                       ),
                     );
                   }
@@ -102,7 +98,7 @@ class _OnlinModeState extends State<OnlinMode> {
                       ),
                     ),
                   ),
-                  const Divider(color: Colors.orange, thickness: 1),
+                  const Divider(color: Colors.green, thickness: 1),
                   SizedBox(
                     height: 100,
                     child: Row(

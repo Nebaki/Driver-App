@@ -59,71 +59,78 @@ class ListBuilder extends StatelessWidget {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.3,
       child: Column(
-        children: <Widget>[
-          ListTile(
-            leading: Icon(
-              credit.type == "Gift" ? Icons.wallet_giftcard : Icons.email,
-              size: 50,
-            ),
-            title: Text(
-              credit.title!,
-              style: const TextStyle(fontSize: 22, color: Colors.red),
-            ),
-            subtitle: Text(credit.date!),
-            trailing:
-                Text(credit.amount!, style: const TextStyle(color: Colors.red)),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Text(
-              credit.message!,
-              style: const TextStyle(color: Colors.black),
-            ),
-          ),
-
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "Payed with: ",
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                      Text(
-                        credit.paymentMethod!,
-                        style: const TextStyle(color: Colors.deepOrangeAccent),
-                      ),
-                    ],
+          //crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          //mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(
+                    credit.type == "Gift" ? Icons.wallet_giftcard : Icons.email,
+                    size: 50,
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        "Payment status: ",
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                      Text(
-                        credit.status!,
-                        style: const TextStyle(color: Colors.deepOrangeAccent),
+                  title: Text(
+                    credit.title!,
+                    style: const TextStyle(fontSize: 22, color: Colors.red),
+                  ),
+                  subtitle: Text(credit.date!),
+                  trailing:
+                      Text(credit.amount!, style: const TextStyle(color: Colors.red)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(
+                    credit.message!,
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "Payed with: ",
+                                  style: const TextStyle(color: Colors.black),
+                                ),
+                                Text(
+                                  credit.paymentMethod!,
+                                  style: const TextStyle(color: Colors.deepOrangeAccent),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "status: ",
+                                  style: const TextStyle(color: Colors.black),
+                                ),
+                                Text(
+                                  credit.status!,
+                                  style: const TextStyle(color: Colors.deepOrangeAccent),
+                                ),
+
+                              ],
+                            ),
+                            /*Row(
+                              children: [
+                                Text("Status: ${credit.paymentMethod!},"
+                                    " ${credit.status!}, ${credit.depositedBy!.name!}"),
+                              ],
+                            ),*/
+                          ],
+                        ),
                       ),
 
-                    ],
                   ),
-                  Row(
-                    children: [
-                      Text("Deposied by: ${credit.depositedBy!.name!},"
-                          " ${credit.depositedBy!.phone!}, ${credit.depositedBy!.email!}"),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+
+              ],
             ),
-          ),
-
-        ],
-      ),
     );
   }
 }

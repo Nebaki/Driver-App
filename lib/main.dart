@@ -225,11 +225,12 @@ class MyApp extends StatelessWidget {
                 title: 'SafeWay',
                 theme: ThemeData(
                     floatingActionButtonTheme:
-                        const FloatingActionButtonThemeData(
+                        FloatingActionButtonThemeData(
+                          backgroundColor: Colors.white,
                             sizeConstraints:
                                 BoxConstraints(minWidth: 80, minHeight: 80),
                             extendedPadding: EdgeInsets.all(50),
-                            foregroundColor: Colors.white,
+                            foregroundColor: themeProvider.getColor,
                             extendedTextStyle: TextStyle(
                                 color: Colors.white,
                                 fontSize: 26,

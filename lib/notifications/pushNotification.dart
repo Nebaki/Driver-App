@@ -29,7 +29,7 @@ class PushNotificationService {
         } else {
           Navigator.pop(context);
           BlocProvider.of<CurrentWidgetCubit>(context)
-              .changeWidget(OnlinMode(theme: themeProvider.getColor,));
+              .changeWidget(OnlinMode());
         }
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Request Cancelled"),
