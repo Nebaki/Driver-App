@@ -25,6 +25,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final auth = await authRepository.getUserData();
         yield AuthDataLoadSuccess(auth);
       } catch (_) {
+        print("ERRR $_");
         yield AuthOperationFailure();
       }
     }

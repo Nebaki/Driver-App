@@ -94,7 +94,7 @@ class HistoryBuilder extends StatelessWidget {
     String googleAPiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
     return "https://maps.googleapis.com/maps/api/staticmap?"
         "size=600x250&"
-        "zoom=15&"
+        "zoom=10&"
         "maptype=roadmap&"
         "markers=color:green%7Clabel:S%7C${trip.pickUpLocation?.latitude},${trip.pickUpLocation?.longitude}&"
         "markers=color:red%7Clabel:E%7C${trip.dropOffLocation?.latitude},${trip.dropOffLocation?.longitude}&"

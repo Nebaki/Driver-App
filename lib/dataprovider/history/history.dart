@@ -11,7 +11,7 @@ import '../header/header.dart';
 import 'package:http/http.dart' as http;
 
 class HistoryDataProvider {
-  final _baseUrl = RequestHeader.baseURLX + 'ride-requests';
+  final _baseUrl = RequestHeader.baseURL + 'ride-requests';
   final http.Client httpClient;
 
   HistoryDataProvider({required this.httpClient});
@@ -23,10 +23,11 @@ class HistoryDataProvider {
 
     if (response.statusCode == 200) {
       final List maps = jsonDecode(response.body)['items'];
+      final int size = jsonDecode(response.body)['total'];
 
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
-      Session().logSession("s-trans ${trips.length}", response.body);
+      Session().logSession("sz-trans $size", response.body);
       return HistoryDB().insertTrips(trips).then((value) => "updated $value History");
       //return "Unable to update history";
       //return CreditStore.fromJson(jsonDecode(response.body));

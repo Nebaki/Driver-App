@@ -67,12 +67,12 @@ class Trip {
         createdAt: json["created_at"],
         updatedAt: json["updated_at"].toString(),
         pickUpAddress: json["pickup_address"],
-        dropOffAddress: json["droppoff_address"],
+        dropOffAddress: json["drop_off_address"],
         price: json["price"].toString(),
         status: json["status"],
         passenger: "Who?"/*json["passenger"]*/,
         pickUpLocation: LatLng(double.parse(json["pickup_location"][0].toString()),double.parse(json["pickup_location"][1].toString())),
-        dropOffLocation: LatLng(double.parse(json["droppoff_location"][1].toString()),double.parse(json["droppoff_location"][0].toString())),
+        dropOffLocation: LatLng(double.parse(json["drop_off_location"][1].toString()),double.parse(json["drop_off_location"][0].toString())),
         picture: null,
       );
 }

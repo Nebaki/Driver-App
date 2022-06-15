@@ -68,7 +68,7 @@ class Auth extends Equatable {
           "car_type": storage["car_type"]
         },
         balance:
-            storage.containsKey('balance') ? int.parse(storage['balance']) : 0,
+            storage.containsKey('balance') ? double.parse(storage['balance']).toInt() : 0,
         perMinuteCost: int.parse(storage['per_minute_cost']),
         perKiloMeterCost: int.parse(storage['per_killo_meter_cost']),
         initialFare: int.parse(storage['initial_fare']));
