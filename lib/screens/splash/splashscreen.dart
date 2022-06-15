@@ -12,6 +12,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
+import 'package:provider/provider.dart';
+
+import '../../utils/theme/ThemeProvider.dart';
 
 class CustomSplashScreen extends StatefulWidget {
   static const routeName = "/splashscreen";
@@ -33,7 +36,9 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     super.initState();
     requestLocationPermission();
     _toggleInternetServiceStatusStream();
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
   }
+  late ThemeProvider themeProvider;
 
   @override
   void dispose() {
@@ -56,7 +61,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     WidgetsFlutterBinding.ensureInitialized();
 
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: themeProvider.getColor,
       body: Stack(
         children: [
           BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {

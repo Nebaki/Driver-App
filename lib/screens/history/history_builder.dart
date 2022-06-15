@@ -16,8 +16,8 @@ import 'package:http/http.dart' as http;
 
 class HistoryBuilder extends StatelessWidget {
   List<Trip> items;
-
-  HistoryBuilder(this.items, {Key? key}) : super(key: key);
+  Color theme;
+  HistoryBuilder(this.items, this.theme, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class HistoryBuilder extends StatelessWidget {
               ),
               subtitle: Text('Date: ${trip.createdAt}'),
               trailing:
-                  Text(trip.price!.split(",")[0]+".ETB", style: const TextStyle(color: Colors.red)),
+                  Text(trip.price!.split(",")[0]+".ETB", style: TextStyle(color: theme)),
             ),
           ],
         ));

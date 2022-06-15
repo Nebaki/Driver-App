@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class WeeklyEarningBarChart extends StatelessWidget {
   final List<double> expenses;
-
-  WeeklyEarningBarChart(this.expenses);
+  Color theme;
+  WeeklyEarningBarChart(this.expenses,this.theme);
 
   @override
   Widget build(BuildContext context) {
@@ -25,37 +25,37 @@ class WeeklyEarningBarChart extends StatelessWidget {
               Bar(
                 label: 'M',
                 amountSpent: expenses[0],
-                mostExpensive: mostExpensive,
+                mostExpensive: mostExpensive,theme: theme,
               ),
               Bar(
                 label: 'T',
                 amountSpent: expenses[1],
-                mostExpensive: mostExpensive,
+                mostExpensive: mostExpensive,theme: theme,
               ),
               Bar(
                 label: 'W',
                 amountSpent: expenses[2],
-                mostExpensive: mostExpensive,
+                mostExpensive: mostExpensive,theme: theme,
               ),
               Bar(
                 label: 'T',
                 amountSpent: expenses[3],
-                mostExpensive: mostExpensive,
+                mostExpensive: mostExpensive,theme: theme,
               ),
               Bar(
                 label: 'F',
                 amountSpent: expenses[4],
-                mostExpensive: mostExpensive,
+                mostExpensive: mostExpensive,theme: theme,
               ),
               Bar(
                 label: 'S',
                 amountSpent: expenses[5],
-                mostExpensive: mostExpensive,
+                mostExpensive: mostExpensive,theme: theme,
               ),
               Bar(
                 label: 'S',
                 amountSpent: expenses[6],
-                mostExpensive: mostExpensive,
+                mostExpensive: mostExpensive,theme: theme,
               ),
             ],
           ),
@@ -69,13 +69,15 @@ class Bar extends StatelessWidget {
   final String label;
   final double amountSpent;
   final double mostExpensive;
+  final Color theme;
 
   final double _maxBarHeight = 100.0;
 
   Bar(
       {required this.label,
       required this.amountSpent,
-      required this.mostExpensive});
+      required this.mostExpensive,
+      required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +95,7 @@ class Bar extends StatelessWidget {
           height: barHeight,
           width: 32.0,
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
+            color: theme,
             borderRadius: BorderRadius.circular(6.0),
           ),
         ),

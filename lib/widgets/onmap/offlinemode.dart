@@ -9,23 +9,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
-class OfflineMode extends StatelessWidget {
+import '../../utils/theme/ThemeProvider.dart';
+
+class OfflineMode extends StatefulWidget {
+  Color theme;
+  OfflineMode({required this.theme});
+
+  @override
+  State<OfflineMode> createState() => _OfflineModeState(theme);
+}
+
+class _OfflineModeState extends State<OfflineMode> {
   bool isDriverOn = false;
-  OfflineMode();
+
   bool hasBalance = true;
+  Color theme;
+  _OfflineModeState(this.theme);
+
   // onWillPop: () async {
-  //         return false;
-  //         // switch (_currentWidget.toString()) {
-  //         //   case 'OnlinMode':
-  //         //     onCloseWarningDialog();
-  //         //     return false;
-  //         //   case 'OfflineMode':
-  //         //     return true;
-  //         //   default:
-  //         //     return false;
-  //         // }
-  //       },
   @override
   Widget build(BuildContext context) {
     if (isDriverOnline != null) {
@@ -46,13 +49,13 @@ class OfflineMode extends StatelessWidget {
                     // return
                     if (state.balance > 0) {
                       return FloatingActionButton(
-                        backgroundColor: Colors.red,
+                        backgroundColor: theme,
                         onPressed: () {
                           isDriverOnline = true;
                           getLiveLocation();
                           context
                               .read<CurrentWidgetCubit>()
-                              .changeWidget(OnlinMode());
+                              .changeWidget(OnlinMode(theme: theme,));
                           // callback!(OnlinMode(callback, setDriverStatus));
                         },
                         child: Container(
@@ -66,7 +69,7 @@ class OfflineMode extends StatelessWidget {
                     }
                   }
                   return FloatingActionButton(
-                    backgroundColor: Colors.red,
+                    backgroundColor: theme,
                     onPressed: null,
                     child: Container(
                         padding: const EdgeInsets.all(20),
@@ -157,8 +160,8 @@ class OfflineMode extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(100),
             child: Container(
-              padding: const EdgeInsets.all(5),
-              color: Colors.red,
+              padding: EdgeInsets.all(5),
+              color: theme,
               child: Icon(
                 icon,
                 color: Colors.white,

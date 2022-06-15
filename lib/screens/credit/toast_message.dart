@@ -18,19 +18,21 @@ class CreditAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final AppBar appBar;
   final List<Widget> widgets;
-
+  final TabBar? bottom;
   /// you can add more fields that meet your needs
 
   const CreditAppBar({required Key key,
     required this.title,
     required this.appBar,
-    required this.widgets})
+    required this.widgets,
+    this.bottom})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     return AppBar(
       elevation: 0.5,
+      bottom: bottom,
       backgroundColor: themeProvider.getColor,
       iconTheme: IconThemeData(color: Colors.white),
       title: Text(

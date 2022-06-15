@@ -1,7 +1,15 @@
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class WeeklySummaryTab extends StatelessWidget {
+import '../../../../utils/theme/ThemeProvider.dart';
+
+class WeeklySummaryTab extends StatefulWidget {
+  @override
+  State<WeeklySummaryTab> createState() => _WeeklySummaryTabState();
+}
+
+class _WeeklySummaryTabState extends State<WeeklySummaryTab> {
   Color getColor(BuildContext context, double percent) {
     if (percent >= 0.50) {
       return Theme.of(context).primaryColor;
@@ -10,6 +18,14 @@ class WeeklySummaryTab extends StatelessWidget {
     }
     return Colors.red;
   }
+
+  @override
+  void initState() {
+    super.initState();
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+  }
+
+  late ThemeProvider themeProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +60,7 @@ class WeeklySummaryTab extends StatelessWidget {
                               //   borderRadius: BorderRadius.circular(10.0),
                               // ),
                               child: WeeklyEarningBarChart(
-                                  [8, 12, 3, 14, 5, 16, 7]),
+                                  [8, 12, 3, 14, 5, 16, 7],themeProvider.getColor),
                             );
                           }
                         },

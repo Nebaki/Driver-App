@@ -8,8 +8,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import '../../dataprovider/database/database.dart';
 import '../../dataprovider/history/history.dart';
+import '../../utils/theme/ThemeProvider.dart';
 import 'history_builder.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -21,10 +23,13 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   final _textStyle = const TextStyle(fontSize: 15, color: Colors.deepOrange);
+  final _appBar = GlobalKey<FormState>();
 
+  late ThemeProvider themeProvider;
   @override
   void initState() {
     _isMessageLoading = true;
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     syncHistory();
     super.initState();
   }
@@ -45,7 +50,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
   void syncHistory(){
     var sender = HistoryDataProvider(httpClient: http.Client());
-    var res = sender.loadTripHistory("0922877115");
+    var res = sender.loadTripHistory();
     res.then((value) => {
         ShowToast(context,value).show(),
         prepareRequest(context),
@@ -60,15 +65,8 @@ class _HistoryPageState extends State<HistoryPage> {
       setState(() {});
     };
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.white,
-        title: const Text(
-          "Trips",
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
-      ),
+      appBar: CreditAppBar(
+          key: _appBar, title: "Trip History", appBar: AppBar(), widgets: []),
       body: Container(
         padding: const EdgeInsets.all(5),
         decoration: const BoxDecoration(
@@ -84,17 +82,17 @@ class _HistoryPageState extends State<HistoryPage> {
                 topLeft: Radius.circular(10), topRight: Radius.circular(10))),
         height: MediaQuery.of(context).size.height,
         child: _isMessageLoading
-            ? const Align(
+            ? Align(
                 alignment: Alignment.center,
                 child: SizedBox(
                   height: 50,
                   width: 50,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.red,
+                    color: themeProvider.getColor,
                   ),
                 ))
-            : HistoryBuilder(_items!),
+            : HistoryBuilder(_items!,themeProvider.getColor),
       ),
     );
   }

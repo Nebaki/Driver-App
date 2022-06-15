@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../dataprovider/credit/credit.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../utils/theme/ThemeProvider.dart';
 import '../../../credit/toast_message.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class DailyEarningTab extends StatefulWidget {
+
   @override
   State<DailyEarningTab> createState() => _DailyEarningTabState();
 }
@@ -19,7 +22,9 @@ class _DailyEarningTabState extends State<DailyEarningTab>
     reloadBalance();
     //prepareRequest(context);
     super.initState();
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
   }
+  late ThemeProvider themeProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +50,8 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: _isLoading ? const SpinKitThreeBounce(
-                        color: Colors.deepOrange,size: 30,
+                      child: _isLoading ? SpinKitThreeBounce(
+                        color: themeProvider.getColor,size: 30,
                       ):Text(
                         balance,
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 34),
@@ -63,8 +68,8 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                         children: [
                           Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: const [
-                              Text("15",style: TextStyle(color: Colors.deepOrange)),
+                            children: [
+                              Text("15",style: TextStyle(color: themeProvider.getColor)),
                               Text(
                                 "Trips",
                                 style: TextStyle(color: Colors.grey),
@@ -74,8 +79,8 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                           const VerticalDivider(),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: const [
-                              Text("8:30",style: TextStyle(color: Colors.deepOrange)),
+                            children: [
+                              Text("8:30",style: TextStyle(color: themeProvider.getColor)),
                               Text(
                                 "Online hrs",
                                 style: TextStyle(color: Colors.grey),
@@ -85,8 +90,8 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                           const VerticalDivider(),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: const [
-                              Text("\$22.48",style: TextStyle(color: Colors.deepOrange)),
+                            children: [
+                              Text("\$22.48",style: TextStyle(color: themeProvider.getColor)),
                               Text(
                                 "Cash Trips",
                                 style: TextStyle(color: Colors.grey),
@@ -119,7 +124,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                 //_reportItems(data: "Discount(-)", price: "20.00"),
                 const Divider(),
                 _reportItems(
-                    data: "Total Earnings", price: "460.75", color: Colors.deepOrange),
+                    data: "Total Earnings", price: "460.75", color: themeProvider.getColor),
               ],
             ),
           ),
@@ -141,8 +146,8 @@ class _DailyEarningTabState extends State<DailyEarningTab>
             style: TextStyle(
                 color: color, fontSize: 16, fontWeight: FontWeight.w500),
           ),
-          _isLoading ? const SpinKitThreeBounce(
-            color: Colors.deepOrange,size: 18,
+          _isLoading ? SpinKitThreeBounce(
+            color: themeProvider.getColor,size: 18,
           ):Text(
             '\$$price',
             style: TextStyle(color:color,fontWeight: FontWeight.bold, fontSize: 16),

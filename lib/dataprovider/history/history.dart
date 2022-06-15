@@ -16,7 +16,7 @@ class HistoryDataProvider {
 
   HistoryDataProvider({required this.httpClient});
 
-  Future<String> loadTripHistory(String user) async {
+  Future<String> loadTripHistory() async {
     final http.Response response = await http.get(
         Uri.parse('$_baseUrl/get-driver-trips'),
         headers: await RequestHeader().authorisedHeader());
@@ -27,7 +27,7 @@ class HistoryDataProvider {
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
       Session().logSession("s-trans ${trips.length}", response.body);
-      return HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
+      return HistoryDB().insertTrips(trips).then((value) => "updated $value History");
       //return "Unable to update history";
       //return CreditStore.fromJson(jsonDecode(response.body));
     } else {

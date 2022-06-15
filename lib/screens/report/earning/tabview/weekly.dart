@@ -1,7 +1,15 @@
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class WeeklyEarningTab extends StatelessWidget {
+import '../../../../utils/theme/ThemeProvider.dart';
+
+class WeeklyEarningTab extends StatefulWidget {
+  @override
+  State<WeeklyEarningTab> createState() => _WeeklyEarningTabState();
+}
+
+class _WeeklyEarningTabState extends State<WeeklyEarningTab> {
   Color getColor(BuildContext context, double percent) {
     if (percent >= 0.50) {
       return Theme.of(context).primaryColor;
@@ -10,6 +18,14 @@ class WeeklyEarningTab extends StatelessWidget {
     }
     return Colors.red;
   }
+
+  @override
+  void initState() {
+    super.initState();
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+  }
+
+  late ThemeProvider themeProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +61,7 @@ class WeeklyEarningTab extends StatelessWidget {
                                 //   borderRadius: BorderRadius.circular(10.0),
                                 // ),
                                 child: WeeklyEarningBarChart(
-                                    const [8, 12, 3, 14, 5, 16, 7]),
+                                    const [8, 12, 3, 14, 5, 16, 7],themeProvider.getColor),
                               );
                             }
                           },
@@ -65,18 +81,18 @@ class WeeklyEarningTab extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
-                        children: const [Text("15",
-                            style: TextStyle(color: Colors.deepOrange)), Text("Trips")],
+                        children: [Text("15",
+                            style: TextStyle(color: themeProvider.getColor)), Text("Trips")],
                       ),
                       const VerticalDivider(),
                       Column(
-                        children: const [Text("830",
-                            style: TextStyle(color: Colors.deepOrange)), Text("Earned")],
+                        children: [Text("830",
+                            style: TextStyle(color: themeProvider.getColor)), Text("Earned")],
                       ),
                       const VerticalDivider(width:3,color: Colors.grey),
                       Column(
-                        children: const [Text("\$22.48",
-                            style: TextStyle(color: Colors.deepOrange)), Text("Total")],
+                        children: [Text("\$22.48",
+                            style: TextStyle(color: themeProvider.getColor)), Text("Total")],
                       ),
                     ],
                   ),
@@ -98,7 +114,7 @@ class WeeklyEarningTab extends StatelessWidget {
             _reportItems(data: "Discount(-)", price: "20.00"),
             const Divider(),
             _reportItems(
-                data: "Total Earnings", price: "460.75", color: Colors.red),
+                data: "Total Earnings", price: "460.75", color: themeProvider.getColor),
           ],
         )
       ],

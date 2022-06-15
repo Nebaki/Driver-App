@@ -236,7 +236,7 @@ class MyApp extends StatelessWidget {
                                 fontWeight: FontWeight.w300)),
 
                     //F48221
-                    primaryColor: const Color.fromRGBO(254, 79, 5, 1),
+                    primaryColor: themeProvider.getColor,
                     textTheme: const TextTheme(
                         button: TextStyle(
                           color: Color.fromRGBO(254, 79, 5, 1),

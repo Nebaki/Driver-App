@@ -4,18 +4,21 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
+import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class PushNotificationService {
   Future initialize(context, setDestination, setDriverStatus) async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
+      ThemeProvider themeProvider = Provider.of<ThemeProvider>(context, listen: false);
       player.open(Audio("assets/sounds/announcement-sound.mp3"));
 
       if (message.data['response'] == 'Cancelled') {
@@ -26,7 +29,7 @@ class PushNotificationService {
         } else {
           Navigator.pop(context);
           BlocProvider.of<CurrentWidgetCubit>(context)
-              .changeWidget(OnlinMode());
+              .changeWidget(OnlinMode(theme: themeProvider.getColor,));
         }
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Request Cancelled"),

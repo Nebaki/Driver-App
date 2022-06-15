@@ -30,10 +30,6 @@ class _WaletState extends State<Walet> {
   int _currentThemeIndex = 2;
 
   late ThemeProvider themeProvider;
-  _loadPreTheme() {
-    _currentThemeIndex = themeProvider.getThemeIndex();
-  }
-
   @override
   void initState() {
     _isBalanceLoading = true;
@@ -41,7 +37,6 @@ class _WaletState extends State<Walet> {
     reloadBalance();
     prepareRequest(context);
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    _loadPreTheme();
     super.initState();
   }
 

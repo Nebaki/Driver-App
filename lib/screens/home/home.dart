@@ -31,7 +31,9 @@ import 'dart:async';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as toolkit;
+import 'package:provider/provider.dart';
 
+import '../../utils/theme/ThemeProvider.dart';
 import 'dialogs/circular_progress_indicator_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -116,6 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     counter = 0;
     switch (myVehicleType) {
       case 'Truck':
@@ -127,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     super.initState();
     _listenBackGroundMessege();
-    _currentWidget = OfflineMode();
+    _currentWidget = OfflineMode(theme: themeProvider.getColor);
     _checkLocationServiceOnInit();
     _toggleLocationServiceStatusStream();
     _toggleInternetServiceStatusStream();
@@ -135,11 +138,13 @@ class _HomeScreenState extends State<HomeScreen> {
         context, setDestination, setDriverStatus);
     pushNotificationService.seubscribeTopic();
     widget.args.isSelected
-        ? WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        ? WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             uncompletedTripDialog();
           })
         : null;
+
   }
+  late ThemeProvider themeProvider;
 
   @override
   void dispose() {
@@ -306,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   "destination",
                   BitmapDescriptor.defaultMarkerWithHue(
                       BitmapDescriptor.hueGreen));
-              WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 changeCameraView();
               });
               Navigator.pop(context);
@@ -346,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const CircularProgressIndicator(),
                             errorWidget: (context, url, error) => Icon(
                                   Icons.person,
-                                  color: Colors.indigo.shade900,
+                                  color: themeProvider.getColor,
                                   size: 30,
                                 )),
                       )),
@@ -376,7 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             child: Icon(
                               Icons.call,
-                              color: Colors.indigo.shade900,
+                              color: themeProvider.getColor,
                               size: 30,
                             )),
                       ),
@@ -409,15 +414,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       const EdgeInsets.all(2),
                                                   decoration: BoxDecoration(
                                                       border: Border.all(
-                                                          color: Colors
-                                                              .indigo.shade900,
+                                                          color: themeProvider.getColor,
                                                           width: 1.5),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10)),
                                                   child: Icon(Icons.trip_origin,
-                                                      color: Colors
-                                                          .indigo.shade900)),
+                                                      color: themeProvider.getColor)),
                                             ),
                                         listener: (context, state) {
                                           if (state is BalanceLoadSuccess) {
@@ -480,7 +483,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       target: LatLng(currentLat, currentLng))));
                             },
                             child: Icon(Icons.gps_fixed,
-                                color: Colors.indigo.shade900, size: 30)),
+                                color: themeProvider.getColor, size: 30)),
                       ),
                     ),
                     BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
@@ -498,7 +501,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Text(
                                       'SOS',
                                       style: TextStyle(
-                                          color: Colors.indigo.shade900,
+                                          color: themeProvider.getColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18),
 
@@ -518,13 +521,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     onWillPop: () async => false,
                                     child: AlertDialog(
                                       content: Row(
-                                        children: const [
+                                        children: [
                                           SizedBox(
                                             height: 20,
                                             width: 20,
                                             child: CircularProgressIndicator(
                                               strokeWidth: 1,
-                                              color: Colors.red,
+                                              color: themeProvider.getColor,
                                             ),
                                           ),
                                           SizedBox(
@@ -602,7 +605,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           showNearbyOpportunity
                                               ? Icons.golf_course
                                               : Icons.close,
-                                          color: Colors.red.shade900,
+                                          color: themeProvider.getColor,
                                           size: 30)),
                                 ),
                               ),
@@ -739,14 +742,14 @@ class _HomeScreenState extends State<HomeScreen> {
     counter = 0;
     setState(() {
       if (isBalanceInsufficient) {
-        context.read<CurrentWidgetCubit>().changeWidget(OnlinMode());
+        context.read<CurrentWidgetCubit>().changeWidget(OnlinMode(theme: themeProvider.getColor,));
         getLiveLocation();
       } else {
-        context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
+        context.read<CurrentWidgetCubit>().changeWidget(OfflineMode(theme: themeProvider.getColor));
       }
       isAccepted = false;
 
-      _currentWidget = OnlinMode();
+      _currentWidget = OnlinMode(theme: themeProvider.getColor,);
       markers.clear();
       polylines.clear();
       availablePassengersMarkers.clear();
@@ -779,7 +782,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     MarkerId markerId = MarkerId(generateRandomId());
     LatLng initialDriverPosition = LatLng(0, 0);
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {});
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
 
     driverStreamSubscription = Geolocator.getPositionStream(
             locationSettings: const LocationSettings(
@@ -1134,10 +1137,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   phoneNum = value;
                                   // findPlace(value);
                                 },
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                     prefixIcon: Icon(
                                       Icons.phone,
-                                      color: Colors.black,
+                                      color: themeProvider.getColor,
                                     ),
                                     labelText: "Phone Number"),
                               ),
@@ -1158,14 +1161,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                         pickupController.clear();
                                         debugPrint("TATAT");
                                       },
-                                      icon: const Icon(
+                                      icon: Icon(
                                         Icons.clear,
-                                        color: Colors.black,
+                                        color: themeProvider.getColor,
                                         size: 20,
                                       )),
-                                  prefixIcon: const Icon(
+                                  prefixIcon: Icon(
                                     Icons.location_on,
-                                    color: Colors.black,
+                                    color: themeProvider.getColor,
                                   ),
                                   labelText: "Current Location"),
                             ),
@@ -1178,10 +1181,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               onChanged: (value) {
                                 findPlace(value);
                               },
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                   prefixIcon: Icon(
                                     Icons.location_on,
-                                    color: Colors.black,
+                                    color: themeProvider.getColor,
                                   ),
                                   labelText: "Pick Location"),
                             ),

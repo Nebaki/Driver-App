@@ -6,14 +6,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 
-class OnlinMode extends StatefulWidget {
-  OnlinMode();
+class OnlinMode extends StatefulWidget{
+
+  Color theme;
+  OnlinMode({required this.theme});
 
   @override
-  State<OnlinMode> createState() => _OnlinModeState();
+  State<OnlinMode> createState() => _OnlinModeState(theme);
 }
 
 class _OnlinModeState extends State<OnlinMode> {
+  Color theme;
+  _OnlinModeState(this.theme);
+
   @override
   void dispose() {
     super.dispose();
@@ -54,7 +59,7 @@ class _OnlinModeState extends State<OnlinMode> {
                           isDriverOnline = false;
                           context
                               .read<CurrentWidgetCubit>()
-                              .changeWidget(OfflineMode());
+                              .changeWidget(OfflineMode(theme: theme,));
                           // widget.callback!(OfflineMode(
                           //     widget.setDriverStatus, widget.callback));
                         },
