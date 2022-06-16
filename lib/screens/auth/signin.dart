@@ -91,7 +91,6 @@ class _SigninScreenState extends State<SigninScreen>
             ),
           ),
         ),
-
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: _buildSignInForm(),
@@ -171,37 +170,37 @@ class _SigninScreenState extends State<SigninScreen>
                       style: TextStyle(fontSize: 18),
                       enabled: phoneEnabled,
                       decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
-                          ),
-                          /*enabledBorder: OutlineInputBorder(
+                        labelStyle: TextStyle(color: themeProvider.getColor),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: themeProvider.getColor, width: 2.0),
+                        ),
+                        /*enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.red, width: 5.0),
                           ),*/
-                          counterText: "",
-                          prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
-                          alignLabelWithHint: true,
-                          //hintText: "Phone number",
-                          labelText: "Phone number",
-                          hintStyle: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black45),
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.only(left: 5.0, right: 5.0),
-                            child: Text(
-                              "+251",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            ),
+                        counterText: "",
+                        prefixIconConstraints:
+                            BoxConstraints(minWidth: 0, minHeight: 0),
+                        alignLabelWithHint: true,
+                        //hintText: "Phone number",
+                        labelText: "Phone number",
+                        hintStyle: const TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black45),
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                          child: Text(
+                            "+251",
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
                           ),
-                          suffix: Text("$textLength/9"),
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(style: BorderStyle.solid)
-                          ),
+                        ),
+                        suffix: Text("$textLength/9"),
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(style: BorderStyle.solid)),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -225,13 +224,15 @@ class _SigninScreenState extends State<SigninScreen>
                     ),
                   ),
                   Padding(
-                    padding:
-                    const EdgeInsets.only(left: 15, right: 15, top: 10,bottom: 10),
+                    padding: const EdgeInsets.only(
+                        left: 15, right: 15, top: 10, bottom: 10),
                     child: TextFormField(
-                      style: TextStyle(fontSize: 18),
-                      decoration: const InputDecoration(
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelStyle: TextStyle(color: themeProvider.getColor),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
+                            borderSide: BorderSide(
+                                color: themeProvider.getColor, width: 2.0),
                           ),
                           alignLabelWithHint: true,
                           //hintText: "Password",
@@ -245,9 +246,9 @@ class _SigninScreenState extends State<SigninScreen>
                           ),
                           fillColor: Colors.white,
                           filled: true,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(style: BorderStyle.solid))
-                      ),
+                          border: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(style: BorderStyle.solid))),
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter Your Password';
@@ -284,7 +285,7 @@ class _SigninScreenState extends State<SigninScreen>
                             const Spacer(),
                             const Text("Sign In",
                                 style: TextStyle(
-                                    fontFamily: 'Sifonn',color: Colors.white)),
+                                    fontFamily: 'Sifonn', color: Colors.white)),
                             const Spacer(),
                             Align(
                               alignment: Alignment.centerRight,
@@ -333,5 +334,3 @@ class _SigninScreenState extends State<SigninScreen>
   var textLength = 0;
   var phoneEnabled = true;
 }
-
-

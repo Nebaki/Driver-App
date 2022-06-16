@@ -115,9 +115,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                             const EdgeInsets.only(top: 15, right: 15, left: 15),
                         child: TextFormField(
                           controller: newPasswordController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
+                              labelStyle: TextStyle(color: themeProvider.getColor),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
+                                borderSide: BorderSide(
+                                    color: themeProvider.getColor, width: 2.0),
                               ),
                               labelText: "New Password",
                               hintStyle: TextStyle(
@@ -144,9 +146,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                             const EdgeInsets.only(top: 5, right: 15, left: 15),
                         child: TextFormField(
                           controller: confirmPasswordController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
+                              labelStyle: TextStyle(color: themeProvider.getColor),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
+                                borderSide: BorderSide(
+                                    color: themeProvider.getColor, width: 2.0),
                               ),
                               labelText: "Confirm Password",
                               hintStyle: TextStyle(

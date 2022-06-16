@@ -187,8 +187,10 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                           style: TextStyle(fontSize: 18),
                           enabled: phoneEnabled,
                           decoration: InputDecoration(
+                              labelStyle: TextStyle(color: themeProvider.getColor),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
+                                borderSide: BorderSide(
+                                    color: themeProvider.getColor, width: 2.0),
                               ),
                               counterText: "",
                               prefixIconConstraints:
