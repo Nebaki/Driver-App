@@ -3,7 +3,9 @@ import 'dart:developer' as developer;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/widgets/rider_detail_constatnts.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -27,6 +29,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool isSuccess = false;
   bool isFirstTime = false;
+  DatabaseReference ref = FirebaseDatabase.instance.ref();
 
   @override
   void initState() {
@@ -129,7 +132,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
               );
             }
             return Container();
-          }, listener: (context, st) {
+          }, listener: (context, st) async {
             if (st is RideRequestStartedTripChecked) {
               // distanceDistance = st.rideRequest.distance!;
 
@@ -138,9 +141,26 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                   "data is is is is ${st.rideRequest.id} ${st.rideRequest.dropOffLocation}");
 
               if (st.rideRequest.pickUpAddress == null) {
+                String rootPath = '';
+
+                if (myVehicleType == "Truck") {
+                  rootPath = "availableTrucks";
+                } else if (myVehicleType == "Taxi") {
+                  rootPath = "availableDrivers";
+                }
+                var snapShot =
+                    await ref.child(rootPath).child(firebaseKey).once();
+                print("Snapp : ${snapShot.snapshot.value}");
+
+                if (snapShot.snapshot.value != null) {
+                  getLiveLocation();
+                }
+
                 Navigator.pushReplacementNamed(context, HomeScreen.routeName,
-                    arguments:
-                        HomeScreenArgument(isSelected: false, isOnline: false));
+                    arguments: HomeScreenArgument(
+                        isSelected: false,
+                        isOnline:
+                            snapShot.snapshot.value == null ? false : true));
               } else {
                 droppOffAddress = st.rideRequest.droppOffAddress!;
                 pickupLocation = st.rideRequest.pickupLocation!;
@@ -165,6 +185,26 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                         isOnline: false));
               }
               // loadRideRequest();
+            }
+            if (st is RideRequestTokentExpired) {
+              Navigator.pushReplacementNamed(context, SigninScreen.routeName);
+            }
+            if (st is RideRequestOperationFailur) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                duration: const Duration(minutes: 5),
+                backgroundColor: Colors.black,
+                content: const Text(
+                  "Check your internet connection",
+                  style: TextStyle(color: Colors.white),
+                ),
+                action: SnackBarAction(
+                    textColor: Colors.white,
+                    label: "Try Again",
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      _checkStartedTrip();
+                    }),
+              ));
             }
           })
         ],

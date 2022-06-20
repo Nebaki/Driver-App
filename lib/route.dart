@@ -1,5 +1,6 @@
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'models/models.dart';
 
@@ -21,7 +22,10 @@ class AppRoute {
               ));
     }
     if (settings.name == ResetPassword.routeName) {
-      return MaterialPageRoute(builder: (context) => ResetPassword());
+      ResetPasswordArgument argumet = settings.arguments as ResetPasswordArgument;
+      return MaterialPageRoute(builder: (context) => ResetPassword(
+        arg: argumet,
+      ));
     }
     if (settings.name == EditProfile.routeName) {
       EditProfileArgument argumnet = settings.arguments as EditProfileArgument;
@@ -88,6 +92,15 @@ class AppRoute {
     if (settings.name == ChangePassword.routeName) {
       return MaterialPageRoute(builder: (context) => ChangePassword());
     }
+    if (settings.name == LocationChanger.routName) {
+      LocationChangerArgument argument =
+          settings.arguments as LocationChangerArgument;
+      return MaterialPageRoute(
+          builder: (context) => LocationChanger(
+                args: argument,
+              ));
+    }
+
 
     return MaterialPageRoute(builder: (context) => CustomSplashScreen());
   }
@@ -140,4 +153,19 @@ class CollectedCashScreenArgument {
 class ResetPasswordArgument {
   final String phoneNumber;
   ResetPasswordArgument({required this.phoneNumber});
+}
+class LocationChangerArgument {
+  final String droppOffLocationAddressName;
+  final String pickupLocationAddressName;
+  final LatLng pickupLocationLatLng;
+  final LatLng droppOffLocationLatLng;
+  final String fromWhere;
+
+  LocationChangerArgument({
+    required this.droppOffLocationAddressName,
+    required this.droppOffLocationLatLng,
+    required this.pickupLocationAddressName,
+    required this.pickupLocationLatLng,
+    required this.fromWhere,
+  });
 }

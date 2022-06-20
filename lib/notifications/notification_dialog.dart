@@ -271,8 +271,8 @@ class _NotificationDialogState extends State<NotificationDialog> {
                               if (timer != null) {
                                 timer!.cancel();
                               }
-                              player.stop();
-                              player.dispose();
+                              // player.stop();
+                              // player.dispose();
                               if (widget.nextDrivers.isNotEmpty) {
                                 UserEvent event =
                                     UserLoadById(widget.nextDrivers[0]);
@@ -318,7 +318,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                                 timer!.cancel();
                               }
 
-                              player.dispose();
+                              // player.dispose();
                               setState(() {
                                 _isLoading = true;
                               });

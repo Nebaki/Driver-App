@@ -112,7 +112,7 @@ class OfflineMode extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _items(
-                          num: "\$95",
+                          num: "95 ETB",
                           text: "Earning",
                           icon: Icons.monetization_on),
                       VerticalDivider(

@@ -52,6 +52,8 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
 
   void sendVerificationCode() async {
     await _auth.verifyPhoneNumber(
+              timeout: const Duration(seconds: 60),
+
         phoneNumber: phoneController,
         verificationCompleted: (phoneAuthCredential) async {
           // setState(() {

@@ -33,7 +33,9 @@ class DirectionDistanceDurationLoad extends DirectionEvent {
 
 class DirectionChangeToInitialState extends DirectionEvent {
   final bool isBalanceSuffiecient;
-  const DirectionChangeToInitialState({required this.isBalanceSuffiecient});
+    final bool isFromOnlineMode;
+
+  const DirectionChangeToInitialState({required this.isBalanceSuffiecient,required this.isFromOnlineMode});
   @override
   List<Object?> get props => [isBalanceSuffiecient];
 }

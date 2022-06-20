@@ -10,7 +10,8 @@ class DirectionState extends Equatable {
 
 class DirectionInitialState extends DirectionState {
   final bool isBalanceSufficient;
-  const DirectionInitialState({required this.isBalanceSufficient});
+  final bool isFromOnlineMode;
+  const DirectionInitialState({required this.isBalanceSufficient,required this.isFromOnlineMode});
   @override
   List<Object> get props => [isBalanceSufficient];
 }

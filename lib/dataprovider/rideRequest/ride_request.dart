@@ -39,7 +39,7 @@ class RideRequestDataProvider {
               driverId: null,
             );
     } else {
-      throw 'Unable to get Started Trips';
+      throw Exception(response.statusCode);
     }
   }
 
@@ -65,9 +65,9 @@ class RideRequestDataProvider {
         ],
         'duration': request.duration,
         'direction': request.direction,
-        'price': int.parse(request.price!),
+        'price': double.parse(request.price!),
         'status': "Accepted",
-        'distance': int.parse(request.distance!)
+        'distance': double.parse(request.distance!)
       }),
     );
 

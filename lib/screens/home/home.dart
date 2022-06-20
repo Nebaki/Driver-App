@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:isolate';
 import 'dart:math';
 import 'dart:ui';
-
-import 'package:app_settings/app_settings.dart';
+// import 'package:app_settings/app_settings.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/bloc/bloc.dart';
@@ -15,6 +14,7 @@ import 'package:driverapp/notifications/pushNotification.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/home/dialogs/insufficent_balance.dart';
 import 'package:driverapp/screens/screens.dart';
+import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +29,7 @@ import 'package:driverapp/drawer/drawer.dart';
 import 'package:driverapp/route.dart';
 import 'dart:async';
 import 'package:driverapp/widgets/widgets.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+// import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as toolkit;
 
 import 'dialogs/circular_progress_indicator_dialog.dart';
@@ -45,9 +45,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-  
-  late Widget _currentWidget;
   late double currentLat;
   late double currentLng;
   bool isDriverOn = false;
@@ -88,6 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool showNearbyOpportunity = true;
   late int counter;
   bool hasBalance = false;
+  // late LatLngBounds latLngBounds;
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -108,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
         desiredAccuracy: LocationAccuracy.best);
   }
 
-  static final CameraPosition _addissAbaba = CameraPosition(
+  static const CameraPosition _addissAbaba = CameraPosition(
     target: LatLng(8.9806, 38.7578),
     zoom: 14.4746,
   );
@@ -127,7 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     super.initState();
     _listenBackGroundMessege();
-    _currentWidget = OfflineMode();
+    context
+        .read<CurrentWidgetCubit>()
+        .changeWidget(widget.args.isOnline ? OnlinMode() : OfflineMode());
+    // _currentWidget = ;
     _checkLocationServiceOnInit();
     _toggleLocationServiceStatusStream();
     _toggleInternetServiceStatusStream();
@@ -135,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context, setDestination, setDriverStatus);
     pushNotificationService.seubscribeTopic();
     widget.args.isSelected
-        ? WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        ? WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             uncompletedTripDialog();
           })
         : null;
@@ -248,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }, listener: (context, state) {
             print('STAteeeeeeeeeeeeeeeeeeeeeeee is $state counter $counter');
             if (state is DirectionInitialState) {
-              resetScreen(state.isBalanceSufficient);
+              resetScreen(state.isBalanceSufficient, state.isFromOnlineMode);
             }
 
             if (state is DirectionLoading) {
@@ -266,24 +267,27 @@ class _HomeScreenState extends State<HomeScreen> {
               counter++;
 
               if (counter <= 1) {
-                print("function Called");
                 showDriversOnMap();
               }
               // isDialog = false;
-              double timeTraveledFare =
-                  (state.direction.durationValue / 60) * 0.20;
-              double distanceTraveldFare =
-                  (state.direction.distanceValue / 100) * 0.20;
-              double totalFareAmount = timeTraveledFare + distanceTraveldFare;
-
-              double localFareAmount = totalFareAmount * 1;
-              price = localFareAmount.truncate().toString();
+              distance =
+                  (state.direction.distanceValue / 100).toStringAsFixed(1);
+              price = (initialFare +
+                      (costPerMinute * (state.direction.durationValue / 60)) +
+                      (costPerKilloMeter *
+                          state.direction.distanceValue /
+                          1000))
+                  .toStringAsFixed(1);
 
               if (fromCreateManualTrip) {
+                directionDuration =
+                    '${(state.direction.durationValue / 60).truncate().toString()} min';
+                distanceDistance =
+                    '${(state.direction.distanceValue / 100).toStringAsFixed(1)} Km';
                 RideRequestEvent event = RideRequestCreate(RideRequest(
                     driverId: myId,
                     phoneNumber: phoneNum,
-                    dropOffLocation: destination,
+                    dropOffLocation: droppOffLocation,
                     droppOffAddress: droppOffAddress,
                     pickUpAddress: pickUpAddress,
                     name: 'Kebadu',
@@ -299,14 +303,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 BlocProvider.of<RideRequestBloc>(context).add(event);
               }
 
-              _getPolyline(state.direction.encodedPoints);
-
               _addMarker(
-                  destination,
+                  droppOffLocation,
                   "destination",
                   BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueGreen));
-              WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                      BitmapDescriptor.hueRed),
+                  InfoWindow(
+                      title: droppOffAddress,
+                      onTap: fromCreateManualTrip
+                          ? () {
+                              Navigator.pushNamed(
+                                  context, LocationChanger.routName,
+                                  arguments: LocationChangerArgument(
+                                    droppOffLocationAddressName:
+                                        droppOffAddress,
+                                    droppOffLocationLatLng: droppOffLocation,
+                                    pickupLocationAddressName: pickUpAddress,
+                                    pickupLocationLatLng: pickupLocation,
+                                    fromWhere: 'DroppOff',
+                                  ));
+                            }
+                          : null));
+              _addMarker(
+                  pickupLocation,
+                  "pickupLocation",
+                  BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueGreen),
+                  InfoWindow(
+                    title: pickUpAddress,
+                  ));
+
+              _getPolyline(state.direction.encodedPoints);
+
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 changeCameraView();
               });
               Navigator.pop(context);
@@ -352,11 +381,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       )),
                 ),
               )),
-          BlocConsumer<CurrentWidgetCubit, Widget>(
-              builder: (context, state) => _currentWidget,
-              listener: (context, state) {
-                _currentWidget = state;
-              }),
+          BlocBuilder<CurrentWidgetCubit, Widget>(
+            builder: (context, state) => state,
+          ),
           Align(
               alignment: Alignment.centerRight,
               child: SizedBox(
@@ -397,6 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   Colors.grey.shade300,
                                               onPressed: hasBalance
                                                   ? () {
+                                                      print("TEst");
                                                       BlocProvider.of<
                                                                   LocationBloc>(
                                                               context)
@@ -474,10 +502,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             heroTag: 'Mylocation',
                             backgroundColor: Colors.grey.shade300,
                             onPressed: () {
-                              _myController.animateCamera(
-                                  CameraUpdate.newCameraPosition(CameraPosition(
-                                      zoom: 16.4746,
-                                      target: LatLng(currentLat, currentLng))));
+                              final String _widgetName = context
+                                  .read<CurrentWidgetCubit>()
+                                  .state
+                                  .toString();
+                              _myController.animateCamera(_widgetName ==
+                                          "OfflineMode" ||
+                                      _widgetName == "OnlinMode"
+                                  ? CameraUpdate.newCameraPosition(
+                                      CameraPosition(
+                                          zoom: 16.4746,
+                                          target:
+                                              LatLng(currentLat, currentLng)))
+                                  : CameraUpdate.newLatLngBounds(
+                                      latLngBounds, 100));
                             },
                             child: Icon(Icons.gps_fixed,
                                 color: Colors.indigo.shade900, size: 30)),
@@ -676,14 +714,7 @@ class _HomeScreenState extends State<HomeScreen> {
               right: 10,
               child: ElevatedButton(
                   onPressed: () {
-                    BlocProvider.of<UserBloc>(context)
-                        .add(UserLoadById("62137c978cd9abb86406b887"));
-
-                    // debugPrint(initialFare.toString());
-                    // debugPrint(costPerKilloMeter.toString());
-                    // debugPrint(costPerMinute.toString());
-
-                    // BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
+                    context.read<CurrentWidgetCubit>().state.key==OnlinMode().key;
                   },
                   child: Text("Maintenance")))
         ],
@@ -691,10 +722,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
+  _addMarker(LatLng position, String id, BitmapDescriptor descriptor,
+      InfoWindow infoWindow) {
     MarkerId markerId = MarkerId(id);
-    Marker marker =
-        Marker(markerId: markerId, icon: descriptor, position: position);
+    Marker marker = Marker(
+        markerId: markerId,
+        icon: descriptor,
+        position: position,
+        infoWindow: infoWindow);
     availablePassengersMarkers[markerId] = marker;
   }
 
@@ -728,7 +763,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //Future.delayed(Duration(seconds: 1), () {});
   }
 
-  void resetScreen(bool isBalanceInsufficient) {
+  void resetScreen(bool isBalanceInsufficient, bool isFromOnlineMode) {
     context.read<DisableButtonCubit>().enableButton();
     _determinePosition().then((value) {
       _myController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -738,15 +773,23 @@ class _HomeScreenState extends State<HomeScreen> {
     driverStreamSubscription.cancel();
     counter = 0;
     setState(() {
-      if (isBalanceInsufficient) {
-        context.read<CurrentWidgetCubit>().changeWidget(OnlinMode());
-        getLiveLocation();
+      if (isFromOnlineMode) {
+        if (isBalanceInsufficient) {
+          isDriverOnline = true;
+          getLiveLocation();
+
+          context.read<CurrentWidgetCubit>().changeWidget(OnlinMode());
+        } else {
+          context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
+        }
       } else {
         context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
       }
-      isAccepted = false;
 
-      _currentWidget = OnlinMode();
+      isAccepted = false;
+      context.read<CurrentWidgetCubit>().changeWidget(OnlinMode());
+
+      // _currentWidget = OnlinMode();
       markers.clear();
       polylines.clear();
       availablePassengersMarkers.clear();
@@ -779,7 +822,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     MarkerId markerId = MarkerId(generateRandomId());
     LatLng initialDriverPosition = LatLng(0, 0);
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {});
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
 
     driverStreamSubscription = Geolocator.getPositionStream(
             locationSettings: const LocationSettings(
@@ -884,9 +927,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(
                         width: 10,
                       ),
-                      Container(
-                          padding: EdgeInsets.all(4.0),
-                          child: Text(prediction.mainText)),
+                      Flexible(
+                        flex: 6,
+                        child: Container(
+                            padding: EdgeInsets.all(4.0),
+                            child: Text(prediction.mainText)),
+                      ),
                     ],
                   ),
                 ),
@@ -921,6 +967,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 droppOffAddress = state.placeDetail.placeName;
                 fromCreateManualTrip = true;
+                droppOffLocation =
+                    LatLng(state.placeDetail.lat, state.placeDetail.lng);
                 destination =
                     LatLng(state.placeDetail.lat, state.placeDetail.lng);
                 // DirectionEvent event = DirectionLoad(
@@ -943,7 +991,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 Future.delayed(Duration(seconds: 1), () {
                   setState(() {
                     // createTripButtonEnabled = false;
-                    _currentWidget = WaitingPassenger(false);
+                    context
+                        .read<CurrentWidgetCubit>()
+                        .changeWidget(WaitingPassenger(
+                          formPassenger: false,
+                          fromOnline: context
+                                      .read<CurrentWidgetCubit>()
+                                      .state
+                                      .toString() ==
+                                  "OnlinMode"
+                              ? true
+                              : false,
+                        ));
+                    
                     Navigator.pop(context);
                   });
                   Navigator.pop(_);
@@ -1031,7 +1091,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void changeCameraView() {
-    LatLngBounds latLngBounds;
+    // LatLngBounds latLngBounds;
 
     final destinationLatLng = destination;
 
@@ -1285,8 +1345,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.pop(context);
 
                           _getPolyline(widget.args.encodedPts!);
+                          context
+                              .read<CurrentWidgetCubit>()
+                              .changeWidget(CompleteTrip());
 
-                          _currentWidget = CompleteTrip();
+                          // _currentWidget = CompleteTrip();
                           destination = droppOffLocation;
 
                           setState(() {});
@@ -1297,98 +1360,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           //         destination: droppOffLocation);
                           // BlocProvider.of<DirectionBloc>(context).add(event);
                         },
-                        child: Text('Procced'))
+                        child: Text('Proceed'))
                   ],
                 )
               ],
-            ),
-          );
-        });
-  }
-
-  void onCloseWarningDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Warning'),
-            content: const Text(
-                "Are you sure you want to close the app? If you close the app assengers won't be able to see you."),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('No')),
-              TextButton(
-                  onPressed: () {
-                    homeScreenStreamSubscription.cancel().then((value) {
-                      Geofire.removeLocation(firebaseKey).then((value) {
-                        SystemNavigator.pop();
-                      });
-                      SystemNavigator.pop();
-                    });
-                  },
-                  child: const Text('Yes')),
-            ],
-          );
-        });
-  }
-
-  void locationServiceButtomSheet() {
-    showModalBottomSheet(
-        enableDrag: false,
-        isDismissible: false,
-        context: context,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-        builder: (BuildContext ctx) {
-          return WillPopScope(
-            onWillPop: () async => false,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.4,
-              padding: const EdgeInsets.fromLTRB(30, 30, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text("Enable Location Services",
-                        style: Theme.of(context).textTheme.headline5),
-                  ),
-                  const Expanded(
-                      child: Center(
-                    child: Icon(Icons.location_off_outlined,
-                        color: Colors.red, size: 60),
-                  )),
-                  const Expanded(child: SizedBox()),
-                  Expanded(
-                      child: Text(
-                          "We can't get your location because you have disabled location services. Please turn it on for better experience.",
-                          style: Theme.of(context).textTheme.bodyText2)),
-                  Expanded(
-                      child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          await Geolocator.openLocationSettings();
-                        },
-                        child: const Text("TURN ON LOCATION SERVICES")),
-                  )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Expanded(
-                      child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          SystemNavigator.pop();
-                        },
-                        child: const Text("CANCEL")),
-                  ))
-                ],
-              ),
             ),
           );
         });
@@ -1445,6 +1420,80 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void locationServiceButtomSheet() {
+    showModalBottomSheet(
+        enableDrag: false,
+        isDismissible: false,
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+        builder: (BuildContext ctx) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.4,
+              padding: const EdgeInsets.fromLTRB(30, 30, 20, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Text("Enable Location Services",
+                        style: Theme.of(context).textTheme.headline5),
+                  ),
+                  const Expanded(
+                      flex: 2,
+                      child: Center(
+                        child: Icon(Icons.location_off_outlined,
+                            color: Colors.red, size: 60),
+                      )),
+                  // const Expanded(child: SizedBox()),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                      flex: 3,
+                      child: Text(
+                          "We can't get your location because you have disabled location services. Please turn it on for better experience.",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyText2)),
+                  Expanded(
+                      flex: 2,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              await Geolocator.openLocationSettings();
+                            },
+                            child: Text(
+                              "TURN ON LOCATION SERVICES",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            )),
+                      )),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                      flex: 2,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              SystemNavigator.pop();
+                            },
+                            child: const Text("CANCEL")),
+                      ))
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   void internetServiceButtomSheet() {
     showModalBottomSheet(
         enableDrag: false,
@@ -1461,47 +1510,57 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
+                    flex: 2,
                     child: Text("No Internet Connection",
                         style: Theme.of(context).textTheme.headline5),
                   ),
                   const Expanded(
+                      flex: 2,
                       child: Center(
-                    child: Icon(
-                        Icons
-                            .signal_wifi_statusbar_connected_no_internet_4_rounded,
-                        color: Colors.red,
-                        size: 60),
-                  )),
-                  const Expanded(child: SizedBox()),
+                        child: Icon(
+                            Icons
+                                .signal_wifi_statusbar_connected_no_internet_4_rounded,
+                            color: Colors.red,
+                            size: 60),
+                      )),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Expanded(
+                      flex: 3,
                       child: Text(
                           "Please enable WIFI or Mobile data to serve the app",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodyText2)),
                   // Expanded(
                   //     child: Text(
                   //         "For better accuracy,please turn on both GPS and WIFI location services",
                   //         style: Theme.of(context).textTheme.bodyText2)),
                   Expanded(
+                      flex: 2,
                       child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          AppSettings.openDeviceSettings(asAnotherTask: true);
-                        },
-                        child: const Text("Go to Settings")),
-                  )),
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              // AppSettings.openDeviceSettings(
+                              //     asAnotherTask: true);
+                            },
+                            child: const Text("Go to Settings")),
+                      )),
                   const SizedBox(
                     height: 10,
                   ),
                   Expanded(
+                      flex: 2,
                       child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          SystemNavigator.pop();
-                        },
-                        child: const Text("Cancel")),
-                  ))
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              SystemNavigator.pop();
+                            },
+                            child: const Text("Cancel")),
+                      ))
                 ],
               ),
             ),
@@ -1593,3 +1652,32 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 }
+
+// void onCloseWarningDialog() {
+//   showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           title: const Text('Warning'),
+//           content: const Text(
+//               "Are you sure you want to close the app? If you close the app assengers won't be able to see you."),
+//           actions: [
+//             TextButton(
+//                 onPressed: () {
+//                   Navigator.pop(context);
+//                 },
+//                 child: const Text('No')),
+//             TextButton(
+//                 onPressed: () {
+//                   homeScreenStreamSubscription.cancel().then((value) {
+//                     Geofire.removeLocation(firebaseKey).then((value) {
+//                       SystemNavigator.pop();
+//                     });
+//                     SystemNavigator.pop();
+//                   });
+//                 },
+//                 child: const Text('Yes')),
+//           ],
+//         );
+//       });
+// }

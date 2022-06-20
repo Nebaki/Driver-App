@@ -57,10 +57,11 @@ dependencies:
   slider_button: ^2.0.0
   wakelock: ^0.6.1+2
   flutter_animarker: ^3.2.0
-  assets_audio_player: ^3.0.4+1
-  app_settings: ^4.1.1
+  # assets_audio_player: ^3.0.4+1
+  # app_settings: ^4.1.1
   firebase_database: ^9.0.9
   vibration: ^1.7.4-nullsafety.0
+  shimmer: ^2.0.0
   
 
 dev_dependencies:

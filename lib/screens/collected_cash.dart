@@ -34,7 +34,7 @@ class _CollectedCashState extends State<CollectedCash> {
           leading: Container(),
           backgroundColor: Colors.white,
           title: const Text(
-            "Trip #0001",
+            "Trip Completed",
             style: TextStyle(fontWeight: FontWeight.normal),
           ),
           centerTitle: true,
@@ -53,7 +53,7 @@ class _CollectedCashState extends State<CollectedCash> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       child: Text(
-                        "${widget.args.price} ETB",
+                        "${widget.args.price.toStringAsFixed(2)} ETB",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 34),
                       ),
@@ -69,17 +69,17 @@ class _CollectedCashState extends State<CollectedCash> {
                       padding: EdgeInsets.symmetric(vertical: 20),
                       child: Divider(),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 20),
-                      child: InkWell(
-                          child: Text(
-                        "View More Details",
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      )),
-                    ),
+                    // const Padding(
+                    //   padding: EdgeInsets.only(bottom: 20),
+                    //   child: InkWell(
+                    //       child: Text(
+                    //     "View More Details",
+                    //     style: TextStyle(
+                    //         color: Colors.red,
+                    //         fontWeight: FontWeight.bold,
+                    //         fontSize: 18),
+                    //   )),
+                    // ),
                   ],
                 ),
               ),
@@ -94,11 +94,11 @@ class _CollectedCashState extends State<CollectedCash> {
                             if (state.balance > 0) {
                               BlocProvider.of<DirectionBloc>(context).add(
                                   const DirectionChangeToInitialState(
-                                      isBalanceSuffiecient: true));
+                                      isBalanceSuffiecient: true,isFromOnlineMode: true));
                             } else {
                               BlocProvider.of<DirectionBloc>(context).add(
                                   const DirectionChangeToInitialState(
-                                      isBalanceSuffiecient: false));
+                                      isBalanceSuffiecient: false,isFromOnlineMode: true));
                             }
 
                             Navigator.pop(context);

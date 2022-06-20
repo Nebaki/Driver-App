@@ -3,6 +3,7 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'rider_detail_constatnts.dart';
 
@@ -28,11 +29,15 @@ class RiderDetail extends StatelessWidget {
                     '${(state.direction.durationValue / 60).truncate()} min';
               }
             }, builder: (_, state) {
+              
               if (state is DirectionLoadSuccess) {
                 return Text(
                   '${(state.direction.durationValue / 60).truncate()} min',
                   style: _textStyle,
                 );
+              }
+              if (state is DirectionLoading) {
+                return _buildLoadingShimmer();
               }
               return Text(directionDuration, style: _textStyle);
             }),
@@ -64,13 +69,16 @@ class RiderDetail extends StatelessWidget {
             BlocConsumer<DirectionBloc, DirectionState>(listener: (_, state) {
               if (state is DirectionDistanceDurationLoadSuccess) {
                 distanceDistance =
-                    '${(state.direction.distanceValue / 1000).truncate()} Km';
+                    '${(state.direction.distanceValue / 1000).toStringAsFixed(1)} Km';
               }
               if (state is DirectionLoadSuccess) {
                 distanceDistance =
-                    '${(state.direction.distanceValue / 1000).truncate()} Km';
+                    '${(state.direction.distanceValue / 1000).toStringAsFixed(1)} Km';
               }
             }, builder: (_, state) {
+              if (state is DirectionLoading) {
+                return _buildLoadingShimmer();
+              }
               if (state is DirectionLoadSuccess) {
                 return Text(
                   '${(state.direction.distanceValue / 1000).truncate()} Km',
@@ -113,4 +121,20 @@ class RiderDetail extends StatelessWidget {
     fontSize: 20,
     color: Colors.indigo.shade900,
   );
+
+  Widget _buildLoadingShimmer() {
+    return Shimmer(
+      gradient: shimmerGradient,
+      child: Container(
+        height: 20,
+        width:80,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(16)
+        )
+      ),
+    );
+  }
+
+
 }
