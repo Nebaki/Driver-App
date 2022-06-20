@@ -153,7 +153,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                             padding: const EdgeInsets.only(
                                 left: 30, right: 30, top: 10, bottom: 10),
                             child: SliderButton(
-                                buttonColor: Colors.indigo.shade900,
+                                buttonColor: Theme.of(context).primaryColor,
                                 radius: 10,
                                 icon: const Center(
                                     child: Icon(
