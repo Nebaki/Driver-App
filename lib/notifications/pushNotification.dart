@@ -19,7 +19,7 @@ class PushNotificationService {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       ThemeProvider themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-      player.open(Audio("assets/sounds/announcement-sound.mp3"));
+      //player.open(Audio("assets/sounds/announcement-sound.mp3"));
       // player.open(Audio("assets/sounds/announcement-sound.mp3"));
 
       if (message.data['response'] == 'Cancelled') {

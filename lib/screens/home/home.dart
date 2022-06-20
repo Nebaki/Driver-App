@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     super.initState();
     _listenBackGroundMessege();
-    _currentWidget = OfflineMode(/*theme: themeProvider.getColor*/);
+    //_currentWidget = OfflineMode(/*theme: themeProvider.getColor*/);
     context
         .read<CurrentWidgetCubit>()
         .changeWidget(widget.args.isOnline ? OnlinMode() : OfflineMode());
@@ -342,7 +342,8 @@ class _HomeScreenState extends State<HomeScreen> {
               _getPolyline(state.direction.encodedPoints);
 
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      BitmapDescriptor.hueGreen));
+                      BitmapDescriptor.hueGreen;
+              });
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 changeCameraView();
               });
