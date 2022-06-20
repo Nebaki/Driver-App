@@ -59,7 +59,7 @@ class _OfflineModeState extends State<OfflineMode> {
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
                                 border:
-                                    Border.all(color: Colors.white, width: 1.5),
+                                    Border.all(color: Theme.of(context).primaryColor, width: 1.5),
                                 borderRadius: BorderRadius.circular(100)),
                             child: const Text("Go")),
                       );

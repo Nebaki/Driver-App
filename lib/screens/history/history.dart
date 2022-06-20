@@ -30,7 +30,8 @@ class _HistoryPageState extends State<HistoryPage> {
   void initState() {
     _isMessageLoading = true;
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    syncHistory();
+    prepareRequest(context);
+    //syncHistory();
     super.initState();
   }
 

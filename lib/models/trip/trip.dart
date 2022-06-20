@@ -72,7 +72,7 @@ class Trip {
         status: json["status"],
         passenger: "Who?"/*json["passenger"]*/,
         pickUpLocation: LatLng(double.parse(json["pickup_location"][0].toString()),double.parse(json["pickup_location"][1].toString())),
-        dropOffLocation: LatLng(double.parse(json["drop_off_location"][1].toString()),double.parse(json["drop_off_location"][0].toString())),
+        dropOffLocation: LatLng(double.parse(json["drop_off_location"][0].toString()),double.parse(json["drop_off_location"][1].toString())),
         picture: null,
       );
 }

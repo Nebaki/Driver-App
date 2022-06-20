@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:driverapp/route.dart';
+import 'package:driverapp/screens/history/trip_detail.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:driverapp/screens/history/snapshot.dart';
@@ -40,40 +42,76 @@ class HistoryBuilder extends StatelessWidget {
       //trip.picture = trip.picture!.substring(0, trip.picture!.length - 3);
     }
 
-    return Card(
-        elevation: 4,
-        child: Column(
-          children: [
-            trip.picture != null ? Image.memory(trip.picture!) : Container(),
-            //getInstance(trip.origin,trip.destination),
-            //trip.picture != null ? Image.file(ImageUtils().getImage("id-${trip.id}") : Container(),
-            /*trip.picture != null
-                ? FutureBuilder(
-                    future: ImageUtils().getImage("id-${trip.id}"),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<File> snapshot) {
-                      return snapshot.data != null
-                          ? Image.file(snapshot.data!,height: 200,)
-                          : Container();
-                    })
-                : Container(),
-            */
-            ListTile(
-              onTap: () async {},
-              /*leading: Icon(
-                credit.type == "Gift" ? Icons.wallet_giftcard : Icons.email,
-                size: 40,
-              ),*/
-              title: Text(
-                "From:  ${trip.pickUpAddress!}   To ${trip.dropOffAddress!}",
-                style: const TextStyle(color: Colors.black, fontSize: 16),
-              ),
-              subtitle: Text('Date: ${trip.createdAt}'),
-              trailing:
-                  Text(trip.price!.split(",")[0]+".ETB", style: TextStyle(color: theme)),
+    return GestureDetector(
+      onTap: (){
+        Navigator.pushNamed(
+            context, TripDetail.routeName,
+            arguments: TripDetailArgs(trip: trip));
+        //ShowToast(context,trip.price ?? "Loading").show();
+      },
+      child: Card(
+          elevation: 4,
+          child: Column(
+            children: [
+              trip.picture != null ? Image.memory(trip.picture!) : Container(),
+              _listUi(Theme.of(context).primaryColor,trip),
+            ],
+          )),
+    );
+  }
+  _listUi(Color theme,Trip trip){
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Text("Status:", style: TextStyle(
+                          color: theme
+                      )),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(trip.status ?? "loading"),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text("Fee: ${trip.price!.split(",")[0]+" ETB"}"),
+                )
+              ],
             ),
-          ],
-        ));
+
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Text("Origin:", style: TextStyle(
+                color: theme
+            )),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(trip.pickUpAddress ?? "Loading"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Text("Destination:", style: TextStyle(
+              color: theme
+            ),),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(trip.dropOffAddress ?? "Loading"),
+          ),
+        ],
+      ),
+    );
   }
 
   void getImageBit(Trip trip) async {
@@ -94,7 +132,7 @@ class HistoryBuilder extends StatelessWidget {
     String googleAPiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
     return "https://maps.googleapis.com/maps/api/staticmap?"
         "size=600x250&"
-        "zoom=10&"
+        "zoom=13&"
         "maptype=roadmap&"
         "markers=color:green%7Clabel:S%7C${trip.pickUpLocation?.latitude},${trip.pickUpLocation?.longitude}&"
         "markers=color:red%7Clabel:E%7C${trip.dropOffLocation?.latitude},${trip.dropOffLocation?.longitude}&"

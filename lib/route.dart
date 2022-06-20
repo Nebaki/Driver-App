@@ -1,10 +1,12 @@
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/credit/transfer_form.dart';
+import 'package:driverapp/screens/history/trip_detail.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'models/models.dart';
+import 'models/trip/trip.dart';
 
 class AppRoute {
   static Route generateRoute(RouteSettings settings) {
@@ -61,10 +63,17 @@ class AppRoute {
     if (settings.name == TeleBirrData.routeName) {
       return MaterialPageRoute(builder: (context) => TeleBirrData());
     }
+
     if (settings.name == TransferMoney.routeName) {
       TransferCreditArgument argument = settings.arguments as TransferCreditArgument;
       return MaterialPageRoute(builder: (context) => TransferMoney(
         balance: argument,
+      ));
+    }
+    if (settings.name == TripDetail.routeName) {
+      TripDetailArgs argument = settings.arguments as TripDetailArgs;
+      return MaterialPageRoute(builder: (context) => TripDetail(
+        args: argument,
       ));
     }
 
@@ -185,4 +194,9 @@ class LocationChangerArgument {
     required this.pickupLocationLatLng,
     required this.fromWhere,
   });
+
+}
+class TripDetailArgs{
+  final Trip trip;
+  TripDetailArgs({required this.trip});
 }

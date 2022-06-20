@@ -152,7 +152,7 @@ class _OnlinModeState extends State<OnlinMode> {
             borderRadius: BorderRadius.circular(100),
             child: Container(
               padding: const EdgeInsets.all(5),
-              color: Colors.green,
+              color: Theme.of(context).primaryColor,
               child: Icon(
                 icon,
                 color: Colors.white,
