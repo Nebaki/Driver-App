@@ -334,6 +334,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                                                 context);
                                                             checkPhoneNumber(
                                                                 phoneController);
+
                                                             /*Navigator
                                                            .pushReplacementNamed(
                                                                context,

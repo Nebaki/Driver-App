@@ -233,6 +233,7 @@ class _SigninScreenState extends State<SigninScreen>
                       cursorColor: themeProvider.getColor,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
+                          counterText: "",
                           labelStyle: TextStyle(color: themeProvider.getColor),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(

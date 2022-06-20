@@ -118,6 +118,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                           cursorColor: themeProvider.getColor,
                           controller: newPasswordController,
                           decoration: InputDecoration(
+                              counterText: "",
                               labelStyle: TextStyle(color: themeProvider.getColor),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -152,6 +153,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                           cursorColor: themeProvider.getColor,
                           controller: confirmPasswordController,
                           decoration: InputDecoration(
+                              counterText: "",
                               labelStyle: TextStyle(color: themeProvider.getColor),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
