@@ -46,7 +46,7 @@ class DirectionBloc extends Bloc<DirectionEvent, DirectionState> {
 
     if (event is DirectionChangeToInitialState) {
       yield DirectionInitialState(
-          isBalanceSufficient: event.isBalanceSuffiecient);
+          isBalanceSufficient: event.isBalanceSuffiecient, isFromOnlineMode: event.isFromOnlineMode);
     }
   }
 }

@@ -29,6 +29,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.4+3"
+    version: "2.3.0"
   async:
     dependency: transitive
     description:
@@ -731,7 +732,7 @@ packages:
     source: hosted
     version: "0.27.4"
   shimmer:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shimmer
       url: "https://pub.dartlang.org"

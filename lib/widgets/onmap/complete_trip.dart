@@ -31,7 +31,6 @@ class _CompleteTripState extends State<CompleteTrip> {
   }
 
   bool isButtonDisabled = false;
-  late bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +40,7 @@ class _CompleteTripState extends State<CompleteTrip> {
         listener: (context, state) {
           if (state is RideRequestCompleted) {
             startingTime = null;
-            if (isLoading) {
-              Navigator.pop(context);
-            }
+            
             BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
 
             // BlocProvider.of<CurrentWidgetCubit>(context)
@@ -60,9 +57,7 @@ class _CompleteTripState extends State<CompleteTrip> {
           }
 
           if (state is RideRequestOperationFailur) {
-            if (isLoading) {
-              Navigator.pop(context);
-            }
+            
             setState(() {
               isButtonDisabled = false;
             });
@@ -88,23 +83,8 @@ class _CompleteTripState extends State<CompleteTrip> {
               child: Column(
                 children: [
                   RiderDetail(text: 'Trip Started'),
-                  BlocConsumer<RideRequestBloc, RideRequestState>(
-                      listener: (context, state) {
-                    if (state is RideRequestLoading) {
-                      isLoading = true;
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return WillPopScope(
-                                onWillPop: () async {
-                                  isLoading = false;
-                                  return true;
-                                },
-                                child: CircularProggressIndicatorDialog());
-                          });
-                    }
-                  }, builder: (context, state) {
+                  BlocBuilder<RideRequestBloc, RideRequestState>(
+                    builder: (context, state) {
                     if (state is RideRequestLoading) {
                       return const Padding(
                         padding:
@@ -131,11 +111,16 @@ class _CompleteTripState extends State<CompleteTrip> {
                       );
                     },
                   ),
-                  Column(
-                    children: [
-                      Text(" PickUp Address: $pickUpAddress"),
-                      Text(" DropOff Address: $droppOffAddress"),
-                    ],
+                  // Divider
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 20, 15, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(" PickUp Address: $pickUpAddress",style: Theme.of(context).textTheme.overline!.copyWith(fontSize: 13),maxLines: 1,overflow: TextOverflow.ellipsis),
+                        Text(" DropOff Address: $droppOffAddress",style: Theme.of(context).textTheme.overline!.copyWith(fontSize: 13),maxLines: 1,overflow: TextOverflow.ellipsis),
+                      ],
+                    ),
                   ),
                   Container(
                       width: MediaQuery.of(context).size.width,

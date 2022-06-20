@@ -1,5 +1,6 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/home/dialogs/circular_progress_indicator_dialog.dart';
@@ -7,12 +8,14 @@ import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:slider_button/slider_button.dart';
 
 class WaitingPassenger extends StatefulWidget {
-  bool formPassenger;
+  final bool formPassenger;
+  final bool fromOnline;
 
-  WaitingPassenger(this.formPassenger);
+  WaitingPassenger({required this.formPassenger, required this.fromOnline});
 
   @override
   State<WaitingPassenger> createState() => _WaitingPassengerState();
@@ -21,7 +24,6 @@ class WaitingPassenger extends StatefulWidget {
 class _WaitingPassengerState extends State<WaitingPassenger> {
   bool isButtonDisabled = false;
 
-  late bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +34,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
           if (state is RideRequestStarted) {
             startingTime = DateTime.now();
 
-            if (isLoading) {
-              Navigator.pop(context);
-            }
+            
             context.read<CurrentWidgetCubit>().changeWidget(CompleteTrip());
             if (widget.formPassenger) {
               //to be removed
@@ -44,13 +44,17 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                   DirectionLoad(destination: droppOffLocation);
 
               BlocProvider.of<DirectionBloc>(context).add(event);
+            } else {
+              if (widget.fromOnline) {
+                homeScreenStreamSubscription.cancel().then((value) {
+                  Geofire.removeLocation(firebaseKey);
+                });
+              }
             }
           }
 
           if (state is RideRequestOperationFailur) {
-            if (isLoading) {
-              Navigator.pop(context);
-            }
+           
             setState(() {
               isButtonDisabled = false;
             });
@@ -80,23 +84,8 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                     padding: const EdgeInsets.only(top: 10),
                     child: RiderDetail(text: 'Picking up'),
                   ),
-                  BlocConsumer<RideRequestBloc, RideRequestState>(
-                      listener: (context, state) {
-                    if (state is RideRequestLoading) {
-                      isLoading = true;
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return WillPopScope(
-                                onWillPop: () async {
-                                  isLoading = false;
-                                  return true;
-                                },
-                                child: CircularProggressIndicatorDialog());
-                          });
-                    }
-                  }, builder: (context, state) {
+                  BlocBuilder<RideRequestBloc, RideRequestState>(
+                       builder: (context, state) {
                     if (state is RideRequestLoading) {
                       // showDialog(
                       //     barrierDismissible: false,
@@ -120,76 +109,116 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                         width: MediaQuery.of(context).size.width,
                         child: Divider());
                   }),
+                  widget.formPassenger
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                                onTap: () {
+                                  makePhoneCall(passengerPhoneNumber);
+                                },
+                                child: _buildItems(
+                                    text: "Call",
+                                    icon: Icons.call_end_outlined)),
+                            GestureDetector(
+                              onTap: () {
+                                sendTextMessage(passengerPhoneNumber);
+                              },
+                              child: _buildItems(
+                                  text: "Message",
+                                  icon: Icons.chat_bubble_outline_rounded),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, CancelReason.routeName,
+                                      arguments: CancelReasonArgument(
+                                          sendRequest: true));
+
+                                  // callback!(CancelTrip(callback));
+                                },
+                                child: _buildItems(
+                                    text: "Cancel Trip",
+                                    icon: Icons.clear_outlined))
+                          ],
+                        )
+                      : Container(),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildItems(
-                          text: "Chat",
-                          icon: Icons.chat_bubble_outline_rounded),
-                      _buildItems(
-                          text: "Message", icon: Icons.message_outlined),
-                      GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, CancelReason.routeName,
-                                arguments:
-                                    CancelReasonArgument(sendRequest: true));
-
-                            // callback!(CancelTrip(callback));
-                          },
-                          child: _buildItems(
-                              text: "Cancel Trip", icon: Icons.clear_outlined))
+                      Flexible(
+                        flex: 5,
+                        child: Container(
+                            width: double.infinity,
+                            height: 65,
+                            padding: const EdgeInsets.only(
+                                left: 30, right: 30, top: 10, bottom: 10),
+                            child: SliderButton(
+                                buttonColor: Colors.indigo.shade900,
+                                radius: 10,
+                                icon: const Center(
+                                    child: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.white,
+                                  size: 20.0,
+                                  semanticLabel:
+                                      'Text to announce in accessibility modes',
+                                )),
+                                label: const Text(
+                                  "Slide to Start !",
+                                  style: TextStyle(
+                                      color: Color(0xff4a4a4a),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 17),
+                                ),
+                                dismissible: false,
+                                disable: isButtonDisabled,
+                                action: () {
+                                  isButtonDisabled = true;
+                      
+                                  // homeScreenStreamSubscription.cancel();
+                                  RideRequestEvent requestEvent =
+                                      RideRequestStart(requestId, passengerFcm);
+                                  BlocProvider.of<RideRequestBloc>(context)
+                                      .add(requestEvent);
+                                })
+                            // ElevatedButton(
+                            //     style: TextButton.styleFrom(
+                            //         backgroundColor: Colors.indigo.shade900),
+                            //     onPressed: () {
+                            //       RideRequestEvent requestEvent =
+                            //           RideRequestChangeStatus(
+                            //               requestId, "Started", passengerFcm);
+                            //       BlocProvider.of<RideRequestBloc>(context)
+                            //           .add(requestEvent);
+                            //       // callback!(CompleteTrip(callback));
+                            //     },
+                            //     child: const Text(
+                            //       "Start",
+                            //       style: TextStyle(color: Colors.white),
+                            //     ))
+                            ),
+                      ),
+                      !widget.formPassenger
+                          ? Flexible(
+                            flex: 2,
+                            child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, CancelReason.routeName,
+                                      arguments: CancelReasonArgument(
+                                          sendRequest: true));
+                          
+                                  // callback!(CancelTrip(callback));
+                                },
+                                child: _buildItems(
+                                    text: "Cancel Trip",
+                                    icon: Icons.clear_outlined)),
+                          )
+                          : Container(
+                            
+                          )
                     ],
-                  ),
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 65,
-                      padding: const EdgeInsets.only(
-                          left: 30, right: 30, top: 10, bottom: 10),
-                      child: SliderButton(
-                          buttonColor: Colors.indigo.shade900,
-                          radius: 10,
-                          icon: const Center(
-                              child: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.white,
-                            size: 20.0,
-                            semanticLabel:
-                                'Text to announce in accessibility modes',
-                          )),
-                          label: const Text(
-                            "Slide to Start !",
-                            style: TextStyle(
-                                color: Color(0xff4a4a4a),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 17),
-                          ),
-                          dismissible: false,
-                          disable: isButtonDisabled,
-                          action: () {
-                            isButtonDisabled = true;
-
-                            // homeScreenStreamSubscription.cancel();
-                            RideRequestEvent requestEvent =
-                                RideRequestStart(requestId, passengerFcm);
-                            BlocProvider.of<RideRequestBloc>(context)
-                                .add(requestEvent);
-                          })
-                      // ElevatedButton(
-                      //     style: TextButton.styleFrom(
-                      //         backgroundColor: Colors.indigo.shade900),
-                      //     onPressed: () {
-                      //       RideRequestEvent requestEvent =
-                      //           RideRequestChangeStatus(
-                      //               requestId, "Started", passengerFcm);
-                      //       BlocProvider.of<RideRequestBloc>(context)
-                      //           .add(requestEvent);
-                      //       // callback!(CompleteTrip(callback));
-                      //     },
-                      //     child: const Text(
-                      //       "Start",
-                      //       style: TextStyle(color: Colors.white),
-                      //     ))
-                      )
+                  )
                 ],
               ),
             ),

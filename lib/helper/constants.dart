@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:assets_audio_player/assets_audio_player.dart';
+// import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:driverapp/bloc/riderequest/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,9 +36,24 @@ late String duration;
 late String price;
 late int balance;
 String? passengerProfilePictureUrl;
-final player = AssetsAudioPlayer();
+// final player = AssetsAudioPlayer();
 bool isAccepted = false;
 List<String> drivers = [];
 String portName = 'DRIVER_BACKGROUND_lISTENER_PORT';
 const maintenanceUrl = 'https://mobiletaxi-api.herokuapp.com/api';
 String baseUrl = 'https://safeway-api.herokuapp.com/api';
+const shimmerGradient = LinearGradient(
+  colors: [
+    Color(0xFFEBEBF4),
+    Color(0xFFF4F4F4),
+    Color(0xFFEBEBF4),
+  ],
+  stops: [
+    0.1,
+    0.3,
+    0.4,
+  ],
+  begin: Alignment(-1.0, -0.3),
+  end: Alignment(1.0, 0.3),
+  tileMode: TileMode.clamp,
+);

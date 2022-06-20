@@ -44,3 +44,5 @@ class RideRequestStartedTripChecked extends RideRequestState {
 }
 
 class RideRequestTimeOuted extends RideRequestState {}
+
+class RideRequestTokentExpired extends RideRequestState {}

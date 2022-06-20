@@ -22,3 +22,6 @@ export 'settings/settings.dart';
 export 'splash/splashscreen.dart';
 export 'settings/preference.dart';
 export 'resetpassword/changepassword.dart';
+export 'locationchanger/location_changer.dart';
+export 'locationchanger/predicted_address-list.dart';
+export 'locationchanger/setting_location_dialog.dart';

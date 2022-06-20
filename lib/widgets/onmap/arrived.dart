@@ -9,6 +9,7 @@ import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:slider_button/slider_button.dart';
 
 class Arrived extends StatefulWidget {
   Arrived();
@@ -18,7 +19,8 @@ class Arrived extends StatefulWidget {
 }
 
 class _ArrivedState extends State<Arrived> {
-  late bool isLoading;
+    bool isButtonDisabled = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,19 +29,17 @@ class _ArrivedState extends State<Arrived> {
       child: BlocConsumer<RideRequestBloc, RideRequestState>(
         listener: (context, state) {
           if (state is RideRequesChanged) {
-            if (isLoading) {
-              Navigator.pop(context);
-            }
+            
             context
                 .read<CurrentWidgetCubit>()
-                .changeWidget(WaitingPassenger(true));
+                .changeWidget(WaitingPassenger(formPassenger: true,fromOnline: true,));
 
             // widget.callback!(WaitingPassenger(widget.callback, true));
           }
           if (state is RideRequestOperationFailur) {
-            if (isLoading) {
-              Navigator.pop(context);
-            }
+           
+                          isButtonDisabled = false;
+
           }
         },
         builder: (context, state) {
@@ -62,31 +62,10 @@ class _ArrivedState extends State<Arrived> {
               child: Column(
                 children: [
                   RiderDetail(text: 'Picking up'),
-                  BlocConsumer<RideRequestBloc, RideRequestState>(
-                      listener: (context, state) {
+                  BlocBuilder<RideRequestBloc, RideRequestState>(
+                       builder: (context, state) {
                     if (state is RideRequestLoading) {
-                      isLoading = true;
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) {
-                            isLoading = true;
-                            return WillPopScope(
-                                onWillPop: () async {
-                                  isLoading = false;
-                                  return true;
-                                },
-                                child: CircularProggressIndicatorDialog());
-                          });
-                    }
-                  }, builder: (context, state) {
-                    if (state is RideRequestLoading) {
-                      // showDialog(
-                      //     barrierDismissible: false,
-                      //     context: context,
-                      //     builder: (BuildContext context) {
-                      //       return const CircularProggressIndicatorDialog();
-                      //     });
+            
                       return const Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -99,9 +78,9 @@ class _ArrivedState extends State<Arrived> {
                     }
                     return Container(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         width: MediaQuery.of(context).size.width,
-                        child: Divider());
+                        child: const Divider());
                   }),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -132,26 +111,41 @@ class _ArrivedState extends State<Arrived> {
                               text: "Cancel Trip", icon: Icons.clear_outlined))
                     ],
                   ),
-                  Container(
+                   Container(
                       width: MediaQuery.of(context).size.width,
                       height: 65,
                       padding: const EdgeInsets.only(
                           left: 30, right: 30, top: 10, bottom: 10),
-                      child: ElevatedButton(
-                          style: TextButton.styleFrom(
-                              backgroundColor: Colors.indigo.shade900),
-                          onPressed: () {
+                      child: SliderButton(
+                          buttonColor: Colors.indigo.shade900,
+                          radius: 10,
+                          icon: const Center(
+                              child: Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                            size: 20.0,
+                            semanticLabel:
+                                'Text to announce in accessibility modes',
+                          )),
+                          dismissible: false,
+                          // disable: true,
+                          label: const Text(
+                            "Slide to Arrive",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 17),
+                          ),
+                          disable: isButtonDisabled,
+                          action: () {
+                              isButtonDisabled = true;
                             RideRequestEvent requestEvent =
                                 RideRequestChangeStatus(
                                     requestId, "Arrived", passengerFcm);
                             BlocProvider.of<RideRequestBloc>(context)
                                 .add(requestEvent);
-                            // widget.callback!(WaitingPassenger(widget.callback));
-                          },
-                          child: const Text(
-                            "Arrived",
-                            style: TextStyle(color: Colors.white),
-                          )))
+                          })),
+                
                 ],
               ),
             ),

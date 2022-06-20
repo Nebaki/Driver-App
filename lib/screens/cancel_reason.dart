@@ -132,20 +132,13 @@ class _CancelReasonState extends State<CancelReason> {
             listener: (context, state) {
               if (state is RideRequestCancelled) {
                 driverStreamSubscription.cancel().then((value) {
-                  print("Yeah we have stopped it succesfully");
                   ref.child(myId).remove();
 
                   isLoading = false;
                   BlocProvider.of<DirectionBloc>(context).add(
                       const DirectionChangeToInitialState(
-                          isBalanceSuffiecient: true));
+                          isBalanceSuffiecient: true, isFromOnlineMode: true));
                   Navigator.pop(context);
-                  Navigator.pop(context);
-
-                  // Navigator.pushNamedAndRemoveUntil(context,
-                  //     HomeScreen.routeName, ((Route<dynamic> route) => false),
-                  //     arguments: HomeScreenArgument(
-                  //         isSelected: false, isOnline: true));
                 });
               }
               if (state is RideRequestOperationFailur) {

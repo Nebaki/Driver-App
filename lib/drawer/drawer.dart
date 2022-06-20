@@ -595,19 +595,19 @@ class NavDrawer extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacementNamed(
-                          context, HomeScreen.routeName,
-                          arguments: HomeScreenArgument(
-                              isSelected: false, isOnline: false));
-                    },
-                    child: _menuItem(
-                        divider: true,
-                        context: context,
-                        icon: Icons.home,
-                        text: "Home"),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.pushReplacementNamed(
+                  //         context, HomeScreen.routeName,
+                  //         arguments: HomeScreenArgument(
+                  //             isSelected: false, isOnline: false));
+                  //   },
+                  //   child: _menuItem(
+                  //       divider: true,
+                  //       context: context,
+                  //       icon: Icons.home,
+                  //       text: "Home"),
+                  // ),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, Walet.routeName);

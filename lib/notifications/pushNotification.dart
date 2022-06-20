@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:assets_audio_player/assets_audio_player.dart';
+// import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
@@ -20,11 +20,12 @@ class PushNotificationService {
       AndroidNotification? android = message.notification?.android;
       ThemeProvider themeProvider = Provider.of<ThemeProvider>(context, listen: false);
       player.open(Audio("assets/sounds/announcement-sound.mp3"));
+      // player.open(Audio("assets/sounds/announcement-sound.mp3"));
 
       if (message.data['response'] == 'Cancelled') {
         if (isAccepted) {
           BlocProvider.of<DirectionBloc>(context)
-              .add(DirectionChangeToInitialState(isBalanceSuffiecient: true));
+              .add(DirectionChangeToInitialState(isBalanceSuffiecient: true,isFromOnlineMode: true));
           isAccepted = false;
         } else {
           Navigator.pop(context);
