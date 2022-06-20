@@ -114,6 +114,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                         padding:
                             const EdgeInsets.only(top: 15, right: 15, left: 15),
                         child: TextFormField(
+                          maxLength: 25,
+                          cursorColor: themeProvider.getColor,
                           controller: newPasswordController,
                           decoration: InputDecoration(
                               labelStyle: TextStyle(color: themeProvider.getColor),
@@ -127,6 +129,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   color: Colors.black45),
                               prefixIcon: Icon(
                                 Icons.vpn_key,
+                                color: themeProvider.getColor,
                                 size: 19,
                               ),
                               fillColor: Colors.white,
@@ -145,6 +148,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                         padding:
                             const EdgeInsets.only(top: 5, right: 15, left: 15),
                         child: TextFormField(
+                          maxLength: 25,
+                          cursorColor: themeProvider.getColor,
                           controller: confirmPasswordController,
                           decoration: InputDecoration(
                               labelStyle: TextStyle(color: themeProvider.getColor),
@@ -158,6 +163,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   color: Colors.black45),
                               prefixIcon: Icon(
                                 Icons.vpn_key,
+                                color: themeProvider.getColor,
                                 size: 19,
                               ),
                               fillColor: Colors.white,
@@ -208,8 +214,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     height: 20,
                                     width: 20,
                                     child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.black,
+                                      color: Colors.white,
                                     ),
                                   )
                                       : Container(),

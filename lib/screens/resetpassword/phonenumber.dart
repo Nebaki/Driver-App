@@ -98,47 +98,48 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
   }
 
   final _formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack( children: [
-        Opacity(
-          opacity: 0.5,
-          child: ClipPath(
+      body: Stack(
+        children: [
+          Opacity(
+            opacity: 0.5,
+            child: ClipPath(
+              clipper: WaveClipper(),
+              child: Container(
+                height: 180,
+                color: themeProvider.getColor,
+              ),
+            ),
+          ),
+          ClipPath(
             clipper: WaveClipper(),
             child: Container(
-              height: 180,
+              height: 160,
               color: themeProvider.getColor,
             ),
           ),
-        ),
-        ClipPath(
-          clipper: WaveClipper(),
-          child: Container(
-            height: 160,
-            color: themeProvider.getColor,
-          ),
-        ),
-        Opacity(
-          opacity: 0.5,
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 100,
-              color: themeProvider.getColor,
-              child: ClipPath(
-                clipper: WaveClipperBottom(),
-                child: Container(
-                  height: 100,
-                  color: Colors.white,
+          Opacity(
+            opacity: 0.5,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 100,
+                color: themeProvider.getColor,
+                child: ClipPath(
+                  clipper: WaveClipperBottom(),
+                  child: Container(
+                    height: 100,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-
-      SingleChildScrollView(
-          child: Column(
+          SingleChildScrollView(
+              child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
@@ -168,55 +169,60 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Padding(
-                        padding: const EdgeInsets.only(left: 15, right: 10, top: 150),
+                        padding: const EdgeInsets.only(
+                            left: 15, right: 10, top: 150),
                         child: Text(
                           "Enter mobile number",
                           style: TextStyle(
                               fontFamily: 'Sifonn',
-                              fontWeight: FontWeight.bold, fontSize: 24.0),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24.0),
                         ),
                       ),
                       Padding(
                         padding:
-                        const EdgeInsets.only(left: 15, right: 15, top: 10),
+                            const EdgeInsets.only(left: 15, right: 15, top: 10),
                         child: TextFormField(
+                          autofocus: true,
                           maxLength: 9,
                           maxLines: 1,
                           keyboardType: const TextInputType.numberWithOptions(
                               signed: true, decimal: true),
                           style: TextStyle(fontSize: 18),
                           enabled: phoneEnabled,
+                          cursorColor: themeProvider.getColor,
                           decoration: InputDecoration(
-                              labelStyle: TextStyle(color: themeProvider.getColor),
+                              labelStyle:
+                                  TextStyle(color: themeProvider.getColor),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     color: themeProvider.getColor, width: 2.0),
                               ),
                               counterText: "",
                               prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
                               alignLabelWithHint: true,
                               //hintText: "9--------",
                               labelText: "Phone number",
                               hintStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black45),
-                              prefixIcon: const Padding(
+                              prefixIcon: Padding(
                                 padding: EdgeInsets.only(left: 5.0, right: 5.0),
                                 child: Text(
                                   "+251",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black),
+                                      color: themeProvider.getColor),
                                 ),
                               ),
                               suffix: Text("$textLength/9"),
                               fillColor: Colors.white,
                               filled: true,
                               border: OutlineInputBorder(
-                                  borderSide: BorderSide(style: BorderStyle.solid))
-                          ),
+                                  borderSide:
+                                      BorderSide(style: BorderStyle.solid))),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter Your Phone number';
@@ -228,9 +234,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                             return null;
                           },
                           onChanged: (value) {
-                            if(value.length >= 9){
-
-                            }
+                            if (value.length >= 9) {}
                             setState(() {
                               textLength = value.length;
                             });
@@ -291,7 +295,8 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                       ),*/
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 15,right: 15,top: 10,bottom: 10),
+                          padding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 10, bottom: 10),
                           child: SizedBox(
                             height: 50,
                             width: MediaQuery.of(context).size.width,
@@ -299,47 +304,68 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                 onPressed: showLoading
                                     ? null
                                     : () {
-                                  final form = _formkey.currentState;
-                                  if (form!.validate()) {
-                                    form.save();
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            AlertDialog(
-                                              title: const Text("Confirm"),
-                                              content: Text.rich(TextSpan(
-                                                  text:
-                                                  "We will send a verification code to ",
-                                                  children: [
-                                                    TextSpan(
-                                                        text: phoneController)
-                                                  ])),
-                                              actions: [
-                                                TextButton(
-                                                    onPressed: () async {
-                                                      Navigator.pop(context);
-                                                      checkPhoneNumber(
-                                                          phoneController);
-                                                       /*Navigator
+                                        final form = _formkey.currentState;
+                                        if (form!.validate()) {
+                                          form.save();
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                    title:
+                                                        const Text("Confirm", style: TextStyle(
+                                                          fontWeight: FontWeight.bold, fontSize: 20
+                                                        ),),
+                                                    content: Text.rich(TextSpan(
+                                                        text:
+                                                            "We will send a verification code to ", style: TextStyle(
+                                                        fontWeight: FontWeight.bold, fontSize: 18
+                                                    ),
+                                                        children: [
+                                                          TextSpan(
+                                                              text:
+                                                                  phoneController, style: TextStyle(
+                                                              fontWeight: FontWeight.bold, fontSize: 18
+                                                          ))
+                                                        ])),
+                                                    actions: [
+                                                      TextButton(
+                                                          onPressed: () async {
+                                                            Navigator.pop(
+                                                                context);
+                                                            checkPhoneNumber(
+                                                                phoneController);
+                                                            /*Navigator
                                                            .pushReplacementNamed(
                                                                context,
                                                            ResetPassword
                                                                    .routeName);
                                                        */
-                                                    },
-                                                    child: const Text(
-                                                        "Send Code")),
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(
-                                                          context, "Cancel");
-                                                    },
-                                                    child:
-                                                    const Text("Cancel")),
-                                              ],
-                                            ));
-                                  }
-                                },
+                                                          },
+                                                          child: Text(
+                                                            "Send Code",
+                                                            style: TextStyle(
+                                                                color: themeProvider.getColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          )),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context,
+                                                                "Cancel");
+                                                          },
+                                                          child: Text(
+                                                              "Cancel",
+                                                              style: TextStyle(
+                                                                  color: themeProvider.getColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold))),
+                                                    ],
+                                                  ));
+                                        }
+                                      },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -347,20 +373,20 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                     const Text(
                                       "Continue",
                                       style: TextStyle(
-                                        fontFamily: 'Sifonn',),
+                                        fontFamily: 'Sifonn',
+                                      ),
                                     ),
                                     const Spacer(),
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: showLoading
                                           ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          color: Colors.black,
-                                        ),
-                                      )
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                              ),
+                                            )
                                           : Container(),
                                     )
                                   ],
@@ -382,13 +408,13 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                               }
                             }
                             if (state is UserOperationFailure) {
-
                               setState(() {
                                 showLoading = false;
                               });
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content:
-                                const Text("Unable to check the phone number."),
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: const Text(
+                                    "Unable to check the phone number."),
                                 backgroundColor: Colors.red.shade900,
                               ));
                             }
@@ -399,7 +425,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
               ),
             ],
           ))
-      ],
+        ],
       ),
     );
   }
@@ -420,13 +446,17 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
         builder: (BuildContext context) {
           return AlertDialog(
             content:
-                const Text("There is no user registered by this phonenumber"),
+                const Text("There is no user registered by this phone number", style: TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 20
+                )),
             actions: [
               TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Okay"))
+                  child: Text("Okay", style: TextStyle( color: themeProvider.getColor,
+          fontWeight: FontWeight.bold, fontSize: 20
+          )))
             ],
           );
         });

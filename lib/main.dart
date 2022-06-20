@@ -260,6 +260,7 @@ class MyApp extends StatelessWidget {
                       textStyle: MaterialStateProperty.all<TextStyle>(
                           const TextStyle(color: Colors.black)),
                     )),
+
                     elevatedButtonTheme: ElevatedButtonThemeData(
                       style: ButtonStyle(
                           textStyle: MaterialStateProperty.all<TextStyle>(

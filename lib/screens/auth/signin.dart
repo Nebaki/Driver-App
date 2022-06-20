@@ -163,8 +163,10 @@ class _SigninScreenState extends State<SigninScreen>
                     padding:
                         const EdgeInsets.only(left: 15, right: 15, top: 10),
                     child: TextFormField(
+                      autofocus: true,
                       maxLength: 9,
                       maxLines: 1,
+                      cursorColor: themeProvider.getColor,
                       keyboardType: const TextInputType.numberWithOptions(
                           signed: true, decimal: true),
                       style: TextStyle(fontSize: 18),
@@ -186,14 +188,14 @@ class _SigninScreenState extends State<SigninScreen>
                         labelText: "Phone number",
                         hintStyle: const TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.black45),
-                        prefixIcon: const Padding(
+                        prefixIcon: Padding(
                           padding: EdgeInsets.only(left: 5.0, right: 5.0),
                           child: Text(
                             "+251",
                             style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black),
+                                color: themeProvider.getColor),
                           ),
                         ),
                         suffix: Text("$textLength/9"),
@@ -227,6 +229,8 @@ class _SigninScreenState extends State<SigninScreen>
                     padding: const EdgeInsets.only(
                         left: 15, right: 15, top: 10, bottom: 10),
                     child: TextFormField(
+                      maxLength: 25,
+                      cursorColor: themeProvider.getColor,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                           labelStyle: TextStyle(color: themeProvider.getColor),
@@ -242,6 +246,7 @@ class _SigninScreenState extends State<SigninScreen>
                               color: Colors.black45),
                           prefixIcon: Icon(
                             Icons.vpn_key,
+                            color: themeProvider.getColor,
                             size: 22,
                           ),
                           fillColor: Colors.white,
