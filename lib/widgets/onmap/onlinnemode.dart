@@ -43,7 +43,7 @@ class _OnlinModeState extends State<OnlinMode> {
                   if (state is AuthDataLoadSuccess) {
                     return Container(
                       child: FloatingActionButton(
-                        backgroundColor: Colors.green,
+                        backgroundColor: Theme.of(context).primaryColor,
                         onPressed: () {
                           homeScreenStreamSubscription.cancel().then((value) {
                             print("1YEAhhhhh");
