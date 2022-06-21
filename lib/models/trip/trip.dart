@@ -9,7 +9,10 @@ class Trip {
   String? pickUpAddress;
   String? dropOffAddress;
   String? price;
+  String? netPrice;
+  String? startingTime;
   String? status;
+  String? distance;
   String? passenger;
   LatLng? pickUpLocation;
   LatLng? dropOffLocation;
@@ -23,6 +26,9 @@ class Trip {
       required this.dropOffAddress,
       required this.price,
       required this.status,
+      required this.netPrice,
+      required this.distance,
+      required this.startingTime,
       required this.passenger,
       required this.pickUpLocation,
       required this.dropOffLocation,
@@ -32,10 +38,13 @@ class Trip {
     id = map[id];
     createdAt = map[createdAt];
     updatedAt = map[updatedAt];
+    startingTime = map[startingTime];
+    distance = map[distance];
     pickUpAddress = map[pickUpAddress];
     dropOffAddress = map[dropOffAddress];
     price = map[price];
     status = map[status];
+    netPrice = map[netPrice];
     passenger = map[passenger];
     pickUpLocation = map[pickUpLocation];
     dropOffLocation = map[dropOffLocation];
@@ -46,9 +55,12 @@ class Trip {
         "id": id,
         "createdAt": createdAt,
         "updatedAt": updatedAt,
+        "startingTime": startingTime,
         "pickUpAddress": pickUpAddress,
+        "distance": distance,
         "dropOffAddress": dropOffAddress,
         "price": price,
+        "netPrice": netPrice,
         "status": status,
         "passenger": passenger,
         "pickUpLocation": LatLngConverter().string(pickUpLocation!),
@@ -66,13 +78,20 @@ class Trip {
         id: json["id"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"].toString(),
+        startingTime: json["starting_time"].toString(),
         pickUpAddress: json["pickup_address"],
         dropOffAddress: json["drop_off_address"],
+        distance: json["distance"].toString(),
         price: json["price"].toString(),
+        netPrice: json["net_price"].toString(),
         status: json["status"],
-        passenger: "Who?"/*json["passenger"]*/,
-        pickUpLocation: LatLng(double.parse(json["pickup_location"][0].toString()),double.parse(json["pickup_location"][1].toString())),
-        dropOffLocation: LatLng(double.parse(json["drop_off_location"][0].toString()),double.parse(json["drop_off_location"][1].toString())),
+        passenger: "Who?" /*json["passenger"]*/,
+        pickUpLocation: LatLng(
+            double.parse(json["pickup_location"][0].toString()),
+            double.parse(json["pickup_location"][1].toString())),
+        dropOffLocation: LatLng(
+            double.parse(json["drop_off_location"][0].toString()),
+            double.parse(json["drop_off_location"][1].toString())),
         picture: null,
       );
 }

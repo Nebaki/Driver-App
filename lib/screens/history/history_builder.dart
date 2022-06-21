@@ -19,6 +19,7 @@ import 'package:http/http.dart' as http;
 class HistoryBuilder extends StatelessWidget {
   List<Trip> items;
   Color theme;
+
   HistoryBuilder(this.items, this.theme, {Key? key}) : super(key: key);
 
   @override
@@ -43,57 +44,58 @@ class HistoryBuilder extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: (){
-        Navigator.pushNamed(
-            context, TripDetail.routeName,
+      onTap: () {
+        Navigator.pushNamed(context, TripDetail.routeName,
             arguments: TripDetailArgs(trip: trip));
         //ShowToast(context,trip.price ?? "Loading").show();
       },
       child: Card(
-          elevation: 4,
-          child: Column(
-            children: [
-              trip.picture != null ? Image.memory(trip.picture!) : Container(),
-              _listUi(Theme.of(context).primaryColor,trip),
-            ],
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                trip.picture != null ? Image.memory(trip.picture!) : Container(),
+                _listUi(Theme.of(context).primaryColor, trip),
+              ],
+            ),
           )),
     );
   }
-  _listUi(Color theme,Trip trip){
+
+  _listUi(Color theme, Trip trip) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: Text("Status:", style: TextStyle(
-                          color: theme
-                      )),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(trip.status ?? "loading"),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Text("Fee: ${trip.price!.split(",")[0]+" ETB"}"),
-                )
-              ],
-            ),
-
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Text("Status:", style: TextStyle(color: theme)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(trip.status ?? "loading"),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Text("Fee: ${trip.price!.split(",")[0] + " ETB"}"),
+              )
+            ],
+          ),
           Padding(
             padding: const EdgeInsets.all(2.0),
-            child: Text("Origin:", style: TextStyle(
-                color: theme
-            )),
+            child: Text("Origin:", style: TextStyle(color: theme)),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -101,9 +103,10 @@ class HistoryBuilder extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(2.0),
-            child: Text("Destination:", style: TextStyle(
-              color: theme
-            ),),
+            child: Text(
+              "Destination:",
+              style: TextStyle(color: theme),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -132,7 +135,7 @@ class HistoryBuilder extends StatelessWidget {
     String googleAPiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
     return "https://maps.googleapis.com/maps/api/staticmap?"
         "size=600x250&"
-        "zoom=13&"
+        "zoom=15&"
         "maptype=roadmap&"
         "markers=color:green%7Clabel:S%7C${trip.pickUpLocation?.latitude},${trip.pickUpLocation?.longitude}&"
         "markers=color:red%7Clabel:E%7C${trip.dropOffLocation?.latitude},${trip.dropOffLocation?.longitude}&"
@@ -196,10 +199,7 @@ class ImageUtils {
     print("imgp: ${tempDir?.path}");
     Directory('${tempDir?.path}/historyIMG/').exists().then((value) => {
           if (value)
-            {
-              print("img: dir exist"),
-              writeImage(tempDir!, uint8list, name)
-            }
+            {print("img: dir exist"), writeImage(tempDir!, uint8list, name)}
           else
             {print("img: dir not exist"), createDir(tempDir!, uint8list, name)}
         });
