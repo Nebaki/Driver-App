@@ -72,6 +72,7 @@ class HistoryDB {
       return Trip(
         id: maps[i]['id'],
         createdAt: maps[i]['createdAt'],
+        commission: maps[i]['commission'],
         startingTime: maps[i]['startingTime'],
         pickUpAddress: maps[i]['pickUpAddress'],
         updatedAt: maps[i]['updatedAt'],

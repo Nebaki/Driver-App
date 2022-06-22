@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:driverapp/models/trip/trip.dart';
@@ -54,6 +55,7 @@ class HistoryDataProvider {
             createdAt: "Money Received $i",
             pickUpAddress: "Hello you received nothing Thanks",
             updatedAt: "soon",
+            commission: "00145",
             startingTime: "now",
             price: "$money.ETB",
             netPrice: "$money.ETB",
@@ -135,4 +137,44 @@ class HistoryDataProvider {
     print(rng.nextInt(999));
     return rng.nextInt(9999).toString();
   }
+
+  Future<DailyEarning> dailyEarning() async {
+    final http.Response response = await httpClient.get(
+        Uri.parse('$_baseUrl/get-my-todays-earning'),
+        headers: await RequestHeader().authorisedHeader());
+    if (response.statusCode == 200) {
+
+      final List maps = jsonDecode(response.body)['items'];
+      final String totalEarning = jsonDecode(response.body)['totalEarning'];
+
+      List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
+
+      DailyEarning dailyEarning = DailyEarning(totalEarning: totalEarning, trips: trips);
+      return dailyEarning;
+    } else {
+      String totalEarning = "0 ${response.statusCode}";
+      List<Trip> trips = [];
+      return DailyEarning(totalEarning: totalEarning.toString(), trips: trips);
+    }
+  }
+
+  Future<DailyEarning> weeklyEarning() async {
+    final http.Response response = await httpClient.get(
+        Uri.parse('$_baseUrl/get-weekly-credit'),
+        headers: await RequestHeader().authorisedHeader());
+    if (response.statusCode == 200) {
+      final List maps = jsonDecode(response.body)['items'];
+      final Double totalEarning = jsonDecode(response.body)['totalEarning'];
+
+      List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
+
+      DailyEarning dailyEarning = DailyEarning(totalEarning: totalEarning.toString(), trips: trips);
+      return dailyEarning;
+    } else {
+      String totalEarning = "0 ${response.statusCode}";
+      List<Trip> trips = [];
+      return DailyEarning(totalEarning: totalEarning.toString(), trips: trips);
+    }
+  }
+
 }

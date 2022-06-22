@@ -11,6 +11,7 @@ class Trip {
   String? price;
   String? netPrice;
   String? startingTime;
+  String? commission;
   String? status;
   String? distance;
   String? passenger;
@@ -27,6 +28,7 @@ class Trip {
       required this.price,
       required this.status,
       required this.netPrice,
+      required this.commission,
       required this.distance,
       required this.startingTime,
       required this.passenger,
@@ -45,6 +47,7 @@ class Trip {
     price = map[price];
     status = map[status];
     netPrice = map[netPrice];
+    commission = map[commission];
     passenger = map[passenger];
     pickUpLocation = map[pickUpLocation];
     dropOffLocation = map[dropOffLocation];
@@ -63,6 +66,7 @@ class Trip {
         "netPrice": netPrice,
         "status": status,
         "passenger": passenger,
+        "commission": commission,
         "pickUpLocation": LatLngConverter().string(pickUpLocation!),
         "dropOffLocation": LatLngConverter().string(dropOffLocation!),
         "picture": picture,
@@ -85,6 +89,7 @@ class Trip {
         price: json["price"].toString(),
         netPrice: json["net_price"].toString(),
         status: json["status"],
+    commission: json["commission"],
         passenger: "Who?" /*json["passenger"]*/,
         pickUpLocation: LatLng(
             double.parse(json["pickup_location"][0].toString()),
@@ -107,4 +112,9 @@ class LatLngConverter {
     return LatLng(
         double.parse(string.split(',')[0]), double.parse(string.split(',')[1]));
   }
+}
+class DailyEarning{
+  String totalEarning;
+  List<Trip> trips;
+  DailyEarning({required this.totalEarning, required this.trips});
 }

@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:math';
 
 // import 'package:dio/dio.dart';
 import 'package:driverapp/dataprovider/header/header.dart';
+import 'package:driverapp/models/trip/trip.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/session.dart';
@@ -81,36 +83,6 @@ class CreditDataProvider {
     }
   }
 
-  Future<Result> dailyEarning() async {
-    final http.Response response = await httpClient.get(
-        Uri.parse('$_baseUrl/get-my-todays-earning'),
-        headers: await RequestHeader().authorisedHeader());
-    if (response.statusCode == 200) {
-      var balance = jsonDecode(response.body);
-      Session().logSession("daily-earning", balance["totalEarnings"].toString());
-      Session().logSession("daily-history", balance["rideRequests"].toString());
-      return Result(
-          response.statusCode.toString(), true, balance["balance"].toString());
-    } else {
-      return RequestResult()
-          .requestResult(response.statusCode.toString(), response.body);
-    }
-  }
-
-  Future<Result> weeklyEarning() async {
-    final http.Response response = await httpClient.get(
-        Uri.parse('$_baseUrl/get-weekly-credit'),
-        headers: await RequestHeader().authorisedHeader());
-    if (response.statusCode == 200) {
-      var balance = jsonDecode(response.body);
-      Session().logSession("balance", balance["balance"].toString());
-      return Result(
-          response.statusCode.toString(), true, balance["balance"].toString());
-    } else {
-      return RequestResult()
-          .requestResult(response.statusCode.toString(), response.body);
-    }
-  }
 
   Future<CreditStore> loadCreditHistory(String user) async {
     final http.Response response = await http.get(

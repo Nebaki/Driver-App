@@ -1,9 +1,11 @@
+import 'package:driverapp/models/trip/trip.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../dataprovider/credit/credit.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../dataprovider/history/history.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
 import '../../../credit/toast_message.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -69,7 +71,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                           Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text("15",style: TextStyle(color: themeProvider.getColor)),
+                              Text(trips.toString(),style: TextStyle(color: themeProvider.getColor)),
                               Text(
                                 "Trips",
                                 style: TextStyle(color: Colors.grey),
@@ -116,15 +118,15 @@ class _DailyEarningTabState extends State<DailyEarningTab>
             color: Colors.white,
             child: Column(
               children: [
-                _reportItems(data: "Trip fares", price: "40.25"),
-                _reportItems(data: "Commission", price: "20.00"),
+                _reportItems(data: "Trip fares", price: netPrice.toString()),
+                _reportItems(data: "Commission", price: commission.toString()),
                 //_reportItems(data: "+Tax", price: "400.50"),
                 //_reportItems(data: "+Tolls", price: "400.50"),
                 //_reportItems(data: "Surge", price: "40.25"),
                 //_reportItems(data: "Discount(-)", price: "20.00"),
                 const Divider(),
                 _reportItems(
-                    data: "Total Earnings", price: "460.75", color: themeProvider.getColor),
+                    data: "Total Earnings", price: price.toString(), color: themeProvider.getColor),
               ],
             ),
           ),
@@ -157,23 +159,43 @@ class _DailyEarningTabState extends State<DailyEarningTab>
     );
   }
 
-  var transfer = CreditDataProvider(httpClient: http.Client());
+  var transfer = HistoryDataProvider(httpClient: http.Client());
 
   var balance = "loading...";
+  var trips = 0;
 
   var _isLoading = false;
   void reloadBalance() {
-    var confirm = transfer.loadBalance();
+    var confirm = transfer.dailyEarning();
     confirm
         .then((value) => {
               setState(() {
                 _isLoading = false;
-                balance = value.message+".ETB";
-              })
+                balance = value.totalEarning+".ETB";
+                trips = value.trips.length;
+              }),
+      _calculateCommission(value.trips)
             })
         .onError((error, stackTrace) => {ShowMessage(context, "Balance", error.toString())});
   }
-
+  var commission = 0.0;
+  var netPrice = 0.0;
+  var price = 0.0;
+  _calculateCommission(List<Trip> trips){
+    var commission_init = 0.0;
+    var netPrice_init = 0.0;
+    var price_init = 0.0;
+    for(Trip trip in trips){
+      commission_init += double.parse(trip.commission ?? "0");
+      netPrice_init += double.parse(trip.netPrice ?? "0");
+      price_init += double.parse(trip.price ?? "0");
+    }
+    setState(() {
+      commission = commission_init;
+      netPrice = netPrice_init;
+      price = price_init;
+    });
+  }
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
