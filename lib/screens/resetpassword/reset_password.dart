@@ -168,6 +168,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                             const EdgeInsets.only(top: 15, right: 15, left: 15),
                         child: TextFormField(
                           maxLength: 25,
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
                           cursorColor: themeProvider.getColor,
                           controller: newPasswordController,
                           decoration: InputDecoration(
@@ -203,6 +206,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                             const EdgeInsets.only(top: 5, right: 15, left: 15),
                         child: TextFormField(
                           maxLength: 25,
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
                           cursorColor: themeProvider.getColor,
                           controller: confirmPasswordController,
                           decoration: InputDecoration(

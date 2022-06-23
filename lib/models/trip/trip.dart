@@ -89,7 +89,7 @@ class Trip {
         price: json["price"].toString(),
         netPrice: json["net_price"].toString(),
         status: json["status"],
-    commission: json["commission"],
+        commission: json["commission"].toString(),
         passenger: "Who?" /*json["passenger"]*/,
         pickUpLocation: LatLng(
             double.parse(json["pickup_location"][0].toString()),
@@ -113,8 +113,10 @@ class LatLngConverter {
         double.parse(string.split(',')[0]), double.parse(string.split(',')[1]));
   }
 }
-class DailyEarning{
+
+class DailyEarning {
   String totalEarning;
   List<Trip> trips;
+
   DailyEarning({required this.totalEarning, required this.trips});
 }

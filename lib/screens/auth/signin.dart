@@ -230,6 +230,9 @@ class _SigninScreenState extends State<SigninScreen>
                         left: 15, right: 15, top: 10, bottom: 10),
                     child: TextFormField(
                       maxLength: 25,
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
                       cursorColor: themeProvider.getColor,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(

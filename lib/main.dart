@@ -94,7 +94,7 @@ void main() async {
   String? theme = await secure_storage.read(key: "theme");
   runApp(
     ChangeNotifierProvider(
-        create: (BuildContext context) => ThemeProvider(theme: int.parse(theme ?? "0")),
+        create: (BuildContext context) => ThemeProvider(theme: int.parse(theme ?? "3")),
         child: MyApp(
           placeDetailRepository: placeDetailRepository,
           directionRepository: directionRepository,
