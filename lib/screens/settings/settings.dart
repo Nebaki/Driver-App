@@ -11,6 +11,8 @@ class SettingScreen extends StatelessWidget {
 
   final _textStyle =
       const TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
+
+  const SettingScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,14 +34,10 @@ class SettingScreen extends StatelessWidget {
         ),
       ),
       body: BlocBuilder<AuthBloc, AuthState>(builder: (_, state) {
-        String name;
-        String phoneNumber;
-        print("Loadinggggggggggggggggggggggggg $state");
+        
         if (state is AuthDataLoadSuccess) {
-          print("Loadinggggggggggggggggggggggggg ${state.auth.email}");
 
-          name = state.auth.name!;
-          phoneNumber = state.auth.phoneNumber;
+        
           return ListView(
             padding: const EdgeInsets.only(top: 20, left: 5, right: 5),
             children: [
@@ -77,7 +75,7 @@ class SettingScreen extends StatelessWidget {
                             ),
                             placeholder: (context, url) =>
                                 const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => Icon(
+                            errorWidget: (context, url, error) => const Icon(
                               Icons.person,
                               size: 50,
                               color: Colors.black,
@@ -355,31 +353,4 @@ class SettingScreen extends StatelessWidget {
     );
   }
 
-  Widget _menuItem(
-      {required BuildContext context,
-      required IconData icon,
-      required String text,
-      required String routename}) {
-    const color = Colors.grey;
-    const hoverColor = Colors.white70;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        ListTile(
-          leading: Icon(icon),
-          title: Text(text,
-              style:
-                  const TextStyle(fontWeight: FontWeight.w400, fontSize: 18)),
-          hoverColor: hoverColor,
-          onLongPress: () {},
-          onTap: () {
-            Navigator.pushNamed(context, routename);
-          },
-        ),
-        const SizedBox(
-          height: 10,
-        )
-      ],
-    );
-  }
 }

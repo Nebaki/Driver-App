@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 
 class OnlinMode extends StatefulWidget {
-  OnlinMode();
+  const OnlinMode({Key? key}) : super(key: key);
 
   @override
   State<OnlinMode> createState() => _OnlinModeState();
@@ -23,7 +23,6 @@ class _OnlinModeState extends State<OnlinMode> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        print("Come On Brother");
         onCloseWarningDialog();
         // context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
         return false;
@@ -40,32 +39,28 @@ class _OnlinModeState extends State<OnlinMode> {
                 padding: const EdgeInsets.only(bottom: 15),
                 child: BlocBuilder<AuthBloc, AuthState>(builder: (_, state) {
                   if (state is AuthDataLoadSuccess) {
-                    return Container(
-                      child: FloatingActionButton(
-                        backgroundColor: Colors.green,
-                        onPressed: () {
-                          homeScreenStreamSubscription.cancel().then((value) {
-                            print("1YEAhhhhh");
-                          });
-                          // homeScreenStreamSubscription.cancel();
+                    return FloatingActionButton(
+                      backgroundColor: Colors.green,
+                      onPressed: () {
+                        homeScreenStreamSubscription.cancel().then((value) {});
+                        // homeScreenStreamSubscription.cancel();
 
-                          // setDriverStatus(false);
+                        // setDriverStatus(false);
 
-                          isDriverOnline = false;
-                          context
-                              .read<CurrentWidgetCubit>()
-                              .changeWidget(OfflineMode());
-                          // widget.callback!(OfflineMode(
-                          //     widget.setDriverStatus, widget.callback));
-                        },
-                        child: Container(
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.white, width: 1.5),
-                                borderRadius: BorderRadius.circular(100)),
-                            child: Text("Off")),
-                      ),
+                        isDriverOnline = false;
+                        context
+                            .read<CurrentWidgetCubit>()
+                            .changeWidget(OfflineMode());
+                        // widget.callback!(OfflineMode(
+                        //     widget.setDriverStatus, widget.callback));
+                      },
+                      child: Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 1.5),
+                              borderRadius: BorderRadius.circular(100)),
+                          child: const Text("Off")),
                     );
                   }
 
@@ -87,8 +82,8 @@ class _OnlinModeState extends State<OnlinMode> {
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20))),
               child: Column(
-                children: [
-                  const Center(
+                children: const [
+                  Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 20),
                       child: Text(
@@ -97,40 +92,8 @@ class _OnlinModeState extends State<OnlinMode> {
                       ),
                     ),
                   ),
-                  const Divider(color: Colors.orange, thickness: 1),
-                  SizedBox(
-                    height: 100,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _items(
-                            num: "95 ETB",
-                            text: "Earning",
-                            icon: Icons.monetization_on),
-                        VerticalDivider(
-                          color: Colors.grey.shade300,
-                        ),
-                        _items(
-                            num: myAvgRate.toString(),
-                            text: "Rating",
-                            icon: Icons.star),
-                        VerticalDivider(
-                          color: Colors.grey.shade300,
-                        ),
-                        BlocBuilder<BalanceBloc, BalanceState>(
-                          builder: (context, state) {
-                            if (state is BalanceLoadSuccess) {
-                              return _items(
-                                  num: "${state.balance} ETB",
-                                  text: "Wallet",
-                                  icon: Icons.wallet_giftcard);
-                            }
-                            return Container();
-                          },
-                        ),
-                      ],
-                    ),
-                  )
+                  Divider(color: Colors.green, thickness: 1),
+                  OndriverStatus(isOnline: true,)
                 ],
               ),
             ),
@@ -140,40 +103,6 @@ class _OnlinModeState extends State<OnlinMode> {
     );
   }
 
-  Widget _items(
-      {required String num, required String text, required IconData icon}) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: Container(
-              padding: const EdgeInsets.all(5),
-              color: Colors.green,
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 15,
-              ),
-            ),
-          ),
-          Text(
-            num,
-            style: const TextStyle(fontSize: 16),
-          ),
-          Text(
-            text,
-            style: const TextStyle(
-                color: Colors.black38,
-                fontSize: 16,
-                fontWeight: FontWeight.w300),
-          )
-        ],
-      ),
-    );
-  }
 
   void onCloseWarningDialog() {
     showDialog(

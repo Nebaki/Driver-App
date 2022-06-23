@@ -11,3 +11,4 @@ export 'balance/balance.dart';
 export 'currentwidget/current_widget_bloc.dart';
 export 'estimatedcost/estimated_cost.dart';
 export 'disablebutton/disable_button.dart';
+export 'settings/settings_bloc.dart';

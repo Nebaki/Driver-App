@@ -11,7 +11,6 @@ class PassengerDataprovider {
   PassengerDataprovider({required this.httpClient});
 
   Future getAvailablePassengers() async {
-    print("in hereeeeeeeee");
     final response = await http.get(
         Uri.parse('$_baseUrl/get-available-passengers'),
         headers: <String, String>{
@@ -19,7 +18,6 @@ class PassengerDataprovider {
           'x-access-token': '${await authDataProvider.getToken()}',
         });
 
-    print(response.statusCode);
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body) as List;

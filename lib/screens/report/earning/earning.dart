@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 class Earning extends StatelessWidget {
   static const routeName = "/earning";
+
+  const Earning({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
         length: 2,
         child: Scaffold(
-          backgroundColor: Color(0xFFF5F6F9),
+          backgroundColor: const Color(0xFFF5F6F9),
           appBar: AppBar(
             elevation: 1.3,
             backgroundColor: Colors.white,
@@ -28,7 +30,7 @@ class Earning extends StatelessWidget {
                   Text("WEEKLY")
                 ]),
           ),
-          body: TabBarView(children: [DailyEarningTab(), WeeklyEarningTab()]),
+          body: const TabBarView(children: [ DailyEarningTab(), WeeklyEarningTab()]),
         ));
   }
 }

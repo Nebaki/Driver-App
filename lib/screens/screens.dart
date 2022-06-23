@@ -25,3 +25,4 @@ export 'resetpassword/changepassword.dart';
 export 'locationchanger/location_changer.dart';
 export 'locationchanger/predicted_address-list.dart';
 export 'locationchanger/setting_location_dialog.dart';
+export 'award/award.dart';

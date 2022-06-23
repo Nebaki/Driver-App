@@ -5,21 +5,24 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EstiMatedCostCubit extends Cubit<double> {
   EstiMatedCostCubit(state) : super(initialFare.toDouble());
-  updateEstimatedCost(
-      LatLng pickupLocation, LatLng currentLocation, DateTime startingTime) {
+  
+
+  updateEstimatedCost(LatLng pickupLocation, LatLng currentLocation,
+      DateTime startingTime, double distance) {
     double cost = (initialFare +
         (costPerMinute *
-            (double.parse(DateTime.now()
+            ((double.parse(DateTime.now()
                     .difference(startingTime)
                     .inSeconds
                     .toString()) /
-                60)) +
+                60)/10)) +
         (costPerKilloMeter *
-            Geolocator.distanceBetween(
-                pickupLocation.latitude,
-                pickupLocation.longitude,
-                currentLocation.latitude,
-                currentLocation.longitude) /
+            (distance +
+                Geolocator.distanceBetween(
+                    pickupLocation.latitude,
+                    pickupLocation.longitude,
+                    currentLocation.latitude,
+                    currentLocation.longitude)) /
             1000));
 
     return emit(cost);

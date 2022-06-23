@@ -286,6 +286,16 @@ class NavDrawer extends StatelessWidget {
                   ),
 
                   //const Divider(color: Colors.grey),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.popAndPushNamed(context, AwardScreen.routeName);
+                    },
+                    child: _menuItem(
+                        divider: true,
+                        context: context,
+                        icon: Icons.wallet_giftcard_outlined,
+                        text: "Award"),
+                  ),
 
                   const SizedBox(height: 20),
                   //Divider(color: Colors.grey.shade500),

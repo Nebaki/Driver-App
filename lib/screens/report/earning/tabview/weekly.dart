@@ -2,6 +2,8 @@ import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class WeeklyEarningTab extends StatelessWidget {
+  const WeeklyEarningTab({Key? key}) : super(key: key);
+
   Color getColor(BuildContext context, double percent) {
     if (percent >= 0.50) {
       return Theme.of(context).primaryColor;
@@ -21,7 +23,7 @@ class WeeklyEarningTab extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 height: 200,
                 child: CustomScrollView(
                   slivers: <Widget>[
@@ -29,23 +31,8 @@ class WeeklyEarningTab extends StatelessWidget {
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                           if (index == 0) {
-                            return Container(
-                              //  margin:
-                              //     EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-                              // decoration: BoxDecoration(
-                              //   color: Colors.white,
-                              //   boxShadow: [
-                              //     BoxShadow(
-                              //       color: Colors.black12,
-                              //       offset: Offset(0, 2),
-                              //       blurRadius: 6.0,
-                              //     ),
-                              //   ],
-                              //   borderRadius: BorderRadius.circular(10.0),
-                              // ),
-                              child: WeeklyEarningBarChart(
-                                  [8, 12, 3, 14, 5, 16, 7]),
-                            );
+                            return const WeeklyEarningBarChart(
+                                [8, 12, 3, 14, 5, 16, 7]);
                           }
                         },
                         childCount: 1 + 7,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DailyEarningTab extends StatelessWidget {
+  const DailyEarningTab({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -31,7 +33,7 @@ class DailyEarningTab extends StatelessWidget {
                   padding: EdgeInsets.only(top: 10),
                   child: Divider(),
                 ),
-                Container(
+                SizedBox(
                   height: 50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,

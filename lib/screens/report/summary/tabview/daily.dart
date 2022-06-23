@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DailySummaryTab extends StatelessWidget {
+  const DailySummaryTab({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -77,9 +79,9 @@ class DailySummaryTab extends StatelessWidget {
           ListTile(
             leading: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [Text(time), Text("AM")]),
+                children: [Text(time), const Text("AM")]),
             title: Text(location),
-            subtitle: Text("Paid in Cash"),
+            subtitle: const Text("Paid in Cash"),
             trailing: Text("\$$price"),
           ),
           const Padding(

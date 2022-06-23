@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:driverapp/widgets/custome_backarrow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/models/user/user.dart';
 import 'package:driverapp/route.dart';
@@ -14,60 +11,20 @@ class EditProfile extends StatefulWidget {
 
   final EditProfileArgument args;
 
-  EditProfile({Key? key, required this.args}) : super(key: key);
+  const EditProfile({Key? key, required this.args}) : super(key: key);
 
   @override
   State<EditProfile> createState() => _EditProfileState();
 }
 
 class _EditProfileState extends State<EditProfile> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  bool _isImageLoading = false;
-  Map<String, dynamic> _user = {};
-  final _textStyle =
-      const TextStyle(color: Colors.black12, fontWeight: FontWeight.bold);
+  final Map<String, dynamic> _user = {};
 
-  XFile? _image;
-  _showModalNavigation() {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext ctx) {
-          return Container(
-            child: ListTile(
-              leading: const Icon(Icons.image),
-              title: const Text("Gallery"),
-              onTap: () async {
-                XFile? image = (await ImagePicker.platform.getImage(
-                  source: ImageSource.gallery,
-                )
-
-                    // .pickImage(
-                    //   source:
-                    //   maxHeight: 400,
-                    //   maxWidth: 400,
-                    // )
-                    );
-
-                //File f = File(image!.path);
-
-                setState(() {
-                  _image = image;
-                });
-                Navigator.pop(context);
-
-                UserEvent event = UploadProfile(image!);
-
-                BlocProvider.of<UserBloc>(ctx).add(event);
-              },
-            ),
-          );
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
-    String imageurl;
     return Scaffold(
       backgroundColor: Colors.red,
       body: BlocConsumer<UserBloc, UserState>(builder: (context, state) {
@@ -75,10 +32,8 @@ class _EditProfileState extends State<EditProfile> {
       }, listener: (context, state) {
         if (state is ImageUploadSuccess) {
           BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
-          _isImageLoading = false;
         }
         if (state is UserLoading) {
-          _isImageLoading = true;
         }
         if (state is UsersLoadSuccess) {
           _isLoading = false;
@@ -87,7 +42,7 @@ class _EditProfileState extends State<EditProfile> {
             content: Text("Update Successfull"),
             backgroundColor: Colors.green,
           ));
-          Future.delayed(Duration(seconds: 1), () {
+          Future.delayed(const Duration(seconds: 1), () {
             BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
           });
         }
@@ -102,45 +57,6 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  Widget _buildProfileItems(
-      {required BuildContext context,
-      required String text,
-      required String textfieldtext}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            text,
-            style: _textStyle,
-          ),
-          Container(
-              width: MediaQuery.of(context).size.width * 0.7,
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  hintText: "Full Name",
-                  hintStyle: TextStyle(
-                      fontWeight: FontWeight.w300, color: Colors.black45),
-                  // prefixIcon: Icon(
-                  // artist Icon
-                  fillColor: Colors.white,
-
-                  //filled: true,
-                  // border:
-                  //     OutlineInputBorder(borderSide: BorderSide.none)
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'This field can\'t be empity:    ';
-                  }
-                  return null;
-                },
-              ))
-        ],
-      ),
-    );
-  }
 
   Widget _buildProfileForm() {
     return Form(
@@ -195,7 +111,7 @@ class _EditProfileState extends State<EditProfile> {
                                     ),
                                     placeholder: (context, url) =>
                                         const CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) => Icon(
+                                    errorWidget: (context, url, error) => const Icon(
                                       Icons.person,
                                       size: 70,
                                       color: Colors.black,
@@ -496,7 +412,7 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                 ),
-                CustomeBackArrow(),
+                const CustomeBackArrow(),
               ],
             ),
           ),

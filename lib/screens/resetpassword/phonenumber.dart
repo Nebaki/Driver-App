@@ -13,6 +13,8 @@ enum ResetMobileVerficationState { SHOW_MOBILE_FORM_STATE, SHOW_OTP_FORM_STATE }
 class CheckPhoneNumber extends StatefulWidget {
   static const routeName = '/resetverification';
 
+  const CheckPhoneNumber({Key? key}) : super(key: key);
+
   @override
   _CheckPhoneNumberState createState() => _CheckPhoneNumberState();
 }
@@ -23,7 +25,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
   late String phoneController;
   bool isCorrect = false;
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   String verificationId = "";
   String userInput = "";
   bool showLoading = false;
@@ -43,7 +45,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
         // Navigator.push(
         //     context, MaterialPageRoute(builder: (context) => Dashboard()));
       }
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (_) {
       setState(() {
         showLoading = false;
       });
@@ -89,7 +91,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
       backgroundColor: const Color.fromRGBO(240, 241, 241, 1),
       body: Stack(
         children: [
-          CustomeBackArrow(),
+          const CustomeBackArrow(),
           Form(
             key: _formkey,
             child: Padding(
@@ -282,7 +284,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Okay"))
+                  child: const Text("Okay"))
             ],
           );
         });

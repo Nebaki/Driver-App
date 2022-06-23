@@ -151,7 +151,6 @@ class _PersonalDocumentState extends State<PersonalDocument> {
   }
 
   void _logException(String message) {
-    print(message);
     _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
     _scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(

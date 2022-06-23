@@ -11,13 +11,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void getLiveLocation() async {
-  print("YATAR");
 
-  print(firebaseKey);
   homeScreenStreamSubscription = Geolocator.getPositionStream(
           locationSettings: const LocationSettings(distanceFilter: 5))
       .listen((event) {
-    print("Listening from homeScreen;");
 
     if (isDriverOnline != null) {
       isDriverOnline!
@@ -26,7 +23,6 @@ void getLiveLocation() async {
 
       if (!isDriverOnline!) {
         homeScreenStreamSubscription.cancel().then((value) {
-          print("1YEAhhhhh");
         });
       }
     }

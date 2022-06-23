@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class WaitingTimer extends StatefulWidget {
+  const WaitingTimer({Key? key}) : super(key: key);
+
   @override
   _WaitingTimerState createState() => _WaitingTimerState();
 }
@@ -18,7 +20,6 @@ class _WaitingTimerState extends State<WaitingTimer> {
       oneSec,
       (Timer timer) {
         if (_start == 0) {
-          print("Yeah right now on action");
           // RideRequestEvent requestEvent =
           //     RideRequestChangeStatus(requestId, "Cancelled", passengerFcm);
           // BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
@@ -48,7 +49,6 @@ class _WaitingTimerState extends State<WaitingTimer> {
 
   @override
   Widget build(BuildContext context) {
-    print(_start);
     return Text(_start.toString(), style: const TextStyle(fontSize: 20));
   }
 }

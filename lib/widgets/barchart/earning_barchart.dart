@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class WeeklyEarningBarChart extends StatelessWidget {
   final List<double> expenses;
 
-  WeeklyEarningBarChart(this.expenses);
+  const WeeklyEarningBarChart(this.expenses, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class WeeklyEarningBarChart extends StatelessWidget {
       }
     });
     return Padding(
-      padding: EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(12.0),
       child: Column(
         children: <Widget>[
           const SizedBox(height: 30.0),
@@ -72,10 +72,10 @@ class Bar extends StatelessWidget {
 
   final double _maxBarHeight = 100.0;
 
-  Bar(
-      {required this.label,
+  const Bar(
+      {Key? key, required this.label,
       required this.amountSpent,
-      required this.mostExpensive});
+      required this.mostExpensive}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

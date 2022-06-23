@@ -16,8 +16,7 @@ class ResetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late String _newPassword;
-    String _confirmedPassword;
+    
     return Scaffold(
       appBar: AppBar(
         elevation: 0.3,
@@ -59,7 +58,7 @@ class ResetPassword extends StatelessWidget {
     return Stack(children: [
       Form(
         key: _formkey,
-        child: Container(
+        child: SizedBox(
           height: 600,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),

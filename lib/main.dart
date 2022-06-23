@@ -1,16 +1,12 @@
-import 'dart:convert';
 import 'dart:isolate';
 import 'dart:ui';
-
+import 'package:driverapp/cubits/cubits.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/repository/passenger.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/bloc_observer.dart';
 import 'package:driverapp/dataprovider/dataproviders.dart';
@@ -20,13 +16,9 @@ import 'package:http/http.dart' as http;
 import 'package:wakelock/wakelock.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // await Firebase.initializeApp();
-  // startTimer();
-  // dialog!();
-
   final SendPort? send = IsolateNameServer.lookupPortByName(portName);
   send!.send(message);
-  print('Handling a background message ${message.messageId}');
+  debugPrint('Handling a background message ${message.messageId}');
 }
 
 void main() async {
@@ -68,6 +60,11 @@ void main() async {
 
   final BalanceRepository balanceRepository = BalanceRepository(
       dataProvider: BalanceDataProvider(httpClient: http.Client()));
+  final RatingRepository ratingRepository = RatingRepository(
+      ratingDataProvider: RatingDataProvider(httpClient: http.Client()));
+  final SettingsRepository settingsRepository = SettingsRepository(
+      settingsDataProvider: SettingsDataProvider(httpClient: http.Client()));
+
   // BlocOverrides.runZoned(
   //     () => runApp(MyApp(
   //           placeDetailRepository: placeDetailRepository,
@@ -94,40 +91,12 @@ void main() async {
     emergencyReportRepository: emergencyReportRepository,
     passengerRepository: passengerRepository,
     balanceRepository: balanceRepository,
+    ratingRepository: ratingRepository,
+    settingsRepository: settingsRepository,
   ));
 }
 
 class MyApp extends StatelessWidget {
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      if (!serviceEnabled) {
-        return Future.error("NoLocation Enabled");
-      }
-
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-  }
-
   final UserRepository userRepository;
   final AuthRepository authRepository;
   final DirectionRepository directionRepository;
@@ -138,6 +107,8 @@ class MyApp extends StatelessWidget {
   final ReverseLocationRepository reverseLocationRepository;
   final PassengerRepository passengerRepository;
   final BalanceRepository balanceRepository;
+  final RatingRepository ratingRepository;
+  final SettingsRepository settingsRepository;
 
   const MyApp(
       {Key? key,
@@ -150,7 +121,9 @@ class MyApp extends StatelessWidget {
       required this.locationPredictionRepository,
       required this.emergencyReportRepository,
       required this.passengerRepository,
-      required this.balanceRepository})
+      required this.balanceRepository,
+      required this.ratingRepository,
+      required this.settingsRepository})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -165,7 +138,9 @@ class MyApp extends StatelessWidget {
           RepositoryProvider.value(value: reverseLocationRepository),
           RepositoryProvider.value(value: emergencyReportRepository),
           RepositoryProvider.value(value: passengerRepository),
-          RepositoryProvider.value(value: balanceRepository)
+          RepositoryProvider.value(value: balanceRepository),
+          RepositoryProvider.value(value: ratingRepository),
+          RepositoryProvider.value(value: settingsRepository)
         ],
         child: MultiBlocProvider(
             providers: [
@@ -203,7 +178,17 @@ class MyApp extends StatelessWidget {
                         ..add(BalanceLoad()))),
               BlocProvider(create: (context) => CurrentWidgetCubit()),
               BlocProvider(create: (context) => EstiMatedCostCubit(0)),
-              BlocProvider(create: (context) => DisableButtonCubit())
+              BlocProvider(create: (context) => DisableButtonCubit()),
+              BlocProvider(
+                create: (context) =>
+                    RatingCubit(ratingRepository: ratingRepository)
+                      ..getMyRating(),
+              ),
+              BlocProvider(
+                create: (context) =>
+                    SettingsBloc(settingsRepository: settingsRepository)
+                      ..add(SettingsStarted()),
+              )
             ],
             child: MaterialApp(
               title: 'SafeWay',
