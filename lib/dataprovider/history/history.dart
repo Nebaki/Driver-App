@@ -29,18 +29,19 @@ class HistoryDataProvider {
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
       Session().logSession("sz-trans $size", response.body);
-      return HistoryDB().insertTrips(trips).then((value) => "updated $value History");
+      return HistoryDB()
+          .insertTrips(trips)
+          .then((value) => "updated $value History");
       //return "Unable to update history";
       //return CreditStore.fromJson(jsonDecode(response.body));
-    }
-    else {
+    } else {
       Session().logSession("s-trans", response.statusCode.toString());
       Trip trip;
       List<Trip> trips = [];
       int i = 0;
       while (i < 5) {
         LatLng origin = LatLng(double.parse("8.9" + getRandNum()),
-            double.parse("38.7"+getRandNum()));
+            double.parse("38.7" + getRandNum()));
         LatLng destination = LatLng(double.parse("8.9" + getRandNum()),
             double.parse("38.7" + getRandNum()));
 
@@ -51,7 +52,7 @@ class HistoryDataProvider {
           type = "Message";
         }
         trip = Trip(
-            id: "$i ioi" ,
+            id: "$i ioi",
             createdAt: "Money Received $i",
             pickUpAddress: "Hello you received nothing Thanks",
             updatedAt: "soon",
@@ -65,7 +66,7 @@ class HistoryDataProvider {
             dropOffAddress: "Today",
             pickUpLocation: origin,
             dropOffLocation: destination,
-        picture: null);
+            picture: null);
         trips.add(trip);
         i++;
       }
@@ -76,9 +77,10 @@ class HistoryDataProvider {
   }
 
   Future<List<Trip>> loadTripHistoryDB(String user) async {
-      //return HistoryDB().trips();
+    //return HistoryDB().trips();
     final http.Response response = await http.get(
-        Uri.parse('$_baseUrl/get-driver-trips'),
+        Uri.parse(
+            '$_baseUrl/get-driver-trips?orderby[0][field]=createdAt&orderby[0][direction]=desc'),
         headers: await RequestHeader().authorisedHeader());
 
     if (response.statusCode == 200) {
@@ -92,8 +94,7 @@ class HistoryDataProvider {
       //return HistoryDB().insertTrips(trips).then((value) => "updated $value History");
       //return "Unable to update history";
       //return CreditStore.fromJson(jsonDecode(response.body));
-    }
-    else {
+    } else {
       Session().logSession("s-trans", response.statusCode.toString());
       Trip trip;
       List<Trip> trips = [];
@@ -129,8 +130,7 @@ class HistoryDataProvider {
       //return HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
       //return trips;
     }
-    }
-
+  }
 
   String getRandNum() {
     var rng = Random();
@@ -143,13 +143,13 @@ class HistoryDataProvider {
         Uri.parse('$_baseUrl/get-my-todays-earning'),
         headers: await RequestHeader().authorisedHeader());
     if (response.statusCode == 200) {
-
       final List maps = jsonDecode(response.body)['items'];
       final String totalEarning = jsonDecode(response.body)['totalEarning'];
 
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
-      DailyEarning dailyEarning = DailyEarning(totalEarning: totalEarning, trips: trips);
+      DailyEarning dailyEarning =
+          DailyEarning(totalEarning: totalEarning, trips: trips);
       return dailyEarning;
     } else {
       String totalEarning = "0 ${response.statusCode}";
@@ -168,7 +168,8 @@ class HistoryDataProvider {
 
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
-      DailyEarning dailyEarning = DailyEarning(totalEarning: totalEarning.toString(), trips: trips);
+      DailyEarning dailyEarning =
+          DailyEarning(totalEarning: totalEarning.toString(), trips: trips);
       return dailyEarning;
     } else {
       String totalEarning = "0 ${response.statusCode}";
@@ -176,5 +177,4 @@ class HistoryDataProvider {
       return DailyEarning(totalEarning: totalEarning.toString(), trips: trips);
     }
   }
-
 }

@@ -252,7 +252,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
         .then((value) => {
               setState(() {
                 _isLoading = false;
-                balance = value.totalEarning + ".ETB";
+                balance = value.totalEarning + " ETB";
                 trips = value.trips.length;
               }),
               _calculateCommission(value.trips)

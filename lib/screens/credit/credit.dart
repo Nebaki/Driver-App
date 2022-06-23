@@ -104,7 +104,7 @@ class _WaletState extends State<Walet> {
                           const Padding(
                             padding: EdgeInsets.only(top: 20),
                             child: Text(
-                              "Total balance",
+                              "Credit balance",
                               style: TextStyle(fontSize: 16, color: Colors.grey),
                             ),
                           ),
@@ -169,7 +169,7 @@ class _WaletState extends State<Walet> {
                                               //PaymentBox();
                                             },
                                             child: Text(
-                                              "ADD MONEY",
+                                              "ADD CREDIT",
                                               style: _inkweltextStyle,
                                             ))),
                                   ],
@@ -182,7 +182,7 @@ class _WaletState extends State<Walet> {
                   Padding(
                     padding: EdgeInsets.only(top: 20, left: 20, bottom: 10),
                     child: Text(
-                      "Recent Messages",
+                      "Transaction logs",
                       style: TextStyle(color: themeProvider.getColor),
                     ),
                   ),
@@ -244,7 +244,7 @@ class _WaletState extends State<Walet> {
         .then((value) => {
               setState(() {
                 _isBalanceLoading = false;
-                balance = value.message + ".ETB";
+                balance = value.message + " ETB";
               })
             })
         .onError((error, stackTrace) =>
