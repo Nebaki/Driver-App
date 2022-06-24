@@ -6,6 +6,8 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/bloc/bloc.dart';
+import 'package:driverapp/cubits/cubits.dart';
+import 'package:driverapp/cubits/rating_cubit/rating_cubit.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/models/models.dart';
@@ -29,7 +31,6 @@ import 'package:driverapp/drawer/drawer.dart';
 import 'package:driverapp/route.dart';
 import 'dart:async';
 import 'package:driverapp/widgets/widgets.dart';
-// import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as toolkit;
 import 'package:provider/provider.dart';
 
@@ -50,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late double currentLat;
   late double currentLng;
   bool isDriverOn = false;
-  Completer<GoogleMapController> _controller = Completer();
+  final Completer<GoogleMapController> _controller = Completer();
   late GoogleMapController _myController;
   late Position currentPosition;
   late String id;
@@ -72,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   final Connectivity _connectivity = Connectivity();
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String phoneNum;
   bool? isLocationOn;
   bool isModal = false;
@@ -87,11 +88,17 @@ class _HomeScreenState extends State<HomeScreen> {
   bool showNearbyOpportunity = true;
   late int counter;
   bool hasBalance = false;
+  late int stopDuration;
+  Timer? stopingtimer;
+
+  late bool isReverseLocationLoadingDialog;
+  double pathDistance = 0;
+
   // late LatLngBounds latLngBounds;
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
-    LocationPermission permission;
+    // LocationPermission permission;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
@@ -118,7 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    stopDuration = 0;
     counter = 0;
+    loadStartedTrip();
+
     switch (myVehicleType) {
       case 'Truck':
         Geofire.initialize('availableTrucks');
@@ -132,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //_currentWidget = OfflineMode(/*theme: themeProvider.getColor*/);
     context
         .read<CurrentWidgetCubit>()
-        .changeWidget(widget.args.isOnline ? OnlinMode() : OfflineMode());
+        .changeWidget(widget.args.isOnline ? const OnlinMode() : OfflineMode());
     // _currentWidget = ;
     _checkLocationServiceOnInit();
     _toggleLocationServiceStatusStream();
@@ -193,7 +203,6 @@ class _HomeScreenState extends State<HomeScreen> {
               : BlocConsumer<UserBloc, UserState>(
                   listener: (context, state) {
                     if (state is UsersLoadSuccess) {
-                      print("Succceeeeeeeeeeeeessssssssss $nextDrivers");
                       if (nextDrivers.isNotEmpty) {
                         nextDrivers.removeAt(0);
                         passRequest(state.user.fcm, nextDrivers);
@@ -218,7 +227,8 @@ class _HomeScreenState extends State<HomeScreen> {
               mapId: _controller.future.then((value) => value.mapId),
               markers: Set<Marker>.of(markers.values),
               child: GoogleMap(
-                padding: EdgeInsets.only(top: 100, bottom: 250, right: 10),
+                padding:
+                    const EdgeInsets.only(top: 100, bottom: 250, right: 10),
                 mapType: MapType.normal,
                 myLocationButtonEnabled: false,
                 myLocationEnabled: true,
@@ -253,7 +263,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
             return isDirectionLoading;
           }, listener: (context, state) {
-            print('STAteeeeeeeeeeeeeeeeeeeeeeee is $state counter $counter');
             if (state is DirectionInitialState) {
               resetScreen(state.isBalanceSufficient, state.isFromOnlineMode);
             }
@@ -265,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (BuildContext context) {
                     return WillPopScope(
                         onWillPop: () async => false,
-                        child: CircularProggressIndicatorDialog());
+                        child: const CircularProggressIndicatorDialog());
                   });
             }
 
@@ -277,7 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               // isDialog = false;
               distance =
-                  (state.direction.distanceValue / 100).toStringAsFixed(1);
+                  (state.direction.distanceValue / 1000).toStringAsFixed(1);
               price = (initialFare +
                       (costPerMinute * (state.direction.durationValue / 60)) +
                       (costPerKilloMeter *
@@ -289,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 directionDuration =
                     '${(state.direction.durationValue / 60).truncate().toString()} min';
                 distanceDistance =
-                    '${(state.direction.distanceValue / 100).toStringAsFixed(1)} Km';
+                    '${(state.direction.distanceValue / 1000).toStringAsFixed(1)} Km';
                 RideRequestEvent event = RideRequestCreate(RideRequest(
                     driverId: myId,
                     phoneNumber: phoneNum,
@@ -361,7 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.grey.shade400,
                           spreadRadius: 2,
                           blurRadius: 3,
-                          offset: Offset(-1, 2))
+                          offset: const Offset(-1, 2))
                     ]),
                 child: GestureDetector(
                   onTap: () => _scaffoldKey.currentState!.openDrawer(),
@@ -431,12 +440,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   Colors.grey.shade300,
                                               onPressed: hasBalance
                                                   ? () {
-                                                      print("TEst");
                                                       BlocProvider.of<
                                                                   LocationBloc>(
                                                               context)
                                                           .add(
-                                                              ReverseLocationLoad());
+                                                              const ReverseLocationLoad());
                                                     }
                                                   : null,
                                               child: Container(
@@ -468,13 +476,33 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 listener: (context, state) {
+                                  if (state is ReverseLocationLoading) {
+                                    isReverseLocationLoadingDialog = true;
+                                    showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return WillPopScope(
+                                            onWillPop: () async {
+                                              isReverseLocationLoadingDialog =
+                                                  false;
+                                              return true;
+                                            },
+                                            child: const AlertDialog(
+                                                content: Text(
+                                                    "Loading Your current Location")),
+                                          );
+                                        });
+                                  }
                                   if (state is ReverseLocationLoadSuccess) {
                                     Geolocator.getCurrentPosition()
                                         .then((value) {
                                       pickupLocation = LatLng(
                                           value.latitude, value.longitude);
                                     });
-                                    Navigator.pop(context);
+                                    if (isReverseLocationLoadingDialog) {
+                                      Navigator.pop(context);
+                                    }
                                     pickUpAddress = state.location.address1;
 
                                     pickupController.text =
@@ -482,18 +510,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                     _buildSheet(state.location.address1);
                                   }
-                                  if (state is ReverseLocationLoading) {
-                                    showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return WillPopScope(
-                                            onWillPop: () async => false,
-                                            child: const AlertDialog(
-                                                content: Text(
-                                                    "Loading Your current Location")),
-                                          );
-                                        });
+
+                                  if (state
+                                      is ReverseLocationOperationFailure) {
+                                    if (isReverseLocationLoadingDialog) {
+                                      Navigator.pop(context);
+                                    }
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Failed to get current location")));
                                   }
                                 },
                               )
@@ -533,7 +559,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     heroTag: 'sos',
                                     backgroundColor: Colors.grey.shade300,
                                     onPressed: () {
-                                      print("Testttt");
                                       createEmergencyReport();
                                     },
                                     child: Text(
@@ -548,7 +573,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                         listener: (context, state) {
-                          print("Herer is the state $state ");
                           if (state is EmergencyReportCreating) {
                             showDialog(
                                 barrierDismissible: false,
@@ -685,7 +709,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           BitmapDescriptor.hueGreen);
                                   if (state.passenger != null) {
                                     for (Passenger p in state.passenger) {
-                                      print('e is this $p');
                                       MarkerId markerId = MarkerId(p.ID!);
                                       Marker marker = RippleMarker(
                                         markerId: markerId,
@@ -698,9 +721,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             marker;
                                       });
                                     }
-                                  } else {
-                                    print('it is empty');
-                                  }
+                                  } else {}
                                 }
                               },
                             )
@@ -714,9 +735,10 @@ class _HomeScreenState extends State<HomeScreen> {
               right: 10,
               child: ElevatedButton(
                   onPressed: () {
-                    context.read<CurrentWidgetCubit>().state.key==OnlinMode().key;
+                    context.read<CurrentWidgetCubit>().state.key ==
+                        const OnlinMode().key;
                   },
-                  child: Text("Maintenance")))
+                  child: const Text("Maintenance")))
         ],
       ),
     );
@@ -747,7 +769,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _addPolyLine() {
     polylines.clear();
-    PolylineId id = PolylineId("poly");
+    PolylineId id = const PolylineId("poly");
     Polyline polyline = Polyline(
         width: 3,
         polylineId: id,
@@ -764,8 +786,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void resetScreen(bool isBalanceInsufficient, bool isFromOnlineMode) {
+    stopDuration = 0;
+    pathDistance = 0;
+    stopStopTimer();
+    context.read<EstiMatedCostCubit>().resetEstimatedCost();
+    context.read<RatingCubit>().getMyRating();
     context.read<DisableButtonCubit>().enableButton();
     _determinePosition().then((value) {
+      pickupLocation = LatLng(value.latitude, value.longitude);
       _myController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
           zoom: 16.1746, target: LatLng(value.latitude, value.longitude))));
     });
@@ -778,7 +806,7 @@ class _HomeScreenState extends State<HomeScreen> {
           isDriverOnline = true;
           getLiveLocation();
 
-          context.read<CurrentWidgetCubit>().changeWidget(OnlinMode());
+          context.read<CurrentWidgetCubit>().changeWidget(const OnlinMode());
         } else {
           context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
         }
@@ -787,21 +815,18 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       isAccepted = false;
-      context.read<CurrentWidgetCubit>().changeWidget(OnlinMode());
+      context.read<CurrentWidgetCubit>().changeWidget(const OnlinMode());
 
-      // _currentWidget = OnlinMode();
       markers.clear();
       polylines.clear();
       availablePassengersMarkers.clear();
-      // carMarker.clear();
-      // showCarIcons = true;
     });
   }
 
   void createMarkerIcon() {
     if (carMarkerIcon == null) {
       ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context, size: Size(1, 2));
+          createLocalImageConfiguration(context, size: const Size(0.5, 1));
       BitmapDescriptor.fromAssetImage(
               imageConfiguration, 'assets/icons/car.png')
           .then((value) {
@@ -816,25 +841,59 @@ class _HomeScreenState extends State<HomeScreen> {
     return String.fromCharCodes(list);
   }
 
+  void startStopTimer() {
+    // print("yow starting function");
+
+    // print("yow status is ${!timer!.isActive}")
+    if (stopingtimer == null || !stopingtimer!.isActive) {
+      print("yow in is active");
+
+      Timer.periodic(const Duration(seconds: 1), (time) {
+        stopingtimer = time;
+
+        stopDuration++;
+      });
+    }
+  }
+
+  void stopStopTimer() {
+    print("Yow Stopped");
+    if (stopingtimer != null) {
+      stopingtimer!.cancel();
+    }
+  }
+
   void showDriversOnMap() {
-    print("Yow otowo listen me ");
-    Map<MarkerId, Marker> newMarker = {};
-
+    // Map<MarkerId, Marker> newMarker = {};
     MarkerId markerId = MarkerId(generateRandomId());
-    LatLng initialDriverPosition = LatLng(0, 0);
+    LatLng initialDriverPosition = const LatLng(0, 0);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
-
+    LatLng updatedLocation = LatLng(currentLat, currentLng);
     driverStreamSubscription = Geolocator.getPositionStream(
             locationSettings: const LocationSettings(
-                distanceFilter: 10, accuracy: LocationAccuracy.best))
+                distanceFilter: 0, accuracy: LocationAccuracy.best))
         .listen((event) {
-      print("Listening from driver;");
-      ref.child('$myId').set({'lat': event.latitude, 'lng': event.longitude});
+      print("yow your speed is this:${event.speed} stope ${stopDuration}");
+
+      ref.child(myId).set({'lat': event.latitude, 'lng': event.longitude});
       if (startingTime != null) {
+        if (event.speed <= 2) {
+          startStopTimer();
+        } else {
+          stopStopTimer();
+        }
         context.read<EstiMatedCostCubit>().updateEstimatedCost(
-            LatLng(currentLat, currentLng),
+            // LatLng(currentLat, currentLng),
+            updatedLocation,
             LatLng(event.latitude, event.longitude),
-            startingTime!);
+            stopDuration,
+            pathDistance);
+        updatedLocation = LatLng(event.latitude, event.longitude);
+
+        pathDistance += getDistance(
+          updatedLocation,
+          LatLng(event.latitude, event.longitude),
+        );
       }
 
       myPosition = event;
@@ -861,8 +920,6 @@ class _HomeScreenState extends State<HomeScreen> {
     var rotation = toolkit.SphericalUtil.computeHeading(
         toolkit.LatLng(driverLat, driverLng),
         toolkit.LatLng(dropoffLat, dropOffLng)) as double;
-
-    print(rotation);
 
     if (rotation <= 180 && rotation >= 0) {
       rotation = 90;
@@ -930,7 +987,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Flexible(
                         flex: 6,
                         child: Container(
-                            padding: EdgeInsets.all(4.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Text(prediction.mainText)),
                       ),
                     ],
@@ -945,7 +1002,7 @@ class _HomeScreenState extends State<HomeScreen> {
             passengerFcm = state.request.passenger!.fcmId;
             requestId = state.request.id!;
             Future.delayed(
-              Duration(seconds: 3),
+              const Duration(seconds: 3),
               () {
                 Navigator.pop(context);
               },
@@ -988,7 +1045,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 droppOffLocation =
                     LatLng(state.placeDetail.lat, state.placeDetail.lng);
 
-                Future.delayed(Duration(seconds: 1), () {
+                Future.delayed(const Duration(seconds: 1), () {
                   setState(() {
                     // createTripButtonEnabled = false;
                     context
@@ -1049,7 +1106,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (state is PlaceDetailLoadSuccess) {
                 pickupLocation =
                     LatLng(state.placeDetail.lat, state.placeDetail.lng);
-                Future.delayed(Duration(seconds: 1), () {
+                Future.delayed(const Duration(seconds: 1), () {
                   Navigator.pop(context);
                 });
               }
@@ -1093,9 +1150,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void changeCameraView() {
     // LatLngBounds latLngBounds;
 
-    final destinationLatLng = destination;
+    final destinationLatLng = droppOffLocation;
 
-    final pickupLatLng = LatLng(currentLat, currentLng);
+    final pickupLatLng = pickupLocation;
     if (pickupLatLng.latitude > destinationLatLng.latitude &&
         pickupLatLng.longitude > destinationLatLng.longitude) {
       latLngBounds =
@@ -1186,11 +1243,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   if (value!.length != 13) {
                                     return "Invalid Phone Number";
                                   }
+                                  return null;
                                 },
                                 keyboardType: TextInputType.phone,
                                 initialValue: '+251',
                                 onChanged: (value) {
-                                  print(value);
                                   phoneNum = value;
                                   // findPlace(value);
                                 },
@@ -1324,48 +1381,63 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder: (BuildContext context) {
           return WillPopScope(
-            onWillPop: () async => false,
-            child: AlertDialog(
-              title: const Text("Uncompleted Trip"),
-              content: const Text(
-                  "You have uncompleted trip you have to cancel or complete the trip in order to continue."),
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, CancelReason.routeName,
-                            arguments: CancelReasonArgument(sendRequest: true));
-                      },
-                      child: Text("Cancel"),
-                    ),
-                    ElevatedButton(
+              onWillPop: () async => false,
+              child: AlertDialog(
+                title: const Text("Uncompleted Trip"),
+                content: const Text(
+                    "You have uncompleted trip you have to cancel or complete the trip in order to continue."),
+                actions: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
-
-                          _getPolyline(widget.args.encodedPts!);
-                          context
-                              .read<CurrentWidgetCubit>()
-                              .changeWidget(CompleteTrip());
-
-                          // _currentWidget = CompleteTrip();
-                          destination = droppOffLocation;
-
-                          setState(() {});
-                          showDriversOnMap();
-
-                          // DirectionEvent event =
-                          //     DirectionDistanceDurationLoad(
-                          //         destination: droppOffLocation);
-                          // BlocProvider.of<DirectionBloc>(context).add(event);
+                          Navigator.pushNamed(context, CancelReason.routeName,
+                              arguments:
+                                  CancelReasonArgument(sendRequest: true));
                         },
-                        child: Text('Proceed'))
-                  ],
-                )
-              ],
-            ),
-          );
+                        child: const Text("Cancel"),
+                      ),
+                      ElevatedButton(onPressed: () {
+                        startingTime = DateTime.now();
+
+                        Navigator.pop(context);
+
+                        _getPolyline(widget.args.encodedPts!);
+                        context
+                            .read<CurrentWidgetCubit>()
+                            .changeWidget(const CompleteTrip());
+
+                        // _currentWidget = CompleteTrip();
+                        destination = droppOffLocation;
+
+                        setState(() {});
+                        showDriversOnMap();
+
+                        // DirectionEvent event =
+                        //     DirectionDistanceDurationLoad(
+                        //         destination: droppOffLocation);
+                        // BlocProvider.of<DirectionBloc>(context).add(event);
+                      }, child: BlocBuilder<StartedTripDataCubit,
+                          StartedTripDataState>(
+                        builder: (context, state) {
+
+
+                          if (state is StartedTripLoadSuccess) {
+                            stopDuration = state.data.stopduration;
+                            pathDistance = state.data.distance;
+
+                                return const Text("Proceed");
+                          }
+                          return Container();
+                        },
+                      ))
+                    ],
+                  )
+                ],
+              ),
+            )
+          ;
         });
   }
 
@@ -1467,7 +1539,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () async {
                               await Geolocator.openLocationSettings();
                             },
-                            child: Text(
+                            child: const Text(
                               "TURN ON LOCATION SERVICES",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -1603,7 +1675,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _port.listen((message) {
       final listOfDrivers = json.decode(message.data['nextDrivers']) as List;
       listOfDrivers.removeAt(0);
-      print("List Of Drivers : $listOfDrivers");
 
       nextDrivers = listOfDrivers;
       // nextDrivers = listOfDrivers;
@@ -1650,6 +1721,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 setDestination, nextDrivers, waitingTimer, false);
           });
     });
+  }
+
+  double getDistance(
+    LatLng pickupLocation,
+    LatLng currentLocation,
+  ) {
+    double distance = Geolocator.distanceBetween(
+        pickupLocation.latitude,
+        pickupLocation.longitude,
+        currentLocation.latitude,
+        currentLocation.longitude);
+    return (distance);
+  }
+
+  void loadStartedTrip() {
+    if (widget.args.isSelected) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _getPolyline(widget.args.encodedPts!);
+        _addMarker(
+            pickupLocation,
+            "pickup",
+            BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+            InfoWindow(title: pickUpAddress));
+        _addMarker(
+            droppOffLocation,
+            "droppoff",
+            BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            InfoWindow(title: droppOffAddress));
+        _controller.future.whenComplete(() => changeCameraView());
+
+        // showBookedDriver();
+        setState(() {});
+      });
+    }
   }
 }
 

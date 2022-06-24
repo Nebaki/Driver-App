@@ -1,10 +1,9 @@
 import 'package:driverapp/screens/screens.dart';
-import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class CancelTrip extends StatelessWidget {
-  Function? callback;
-  CancelTrip(this.callback);
+  final Function? callback;
+  const CancelTrip(this.callback, {Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -43,7 +42,7 @@ class CancelTrip extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   )),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             SizedBox(

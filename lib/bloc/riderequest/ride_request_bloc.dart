@@ -16,7 +16,6 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
             await rideRequestRepository.createRequest(event.rideRequest);
         yield RideRequestSuccess(request);
       } catch (_) {
-        print("erorr $_");
         yield RideRequestOperationFailur();
       }
     }
@@ -106,7 +105,6 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         final rideRequest = await rideRequestRepository.checkStartedTrip();
         yield RideRequestStartedTripChecked(rideRequest);
       } catch (_) {
-        print("Printeddd $_");
         if(_.toString().split(" ")[1]=="401"){
           yield RideRequestTokentExpired();
         }else {

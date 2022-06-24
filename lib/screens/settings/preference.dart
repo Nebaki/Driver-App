@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
@@ -11,7 +10,7 @@ class PreferenceScreen extends StatefulWidget {
   static const routeNAme = "/preferencescreen";
   final PreferenceArgument args;
 
-  PreferenceScreen({Key? key, required this.args}) : super(key: key);
+  const PreferenceScreen({Key? key, required this.args}) : super(key: key);
   @override
   _PreferenceScreenState createState() => _PreferenceScreenState();
 }
@@ -27,7 +26,6 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     serviceName = widget.args.carType;
     min_rate = widget.args.min_rate;
     switch (widget.args.gender) {
@@ -47,6 +45,7 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
         });
         break;
     }
+    super.initState();
   }
 
   @override
@@ -67,7 +66,7 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
             backgroundColor: Colors.green,
           ));
 
-          Future.delayed(Duration(seconds: 1), () {
+          Future.delayed(const Duration(seconds: 1), () {
             BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
           });
         }
@@ -118,7 +117,6 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
                                 groupValue: _gender,
                                 onChanged: (Gender? value) {
                                   setState(() {
-                                    print(value);
                                     _gender = value!;
                                   });
                                 }),
@@ -288,180 +286,5 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
     BlocProvider.of<UserBloc>(context).add(event);
   }
 
-  Widget _buildVihcleTypeList() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Icon(
-              Icons.local_taxi_rounded,
-              color: Colors.white,
-              size: 35,
-            ),
-            Checkbox(
-              side: const BorderSide(width: 1, color: Colors.white),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5)),
-              value: true,
-              onChanged: (value) {},
-              fillColor: MaterialStateProperty.all<Color>(Colors.white),
-              checkColor: Colors.red,
-            )
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Icon(
-              Icons.car_rental,
-              color: Colors.white,
-              size: 35,
-            ),
-            Checkbox(
-              side: const BorderSide(width: 1, color: Colors.white),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5)),
-              value: false,
-              onChanged: (value) {},
-              fillColor: MaterialStateProperty.all<Color>(Colors.white),
-              checkColor: Colors.red,
-            )
-          ],
-        ),
-      ],
-    );
-  }
 
-  Widget _buildServiceTypeItems() {
-    final _selectedDecoration = BoxDecoration(
-        color: Colors.white, border: Border.all(color: Colors.red, width: 1));
-    final _unselectedDecoration = BoxDecoration(
-        color: Colors.transparent,
-        border: Border.all(color: Colors.white24, width: 1));
-    return Padding(
-      padding: const EdgeInsets.only(right: 30),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: serviceName == "Economy"
-                        ? Colors.white
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.white24, width: 1)),
-                child: IconButton(
-                    iconSize: serviceName == "Economy" ? 50 : 40,
-                    onPressed: () {
-                      setState(() {
-                        serviceName = "Economy";
-                      });
-                    },
-                    icon: Icon(Icons.supervised_user_circle,
-                        color: serviceName == "Economy"
-                            ? Colors.red
-                            : Colors.white)),
-              ),
-              const Text(
-                "Economy",
-                style: TextStyle(color: Colors.white24, fontSize: 10),
-              )
-            ],
-          ),
-          Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: serviceName == "Arround the clock"
-                        ? Colors.white
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.white24, width: 1)),
-                child: IconButton(
-                    iconSize: serviceName == "Arround the clock" ? 50 : 40,
-                    onPressed: () {
-                      setState(() {
-                        serviceName = "Arroun the clock";
-                        //serviceName = 1;
-                      });
-                    },
-                    icon: Icon(
-                      Icons.lock_clock_outlined,
-                      color: serviceName == "Arround the clock"
-                          ? Colors.red
-                          : Colors.white,
-                    )),
-              ),
-              const Text(
-                "Arround the clock",
-                style: TextStyle(color: Colors.white24, fontSize: 10),
-              )
-            ],
-          ),
-          Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: serviceName == "Secure"
-                        ? Colors.white
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.white24, width: 1)),
-                child: IconButton(
-                    iconSize: serviceName == "Secure" ? 50 : 40,
-                    onPressed: () {
-                      setState(() {
-                        serviceName = "Secure";
-                        //serviceName = 2;
-                      });
-                    },
-                    icon: Icon(
-                      Icons.lock_clock_outlined,
-                      color:
-                          serviceName == "Secure" ? Colors.red : Colors.white,
-                    )),
-              ),
-              const Text(
-                "Secure",
-                style: TextStyle(color: Colors.white24, fontSize: 10),
-              )
-            ],
-          ),
-          Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: serviceName == "Disabled Parking"
-                        ? Colors.white
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.white24, width: 1)),
-                child: IconButton(
-                    iconSize: serviceName == "Disabled Parking" ? 50 : 40,
-                    onPressed: () {
-                      setState(() {
-                        serviceName = "Disabled Parking";
-                        //serviceName = 3;
-                      });
-                    },
-                    icon: Icon(
-                      Icons.lock_clock_outlined,
-                      color: serviceName == "Disabled Parking"
-                          ? Colors.red
-                          : Colors.white,
-                    )),
-              ),
-              const Text(
-                "Disabled parking",
-                style: TextStyle(color: Colors.white24, fontSize: 10),
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }

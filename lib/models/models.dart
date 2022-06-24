@@ -8,3 +8,6 @@ export 'credit/credit.dart';
 export 'rideRequest/ride_request.dart';
 export 'emergencyReport/emergency_report.dart';
 export 'passenger/passenger.dart';
+export 'rating/rating.dart';
+export 'settings/settings.dart';
+export 'started_trip/started_trip_data.dart';

@@ -68,7 +68,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         final user = await userRepository.getUserById(event.id);
         yield UsersLoadSuccess(user);
       } catch (_) {
-        print("Error :$_ ");
         yield UserOperationFailure();
       }
     }
@@ -102,7 +101,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             await userRepository.checkPhoneNumber(event.phoneNumber);
         yield UserPhoneNumbeChecked(phoneNumberExist);
       } catch (_) {
-        print("Check error $_");
         yield UserOperationFailure();
       }
     }

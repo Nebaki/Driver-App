@@ -10,3 +10,4 @@ export 'onmap/incoming_requests.dart';
 export 'rider_detail.dart';
 export 'onmap/arrived.dart';
 export 'barchart/earning_barchart.dart';
+export 'onmap/on_driver_status/on_driver_status.dart';

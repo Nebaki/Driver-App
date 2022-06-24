@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:driverapp/bloc/bloc.dart';
+
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
@@ -30,9 +29,8 @@ class _PhoneVerificationState extends State<PhoneVerification> {
   // late ScaffoldMessengerState _scaffoldMessenger;
 
   late Timer _timer;
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final _codeController = TextEditingController();
 
   int _start = 60;
   bool _isLoading = false;
@@ -57,7 +55,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
 
   late String _verificationId;
   late int _resendToken;
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -186,7 +184,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     return Scaffold(
       body: Stack(
         children: [
-          CustomeBackArrow(),
+          const CustomeBackArrow(),
           Container(
               margin: const EdgeInsets.only(left: 25.0, right: 25.0),
               padding: const EdgeInsets.only(top: 100),
@@ -237,8 +235,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                     style: const TextStyle(fontSize: 26.0),
                     onChanged: (value) {
                       if (value.length == 1) node.nextFocus();
-                      if (value.length == 0) node.previousFocus();
-                      print("Changedd");
+                      if (value.isEmpty) node.previousFocus();
                     },
                     maxLength: 1,
                     keyboardType: TextInputType.number,
@@ -267,7 +264,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                     style: const TextStyle(fontSize: 26.0),
                     onChanged: (value) {
                       if (value.length == 1) node.nextFocus();
-                      if (value.length == 0) node.previousFocus();
+                      if (value.isEmpty) node.previousFocus();
                     },
                     maxLength: 1,
                     keyboardType: TextInputType.number,
@@ -296,7 +293,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                     style: const TextStyle(fontSize: 26.0),
                     onChanged: (value) {
                       if (value.length == 1) node.nextFocus();
-                      if (value.length == 0) node.previousFocus();
+                      if (value.isEmpty) node.previousFocus();
                     },
                     maxLength: 1,
                     keyboardType: TextInputType.number,
@@ -325,7 +322,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                     style: const TextStyle(fontSize: 26.0),
                     onChanged: (value) {
                       if (value.length == 1) node.nextFocus();
-                      if (value.length == 0) node.previousFocus();
+                      if (value.isEmpty) node.previousFocus();
                     },
                     maxLength: 1,
                     keyboardType: TextInputType.number,
@@ -354,7 +351,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                     style: const TextStyle(fontSize: 26.0),
                     onChanged: (value) {
                       if (value.length == 1) node.nextFocus();
-                      if (value.length == 0) node.previousFocus();
+                      if (value.isEmpty) node.previousFocus();
                     },
                     maxLength: 1,
                     keyboardType: TextInputType.number,
@@ -383,7 +380,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                     style: const TextStyle(fontSize: 26.0),
                     onChanged: (value) {
                       if (value.length == 1) node.nextFocus();
-                      if (value.length == 0) node.previousFocus();
+                      if (value.isEmpty) node.previousFocus();
                     },
                     maxLength: 1,
                     keyboardType: TextInputType.number,
@@ -456,9 +453,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                                   otp4Controller.text +
                                   otp5Controller.text +
                                   otp6Controller.text;
-                              print(
-                                  "Codeeeeeee $code, ${widget.args.verificationId}");
-
+                              
                               PhoneAuthCredential credential =
                                   PhoneAuthProvider.credential(
                                       verificationId: _verificationId,

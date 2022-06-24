@@ -39,7 +39,7 @@ class AppRoute {
               ));
     }
     if (settings.name == ProfileDetail.routeName) {
-      return MaterialPageRoute(builder: (context) => ProfileDetail());
+      return MaterialPageRoute(builder: (context) => const ProfileDetail());
     }
     if (settings.name == CancelReason.routeName) {
       CancelReasonArgument argument =
@@ -48,6 +48,9 @@ class AppRoute {
           builder: (context) => CancelReason(
                 arg: argument,
               ));
+    }
+    if (settings.name == AwardScreen.routeName){
+      return MaterialPageRoute(builder: (context) => const AwardScreen(),);
     }
     if (settings.name == CollectedCash.routeName) {
       CollectedCashScreenArgument argument =
@@ -58,7 +61,7 @@ class AppRoute {
               ));
     }
     if (settings.name == Walet.routeName) {
-      return MaterialPageRoute(builder: (context) => Walet());
+      return MaterialPageRoute(builder: (context) => const Walet());
     }
     if (settings.name == TeleBirrData.routeName) {
       return MaterialPageRoute(builder: (context) => TeleBirrData());
@@ -78,10 +81,10 @@ class AppRoute {
     }
 
     if (settings.name == Earning.routeName) {
-      return MaterialPageRoute(builder: (context) => Earning());
+      return MaterialPageRoute(builder: (context) => const Earning());
     }
     if (settings.name == Summary.routeName) {
-      return MaterialPageRoute(builder: (context) => Summary());
+      return MaterialPageRoute(builder: (context) => const Summary());
     }
     if (settings.name == PersonalDocument.routeName) {
       return MaterialPageRoute(builder: (context) => PersonalDocument());
@@ -90,10 +93,10 @@ class AppRoute {
       return MaterialPageRoute(builder: (context) => VehicleDocument());
     }
     if (settings.name == CheckPhoneNumber.routeName) {
-      return MaterialPageRoute(builder: (context) => CheckPhoneNumber());
+      return MaterialPageRoute(builder: (context) => const CheckPhoneNumber());
     }
     if (settings.name == SettingScreen.routeName) {
-      return MaterialPageRoute(builder: (context) => SettingScreen());
+      return MaterialPageRoute(builder: (context) => const SettingScreen());
     }
     if (settings.name == HistoryPage.routeName) {
       return MaterialPageRoute(builder: (context) => HistoryPage());
@@ -123,7 +126,7 @@ class AppRoute {
     }
 
 
-    return MaterialPageRoute(builder: (context) => CustomSplashScreen());
+    return MaterialPageRoute(builder: (context) => const CustomSplashScreen());
   }
 }
 

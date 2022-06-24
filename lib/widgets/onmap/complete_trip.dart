@@ -2,31 +2,27 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
-import 'package:driverapp/screens/home/dialogs/circular_progress_indicator_dialog.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:slider_button/slider_button.dart';
 
 class CompleteTrip extends StatefulWidget {
-  CompleteTrip();
+  const CompleteTrip({Key? key}) : super(key: key);
 
   @override
   State<CompleteTrip> createState() => _CompleteTripState();
 }
 
 class _CompleteTripState extends State<CompleteTrip> {
-  double EsitimatedMoney = 0;
   DatabaseReference ref = FirebaseDatabase.instance.ref('bookedDrivers');
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -98,9 +94,9 @@ class _CompleteTripState extends State<CompleteTrip> {
                     }
                     return Container(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         width: MediaQuery.of(context).size.width,
-                        child: Divider());
+                        child: const Divider());
                   }),
                   BlocBuilder<EstiMatedCostCubit, double>(
                     builder: (context, state) {
@@ -166,37 +162,6 @@ class _CompleteTripState extends State<CompleteTrip> {
     );
   }
 
-  Widget _buildItems({required String text, required IconData icon}) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(100),
-          child: Container(
-            color: Colors.grey.shade100,
-            padding: const EdgeInsets.all(3),
-            child: IconButton(
-                onPressed: () {
-                  // context.read<CurrentWidgetCubit>().changeWidget(CancelTrip(callback))
-                  // widget.callback!(CancelTrip(widget.callback));
-                },
-                icon: Icon(
-                  icon,
-                  color: Colors.indigo.shade900,
-                  size: 22,
-                )),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Text(
-            text,
-            style: TextStyle(color: Colors.indigo.shade900),
-          ),
-        ),
-      ],
-    );
-  }
 
   void resetData() {
     currentPrice = 75;

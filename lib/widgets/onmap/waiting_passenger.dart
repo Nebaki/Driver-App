@@ -3,7 +3,6 @@ import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
-import 'package:driverapp/screens/home/dialogs/circular_progress_indicator_dialog.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ class WaitingPassenger extends StatefulWidget {
   final bool formPassenger;
   final bool fromOnline;
 
-  WaitingPassenger({required this.formPassenger, required this.fromOnline});
+  const WaitingPassenger({Key? key,required this.formPassenger, required this.fromOnline}):super(key: key);
 
   @override
   State<WaitingPassenger> createState() => _WaitingPassengerState();
@@ -105,9 +104,9 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                     }
                     return Container(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         width: MediaQuery.of(context).size.width,
-                        child: Divider());
+                        child: const Divider());
                   }),
                   widget.formPassenger
                       ? Row(

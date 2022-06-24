@@ -10,9 +10,11 @@ class ProfileDetail extends StatelessWidget {
 
   final _textStyle = const TextStyle(fontSize: 20, color: Colors.black45);
 
+  const ProfileDetail({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final double top = _appbarHeight - _profileHeight;
+    // final double top = _appbarHeight - _profileHeight;
 
     return Scaffold(
       body: ListView(
@@ -20,7 +22,7 @@ class ProfileDetail extends StatelessWidget {
           Stack(
             children: [
               appBar(context),
-              CustomeBackArrow(),
+              const CustomeBackArrow(),
               Positioned(
                   top: 40,
                   right: 20,
@@ -28,61 +30,61 @@ class ProfileDetail extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushNamed(context, EditProfile.routeName);
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.edit,
                         color: Colors.white,
                       )))
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, bottom: 20),
-            child: Text(
+          const Padding(
+            padding: EdgeInsets.only(left: 20, bottom: 20),
+            child:  Text(
               "PERSONAL INFO",
-              style: TextStyle(fontWeight: FontWeight.w300, fontSize: 20),
+              style:  TextStyle(fontWeight: FontWeight.w300, fontSize: 20),
             ),
           ),
           Container(
             color: Colors.white,
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
+                  children: const [
+                     Icon(
                       Icons.phone_android_rounded,
                       size: 20,
                       color: Colors.black54,
                     ),
-                    SizedBox(
+                     SizedBox(
                       height: 30,
                     ),
-                    Icon(
+                     Icon(
                       Icons.mail,
                       size: 20,
                       color: Colors.black54,
                     ),
-                    SizedBox(
+                     SizedBox(
                       height: 30,
                     ),
-                    Icon(
+                     Icon(
                       Icons.translate,
                       size: 20,
                       color: Colors.black54,
                     ),
-                    SizedBox(
+                     SizedBox(
                       height: 30,
                     ),
-                    Icon(
+                     Icon(
                       Icons.home,
                       size: 20,
                       color: Colors.black54,
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Column(
@@ -92,21 +94,21 @@ class ProfileDetail extends StatelessWidget {
                       "+251934540217",
                       style: _textStyle,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Text(
                       "haylemikaeltfera@gmail.com",
                       style: _textStyle,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Text(
                       "Amharic and English",
                       style: _textStyle,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Text(
@@ -139,9 +141,9 @@ class ProfileDetail extends StatelessWidget {
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        Positioned(
+        const Positioned(
             top: 10,
-            child: Icon(
+            child:  Icon(
               Icons.backspace,
               color: Colors.white,
             )),
@@ -174,7 +176,7 @@ class ProfileDetail extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           width: MediaQuery.of(context).size.width,
           height: _profileHeight,
           decoration: BoxDecoration(

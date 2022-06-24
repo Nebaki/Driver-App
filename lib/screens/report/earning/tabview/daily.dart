@@ -31,7 +31,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return ListView(
       children: [
         Opacity(
           opacity: 0.5,

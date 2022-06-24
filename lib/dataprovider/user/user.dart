@@ -20,14 +20,12 @@ class UserDataProvider {
   UserDataProvider({required this.httpClient}) : assert(httpClient != null);
 
   Future<User> getDriverById(String id) async {
-    print("in hereeeeeeeee");
     final response = await http
         .get(Uri.parse('$_baseUrl/get-driver/$id'), headers: <String, String>{
       'Content-Type': "application/json",
       'x-access-token': '${await authDataProvider.getToken()}',
     });
 
-    print(response.statusCode);
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
@@ -99,7 +97,6 @@ class UserDataProvider {
   }
 
   Future<User> updatedriver(User user) async {
-    print("upp");
     final http.Response response = await http.post(
       Uri.parse('$_baseUrl/update-profile'),
       headers: <String, String>{
@@ -116,7 +113,6 @@ class UserDataProvider {
         'preference': user.preference
       }),
     );
-    print('statuss ${response.statusCode} and ${response.body}');
     if (response.statusCode == 200) {
       authDataProvider.updateUserData(user);
       return User.fromJson(jsonDecode(response.body));
@@ -162,7 +158,6 @@ class UserDataProvider {
               "new_password": passwordInfo['new_password'],
               "confirm_password": passwordInfo['confirm_password']
             }));
-    print('response ${response.statusCode} ${response.body}');
     if (response.statusCode != 200) {
       throw 'Unable to change password';
     }
@@ -175,7 +170,6 @@ class UserDataProvider {
         'Content-Type': 'application/json',
       },
     );
-    print('response ${response.statusCode}');
     if (response.statusCode == 200) {
       return true;
     } else if (response.statusCode == 404) {
@@ -186,7 +180,6 @@ class UserDataProvider {
   }
 
   Future forgetPassword(Map<String, String> forgetPasswordInfo) async {
-    print(' Pasdre ${forgetPasswordInfo['new_passsword']}o');
     final http.Response response =
         await http.post(Uri.parse(UserEndPoints.forgetPasswordEndPoint()),
             headers: <String, String>{
@@ -196,7 +189,6 @@ class UserDataProvider {
               'phone_number': forgetPasswordInfo['phone_number'],
               'newPassword': forgetPasswordInfo['new_password']
             }));
-    print('response ${response.statusCode}, ${response.body}');
     if (response.statusCode != 200) {
       throw 'Unable to rest password';
     }
