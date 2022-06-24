@@ -20,7 +20,7 @@ class PassengerDataprovider {
 
 
     if (response.statusCode == 200) {
-      final responseData = json.decode(response.body) as List;
+      final responseData = json.decode(response.body)['items'] as List;
       if (responseData.isNotEmpty) {
         return responseData.map((e) => Passenger.fromJson(e)).toList();
       }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:driverapp/cubits/cubits.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -50,9 +51,10 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
+        SystemNavigator.pop();
         return Future.error('Location permissions are denied');
       }
-    }
+    } 
   }
 
   @override
@@ -172,6 +174,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                 // BlocProvider.of<DriverBloc>(context).add(event);
                 // price = st.rideRequest.price!;
                 // distance = st.rideRequest.distance!;
+                context.read<StartedTripDataCubit>().getStartedTripData();
                 Navigator.pushReplacementNamed(context, HomeScreen.routeName,
                     arguments: HomeScreenArgument(
                         isSelected: true,

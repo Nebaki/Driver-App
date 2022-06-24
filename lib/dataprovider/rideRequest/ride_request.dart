@@ -36,7 +36,15 @@ class RideRequestDataProvider {
               droppOffAddress: null,
               driverId: null,
             );
-    } else {
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return checkStartedTrip();
+      } else {
+        throw Exception(response.statusCode);
+      }
+    }  else {
       throw Exception(response.statusCode);
     }
   }
@@ -168,7 +176,7 @@ class RideRequestDataProvider {
         "to": fcmToken,
         "notification": {
           "title": "Trip Started",
-          "body": "Your trip has been Cancelled."
+          "body": "Your trip has been Started."
         }
       }),
     );
