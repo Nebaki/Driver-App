@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 import '../../../../dataprovider/credit/credit.dart';
 import 'package:http/http.dart' as http;
 
+class DailyEarningTab extends StatelessWidget {
+  const DailyEarningTab({Key? key}) : super(key: key);
+
 import '../../../../dataprovider/history/history.dart';
 import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';

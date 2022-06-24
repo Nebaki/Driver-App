@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:developer' as developer;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
-import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:driverapp/bloc/bloc.dart';
@@ -20,14 +17,13 @@ import '../../utils/theme/ThemeProvider.dart';
 
 class CustomSplashScreen extends StatefulWidget {
   static const routeName = "/splashscreen";
-  CustomSplashScreen({Key? key}) : super(key: key);
+  const CustomSplashScreen({Key? key}) : super(key: key);
 
   @override
   State<CustomSplashScreen> createState() => _CustomSplashScreenState();
 }
 
 class _CustomSplashScreenState extends State<CustomSplashScreen> {
-  ConnectivityResult? _connectionStatus;
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool isSuccess = false;
@@ -76,11 +72,9 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
             );
           }, listener: (_, state) {
             if (state is AuthDataLoadSuccess) {
-              print(state.auth.token);
 
               if (state.auth.token != null) {
-                print(
-                    'ratingggggggggggggggggggg ${state.auth.pref!['min_rate']}');
+          
                 myId = state.auth.id!;
                 myAvgRate = state.auth.avgRate!;
                 myPictureUrl = state.auth.profilePicture!;
@@ -95,7 +89,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
 
                 checkInterNetServiceOnInit();
 
-                print('Keyyyyyyyyyyyyyy $firebaseKey');
                 if (balance <= 0) {
                   SystemNavigator.pop();
                 }
@@ -120,7 +113,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
           BlocConsumer<RideRequestBloc, RideRequestState>(
               builder: (context, state) {
             if (state is RideRequestLoading) {
-              print("eahhhhhhhhhhhhhs     ");
               return const Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -141,9 +133,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
             if (st is RideRequestStartedTripChecked) {
               // distanceDistance = st.rideRequest.distance!;
 
-              print(st.rideRequest);
-              print(
-                  "data is is is is ${st.rideRequest.id} ${st.rideRequest.dropOffLocation}");
+             
 
               if (st.rideRequest.pickUpAddress == null) {
                 String rootPath = '';
@@ -155,7 +145,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                 }
                 var snapShot =
                     await ref.child(rootPath).child(firebaseKey).once();
-                print("Snapp : ${snapShot.snapshot.value}");
 
                 if (snapShot.snapshot.value != null) {
                   getLiveLocation();
@@ -227,14 +216,12 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     result = await _connectivity.checkConnectivity();
 
     if (result == ConnectivityResult.none) {
-      print("Showing the banner from here");
       isFirstTime = true;
 
       ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
           content: const Text("No Internet Connection"),
-          actions: [TextButton(onPressed: () {}, child: Text("Try Again"))]));
+          actions: [TextButton(onPressed: () {}, child: const Text("Try Again"))]));
     } else {
-      print("We are all around here");
       ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
 
       _checkStartedTrip();
@@ -244,7 +231,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
   void _toggleInternetServiceStatusStream() {
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen((event) {
-      print("event:  $event");
       if (event == ConnectivityResult.none) {
         ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
             content: const Text("No Internet Connection"),
@@ -263,7 +249,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
           _checkStartedTrip();
         }
         isFirstTime = false;
-        print("Noohhhh");
         ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
       }
     });

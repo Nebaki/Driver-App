@@ -2,8 +2,8 @@ import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class TapToAccept extends StatelessWidget {
-  Function? callback;
-  TapToAccept(this.callback);
+  final Function? callback;
+  const TapToAccept(this.callback, {Key? key}) : super(key: key);
   final _locationStyle = const TextStyle(
     color: Colors.grey,
     fontSize: 16,
@@ -49,8 +49,8 @@ class TapToAccept extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20, bottom: 10),
               child: Row(
                 children: [
-                  Icon(Icons.location_on_outlined, color: Colors.blue),
-                  SizedBox(
+                  const Icon(Icons.location_on_outlined, color: Colors.blue),
+                  const SizedBox(
                     width: 8,
                   ),
                   Text(
@@ -64,8 +64,8 @@ class TapToAccept extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20),
               child: Row(
                 children: [
-                  Icon(Icons.location_on_outlined, color: Colors.green),
-                  SizedBox(
+                  const Icon(Icons.location_on_outlined, color: Colors.green),
+                  const SizedBox(
                     width: 8,
                   ),
                   Text("Meslkel Flower, Addis Ababa,", style: _locationStyle)
@@ -81,7 +81,7 @@ class TapToAccept extends StatelessWidget {
                     onPressed: () {
                       // callback!(Arrived(callback));
                     },
-                    child: Text(
+                    child: const Text(
                       "Tap To Accept",
                       style: TextStyle(color: Colors.white),
                     )))
@@ -92,5 +92,5 @@ class TapToAccept extends StatelessWidget {
   }
 
   final _price =
-      TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 16);
+      const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 16);
 }

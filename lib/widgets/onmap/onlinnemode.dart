@@ -6,9 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 
-class OnlinMode extends StatefulWidget{
-
-  OnlinMode();
+class OnlinMode extends StatefulWidget {
+  const OnlinMode({Key? key}) : super(key: key);
 
   @override
   State<OnlinMode> createState() => _OnlinModeState();
@@ -24,7 +23,6 @@ class _OnlinModeState extends State<OnlinMode> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        print("Come On Brother");
         onCloseWarningDialog();
         // context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
         return false;
@@ -50,7 +48,7 @@ class _OnlinModeState extends State<OnlinMode> {
                           });
                           // homeScreenStreamSubscription.cancel();
 
-                          // setDriverStatus(false);
+                        // setDriverStatus(false);
 
                           isDriverOnline = false;
                           context
@@ -88,8 +86,8 @@ class _OnlinModeState extends State<OnlinMode> {
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20))),
               child: Column(
-                children: [
-                  const Center(
+                children: const [
+                  Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 20),
                       child: Text(
@@ -98,40 +96,8 @@ class _OnlinModeState extends State<OnlinMode> {
                       ),
                     ),
                   ),
-                  const Divider(color: Colors.green, thickness: 1),
-                  SizedBox(
-                    height: 100,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _items(
-                            num: "95 ETB",
-                            text: "Earning",
-                            icon: Icons.monetization_on),
-                        VerticalDivider(
-                          color: Colors.grey.shade300,
-                        ),
-                        _items(
-                            num: myAvgRate.toString(),
-                            text: "Rating",
-                            icon: Icons.star),
-                        VerticalDivider(
-                          color: Colors.grey.shade300,
-                        ),
-                        BlocBuilder<BalanceBloc, BalanceState>(
-                          builder: (context, state) {
-                            if (state is BalanceLoadSuccess) {
-                              return _items(
-                                  num: "${state.balance} ETB",
-                                  text: "Wallet",
-                                  icon: Icons.wallet_giftcard);
-                            }
-                            return Container();
-                          },
-                        ),
-                      ],
-                    ),
-                  )
+                  Divider(color: Colors.green, thickness: 1),
+                  OndriverStatus(isOnline: true,)
                 ],
               ),
             ),

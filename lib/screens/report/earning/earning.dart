@@ -8,6 +8,8 @@ import '../../credit/toast_message.dart';
 class Earning extends StatefulWidget {
   static const routeName = "/earning";
 
+  const Earning({Key? key}) : super(key: key);
+
   @override
   State<Earning> createState() => _EarningState();
 }

@@ -26,8 +26,6 @@ class RideRequestDataProvider {
           'Content-Type': "application/json",
           'x-access-token': '${await authDataProvider.getToken()}'
         });
-    print(' this is the response Status coed: ${response.statusCode}');
-    print(' hah ${json.decode(response.body)['ride_Request']}');
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -71,11 +69,9 @@ class RideRequestDataProvider {
       }),
     );
 
-    print("DATAAAAAAAAAAAAAAAAA status = ${response.statusCode}");
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print("DATAAAAAAAAAAAAAAAAA ${data}");
 
       requestId = data['rideRequest']['id'];
       return RideRequest.fromJson(data['rideRequest']);
@@ -245,7 +241,6 @@ class RideRequestDataProvider {
           "x-access-token": "${await authDataProvider.getToken()}"
         },
         body: json.encode({'cancel_reason': cancelReason}));
-    print("Statusss issss ${response.statusCode}', ${fcmId}, ${sendRequest}");
 
     if (response.statusCode == 200) {
       if (sendRequest && fcmId != null) {
@@ -266,7 +261,6 @@ class RideRequestDataProvider {
         body: json.encode({'price': currentPrice}));
 
     if (response.statusCode == 200) {
-      print("fcm_issddddddd $fcmId");
       if (fcmId != null) {
         completeNotification(fcmId);
       }
@@ -295,7 +289,6 @@ class RideRequestDataProvider {
     if (response.statusCode == 200) {
       final data = (response.body);
 
-      print(response.body);
     } else {
       throw Exception('Failed to send notification.');
     }
@@ -341,10 +334,8 @@ class RideRequestDataProvider {
 
     // dxGQlHGETnWjGYmlVy8Utn:APA91bErJaqPmsqfQOcStX6MYcBxfIAMr9kofXqF7bOBhftlZ3qo327e3PQ1jinm6o7FmtTy1LX4e0SE-dCUc2NwcyL6OJqKW7dagp6uTs8k-m6ynhp7NBotpPMaioTNxBuJFPz_RUif
 
-    print("Status code is ${response.body}");
 
     if (response.statusCode == 200) {
-      print("come on come on turn the radio on it;s friday night");
       final data = (response.body);
       //return NotificationRequest.fromJson(data);
     } else {
@@ -359,7 +350,6 @@ class RideRequestDataProvider {
           'Content-Type': 'application/json',
           "x-access-token": "${await authDataProvider.getToken()}"
         });
-    print('status code is ${response.statusCode}');
     if (response.statusCode == 200) {
       timeOutNotification('fcmId');
     } else {
@@ -383,6 +373,5 @@ class RideRequestDataProvider {
         }
       }),
     );
-    print('notification status code is ${response.statusCode}');
   }
 }

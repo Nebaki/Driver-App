@@ -16,7 +16,6 @@ class PassengerBloc extends Bloc<PassengerEvent, PassengerState> {
         final passenger = await passengerRepository.getAvailablePassengers();
         yield LoadAvailablePassengersSuccess(passenger);
       } catch (_) {
-        print("erorss $_");
         yield PassengerOperationFailure();
       }
     }

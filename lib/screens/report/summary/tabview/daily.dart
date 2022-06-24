@@ -5,6 +5,8 @@ import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
 
 class DailySummaryTab extends StatelessWidget {
+  const DailySummaryTab({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: false);

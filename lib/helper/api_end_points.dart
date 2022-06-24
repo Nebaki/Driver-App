@@ -6,8 +6,16 @@ class CreditEndPoints {
   }
 }
 
+class SettingsEndPoint {
+  static String getSettingsEndPoint() {
+    return "$baseUrl/settings/get-setting";
+  }
+}
+
 class UserEndPoints {
   static String middle = 'drivers';
+  static String getMyRatingEndPoint() => '$baseUrl/drivers/get-my-rate';
+
   static String createDriverEndPoint() {
     return '$baseUrl/$middle/create-driver';
   }
@@ -66,4 +74,8 @@ class RideRequestEndPoints {
   static String completeTripEndPoint(String id) {
     return '$baseUrl/$middle/end-trip/$id';
   }
+}
+
+class AuthEndPoints {
+  static String refreshTokenEndPoint() => '$baseUrl/auth/refresh';
 }

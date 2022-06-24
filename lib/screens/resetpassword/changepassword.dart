@@ -10,6 +10,8 @@ class ChangePassword extends StatelessWidget {
   bool _isLoading = false;
   final passwordController = TextEditingController();
 
+  ChangePassword({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,14 +21,14 @@ class ChangePassword extends StatelessWidget {
               if (state is UserPasswordChanged) {
                 _isLoading = false;
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Password Changed'),
+                    content: const Text('Password Changed'),
                     backgroundColor: Colors.green.shade900));
                 Navigator.pop(context);
               }
               if (state is UserOperationFailure) {
                 _isLoading = false;
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Operation Failure'),
+                    content: const Text('Operation Failure'),
                     backgroundColor: Colors.red.shade900));
               }
             }));
@@ -194,7 +196,6 @@ class ChangePassword extends StatelessWidget {
                                         form.save();
                                         changePassword(context);
 
-                                        print("passwordInfo $_passwordInfo");
                                       }
                                     },
                               child: Row(
@@ -224,7 +225,7 @@ class ChangePassword extends StatelessWidget {
                       ),
                     ),
                   ),
-                  CustomeBackArrow(),
+                  const CustomeBackArrow(),
                 ],
               ),
             )),

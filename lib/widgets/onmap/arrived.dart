@@ -2,17 +2,15 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/route.dart';
-import 'package:driverapp/screens/home/assistant/home_assistant.dart';
-import 'package:driverapp/screens/home/dialogs/circular_progress_indicator_dialog.dart';
+
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:slider_button/slider_button.dart';
 
 class Arrived extends StatefulWidget {
-  Arrived();
+  const Arrived({Key? key}) : super(key: key);
 
   @override
   State<Arrived> createState() => _ArrivedState();
@@ -32,7 +30,7 @@ class _ArrivedState extends State<Arrived> {
             
             context
                 .read<CurrentWidgetCubit>()
-                .changeWidget(WaitingPassenger(formPassenger: true,fromOnline: true,));
+                .changeWidget(const WaitingPassenger(formPassenger: true,fromOnline: true,));
 
             // widget.callback!(WaitingPassenger(widget.callback, true));
           }

@@ -16,7 +16,7 @@ class Auth extends Equatable {
   String? vehicleCategory;
   Map<String?, dynamic?>? pref;
   double? avgRate;
-  int? balance;
+  double? balance;
   String? vehicleType;
   // final Category category;
   int? perKiloMeterCost;
@@ -68,7 +68,7 @@ class Auth extends Equatable {
           "car_type": storage["car_type"]
         },
         balance:
-            storage.containsKey('balance') ? double.parse(storage['balance']).toInt() : 0,
+            storage.containsKey('balance') ? double.parse(storage['balance'].toString()) : 0,
         perMinuteCost: int.parse(storage['per_minute_cost']),
         perKiloMeterCost: int.parse(storage['per_killo_meter_cost']),
         initialFare: int.parse(storage['initial_fare']));

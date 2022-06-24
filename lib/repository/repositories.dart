@@ -7,3 +7,5 @@ export 'auth.dart';
 export 'ride_request.dart';
 export 'emergency_report.dart';
 export 'balance.dart';
+export 'rating.dart';
+export 'settings.dart';

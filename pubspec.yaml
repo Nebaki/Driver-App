@@ -65,6 +65,7 @@ dependencies:
   simple_animations: ^4.1.0
   provider:
   shimmer: ^2.0.0
+  retry: ^3.1.0
 
 
 dev_dependencies:

@@ -1,9 +1,8 @@
-import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class IncomingRequest extends StatelessWidget {
-  Function? callback;
-  IncomingRequest(this.callback);
+  final Function? callback;
+  const IncomingRequest(this.callback, {Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -16,22 +15,20 @@ class IncomingRequest extends StatelessWidget {
           Center(
             child: Padding(
               padding: const EdgeInsets.only(bottom: 15),
-              child: Container(
-                child: FloatingActionButton(
-                  backgroundColor: Colors.white,
-                  onPressed: () {
-                    // callback!(TapToAccept(callback));
-                  },
-                  child: Container(
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.red, width: 0.5),
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Text(
-                        "Stop",
-                        style: TextStyle(fontSize: 12, color: Colors.red),
-                      )),
-                ),
+              child: FloatingActionButton(
+                backgroundColor: Colors.white,
+                onPressed: () {
+                  // callback!(TapToAccept(callback));
+                },
+                child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.red, width: 0.5),
+                        borderRadius: BorderRadius.circular(100)),
+                    child: const Text(
+                      "Stop",
+                      style: TextStyle(fontSize: 12, color: Colors.red),
+                    )),
               ),
             ),
           ),
@@ -62,7 +59,7 @@ class IncomingRequest extends StatelessWidget {
                     ),
                   ),
                 ),
-                Divider(
+                const Divider(
                   color: Colors.red,
                   height: 0,
                 ),
@@ -70,7 +67,7 @@ class IncomingRequest extends StatelessWidget {
                   height: 90,
                   width: MediaQuery.of(context).size.width,
                   color: Colors.black26.withOpacity(0.05),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       "Please Accept or decline requests",
                       style: TextStyle(color: Colors.grey, fontSize: 16),
