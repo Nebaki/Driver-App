@@ -1,0 +1,39 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    compileSdkVersion 31
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 32
+
+        //buildConfigField "String", "HOST_URL", "\"${rootProject.ext.hostUrl}\""
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation "io.reactivex.rxjava2:rxjava:2.1.0" // 必要rxjava2依赖
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.1" // 必要rxandrroid依赖，切线程时需要用到
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0' // 必要retrofit依赖
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0' // 必要依赖，和Rxjava结合必须用到，下面会提到
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0' // 必要依赖，解析json字符所用
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
+}
