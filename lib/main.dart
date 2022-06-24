@@ -188,6 +188,9 @@ class MyApp extends StatelessWidget {
                 create: (context) =>
                     SettingsBloc(settingsRepository: settingsRepository)
                       ..add(SettingsStarted()),
+              ),
+              BlocProvider(
+                create: (context) => StartedTripDataCubit(),
               )
             ],
             child: MaterialApp(

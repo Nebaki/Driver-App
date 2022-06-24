@@ -13,7 +13,6 @@ class AuthDataProvider {
   final http.Client httpClient;
   final secureStorage = const FlutterSecureStorage();
   AuthDataProvider({required this.httpClient});
-  
 
   Future<http.Response> refreshToken() async {
     http.Response response = await httpClient.get(
@@ -26,6 +25,16 @@ class AuthDataProvider {
       secureStorage.write(key: "token", value: token);
     } else {}
     return response;
+  }
+
+  void updateCookie(http.Response response) async {
+    final rawCookie = response.headers['set-cookie'];
+    if (rawCookie != null) {
+      int index = rawCookie.indexOf(';');
+      await secureStorage.write(
+          key: "refresh_token",
+          value: (index == -1) ? rawCookie : rawCookie.substring(0, index));
+    }
   }
 
   Future<void> loginUser(Auth user) async {
@@ -42,7 +51,7 @@ class AuthDataProvider {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> output = jsonDecode(response.body);
-
+      updateCookie(response);
       await secureStorage.write(key: 'id', value: output['driver']['id']);
       await secureStorage.write(
           key: 'phone_number', value: output['driver']['phone_number']);

@@ -63,6 +63,7 @@ dependencies:
   vibration: ^1.7.4-nullsafety.0
   shimmer: ^2.0.0
   retry: ^3.1.0
+  shared_preferences: ^2.0.15
   
 
 dev_dependencies:
