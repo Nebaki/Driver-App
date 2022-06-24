@@ -21,7 +21,7 @@ class OfflineMode extends StatefulWidget {
 
 class _OfflineModeState extends State<OfflineMode> {
   bool isDriverOn = false;
-  OfflineMode({Key? key}) : super(key: key);
+  //OfflineMode({Key? key}) : super(key: key);
   bool hasBalance = true;
 
   @override

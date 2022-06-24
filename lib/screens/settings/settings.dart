@@ -63,7 +63,7 @@ class _SettingScreenState extends State<SettingScreen> {
         String? email;
         String? lastName;
         double? rating;
-        int? balance;
+        double? balance;
         print("Loadinggggggggggggggggggggggggg $state");
         if (state is AuthDataLoadSuccess) {
 
@@ -593,7 +593,7 @@ class Profile extends StatelessWidget {
   String? lastName;
   String? email;
   String phone;
-  int? balance;
+  double? balance;
   double? rating;
   String? id;
   String? emergencyContact;

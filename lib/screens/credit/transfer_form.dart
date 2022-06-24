@@ -95,6 +95,7 @@ class _TransferState extends State<TransferMoney> {
             const TextInputType.numberWithOptions(signed: true, decimal: true),
         style: TextStyle(fontSize: 18),
         enabled: phoneEnabled,
+        controller: phoneController,
         decoration: InputDecoration(
             focusedBorder: OutlineInputBorder(
               borderSide:
@@ -124,9 +125,9 @@ class _TransferState extends State<TransferMoney> {
                 borderSide: BorderSide(style: BorderStyle.solid))),
         validator: (value) {
           if (value!.isEmpty) {
-            return 'Please enter Your Phone number';
+            return 'Please enter Receiver Phone number';
           } else if (value.length < 9) {
-            return 'Phone no. length must not be less than 8 digits';
+            return 'Phone no. length must not be less than 9 digits';
           } else if (value.length > 9) {
             return 'Phone no. length must not be greater than 9 digits';
           }
