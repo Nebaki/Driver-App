@@ -73,8 +73,8 @@ class Bar extends StatelessWidget {
 
   final double _maxBarHeight = 100.0;
 
-  const Bar(
-      {Key? key, required this.label,
+  Bar(
+      {required this.label,
       required this.amountSpent,
       required this.mostExpensive,
       required this.theme});

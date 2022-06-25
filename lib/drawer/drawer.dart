@@ -291,59 +291,6 @@ class NavDrawer extends StatelessWidget {
                           icon: Icons.person,
                           text: "Summary"),
                     ),
-
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     Navigator.pushNamed(context, VehicleDocument.routeName);
-                    //   },
-                    //   child: _menuItem(
-                    //       divider: true,
-                    //       context: context,
-                    //       icon: Icons.settings,
-                    //       text: "Vehicle Document"),
-                    // ),
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     print("sdfasdfa");
-                    //     Navigator.pushNamed(context, PersonalDocument.routeName);
-                    //   },
-                    //   child: _menuItem(
-                    //       divider: true,
-                    //       context: context,
-                    //       icon: Icons.settings,
-                    //       text: "Personal Document"),
-                    // ),
-
-                    //const Divider(color: Colors.grey),
-                    /*GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, SettingScreen.routeName);
-                      },
-                      child: _menuItem(
-                          divider: true,
-                          context: context,
-                          icon: Icons.settings,
-                          text: "Settings"),
-                    ),
-
-                    //const Divider(color: Colors.grey),
-
-                    SizedBox(height: height * 0.02),
-                    //Divider(color: Colors.grey.shade500),
-
-                    GestureDetector(
-                      onTap: () {
-                        BlocProvider.of<AuthBloc>(context).add(LogOut());
-                        Navigator.pushReplacementNamed(
-                            context, SigninScreen.routeName);
-                      },
-                      child: _menuItem(
-                          divider: false,
-                          context: context,
-                          icon: Icons.logout,
-                          text: "Logout"),
-                    ),
-                    */
                   ],
                 ),
               ),

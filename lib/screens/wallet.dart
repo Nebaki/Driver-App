@@ -6,10 +6,12 @@ class Walet extends StatelessWidget {
     color: Colors.red,
     fontWeight: FontWeight.bold,
   );
+
+  const Walet({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F6F9),
+      backgroundColor: const Color(0xFFF5F6F9),
       appBar: AppBar(
         elevation: 0.5,
         backgroundColor: Colors.white,

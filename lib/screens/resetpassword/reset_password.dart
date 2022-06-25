@@ -48,7 +48,8 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   @override
   Widget build(BuildContext context) {
-
+    late String _newPassword;
+    String _confirmedPassword;
     return Scaffold(
       appBar: AppBar(
         elevation: 0.3,

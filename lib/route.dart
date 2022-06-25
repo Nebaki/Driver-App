@@ -93,7 +93,7 @@ class AppRoute {
       return MaterialPageRoute(builder: (context) => VehicleDocument());
     }
     if (settings.name == CheckPhoneNumber.routeName) {
-      return MaterialPageRoute(builder: (context) => const CheckPhoneNumber());
+      return MaterialPageRoute(builder: (context) => CheckPhoneNumber());
     }
     if (settings.name == SettingScreen.routeName) {
       return MaterialPageRoute(builder: (context) => SettingScreen());

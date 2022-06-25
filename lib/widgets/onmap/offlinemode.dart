@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
@@ -21,8 +23,11 @@ class OfflineMode extends StatefulWidget {
 
 class _OfflineModeState extends State<OfflineMode> {
   bool isDriverOn = false;
-  //OfflineMode({Key? key}) : super(key: key);
+
   bool hasBalance = true;
+
+  // onWillPop: () async {
+  //OfflineMode({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -8,6 +8,7 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 
 class OnlinMode extends StatefulWidget {
   const OnlinMode({Key? key}) : super(key: key);
+  OnlinMode();
 
   @override
   State<OnlinMode> createState() => _OnlinModeState();
@@ -48,7 +49,7 @@ class _OnlinModeState extends State<OnlinMode> {
                           });
                           // homeScreenStreamSubscription.cancel();
 
-                        // setDriverStatus(false);
+                          // setDriverStatus(false);
 
                           isDriverOnline = false;
                           context
@@ -86,8 +87,8 @@ class _OnlinModeState extends State<OnlinMode> {
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20))),
               child: Column(
-                children: const [
-                  Center(
+                children: [
+                  const Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 20),
                       child: Text(
@@ -96,7 +97,40 @@ class _OnlinModeState extends State<OnlinMode> {
                       ),
                     ),
                   ),
-                  Divider(color: Colors.green, thickness: 1),
+                  const Divider(color: Colors.green, thickness: 1),
+                  SizedBox(
+                    height: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _items(
+                            num: "95 ETB",
+                            text: "Earning",
+                            icon: Icons.monetization_on),
+                        VerticalDivider(
+                          color: Colors.grey.shade300,
+                        ),
+                        _items(
+                            num: myAvgRate.toString(),
+                            text: "Rating",
+                            icon: Icons.star),
+                        VerticalDivider(
+                          color: Colors.grey.shade300,
+                        ),
+                        BlocBuilder<BalanceBloc, BalanceState>(
+                          builder: (context, state) {
+                            if (state is BalanceLoadSuccess) {
+                              return _items(
+                                  num: "${state.balance} ETB",
+                                  text: "Wallet",
+                                  icon: Icons.wallet_giftcard);
+                            }
+                            return Container();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                   OndriverStatus(isOnline: true,)
                 ],
               ),
