@@ -61,7 +61,7 @@ class AppRoute {
               ));
     }
     if (settings.name == Walet.routeName) {
-      return MaterialPageRoute(builder: (context) => const Walet());
+      return MaterialPageRoute(builder: (context) => Walet());
     }
     if (settings.name == TeleBirrData.routeName) {
       return MaterialPageRoute(builder: (context) => TeleBirrData());
@@ -81,10 +81,10 @@ class AppRoute {
     }
 
     if (settings.name == Earning.routeName) {
-      return MaterialPageRoute(builder: (context) => const Earning());
+      return MaterialPageRoute(builder: (context) => Earning());
     }
     if (settings.name == Summary.routeName) {
-      return MaterialPageRoute(builder: (context) => const Summary());
+      return MaterialPageRoute(builder: (context) => Summary());
     }
     if (settings.name == PersonalDocument.routeName) {
       return MaterialPageRoute(builder: (context) => PersonalDocument());
@@ -93,10 +93,10 @@ class AppRoute {
       return MaterialPageRoute(builder: (context) => VehicleDocument());
     }
     if (settings.name == CheckPhoneNumber.routeName) {
-      return MaterialPageRoute(builder: (context) => const CheckPhoneNumber());
+      return MaterialPageRoute(builder: (context) => CheckPhoneNumber());
     }
     if (settings.name == SettingScreen.routeName) {
-      return MaterialPageRoute(builder: (context) => const SettingScreen());
+      return MaterialPageRoute(builder: (context) => SettingScreen());
     }
     if (settings.name == HistoryPage.routeName) {
       return MaterialPageRoute(builder: (context) => HistoryPage());

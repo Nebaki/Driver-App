@@ -63,7 +63,7 @@ class _SettingScreenState extends State<SettingScreen> {
         String? email;
         String? lastName;
         double? rating;
-        int? balance;
+        double? balance;
         print("Loadinggggggggggggggggggggggggg $state");
         if (state is AuthDataLoadSuccess) {
           print("Loadinggggggggggggggggggggggggg ${state.auth.email}");

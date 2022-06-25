@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //_currentWidget = OfflineMode(/*theme: themeProvider.getColor*/);
     context
         .read<CurrentWidgetCubit>()
-        .changeWidget(widget.args.isOnline ? const OnlinMode() : OfflineMode());
+        .changeWidget(widget.args.isOnline ? OnlinMode() : OfflineMode());
     // _currentWidget = ;
     _checkLocationServiceOnInit();
     _toggleLocationServiceStatusStream();
@@ -736,7 +736,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: ElevatedButton(
                   onPressed: () {
                     context.read<CurrentWidgetCubit>().state.key ==
-                        const OnlinMode().key;
+                        OnlinMode().key;
                   },
                   child: const Text("Maintenance")))
         ],
@@ -806,7 +806,7 @@ class _HomeScreenState extends State<HomeScreen> {
           isDriverOnline = true;
           getLiveLocation();
 
-          context.read<CurrentWidgetCubit>().changeWidget(const OnlinMode());
+          context.read<CurrentWidgetCubit>().changeWidget(OnlinMode());
         } else {
           context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
         }
@@ -815,7 +815,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       isAccepted = false;
-      context.read<CurrentWidgetCubit>().changeWidget(const OnlinMode());
+      context.read<CurrentWidgetCubit>().changeWidget(OnlinMode());
 
       markers.clear();
       polylines.clear();
@@ -848,7 +848,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (stopingtimer == null || !stopingtimer!.isActive) {
       print("yow in is active");
 
-      Timer.periodic(const Duration(seconds: 1), (time) {
+      Timer.periodic( Duration(seconds: 1), (time) {
         stopingtimer = time;
 
         stopDuration++;
