@@ -8,7 +8,6 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 
 class OnlinMode extends StatefulWidget {
   const OnlinMode({Key? key}) : super(key: key);
-  OnlinMode();
 
   @override
   State<OnlinMode> createState() => _OnlinModeState();

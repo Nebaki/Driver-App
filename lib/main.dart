@@ -106,8 +106,8 @@ void main() async {
           emergencyReportRepository: emergencyReportRepository,
           passengerRepository: passengerRepository,
           balanceRepository: balanceRepository,
-          ratingRepository: ratingRepository,
-          settingsRepository: settingsRepository,
+          //ratingRepository: ratingRepository,
+          //settingsRepository: settingsRepository,
         ))
       );
 }
