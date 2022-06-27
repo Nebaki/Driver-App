@@ -7,7 +7,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/cubits/cubits.dart';
-import 'package:driverapp/cubits/rating_cubit/rating_cubit.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/models/models.dart';
@@ -92,7 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late bool isReverseLocationLoadingDialog;
   double pathDistance = 0;
 
-  // late LatLngBounds latLngBounds;
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -256,7 +254,8 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             return isDirectionLoading;
-          }, listener: (context, state) {
+          }, 
+          listener: (context, state) {
             if (state is DirectionInitialState) {
               resetScreen(state.isBalanceSufficient, state.isFromOnlineMode);
             }
@@ -871,7 +870,7 @@ class _HomeScreenState extends State<HomeScreen> {
     LatLng updatedLocation = LatLng(currentLat, currentLng);
     driverStreamSubscription = Geolocator.getPositionStream(
             locationSettings: const LocationSettings(
-                distanceFilter: 0, accuracy: LocationAccuracy.best))
+                distanceFilter: 10, accuracy: LocationAccuracy.best))
         .listen((event) {
       print("yow your speed is this:${event.speed} stope ${stopDuration}");
 
@@ -1454,10 +1453,12 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.pop(context);
             if (isFirstTime) {
               Geolocator.getCurrentPosition().then((value) {
-                // currentLatLng = LatLng(value.latitude, value.longitude);
-                // pickupLatLng = currentLatLng;
-                // Controller.animateCamera(CameraUpdate.newCameraPosition(
-                //     CameraPosition(zoom: 16.1746, target: currentLatLng)));
+                currentLat= value.latitude;
+                currentLng = value.longitude;
+                // LatLng(value.latitude, value.longitude);
+                pickupLocation = LatLng(value.latitude, value.longitude);
+                _myController.animateCamera(CameraUpdate.newCameraPosition(
+                    CameraPosition(zoom: 16.1746, target: pickupLocation)));
               });
             }
             isFirstTime = false;
@@ -1757,32 +1758,3 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 }
-
-// void onCloseWarningDialog() {
-//   showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: const Text('Warning'),
-//           content: const Text(
-//               "Are you sure you want to close the app? If you close the app assengers won't be able to see you."),
-//           actions: [
-//             TextButton(
-//                 onPressed: () {
-//                   Navigator.pop(context);
-//                 },
-//                 child: const Text('No')),
-//             TextButton(
-//                 onPressed: () {
-//                   homeScreenStreamSubscription.cancel().then((value) {
-//                     Geofire.removeLocation(firebaseKey).then((value) {
-//                       SystemNavigator.pop();
-//                     });
-//                     SystemNavigator.pop();
-//                   });
-//                 },
-//                 child: const Text('Yes')),
-//           ],
-//         );
-//       });
-// }

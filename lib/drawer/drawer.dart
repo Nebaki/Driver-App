@@ -191,7 +191,7 @@ class NavDrawer extends StatelessWidget {
             //       )),
             // ),
             Container(
-              padding: EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 20),
               height: MediaQuery.of(context).size.height - 200,
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -340,7 +340,7 @@ class NavDrawer extends StatelessWidget {
     return ListTile(
       horizontalTitleGap: 0,
       trailing:
-          IconButton(onPressed: () {}, icon: Icon(Icons.navigate_next_rounded)),
+          IconButton(onPressed: () {}, icon:const Icon(Icons.navigate_next_rounded)),
       leading: Icon(icon, color: color),
       title: Text(text, style: Theme.of(context).textTheme.bodyLarge),
       hoverColor: hoverColor,
