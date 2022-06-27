@@ -2,14 +2,11 @@ import 'dart:async';
 
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
-import 'package:driverapp/route.dart';
-import 'package:driverapp/screens/cancel_reason.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NotificationDialog extends StatefulWidget {
   final Function setDestination;
@@ -25,7 +22,7 @@ class NotificationDialog extends StatefulWidget {
   // final LatLng droppOffPos;
 
   NotificationDialog(
-      this.setDestination, this.nextDrivers, this.timer, this.passRequest);
+      this.setDestination, this.nextDrivers, this.timer, this.passRequest, {Key? key}) : super(key: key);
 
   @override
   State<NotificationDialog> createState() => _NotificationDialogState();
@@ -355,7 +352,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
 
             widget.setDestination(pickupLocation);
             BlocProvider.of<CurrentWidgetCubit>(context)
-                .changeWidget(Arrived());
+                .changeWidget(const Arrived());
             Navigator.pop(context);
             context.read<DisableButtonCubit>().disableButton();
           });

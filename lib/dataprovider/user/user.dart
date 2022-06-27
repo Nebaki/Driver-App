@@ -4,20 +4,18 @@ import 'dart:convert';
 import 'package:driverapp/helper/api_end_points.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:meta/meta.dart';
-import 'dart:io';
+
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/dataprovider/auth/auth.dart';
 import 'package:driverapp/models/models.dart';
-import 'package:driverapp/repository/auth.dart';
 
 class UserDataProvider {
   final _baseUrl = 'https://safeway-api.herokuapp.com/api/drivers';
   final http.Client httpClient;
   AuthDataProvider authDataProvider =
       AuthDataProvider(httpClient: http.Client());
-  UserDataProvider({required this.httpClient}) : assert(httpClient != null);
+  UserDataProvider({required this.httpClient}) ;
 
   Future<User> getDriverById(String id) async {
     final response = await http
@@ -68,7 +66,7 @@ class UserDataProvider {
     final response = await request.send();
 
     if (response.statusCode == 200) {
-      await response.stream.transform(utf8.decoder).listen((value) async {
+       response.stream.transform(utf8.decoder).listen((value) async {
         final data = jsonDecode(value);
         await authDataProvider.updateProfile(data['driver']['profile_image']);
       });

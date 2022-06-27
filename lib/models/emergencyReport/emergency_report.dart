@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 @immutable
 class EmergencyReport extends Equatable {
-  List location;
+  final List location;
 
-  EmergencyReport({required this.location});
+  const EmergencyReport({required this.location});
 
   @override
   List<Object?> get props => [location];

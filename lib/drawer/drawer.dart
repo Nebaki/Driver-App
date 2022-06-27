@@ -3,11 +3,12 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/drawer/custome_paint.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NavDrawer extends StatelessWidget {
+  const NavDrawer({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -48,7 +49,7 @@ class NavDrawer extends StatelessWidget {
                               placeholder: (context, url) =>
                                   const CircularProgressIndicator(),
                               errorWidget: (context, url, error) {
-                                return Icon(
+                                return const Icon(
                                   Icons.person,
                                   size: 50,
                                   color: Colors.black,
@@ -113,7 +114,7 @@ class NavDrawer extends StatelessWidget {
                 //   },
                 // ),
                 ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             // Padding(

@@ -3,12 +3,12 @@ import 'package:equatable/equatable.dart';
 
 @immutable
 class PlaceDetail extends Equatable {
-  String placeName;
-  String placeId;
-  double lat;
-  double lng;
+  final String placeName;
+  final String placeId;
+  final double lat;
+  final double lng;
 
-  PlaceDetail(
+  const PlaceDetail(
       {required this.placeName,
       required this.placeId,
       required this.lat,

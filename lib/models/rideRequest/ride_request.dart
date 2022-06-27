@@ -5,26 +5,26 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 @immutable
 class RideRequest extends Equatable {
-  String? id;
-  String? driverId;
-  String? driverFcm;
-  LatLng? pickupLocation;
-  LatLng? dropOffLocation;
-  String? pickUpAddress;
-  String? droppOffAddress;
-  String? status;
-  String? cancelReason;
-  String? price;
-  String? distance;
-  String? duration;
-  String? direction;
-  String? date;
-  String? time;
-  Passenger? passenger;
-  String? phoneNumber;
-  String? name;
+  final String? id;
+  final String? driverId;
+  final String? driverFcm;
+  final LatLng? pickupLocation;
+  final LatLng? dropOffLocation;
+  final String? pickUpAddress;
+  final String? droppOffAddress;
+  final String? status;
+  final String? cancelReason;
+  final String? price;
+  final String? distance;
+  final String? duration;
+  final String? direction;
+  final String? date;
+  final String? time;
+  final Passenger? passenger;
+  final String? phoneNumber;
+  final String? name;
 
-  RideRequest(
+  const RideRequest(
       {this.id,
       this.date,
       this.time,
@@ -64,7 +64,7 @@ class RideRequest extends Equatable {
         distance: json['distance'].toString(),
         passenger: json.containsKey('passenger')
             ? Passenger.fromJson(json['passenger'])
-            : Passenger(name: 'Uknown Customer'));
+            : const Passenger(name: 'Uknown Customer'));
   }
 
   @override

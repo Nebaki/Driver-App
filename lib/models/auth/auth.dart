@@ -1,29 +1,28 @@
-import 'package:driverapp/models/category/category.dart';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 @immutable
 class Auth extends Equatable {
-  String? token;
-  String? id;
-  String? name;
-  String? lastName;
-  String phoneNumber;
-  String? password;
-  String? email;
-  String? emergencyContact;
-  String? profilePicture;
-  String? vehicleCategory;
-  Map<String?, dynamic?>? pref;
-  double? avgRate;
-  double? balance;
-  String? vehicleType;
+  final String? token;
+  final String? id;
+  final String? name;
+  final String? lastName;
+  final String phoneNumber;
+  final String? password;
+  final String? email;
+  final String? emergencyContact;
+  final String? profilePicture;
+  final String? vehicleCategory;
+  final Map<String?, dynamic>? pref;
+  final double? avgRate;
+  final double? balance;
+  final String? vehicleType;
   // final Category category;
-  int? perKiloMeterCost;
-  int? perMinuteCost;
-  int? initialFare;
+  final int? perKiloMeterCost;
+  final int? perMinuteCost;
+  final int? initialFare;
 
-  Auth({
+  const Auth({
     this.id,
     this.token,
     this.email,
