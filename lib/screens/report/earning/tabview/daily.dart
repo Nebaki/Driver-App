@@ -1,14 +1,13 @@
+import 'package:driverapp/dataprovider/dataproviders.dart';
 import 'package:driverapp/models/trip/trip.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../dataprovider/history/history.dart';
 import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
 import '../../../credit/toast_message.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '../../../../dataprovider/credit/credit.dart';
 import 'package:http/http.dart' as http;
 
 class DailyEarningTab extends StatefulWidget {

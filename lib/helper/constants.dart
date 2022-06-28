@@ -1,12 +1,9 @@
 import 'dart:async';
 
 // import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:driverapp/bloc/riderequest/bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart';
 
 bool? isDriverOnline;
 late StreamSubscription<Position> homeScreenStreamSubscription;
@@ -42,6 +39,8 @@ List<String> drivers = [];
 String portName = 'DRIVER_BACKGROUND_lISTENER_PORT';
 const maintenanceUrl = 'https://mobiletaxi-api.herokuapp.com/api';
 String baseUrl = 'https://safeway-api.herokuapp.com/api';
+String apiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
+
 const shimmerGradient = LinearGradient(
   colors: [
     Color(0xFFEBEBF4),

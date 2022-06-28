@@ -1,14 +1,11 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/screens/screens.dart';
-import 'package:driverapp/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../route.dart';
-import '../../utils/colors.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 
@@ -16,6 +13,8 @@ enum ResetMobileVerficationState { SHOW_MOBILE_FORM_STATE, SHOW_OTP_FORM_STATE }
 
 class CheckPhoneNumber extends StatefulWidget {
   static const routeName = '/resetverification';
+
+  const CheckPhoneNumber({Key? key}) : super(key: key);
 
   @override
   _CheckPhoneNumberState createState() => _CheckPhoneNumberState();
@@ -27,11 +26,10 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
   late String phoneController;
   bool isCorrect = false;
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   String verificationId = "";
   String userInput = "";
   bool showLoading = false;
-  int _currentThemeIndex = 2;
 
   late ThemeProvider themeProvider;
 
@@ -39,11 +37,10 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
   void initState() {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _loadPreTheme();
+    super.initState();
   }
 
-  _loadPreTheme() {
-    _currentThemeIndex = themeProvider.getThemeIndex();
-  }
+  _loadPreTheme() {}
 
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
@@ -69,8 +66,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
 
   void sendVerificationCode() async {
     await _auth.verifyPhoneNumber(
-              timeout: const Duration(seconds: 60),
-
+        timeout: const Duration(seconds: 60),
         phoneNumber: phoneController,
         verificationCompleted: (phoneAuthCredential) async {
           // setState(() {
@@ -171,7 +167,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Padding(
-                        padding: const EdgeInsets.only(
+                        padding:  EdgeInsets.only(
                             left: 15, right: 10, top: 150),
                         child: Text(
                           "Enter mobile number",
@@ -190,7 +186,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                           maxLines: 1,
                           keyboardType: const TextInputType.numberWithOptions(
                               signed: true, decimal: true),
-                          style: TextStyle(fontSize: 18),
+                          style: const TextStyle(fontSize: 18),
                           enabled: phoneEnabled,
                           cursorColor: themeProvider.getColor,
                           decoration: InputDecoration(
@@ -202,7 +198,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                               ),
                               counterText: "",
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                                  const BoxConstraints(minWidth: 0, minHeight: 0),
                               alignLabelWithHint: true,
                               //hintText: "9--------",
                               labelText: "Phone number",
@@ -210,7 +206,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black45),
                               prefixIcon: Padding(
-                                padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                                padding:  const EdgeInsets.only(left: 5.0, right: 5.0),
                                 child: Text(
                                   "+251",
                                   style: TextStyle(
@@ -222,9 +218,9 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                               suffix: Text("$textLength/9"),
                               fillColor: Colors.white,
                               filled: true,
-                              border: OutlineInputBorder(
+                              border: const OutlineInputBorder(
                                   borderSide:
-                                      BorderSide(style: BorderStyle.solid))),
+                                       BorderSide(style: BorderStyle.solid))),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter Your Phone number';
@@ -313,21 +309,29 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                               context: context,
                                               builder: (BuildContext context) =>
                                                   AlertDialog(
-                                                    title:
-                                                        const Text("Confirm", style: TextStyle(
-                                                          fontWeight: FontWeight.bold, fontSize: 20
-                                                        ),),
+                                                    title: const Text(
+                                                      "Confirm",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 20),
+                                                    ),
                                                     content: Text.rich(TextSpan(
                                                         text:
-                                                            "We will send a verification code to ", style: TextStyle(
-                                                        fontWeight: FontWeight.bold, fontSize: 18
-                                                    ),
+                                                            "We will send a verification code to ",
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 18),
                                                         children: [
                                                           TextSpan(
                                                               text:
-                                                                  phoneController, style: TextStyle(
-                                                              fontWeight: FontWeight.bold, fontSize: 18
-                                                          ))
+                                                                  phoneController,
+                                                              style: const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 18))
                                                         ])),
                                                     actions: [
                                                       TextButton(
@@ -347,7 +351,9 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                                           child: Text(
                                                             "Send Code",
                                                             style: TextStyle(
-                                                                color: themeProvider.getColor,
+                                                                color:
+                                                                    themeProvider
+                                                                        .getColor,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold),
@@ -358,10 +364,10 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                                                 context,
                                                                 "Cancel");
                                                           },
-                                                          child: Text(
-                                                              "Cancel",
+                                                          child: Text("Cancel",
                                                               style: TextStyle(
-                                                                  color: themeProvider.getColor,
+                                                                  color: themeProvider
+                                                                      .getColor,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold))),
@@ -448,18 +454,19 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            content:
-                const Text("There is no user registered by this phone number", style: TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 20
-                )),
+            content: const Text(
+                "There is no user registered by this phone number",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             actions: [
               TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Okay", style: TextStyle( color: themeProvider.getColor,
-          fontWeight: FontWeight.bold, fontSize: 20
-          )))
+                  child: Text("Okay",
+                      style: TextStyle(
+                          color: themeProvider.getColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20)))
             ],
           );
         });

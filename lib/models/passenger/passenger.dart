@@ -4,20 +4,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 @immutable
 class Passenger extends Equatable {
-  String? id;
-  String? name;
-  String? password;
-  String? email;
-  String? phoneNumber;
-  String? gender;
-  String? emergencyContact;
-  String? profileImage;
-  String? fcmId;
-  LatLng? location;
-  String? ID;
+  final String? id;
+  final String? name;
+  final String? password;
+  final String? email;
+  final String? phoneNumber;
+  final String? gender;
+  final String? emergencyContact;
+  final String? profileImage;
+  final String? fcmId;
+  final LatLng? location;
+  final String? ID;
   // Map<String, dynamic>? preference;
 
-  Passenger({
+  const Passenger({
     this.ID,
     this.id,
     this.name,

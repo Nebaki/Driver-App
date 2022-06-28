@@ -1,4 +1,5 @@
 import 'package:driverapp/dataprovider/credit/credit.dart';
+import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/credit/list_builder.dart';
@@ -8,14 +9,14 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/credit/credit.dart';
-import '../../utils/colors.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import 'toast_message.dart';
 
 class Walet extends StatefulWidget {
   static const routeName = "/credit";
+
+  const Walet({Key? key}) : super(key: key);
 
   @override
   State<Walet> createState() => _WaletState();

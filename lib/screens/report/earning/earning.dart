@@ -1,9 +1,7 @@
+import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../../../utils/theme/ThemeProvider.dart';
-import '../../credit/toast_message.dart';
 
 class Earning extends StatefulWidget {
   static const routeName = "/earning";

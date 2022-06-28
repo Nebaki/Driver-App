@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:driverapp/bloc/bloc.dart';
@@ -9,11 +8,12 @@ import 'package:provider/provider.dart';
 
 import '../../utils/colors.dart';
 import '../../utils/painter.dart';
-import '../../utils/settings/settings_ui.dart';
 import '../../utils/theme/ThemeProvider.dart';
 
 class SettingScreen extends StatefulWidget {
   static const routeName = "/settings";
+
+  const SettingScreen({Key? key}) : super(key: key);
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
@@ -23,7 +23,6 @@ class _SettingScreenState extends State<SettingScreen> {
   final _textStyle =
       const TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
 
-  int _currentThemeIndex = 2;
 
   late ThemeProvider themeProvider;
 
@@ -31,10 +30,10 @@ class _SettingScreenState extends State<SettingScreen> {
   void initState() {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _loadPreTheme();
+    super.initState();
   }
 
   _loadPreTheme() {
-    _currentThemeIndex = themeProvider.getThemeIndex();
   }
 
   @override
@@ -64,9 +63,7 @@ class _SettingScreenState extends State<SettingScreen> {
         String? lastName;
         double? rating;
         double? balance;
-        print("Loadinggggggggggggggggggggggggg $state");
         if (state is AuthDataLoadSuccess) {
-          print("Loadinggggggggggggggggggggggggg ${state.auth.email}");
 
           name = state.auth.name!;
           phoneNumber = state.auth.phoneNumber;
@@ -383,6 +380,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       themeProvider.changeTheme(1);
+                                       setState(() {
+                                        
+                                      });
                                     },
                                     child: Container(
                                       color: ColorProvider().primaryDeepRed,
@@ -396,6 +396,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       themeProvider.changeTheme(2);
+                                      setState(() {
+                                        
+                                      });
                                     },
                                     child: Container(
                                       color: ColorProvider().primaryDeepPurple,
@@ -409,6 +412,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       themeProvider.changeTheme(3);
+                                       setState(() {
+                                        
+                                      });
                                     },
                                     child: Container(
                                       color: ColorProvider().primaryDeepOrange,
@@ -422,6 +428,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       themeProvider.changeTheme(4);
+                                       setState(() {
+                                        
+                                      });
                                     },
                                     child: Container(
                                       color: ColorProvider().primaryDeepBlue,
@@ -435,6 +444,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       themeProvider.changeTheme(5);
+                                       setState(() {
+                                        
+                                      });
                                     },
                                     child: Container(
                                       color: ColorProvider().primaryDeepBlack,
@@ -448,6 +460,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       themeProvider.changeTheme(6);
+                                       setState(() {
+                                        
+                                      });
                                     },
                                     child: Container(
                                       color: ColorProvider().primaryDeepTeal,
@@ -461,6 +476,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       themeProvider.changeTheme(7);
+                                       setState(() {
+                                        
+                                      });
                                     },
                                     child: Container(
                                       color: ColorProvider().primaryDeepCheetah,
@@ -589,19 +607,20 @@ class _SettingScreenState extends State<SettingScreen> {
 }
 
 class Profile extends StatelessWidget {
-  String imgUrl;
-  String name;
-  String? lastName;
-  String? email;
-  String phone;
-  double? balance;
-  double? rating;
-  String? id;
-  String? emergencyContact;
-  ThemeProvider themeProvider;
+  final String imgUrl;
+  final String name;
+  final String? lastName;
+  final String? email;
+  final String phone;
+  final double? balance;
+  final double? rating;
+  final String? id;
+  final String? emergencyContact;
+  final ThemeProvider themeProvider;
 
-  Profile(
-      {required this.id,
+  const Profile(
+      { Key? key,
+        required this.id,
       required this.emergencyContact,
       required this.imgUrl,
       required this.name,
@@ -610,7 +629,7 @@ class Profile extends StatelessWidget {
       required this.phone,
       this.balance,
       this.rating,
-      required this.themeProvider});
+      required this.themeProvider}):super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -629,7 +648,7 @@ class Profile extends StatelessWidget {
       child: Container(
         height: deviceSize.height * 0.3,
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           //color: profile_info_background,
           borderRadius: BorderRadius.all(
             Radius.circular(20.0),
@@ -644,10 +663,10 @@ class Profile extends StatelessWidget {
                 ProfileImage(
                   height: 60.0,
                   width: 60.0,
-                  imgUrl: this.imgUrl,
+                  imgUrl: imgUrl,
                   themeProvider: themeProvider,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 15.0,
                 ),
                 Expanded(
@@ -662,12 +681,12 @@ class Profile extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 13.0,
                       ),
-                      Text(
+                      const Text(
                         'Driver',
-                        style: TextStyle(
+                        style:  TextStyle(
                           //color: Colors.white70,
                           fontSize: 12.0,
                           fontWeight: FontWeight.bold,
@@ -705,23 +724,23 @@ class Profile extends StatelessWidget {
                     )),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 15.0,
             ),
             Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
+                const Padding(
+                  padding: EdgeInsets.all(3.0),
                   child: Icon(
                     Icons.phone,
                     color: Colors.black,
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(3.0),
+                  padding: const EdgeInsets.all(3.0),
                   child: Text(
                     phone,
-                    style: TextStyle(
+                    style: const TextStyle(
                       //color: Colors.white,
                       fontSize: 15.0,
                       fontWeight: FontWeight.bold,
@@ -730,23 +749,23 @@ class Profile extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 5.0,
             ),
             Row(
               children: [
-                Padding(
-                  padding: EdgeInsets.all(3.0),
-                  child: Icon(
+                const Padding(
+                  padding:  EdgeInsets.all(3.0),
+                  child:  Icon(
                     Icons.email,
                     color: Colors.black,
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(3.0),
+                  padding: const EdgeInsets.all(3.0),
                   child: Text(
                     email!,
-                    style: TextStyle(
+                    style: const TextStyle(
                       //color: Colors.white,
                       fontSize: 15.0,
                       fontWeight: FontWeight.bold,
@@ -755,7 +774,7 @@ class Profile extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 5.0,
             ),
             Divider(
@@ -771,18 +790,18 @@ class Profile extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         item['count'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           //color: Colors.white,
                           fontSize: 15.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5.0,
                       ),
                       Text(
                         item['name'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           //color: Colors.white70,
                           fontSize: 11.0,
                           fontWeight: FontWeight.bold,
@@ -804,12 +823,12 @@ class ProfileImage extends StatelessWidget {
   final double height, width;
   final Color color;
   final String imgUrl;
-  ThemeProvider themeProvider;
-  ProfileImage(
-      {this.height = 100.0,
+  final ThemeProvider themeProvider;
+  const ProfileImage(
+      {Key? key, this.height = 100.0,
       this.width = 100.0,
       this.color = Colors.white,
-      required this.imgUrl, required this.themeProvider});
+      required this.imgUrl, required this.themeProvider}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -819,7 +838,7 @@ class ProfileImage extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: themeProvider.getColor,
-        image: DecorationImage(
+        image: const DecorationImage(
           image: NetworkImage("devMausam"),
           fit: BoxFit.contain,
         ),

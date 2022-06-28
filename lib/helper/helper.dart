@@ -1,62 +1,62 @@
 import 'package:url_launcher/url_launcher.dart';
 
-Future<void> _launchInBrowser(String url) async {
-  if (!await launch(
-    url,
-    forceSafariVC: false,
-    forceWebView: false,
-    headers: <String, String>{'my_header_key': 'my_header_value'},
-  )) {
-    throw 'Could not launch $url';
-  }
-}
+// Future<void> _launchInBrowser(String url) async {
+//   if (!await launch(
+//     url,
+//     forceSafariVC: false,
+//     forceWebView: false,
+//     headers: <String, String>{'my_header_key': 'my_header_value'},
+//   )) {
+//     throw 'Could not launch $url';
+//   }
+// }
 
-Future<void> _launchInWebViewOrVC(String url) async {
-  if (!await launch(
-    url,
-    forceSafariVC: true,
-    forceWebView: true,
-    headers: <String, String>{'my_header_key': 'my_header_value'},
-  )) {
-    throw 'Could not launch $url';
-  }
-}
+// Future<void> _launchInWebViewOrVC(String url) async {
+//   if (!await launch(
+//     url,
+//     forceSafariVC: true,
+//     forceWebView: true,
+//     headers: <String, String>{'my_header_key': 'my_header_value'},
+//   )) {
+//     throw 'Could not launch $url';
+//   }
+// }
 
-Future<void> _launchInWebViewWithJavaScript(String url) async {
-  if (!await launch(
-    url,
-    forceSafariVC: true,
-    forceWebView: true,
-    enableJavaScript: true,
-  )) {
-    throw 'Could not launch $url';
-  }
-}
+// Future<void> _launchInWebViewWithJavaScript(String url) async {
+//   if (!await launch(
+//     url,
+//     forceSafariVC: true,
+//     forceWebView: true,
+//     enableJavaScript: true,
+//   )) {
+//     throw 'Could not launch $url';
+//   }
+// }
 
-Future<void> _launchInWebViewWithDomStorage(String url) async {
-  if (!await launch(
-    url,
-    forceSafariVC: true,
-    forceWebView: true,
-    enableDomStorage: true,
-  )) {
-    throw 'Could not launch $url';
-  }
-}
+// Future<void> _launchInWebViewWithDomStorage(String url) async {
+//   if (!await launch(
+//     url,
+//     forceSafariVC: true,
+//     forceWebView: true,
+//     enableDomStorage: true,
+//   )) {
+//     throw 'Could not launch $url';
+//   }
+// }
 
-Future<void> _launchUniversalLinkIos(String url) async {
-  final bool nativeAppLaunchSucceeded = await launch(
-    url,
-    forceSafariVC: false,
-    universalLinksOnly: true,
-  );
-  if (!nativeAppLaunchSucceeded) {
-    await launch(
-      url,
-      forceSafariVC: true,
-    );
-  }
-}
+// Future<void> _launchUniversalLinkIos(String url) async {
+//   final bool nativeAppLaunchSucceeded = await launch(
+//     url,
+//     forceSafariVC: false,
+//     universalLinksOnly: true,
+//   );
+//   if (!nativeAppLaunchSucceeded) {
+//     await launch(
+//       url,
+//       forceSafariVC: true,
+//     );
+//   }
+// }
 
 // Widget _launchStatus(BuildContext context, AsyncSnapshot<void> snapshot) {
 //   if (snapshot.hasError) {

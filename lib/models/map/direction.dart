@@ -3,13 +3,13 @@ import 'package:equatable/equatable.dart';
 
 @immutable
 class Direction extends Equatable {
-  String durationText;
-  String distanceText;
-  int durationValue;
-  int distanceValue;
-  String encodedPoints;
+  final String durationText;
+  final String distanceText;
+  final int durationValue;
+  final int distanceValue;
+  final String encodedPoints;
 
-  Direction(
+  const Direction(
       {required this.durationText,
       required this.distanceText,
       required this.durationValue,

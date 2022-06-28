@@ -103,8 +103,7 @@ class RideRequestDataProvider {
 
   Future<void> changeRequestStatus(
       String id, String status, String? passengerFcm) async {
-    final res =
-        await http.get(Uri.parse("https://safeway-api.herokuapp.com/api"));
+   
 
     final response =
         await http.post(Uri.parse('$_baseUrl/set-ride-request-status/$id'),
@@ -182,7 +181,7 @@ class RideRequestDataProvider {
     );
 
     if (response.statusCode == 200) {
-      final data = (response.body);
+      // final data = (response.body);
     } else {
       throw Exception('Failed to send notification.');
     }
@@ -209,7 +208,7 @@ class RideRequestDataProvider {
     );
 
     if (response.statusCode == 200) {
-      final data = (response.body);
+      // final data = (response.body);
       //return NotificationRequest.fromJson(data);
     } else {
       throw Exception('Failed to send notification.');
@@ -234,7 +233,7 @@ class RideRequestDataProvider {
     );
 
     if (response.statusCode == 200) {
-      final data = (response.body);
+      // final data = (response.body);
     } else {
       throw Exception('Failed to send notification.');
     }
@@ -295,7 +294,7 @@ class RideRequestDataProvider {
     );
 
     if (response.statusCode == 200) {
-      final data = (response.body);
+      // final data = (response.body);
 
     } else {
       throw Exception('Failed to send notification.');
@@ -344,7 +343,7 @@ class RideRequestDataProvider {
 
 
     if (response.statusCode == 200) {
-      final data = (response.body);
+      // final data = (response.body);
       //return NotificationRequest.fromJson(data);
     } else {
       throw Exception('Failed to send notification.');
@@ -366,7 +365,7 @@ class RideRequestDataProvider {
   }
 
   Future timeOutNotification(String fcmId) async {
-    final response = await http.post(
+    await http.post(
       Uri.parse(_fcmUrl),
       headers: <String, String>{
         'Content-Type': 'application/json',

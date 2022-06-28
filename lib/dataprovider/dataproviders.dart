@@ -11,3 +11,6 @@ export 'passenger/passenger.dart';
 export 'balance/balance.dart';
 export 'rating/rating.dart';
 export 'settings/settings.dart';
+export 'history/history.dart';
+export 'credit/credit.dart';
+export 'telebir/telebirr.dart';

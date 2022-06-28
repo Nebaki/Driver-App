@@ -3,19 +3,19 @@ import 'package:equatable/equatable.dart';
 
 @immutable
 class User extends Equatable {
-  String? id;
-  String? firstName;
-  String? lastName;
-  String? password;
-  String? email;
-  String? phoneNumber;
-  String? gender;
-  String? emergencyContact;
-  String? profileImage;
-  String? fcm;
-  Map<String, dynamic>? preference;
+  final String? id;
+  final String? firstName;
+  final String? lastName;
+  final String? password;
+  final String? email;
+  final String? phoneNumber;
+  final  String? gender;
+  final String? emergencyContact;
+  final String? profileImage;
+  final String? fcm;
+  final Map<String, dynamic>? preference;
 
-  User(
+  const User(
       {this.id,
       this.firstName,
       this.lastName,

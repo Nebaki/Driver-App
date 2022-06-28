@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:driverapp/dataprovider/dataproviders.dart';
-import 'package:driverapp/helper/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/models/models.dart';
 
@@ -25,7 +24,7 @@ class EmergencyReportDataProvider {
     );
    
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      // final data = jsonDecode(response.body);
       // return da
     } else {
       throw Exception('Failed to create emergencyReport.');

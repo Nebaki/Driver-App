@@ -1,8 +1,10 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/cubits/cubits.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class OndriverStatus extends StatelessWidget {
@@ -11,6 +13,8 @@ class OndriverStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
     return SizedBox(
       height: 100,
       child: Row(
@@ -20,7 +24,7 @@ class OndriverStatus extends StatelessWidget {
             flex: 2,
             fit: FlexFit.tight,
             child: _items(
-                num: "95 ETB", text: "Earning", icon: Icons.monetization_on),
+                num: "95 ETB", text: "Earning", icon: Icons.monetization_on,context: context),
           ),
           VerticalDivider(
             color: Colors.grey.shade300,
@@ -34,11 +38,11 @@ class OndriverStatus extends StatelessWidget {
                   return _items(
                       num: state.rating.score.toStringAsFixed(1),
                       text: "Rating",
-                      icon: Icons.star);
+                      icon: Icons.star,context: context);
                 }
 
                 if (state is RatingLoading) {
-                  return _buildShimmer(text: "Rating", icon: Icons.star);
+                  return _buildShimmer(text: "Rating", icon: Icons.star,context: context);
                 }
                 if (state is RatingOperationFailure) {
                   return Column(
@@ -48,7 +52,7 @@ class OndriverStatus extends StatelessWidget {
                           flex: 2,
                           child: Icon(
                             Icons.error_outline_outlined,
-                            color: isOnline ? Colors.green : Colors.red,
+                            color: themeProvider.getColor,
                           )),
                       const Flexible(
                         flex: 2,
@@ -87,11 +91,11 @@ class OndriverStatus extends StatelessWidget {
                   return _items(
                       num: "${state.balance} ETB",
                       text: "Wallet",
-                      icon: Icons.wallet_giftcard);
+                      icon: Icons.wallet_giftcard,context: context);
                 }
                 if (state is BalanceLoading) {
                   return _buildShimmer(
-                      text: "Wallet", icon: Icons.wallet_giftcard);
+                      text: "Wallet", icon: Icons.wallet_giftcard,context: context);
                 }
 
                 if (state is BalanceOperationFailure) {
@@ -102,7 +106,7 @@ class OndriverStatus extends StatelessWidget {
                           flex: 2,
                           child: Icon(
                             Icons.error_outline_outlined,
-                            color: isOnline ? Colors.green : Colors.red,
+                            color: themeProvider.getColor,
                           )),
                       const Flexible(
                         flex: 2,
@@ -135,7 +139,7 @@ class OndriverStatus extends StatelessWidget {
   }
 
   Widget _items(
-      {required String num, required String text, required IconData icon}) {
+      {required String num, required String text, required IconData icon,required BuildContext context}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -145,7 +149,7 @@ class OndriverStatus extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
             child: Container(
               padding: const EdgeInsets.all(5),
-              color: isOnline ? Colors.green : Colors.red,
+              color: Provider.of<ThemeProvider>(context, listen: false).getColor,
               child: Icon(
                 icon,
                 color: Colors.white,
@@ -170,7 +174,7 @@ class OndriverStatus extends StatelessWidget {
     );
   }
 
-  Widget _buildShimmer({required String text, required IconData icon}) {
+  Widget _buildShimmer({required String text, required IconData icon,required BuildContext context}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -180,7 +184,7 @@ class OndriverStatus extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
             child: Container(
               padding: const EdgeInsets.all(5),
-              color:  isOnline ? Colors.green : Colors.red,
+              color: Provider.of<ThemeProvider>(context, listen: false).getColor,
               child: Icon(
                 icon,
                 color: Colors.white,

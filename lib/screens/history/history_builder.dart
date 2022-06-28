@@ -5,13 +5,9 @@ import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/history/trip_detail.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:driverapp/screens/history/snapshot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:driverapp/screens/credit/toast_message.dart';
 import '../../dataprovider/database/database.dart';
-import '../../models/credit/credit.dart';
 import '../../models/trip/trip.dart';
 
 import 'package:http/http.dart' as http;

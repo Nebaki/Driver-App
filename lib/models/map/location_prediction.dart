@@ -3,11 +3,11 @@ import 'package:equatable/equatable.dart';
 
 @immutable
 class LocationPrediction extends Equatable {
-  String placeId;
-  String mainText;
-  String secondaryText;
+  final String placeId;
+  final String mainText;
+  final String secondaryText;
 
-  LocationPrediction(
+  const LocationPrediction(
       {required this.placeId,
       required this.mainText,
       required this.secondaryText});

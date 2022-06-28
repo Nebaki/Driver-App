@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/cubits/cubits.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
+import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,8 +14,6 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:provider/provider.dart';
-
-import '../../utils/theme/ThemeProvider.dart';
 
 class CustomSplashScreen extends StatefulWidget {
   static const routeName = "/splashscreen";
@@ -36,9 +35,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     super.initState();
     requestLocationPermission();
     _toggleInternetServiceStatusStream();
-    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
   }
-  late ThemeProvider themeProvider;
 
   @override
   void dispose() {
@@ -62,7 +59,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     WidgetsFlutterBinding.ensureInitialized();
 
     return Scaffold(
-      backgroundColor: themeProvider.getColor,
+      backgroundColor: Provider.of<ThemeProvider>(context, listen: false).getColor,
       body: Stack(
         children: [
           BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
