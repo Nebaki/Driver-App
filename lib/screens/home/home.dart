@@ -889,6 +889,7 @@ class _HomeScreenState extends State<HomeScreen> {
             stopDuration,
             pathDistance);
         updatedLocation = LatLng(event.latitude, event.longitude);
+        print("event issssssssssss $event");
 
         pathDistance += getDistance(
           updatedLocation,
