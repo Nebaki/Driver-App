@@ -1,10 +1,12 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
+import 'package:provider/provider.dart';
 
 class OnlinMode extends StatefulWidget {
   const OnlinMode({Key? key}) : super(key: key);
@@ -17,6 +19,12 @@ class _OnlinModeState extends State<OnlinMode> {
   @override
   void dispose() {
     super.dispose();
+  }
+  late var themeProvider;
+  @override
+  void initState() {
+       themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    super.initState();
   }
 
   @override
@@ -40,7 +48,7 @@ class _OnlinModeState extends State<OnlinMode> {
                 child: BlocBuilder<AuthBloc, AuthState>(builder: (_, state) {
                   if (state is AuthDataLoadSuccess) {
                     return FloatingActionButton(
-                      backgroundColor: Colors.green,
+                      backgroundColor: themeProvider.getColor ,
                       onPressed: () {
                         homeScreenStreamSubscription.cancel().then((value) {});
                         // homeScreenStreamSubscription.cancel();
@@ -60,7 +68,7 @@ class _OnlinModeState extends State<OnlinMode> {
                               border:
                                   Border.all(color: Colors.white, width: 1.5),
                               borderRadius: BorderRadius.circular(100)),
-                          child: const Text("Off")),
+                          child: const Text("Off",style: TextStyle(color: Colors.white),)),
                     );
                   }
 

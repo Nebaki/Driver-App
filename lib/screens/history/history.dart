@@ -1,59 +1,101 @@
+import 'dart:math';
+
+import 'package:driverapp/models/trip/trip.dart';
+import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class HistoryPage extends StatelessWidget {
-  final _textStyle = TextStyle(fontSize: 20);
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../../dataprovider/database/database.dart';
+import '../../dataprovider/history/history.dart';
+import '../../utils/theme/ThemeProvider.dart';
+import 'history_builder.dart';
 
+class HistoryPage extends StatefulWidget {
   static const routeName = "/history";
+
+  @override
+  State<HistoryPage> createState() => _HistoryPageState();
+}
+
+class _HistoryPageState extends State<HistoryPage> {
+  final _textStyle = const TextStyle(fontSize: 15, color: Colors.deepOrange);
+  final _appBar = GlobalKey<FormState>();
+
+  late ThemeProvider themeProvider;
+  @override
+  void initState() {
+    _isMessageLoading = true;
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    prepareRequest(context);
+    //syncHistory();
+    super.initState();
+  }
+
+  List<Trip>? _items;
+
+  var _isMessageLoading = false;
+
+  void prepareRequest(BuildContext context) {
+    var sender = HistoryDataProvider(httpClient: http.Client());
+    var res = sender.loadTripHistoryDB("0922877115");
+    res.then((value) => {
+          setState(() {
+            _isMessageLoading = false;
+            _items = value;
+          })
+        });
+  }
+  void syncHistory(){
+    var sender = HistoryDataProvider(httpClient: http.Client());
+    var res = sender.loadTripHistory();
+    res.then((value) => {
+        ShowToast(context,value).show(),
+        prepareRequest(context),
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
+    update = () {
+      setState(() {});
+    };
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.white,
-        title: const Text(
-          "Trips",
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-        children: List.generate(
-            10, (index) => _savedItems(context: context, text: "Mon, 18 Feb")),
+      appBar: CreditAppBar(
+          key: _appBar, title: "Trip History", appBar: AppBar(), widgets: []),
+      body: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: 3,
+                  color: Colors.grey,
+                  blurStyle: BlurStyle.outer,
+                  spreadRadius: 2)
+            ],
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+        height: MediaQuery.of(context).size.height,
+        child: _isMessageLoading
+            ? Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: themeProvider.getColor,
+                  ),
+                ))
+            : HistoryBuilder(_items!,themeProvider.getColor),
       ),
     );
   }
 
-  Widget _savedItems({
-    required BuildContext context,
-    required String text,
-  }) {
-    const color = Colors.grey;
-    const hoverColor = Colors.white70;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        ListTile(
-          trailing: Text(
-            "\$40",
-            style: _textStyle,
-          ),
-          //leading: Icon(Icons.history, color: color.shade700),
-          title: Text(text, style: _textStyle),
-          subtitle: Text(
-            "25 Trips",
-          ),
-          hoverColor: hoverColor,
-          onLongPress: () {},
-          onTap: () {
-            //Navigator.pushNamed(context, routename);
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: Divider(color: Colors.grey.shade400),
-        )
-      ],
-    );
-  }
 }

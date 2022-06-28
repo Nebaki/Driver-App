@@ -1,3 +1,4 @@
+import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -63,7 +64,7 @@ class AppRoute {
       return MaterialPageRoute(builder: (context) => const Earning());
     }
     if (settings.name == Summary.routeName) {
-      return MaterialPageRoute(builder: (context) => const Summary());
+      return MaterialPageRoute(builder: (context) =>  Summary());
     }
     if (settings.name == PersonalDocument.routeName) {
       return MaterialPageRoute(builder: (context) => PersonalDocument());
@@ -103,6 +104,24 @@ class AppRoute {
                 args: argument,
               ));
     }
+
+    //waleee
+    if (settings.name == TransferMoney.routeName) {
+      TransferCreditArgument argument = settings.arguments as TransferCreditArgument;
+      return MaterialPageRoute(builder: (context) => TransferMoney(
+        balance: argument,
+      ));
+    }
+    if (settings.name == TripDetail.routeName) {
+      TripDetailArgs argument = settings.arguments as TripDetailArgs;
+      return MaterialPageRoute(builder: (context) => TripDetail(
+        args: argument,
+      ));
+    }
+    if (settings.name == TeleBirrData.routeName) {
+      return MaterialPageRoute(builder: (context) => TeleBirrData());
+    }
+
 
 
     return MaterialPageRoute(builder: (context) => const CustomSplashScreen());
@@ -171,4 +190,14 @@ class LocationChangerArgument {
     required this.pickupLocationLatLng,
     required this.fromWhere,
   });
+}
+///winux.
+class TransferCreditArgument {
+  String balance;
+  TransferCreditArgument({required this.balance});
+}
+
+class TripDetailArgs{
+  final Trip trip;
+  TripDetailArgs({required this.trip});
 }

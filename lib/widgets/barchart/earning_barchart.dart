@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class WeeklyEarningBarChart extends StatelessWidget {
   final List<double> expenses;
 
-  const WeeklyEarningBarChart(this.expenses, {Key? key}) : super(key: key);
+  const WeeklyEarningBarChart(this.expenses, Color getColor, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

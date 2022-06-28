@@ -3,11 +3,13 @@ import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
+import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 import 'package:slider_button/slider_button.dart';
 
@@ -124,7 +126,7 @@ class _CompleteTripState extends State<CompleteTrip> {
                       padding: const EdgeInsets.only(
                           left: 30, right: 30, top: 10, bottom: 10),
                       child: SliderButton(
-                          buttonColor: Colors.indigo.shade900,
+                          buttonColor: Provider.of<ThemeProvider>(context, listen: false).getColor,
                           radius: 10,
                           icon: const Center(
                               child: Icon(

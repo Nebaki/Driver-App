@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/cubits/cubits.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
+import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
+import 'package:provider/provider.dart';
 
 class CustomSplashScreen extends StatefulWidget {
   static const routeName = "/splashscreen";
@@ -57,7 +59,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     WidgetsFlutterBinding.ensureInitialized();
 
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: Provider.of<ThemeProvider>(context, listen: false).getColor,
       body: Stack(
         children: [
           BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {

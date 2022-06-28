@@ -1,38 +1,97 @@
-import 'dart:async';
 
 import 'package:driverapp/functions/functions.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
-import 'package:driverapp/widgets/widgets.dart';
+import 'package:provider/provider.dart';
+
+import '../../utils/painter.dart';
+import '../../utils/theme/ThemeProvider.dart';
+import '../../utils/ui_tool/text_view.dart';
 
 class SigninScreen extends StatefulWidget {
   static const routeName = '/signin';
+
+  const SigninScreen({Key? key}) : super(key: key);
+
   @override
   _SigninScreenState createState() => _SigninScreenState();
 }
 
-class _SigninScreenState extends State<SigninScreen> {
+class _SigninScreenState extends State<SigninScreen>
+    with SingleTickerProviderStateMixin {
   String number = "+251934540217";
   String password = "1111";
   late String phoneNumber;
   late String pass;
 
+  late ThemeProvider themeProvider;
+
+  @override
+  void initState() {
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    _loadPreTheme();
+    super.initState();
+  }
+
+  _loadPreTheme() {
+  }
+
   final Map<String, dynamic> _auth = {};
 
   final _formkey = GlobalKey<FormState>();
+  // final _graphics = GlobalKey<FormState>();
 
   bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
-      return _buildSigninForm();
+      return Stack(children: [
+        Opacity(
+          opacity: 0.5,
+          child: ClipPath(
+            clipper: WaveClipper(),
+            child: Container(
+              height: 180,
+              color: themeProvider.getColor,
+            ),
+          ),
+        ),
+        ClipPath(
+          clipper: WaveClipper(),
+          child: Container(
+            height: 160,
+            color: themeProvider.getColor,
+          ),
+        ),
+        Opacity(
+          opacity: 0.5,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 100,
+              color: themeProvider.getColor,
+              child: ClipPath(
+                clipper: WaveClipperBottom(),
+                child: Container(
+                  height: 100,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _buildSignInForm(),
+        ),
+      ]);
     }, listener: (_, state) {
       if (state is AuthDataLoadSuccess) {
         myId = state.auth.id!;
@@ -80,146 +139,199 @@ class _SigninScreenState extends State<SigninScreen> {
     });
   }
 
-  Widget _buildSigninForm() {
+  Widget _buildSignInForm() {
     return Stack(children: [
       Form(
         key: _formkey,
-        child: Container(
-          height: 600,
-          child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
-              child: ListView(
-                children: [
-                  const Text(
-                    "Sign In",
-                    style: TextStyle(fontSize: 25),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: InternationalPhoneNumberInput(
-                      onSaved: (value) {
-                       
-                        _auth["phoneNumber"] = value.toString();
-                      },
-                      onInputChanged: (PhoneNumber number) {
-                      },
-                      onInputValidated: (bool value) {
-                      },
-                      selectorConfig: const SelectorConfig(
-                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                          trailingSpace: false),
-                      ignoreBlank: false,
-                      autoValidateMode: AutovalidateMode.onUserInteraction,
-                      selectorTextStyle: const TextStyle(color: Colors.black),
-                      initialValue: PhoneNumber(isoCode: "ET"),
-                      formatInput: true,
-                      keyboardType: const TextInputType.numberWithOptions(
-                          signed: true, decimal: true),
-                      inputBorder:
-                          const OutlineInputBorder(borderSide: BorderSide.none),
-                      spaceBetweenSelectorAndTextField: 0,
-                      inputDecoration: const InputDecoration(
-                          hintText: "Phone Number",
-                          hintStyle: TextStyle(
+        child: Padding(
+            padding: const EdgeInsets.all(0),
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 150),
+                  child:
+                      CreateText(text: "Sign In", size: 1, weight: 2).build(),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 15, right: 15, top: 10),
+                  child: TextFormField(
+                    autofocus: true,
+                    maxLength: 9,
+                    maxLines: 1,
+                    cursorColor: themeProvider.getColor,
+                    keyboardType: const TextInputType.numberWithOptions(
+                        signed: true, decimal: true),
+                    style: const TextStyle(fontSize: 18),
+                    enabled: phoneEnabled,
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(color: themeProvider.getColor),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: themeProvider.getColor, width: 2.0),
+                      ),
+                      /*enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 5.0),
+                        ),*/
+                      counterText: "",
+                      prefixIconConstraints:
+                          const BoxConstraints(minWidth: 0, minHeight: 0),
+                      alignLabelWithHint: true,
+                      //hintText: "Phone number",
+                      labelText: "Phone number",
+                      hintStyle: const TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black45),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                        child: Text(
+                          "+251",
+                          style: TextStyle(
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black45),
-                          fillColor: Colors.white,
-                          filled: true,
-                          border:
-                              OutlineInputBorder(borderSide: BorderSide.none)),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextFormField(
-                      decoration: const InputDecoration(
-                          alignLabelWithHint: true,
-                          hintText: "Password",
-                          hintStyle: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black45),
-                          prefixIcon: Icon(
-                            Icons.vpn_key,
-                            size: 19,
-                          ),
-                          fillColor: Colors.white,
-                          filled: true,
-                          border:
-                              OutlineInputBorder(borderSide: BorderSide.none)),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter Your Password';
-                        } else if (value.length < 4) {
-                          return 'Password length must not be less than 4';
-                        } else if (value.length > 25) {
-                          return 'Password length must not be greater than 25';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _auth["password"] = value;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: SizedBox(
-                      height: 40,
-                      width: MediaQuery.of(context).size.width,
-                      child: ElevatedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : () {
-                                final form = _formkey.currentState;
-                                if (form!.validate()) {
-                                  form.save();
-                                  signIn();
-                                }
-                              },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Spacer(),
-                            const Text("Sign In",
-                                style: TextStyle(color: Colors.white)),
-                            const Spacer(),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          ],
+                              color: themeProvider.getColor),
                         ),
+                      ),
+                      suffix: Text("$textLength/9"),
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: const OutlineInputBorder(
+                          borderSide: BorderSide(style: BorderStyle.solid)),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter Your Phone number';
+                      } else if (value.length < 9) {
+                        return 'Phone no. length must not be less than 8 digits';
+                      } else if (value.length > 9) {
+                        return 'Phone no. length must not be greater than 9 digits';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      if (value.length >= 9) {}
+                      setState(() {
+                        textLength = value.length;
+                      });
+                    },
+                    onSaved: (value) {
+                      _auth["phoneNumber"] = "+251$value";
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 15, right: 15, top: 10, bottom: 10),
+                  child: TextFormField(
+                    maxLength: 25,
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    cursorColor: themeProvider.getColor,
+                    style: const TextStyle(fontSize: 20),
+                    decoration: InputDecoration(
+                        counterText: "",
+                        labelStyle: TextStyle(color: themeProvider.getColor),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: themeProvider.getColor, width: 2.0),
+                        ),
+                        alignLabelWithHint: true,
+                        //hintText: "Password",
+                        labelText: "Password",
+                        hintStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black45),
+                        prefixIcon: Icon(
+                          Icons.vpn_key,
+                          color: themeProvider.getColor,
+                          size: 22,
+                        ),
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: const OutlineInputBorder(
+                            borderSide:
+                                 BorderSide(style: BorderStyle.solid))),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter Your Password';
+                      } else if (value.length < 4) {
+                        return 'Password length must not be less than 4';
+                      } else if (value.length > 25) {
+                        return 'Password length must not be greater than 25';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _auth["password"] = value;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: SizedBox(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width,
+                    child: ElevatedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              final form = _formkey.currentState;
+                              if (form!.validate()) {
+                                form.save();
+                                signIn();
+                              }
+                            },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Spacer(),
+                          const Text("Sign In",
+                              style: TextStyle(
+                                  fontFamily: 'Sifonn', color: Colors.white)),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: _isLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Container(),
+                          )
+                        ],
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Center(
-                      child: InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, CheckPhoneNumber.routeName);
-                          },
-                          child: const Text(
-                            "Forgot Password",
-                            style: TextStyle(
-                                color: Color.fromRGBO(39, 49, 110, 1),
-                                fontWeight: FontWeight.bold),
-                          )),
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Center(
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, CheckPhoneNumber.routeName);
+                        },
+                        child: const Text(
+                          "Forgot Password",
+                          style: TextStyle(
+                              color: Color.fromRGBO(39, 49, 110, 1),
+                              fontWeight: FontWeight.bold),
+                        )),
                   ),
-                ],
-              )),
-        ),
+                ),
+                /*CustomPaint(
+                  key: _graphics,
+                painter: ShapePainter(_sides,_radius,_radians)
+                ),*/
+              ],
+            )),
       )
     ]);
   }
+
+  var textLength = 0;
+  var phoneEnabled = true;
 }

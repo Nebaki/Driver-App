@@ -64,7 +64,9 @@ dependencies:
   shimmer: ^2.0.0
   retry: ^3.1.0
   shared_preferences: ^2.0.15
-  
+  flutter_spinkit: ^5.1.0
+  simple_animations: ^4.1.0
+  provider:
 
 dev_dependencies:
   flutter_test:
@@ -105,10 +107,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: Sifonn
+      fonts:
+        - asset: assets/fonts/sifonn_basic.otf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
