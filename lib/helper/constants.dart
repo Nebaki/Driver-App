@@ -1,6 +1,6 @@
 import 'dart:async';
 
-// import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -33,7 +33,7 @@ late String duration;
 late String price;
 late double balance;
 String? passengerProfilePictureUrl;
-// final player = AssetsAudioPlayer();
+final player = AssetsAudioPlayer();
 bool isAccepted = false;
 List<String> drivers = [];
 String portName = 'DRIVER_BACKGROUND_lISTENER_PORT';

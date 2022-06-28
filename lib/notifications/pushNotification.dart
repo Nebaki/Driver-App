@@ -1,7 +1,6 @@
-// import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'dart:convert';
-
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:driverapp/widgets/widgets.dart';
@@ -15,7 +14,7 @@ class PushNotificationService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // RemoteNotification? notification = message.notification;
       // AndroidNotification? android = message.notification?.android;
-      // player.open(Audio("assets/sounds/announcement-sound.mp3"));
+      player.open(Audio("assets/sounds/announcement-sound.mp3"));
 
       if (message.data['response'] == 'Cancelled') {
         if (isAccepted) {
