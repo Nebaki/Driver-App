@@ -15,12 +15,14 @@ class EstiMatedCostCubit extends Cubit<double> {
     double cost = (initialFare +
         (costPerMinute * (stopDuration / 60)) +
         (costPerKilloMeter *
-            (distance +
+            (distance
+            +
                 Geolocator.distanceBetween(
                     pickupLocation.latitude,
                     pickupLocation.longitude,
                     currentLocation.latitude,
-                    currentLocation.longitude)) /
+                    currentLocation.longitude)
+                    ) /
             1000));
                 prefs.setDouble("price", cost);
                 prefs.setInt("duration",stopDuration);

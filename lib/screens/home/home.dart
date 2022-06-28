@@ -447,13 +447,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       const EdgeInsets.all(2),
                                                   decoration: BoxDecoration(
                                                       border: Border.all(
-                                                          color: themeProvider.getColor,
+                                                          color: themeProvider
+                                                              .getColor,
                                                           width: 1.5),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10)),
                                                   child: Icon(Icons.trip_origin,
-                                                      color: themeProvider.getColor)),
+                                                      color: themeProvider
+                                                          .getColor)),
                                             ),
                                         listener: (context, state) {
                                           if (state is BalanceLoadSuccess) {
@@ -888,13 +890,20 @@ class _HomeScreenState extends State<HomeScreen> {
             LatLng(event.latitude, event.longitude),
             stopDuration,
             pathDistance);
-        updatedLocation = LatLng(event.latitude, event.longitude);
-        print("event issssssssssss $event");
 
-        pathDistance += getDistance(
-          updatedLocation,
-          LatLng(event.latitude, event.longitude),
-        );
+        if (event.speed >= 5) {
+          pathDistance += getDistance(
+            updatedLocation,
+            LatLng(event.latitude, event.longitude),
+          );
+
+          updatedLocation = LatLng(event.latitude, event.longitude);
+        }
+
+        // print("Yow here yo goos $pathDistance ${getDistance(
+        //   updatedLocation,
+        //   LatLng(event.latitude, event.longitude),
+        // )}");
       }
 
       myPosition = event;
@@ -913,7 +922,9 @@ class _HomeScreenState extends State<HomeScreen> {
       // });
 
       initialDriverPosition = driverPosition;
-      updateRideDetails();
+      if (event.speed >= 20) {
+        updateRideDetails();
+      }
     });
   }
 
@@ -1151,7 +1162,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void changeCameraView() {
     // LatLngBounds latLngBounds;
 
-    final destinationLatLng = droppOffLocation;
+    final destinationLatLng = destination;
 
     final pickupLatLng = pickupLocation;
     if (pickupLatLng.latitude > destinationLatLng.latitude &&
@@ -1196,7 +1207,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     padding: const EdgeInsets.only(
                         top: 20, left: 20, right: 20, bottom: 10),
-                    decoration:  BoxDecoration(
+                    decoration: BoxDecoration(
                         color: themeProvider.getColor,
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(30),
@@ -1411,8 +1422,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       // _currentWidget = CompleteTrip();
                       destination = droppOffLocation;
 
-                      setState(() {});
                       showDriversOnMap();
+                      updateRideDetails();
+                      setState(() {});
 
                       // DirectionEvent event =
                       //     DirectionDistanceDurationLoad(
@@ -1477,12 +1489,19 @@ class _HomeScreenState extends State<HomeScreen> {
       _connectivitySubscription ==
           _connectivity.onConnectivityChanged.listen((event) {
             if (event == ConnectivityResult.none) {
+              debugPrint("yow none");
+
               internetServiceButtomSheet();
+              internetServiceStatus = true;
             } else if (event == ConnectivityResult.wifi) {
+              debugPrint("yow wifi");
+
               if (internetServiceStatus != null) {
                 internetServiceStatus! ? Navigator.pop(context) : null;
               }
             } else if (event == ConnectivityResult.mobile) {
+              debugPrint("yow mobile");
+
               if (internetServiceStatus != null) {
                 internetServiceStatus! ? Navigator.pop(context) : null;
               }
@@ -1571,7 +1590,6 @@ class _HomeScreenState extends State<HomeScreen> {
         isDismissible: false,
         context: context,
         builder: (BuildContext context) {
-          internetServiceStatus = true;
           return WillPopScope(
             onWillPop: () async => false,
             child: Container(

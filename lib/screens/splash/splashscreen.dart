@@ -159,6 +159,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                 pickupLocation = st.rideRequest.pickupLocation!;
                 pickUpAddress = st.rideRequest.pickUpAddress!;
                 droppOffLocation = st.rideRequest.dropOffLocation!;
+                destination = droppOffLocation;
                 requestId = st.rideRequest.id!;
                 if (st.rideRequest.passenger != null) {
                   passengerName = st.rideRequest.passenger!.name;
