@@ -30,7 +30,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Stack(
       children: [
         Opacity(
           opacity: 0.5,
@@ -195,7 +195,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                           const Divider(),
                           _reportItems(
                               data: "Total Earnings",
-                              price: price.toString(),
+                              price: price.toStringAsFixed(2),
                               color: themeProvider.getColor),
                         ],
                       ),

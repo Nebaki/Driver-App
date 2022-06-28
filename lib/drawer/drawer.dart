@@ -57,181 +57,187 @@ class NavDrawer extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: height * 0.08, left: 40),
-                      child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                              radius: 40,
-                              backgroundColor: Colors.grey.shade300,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: CachedNetworkImage(
-                                    imageUrl: myPictureUrl,
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover,
-                                              //colorFilter:
-                                              //     const ColorFilter.mode(
-                                              //   Colors.red,
-                                              //   BlendMode.colorBurn,
-                                              // ),
+                    SizedBox(
+                      height: height * 0.25,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: height * 0.08, left: 40),
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Colors.grey.shade300,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: CachedNetworkImage(
+                                      imageUrl: myPictureUrl,
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,
+                                                //colorFilter:
+                                                //     const ColorFilter.mode(
+                                                //   Colors.red,
+                                                //   BlendMode.colorBurn,
+                                                // ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                    placeholder: (context, url) =>
-                                        const CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) {
-                                      return const Icon(
-                                        Icons.person,
-                                        size: 50,
-                                        color: Colors.black,
-                                      );
-                                    }),
-                              )),
-                          SizedBox(
-                            height: height * 0.015,
-                          ),
-                          Text(
-                            myName,
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          )
-                        ],
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) {
+                                        return const Icon(
+                                          Icons.person,
+                                          size: 50,
+                                          color: Colors.black,
+                                        );
+                                      }),
+                                )),
+                            SizedBox(
+                              height: height * 0.015,
+                            ),
+                            Text(
+                              myName,
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     // SizedBox(
                     //   height: height * 0.02,
                     // ),
-                    Container(
-                      padding: const EdgeInsets.only(top: 20),
-                      height: MediaQuery.of(context).size.height - 300,
-                      child: ListView(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        children: [
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     Navigator.pushReplacementNamed(
-                          //         context, HomeScreen.routeName,
-                          //         arguments: HomeScreenArgument(
-                          //             isSelected: false, isOnline: false));
-                          //   },
-                          //   child: _menuItem(
-                          //       divider: true,
-                          //       context: context,
-                          //       icon: Icons.home,
-                          //       text: "Home"),
-                          // ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, Walet.routeName);
-                            },
-                            child: _menuItem(
-                                divider: true,
-                                context: context,
-                                icon: Icons.favorite,
-                                text: "Wallet"),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, HistoryPage.routeName);
-                            },
-                            child: _menuItem(
-                                divider: true,
-                                context: context,
-                                icon: Icons.history,
-                                text: "History"),
-                          ),
-                          //const Divider(color: Colors.grey),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, Earning.routeName);
-                            },
-                            child: _menuItem(
-                                divider: true,
-                                context: context,
-                                icon: Icons.person,
-                                text: "Earning"),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, Summary.routeName);
-                            },
-                            child: _menuItem(
-                                divider: true,
-                                context: context,
-                                icon: Icons.person,
-                                text: "Summary"),
-                          ),
+                    SizedBox(
+                      height: height * 0.65,
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 20),
+                        height: MediaQuery.of(context).size.height - 300,
+                        child: ListView(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          children: [
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     Navigator.pushReplacementNamed(
+                            //         context, HomeScreen.routeName,
+                            //         arguments: HomeScreenArgument(
+                            //             isSelected: false, isOnline: false));
+                            //   },
+                            //   child: _menuItem(
+                            //       divider: true,
+                            //       context: context,
+                            //       icon: Icons.home,
+                            //       text: "Home"),
+                            // ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Walet.routeName);
+                              },
+                              child: _menuItem(
+                                  divider: true,
+                                  context: context,
+                                  icon: Icons.favorite,
+                                  text: "Wallet"),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, HistoryPage.routeName);
+                              },
+                              child: _menuItem(
+                                  divider: true,
+                                  context: context,
+                                  icon: Icons.history,
+                                  text: "History"),
+                            ),
+                            //const Divider(color: Colors.grey),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Earning.routeName);
+                              },
+                              child: _menuItem(
+                                  divider: true,
+                                  context: context,
+                                  icon: Icons.person,
+                                  text: "Earning"),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Summary.routeName);
+                              },
+                              child: _menuItem(
+                                  divider: true,
+                                  context: context,
+                                  icon: Icons.person,
+                                  text: "Summary"),
+                            ),
 
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     Navigator.pushNamed(context, VehicleDocument.routeName);
-                          //   },
-                          //   child: _menuItem(
-                          //       divider: true,
-                          //       context: context,
-                          //       icon: Icons.settings,
-                          //       text: "Vehicle Document"),
-                          // ),
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     print("sdfasdfa");
-                          //     Navigator.pushNamed(context, PersonalDocument.routeName);
-                          //   },
-                          //   child: _menuItem(
-                          //       divider: true,
-                          //       context: context,
-                          //       icon: Icons.settings,
-                          //       text: "Personal Document"),
-                          // ),
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     Navigator.pushNamed(context, VehicleDocument.routeName);
+                            //   },
+                            //   child: _menuItem(
+                            //       divider: true,
+                            //       context: context,
+                            //       icon: Icons.settings,
+                            //       text: "Vehicle Document"),
+                            // ),
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     print("sdfasdfa");
+                            //     Navigator.pushNamed(context, PersonalDocument.routeName);
+                            //   },
+                            //   child: _menuItem(
+                            //       divider: true,
+                            //       context: context,
+                            //       icon: Icons.settings,
+                            //       text: "Personal Document"),
+                            // ),
 
-                          //const Divider(color: Colors.grey),
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     Navigator.pushNamed(context, SettingScreen.routeName);
-                          //   },
-                          //   child: _menuItem(
-                          //       divider: true,
-                          //       context: context,
-                          //       icon: Icons.settings,
-                          //       text: "Settings"),
-                          // ),
+                            //const Divider(color: Colors.grey),
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     Navigator.pushNamed(context, SettingScreen.routeName);
+                            //   },
+                            //   child: _menuItem(
+                            //       divider: true,
+                            //       context: context,
+                            //       icon: Icons.settings,
+                            //       text: "Settings"),
+                            // ),
 
-                          //const Divider(color: Colors.grey),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.popAndPushNamed(
-                                  context, AwardScreen.routeName);
-                            },
-                            child: _menuItem(
-                                divider: true,
-                                context: context,
-                                icon: Icons.wallet_giftcard_outlined,
-                                text: "Award"),
-                          ),
+                            //const Divider(color: Colors.grey),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.popAndPushNamed(
+                                    context, AwardScreen.routeName);
+                              },
+                              child: _menuItem(
+                                  divider: true,
+                                  context: context,
+                                  icon: Icons.wallet_giftcard_outlined,
+                                  text: "Award"),
+                            ),
 
-                          const SizedBox(height: 20),
-                          //Divider(color: Colors.grey.shade500),
+                            const SizedBox(height: 20),
+                            //Divider(color: Colors.grey.shade500),
 
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     BlocProvider.of<AuthBloc>(context).add(LogOut());
-                          //     Navigator.pushReplacementNamed(
-                          //         context, SigninScreen.routeName);
-                          //   },
-                          //   child: _menuItem(
-                          //       divider: false,
-                          //       context: context,
-                          //       icon: Icons.logout,
-                          //       text: "Logout"),
-                          // ),
-                        ],
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     BlocProvider.of<AuthBloc>(context).add(LogOut());
+                            //     Navigator.pushReplacementNamed(
+                            //         context, SigninScreen.routeName);
+                            //   },
+                            //   child: _menuItem(
+                            //       divider: false,
+                            //       context: context,
+                            //       icon: Icons.logout,
+                            //       text: "Logout"),
+                            // ),
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(
