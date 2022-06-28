@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class WeeklyEarningBarChart extends StatelessWidget {
   final List<double> expenses;
-  Color theme;
-  WeeklyEarningBarChart(this.expenses,this.theme);
+
+  const WeeklyEarningBarChart(this.expenses, Color getColor, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class WeeklyEarningBarChart extends StatelessWidget {
       }
     });
     return Padding(
-      padding: EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(12.0),
       child: Column(
         children: <Widget>[
           const SizedBox(height: 30.0),
@@ -25,37 +25,37 @@ class WeeklyEarningBarChart extends StatelessWidget {
               Bar(
                 label: 'M',
                 amountSpent: expenses[0],
-                mostExpensive: mostExpensive,theme: theme,
+                mostExpensive: mostExpensive,
               ),
               Bar(
                 label: 'T',
                 amountSpent: expenses[1],
-                mostExpensive: mostExpensive,theme: theme,
+                mostExpensive: mostExpensive,
               ),
               Bar(
                 label: 'W',
                 amountSpent: expenses[2],
-                mostExpensive: mostExpensive,theme: theme,
+                mostExpensive: mostExpensive,
               ),
               Bar(
                 label: 'T',
                 amountSpent: expenses[3],
-                mostExpensive: mostExpensive,theme: theme,
+                mostExpensive: mostExpensive,
               ),
               Bar(
                 label: 'F',
                 amountSpent: expenses[4],
-                mostExpensive: mostExpensive,theme: theme,
+                mostExpensive: mostExpensive,
               ),
               Bar(
                 label: 'S',
                 amountSpent: expenses[5],
-                mostExpensive: mostExpensive,theme: theme,
+                mostExpensive: mostExpensive,
               ),
               Bar(
                 label: 'S',
                 amountSpent: expenses[6],
-                mostExpensive: mostExpensive,theme: theme,
+                mostExpensive: mostExpensive,
               ),
             ],
           ),
@@ -69,15 +69,13 @@ class Bar extends StatelessWidget {
   final String label;
   final double amountSpent;
   final double mostExpensive;
-  final Color theme;
 
   final double _maxBarHeight = 100.0;
 
-  Bar(
-      {required this.label,
+  const Bar(
+      {Key? key, required this.label,
       required this.amountSpent,
-      required this.mostExpensive,
-      required this.theme});
+      required this.mostExpensive}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +93,7 @@ class Bar extends StatelessWidget {
           height: barHeight,
           width: 32.0,
           decoration: BoxDecoration(
-            color: theme,
+            color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(6.0),
           ),
         ),

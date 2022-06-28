@@ -1,21 +1,11 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:math';
 
 // import 'package:dio/dio.dart';
 import 'package:driverapp/dataprovider/header/header.dart';
-import 'package:driverapp/models/trip/trip.dart';
-import 'package:driverapp/screens/credit/credit_form.dart';
-import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/session.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:meta/meta.dart';
-import 'dart:io';
-import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:driverapp/dataprovider/auth/auth.dart';
 import 'package:driverapp/models/models.dart';
-import 'package:driverapp/repository/auth.dart';
 
 import '../../screens/credit/telebirr_data.dart';
 

@@ -43,6 +43,7 @@ class TeleBirrDataProvider {
         .timeout(const Duration(seconds: 60), onTimeout: () {
       return http.Response('Error', 408); // Request Timeout response status code
     });
+    print("Statttttttttttttttt ${response.statusCode}");
     if (response.statusCode == 200) {
       String status = jsonDecode(response.body)["status"];
       if (status == "2") {

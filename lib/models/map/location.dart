@@ -3,16 +3,12 @@ import 'package:equatable/equatable.dart';
 
 @immutable
 class ReverseLocation extends Equatable {
-  String address1;
-  // String address2;
-  // String address3;
-  // String address4;
+  final String address1;
+  
 
-  ReverseLocation({
+  const ReverseLocation({
     required this.address1,
-    // required this.address2,
-    // required this.address3,
-    // required this.address4
+  
   });
 
   @override
@@ -23,9 +19,7 @@ class ReverseLocation extends Equatable {
   factory ReverseLocation.fromJson(Map<String, dynamic> json) {
     return ReverseLocation(
       address1: json["results"][0]["formatted_address"],
-      // address2: json["address2"],
-      // address3: json["address3"],
-      // address4: json["address4"]
+     
     );
   }
 

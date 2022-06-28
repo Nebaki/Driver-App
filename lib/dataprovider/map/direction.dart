@@ -1,13 +1,12 @@
 import 'dart:convert';
 
+import 'package:driverapp/helper/constants.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/models/models.dart';
 
 class DirectionDataProvider {
-  final String _api_key = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
-
   Future<Position> _determinePosition() async {
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
@@ -22,7 +21,7 @@ class DirectionDataProvider {
     final initialPosition = LatLng(p.latitude, p.longitude);
 
     final _directionUrl =
-        "https://maps.googleapis.com/maps/api/directions/json?origin=${initialPosition.latitude},${initialPosition.longitude}&destination=${destination.latitude},${destination.longitude}&key=$_api_key";
+        "https://maps.googleapis.com/maps/api/directions/json?origin=${initialPosition.latitude},${initialPosition.longitude}&destination=${destination.latitude},${destination.longitude}&key=$apiKey";
 
     final response = await httpClient.get(Uri.parse(_directionUrl));
 
@@ -37,7 +36,7 @@ class DirectionDataProvider {
   Future<Direction> getDirectionFromDifrentPickupLocation(
       LatLng pickupLocation, LatLng destination) async {
     final _directionUrl =
-        "https://maps.googleapis.com/maps/api/directions/json?origin=${pickupLocation.latitude},${pickupLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=$_api_key";
+        "https://maps.googleapis.com/maps/api/directions/json?origin=${pickupLocation.latitude},${pickupLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=$apiKey";
 
     final response = await httpClient.get(Uri.parse(_directionUrl));
 

@@ -33,6 +33,7 @@ class ThemeProvider extends ChangeNotifier {
     }
     _selectedThemeIndex = theme;
     _setupBars(theme);
+    //ready for test
   }
 
   ThemeData get getTheme => _selectedTheme;

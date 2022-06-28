@@ -1,36 +1,31 @@
-import 'dart:convert';
-
-// import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:driverapp/bloc/bloc.dart';
+import 'dart:convert';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
-import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 
 class PushNotificationService {
   Future initialize(context, setDestination, setDriverStatus) async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      ThemeProvider themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-      //player.open(Audio("assets/sounds/announcement-sound.mp3"));
-      // player.open(Audio("assets/sounds/announcement-sound.mp3"));
+      // RemoteNotification? notification = message.notification;
+      // AndroidNotification? android = message.notification?.android;
+      player.open(Audio("assets/sounds/announcement-sound.mp3"));
 
       if (message.data['response'] == 'Cancelled') {
         if (isAccepted) {
-          BlocProvider.of<DirectionBloc>(context)
-              .add(DirectionChangeToInitialState(isBalanceSuffiecient: true,isFromOnlineMode: true));
+          BlocProvider.of<DirectionBloc>(context).add(
+              const DirectionChangeToInitialState(
+                  isBalanceSuffiecient: true, isFromOnlineMode: true));
           isAccepted = false;
         } else {
           Navigator.pop(context);
           BlocProvider.of<CurrentWidgetCubit>(context)
-              .changeWidget(OnlinMode());
+              .changeWidget(const OnlinMode());
         }
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Request Cancelled"),
@@ -39,8 +34,8 @@ class PushNotificationService {
         // callback(OnlinMode());
       }
 
-      print("Notification data is ::");
-      print(message.data);
+      debugPrint("Notification data is ::");
+      debugPrint(message.data.toString());
       if (message.data['passengerName'] != null) {
         final pickupList = json.decode(message.data['pickupLocation']);
         final droppOffList = json.decode(message.data['droppOffLocation']);
@@ -78,7 +73,6 @@ class PushNotificationService {
       //         channel.id,
       //         channel.name,
       //         channel.description,
-      //         // TODO add a proper drawable resource to android, for now using
       //         //      one that already exists in example app.
       //         icon: 'launch_background',
       //       ),
@@ -143,7 +137,7 @@ class PushNotificationService {
     //await FirebaseMessaging.instance.deleteToken();
     final token = await FirebaseMessaging.instance.getToken();
 
-    print("The token is:: ");
-    print(token);
+    debugPrint("The token is:: ");
+    debugPrint(token);
   }
 }

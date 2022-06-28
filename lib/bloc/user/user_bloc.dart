@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:meta/meta.dart';
 import 'package:driverapp/repository/repositories.dart';
 import 'bloc.dart';
 

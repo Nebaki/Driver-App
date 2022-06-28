@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:driverapp/models/models.dart';
-import 'dart:io';
 
 abstract class UserEvent extends Equatable {
   const UserEvent();
@@ -9,7 +8,6 @@ abstract class UserEvent extends Equatable {
 
 class UserLoad extends UserEvent {
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
