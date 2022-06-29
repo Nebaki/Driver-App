@@ -51,9 +51,10 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
         SystemNavigator.pop();
         return Future.error('Location permissions are denied');
       }
-    } 
+    }
   }
 
+  bool showBanner = false;
   @override
   Widget build(BuildContext context) {
     WidgetsFlutterBinding.ensureInitialized();
@@ -61,7 +62,36 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     return Scaffold(
       backgroundColor: Provider.of<ThemeProvider>(context, listen: false).getColor,
       body: Stack(
+        fit: StackFit.loose,
         children: [
+          showBanner
+              ? Padding(
+                  child: Container(
+                      height: 20,
+                      color: Colors.black,
+                      width: double.infinity,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(
+                                Icons
+                                    .signal_wifi_statusbar_connected_no_internet_4_outlined,
+                                size: 15,
+                                color: Colors.white),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "No Internet Connection",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      )),
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).viewPadding.top))
+              : Container(),
           BlocConsumer<AuthBloc, AuthState>(builder: (_, state) {
             return const Center(
               child: Image(
@@ -71,9 +101,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
             );
           }, listener: (_, state) {
             if (state is AuthDataLoadSuccess) {
-
               if (state.auth.token != null) {
-          
                 myId = state.auth.id!;
                 myAvgRate = state.auth.avgRate!;
                 myPictureUrl = state.auth.profilePicture!;
@@ -131,8 +159,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
           }, listener: (context, st) async {
             if (st is RideRequestStartedTripChecked) {
               // distanceDistance = st.rideRequest.distance!;
-
-             
 
               if (st.rideRequest.pickUpAddress == null) {
                 String rootPath = '';
@@ -218,10 +244,15 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
 
     if (result == ConnectivityResult.none) {
       isFirstTime = true;
+      showBanner = true;
+      setState(() {});
 
-      ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-          content: const Text("No Internet Connection"),
-          actions: [TextButton(onPressed: () {}, child: const Text("Try Again"))]));
+
+      // ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+      //     content: const Text("No Internet Connection"),
+      //     actions: [
+      //       TextButton(onPressed: () {}, child: const Text("Try Again"))
+      //     ]));
     } else {
       ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
 
@@ -233,24 +264,34 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen((event) {
       if (event == ConnectivityResult.none) {
-        ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-            content: const Text("No Internet Connection"),
-            actions: [
-              TextButton(onPressed: () {}, child: const Text("Try again"))
-            ]));
+        showBanner = true;
+        setState(() {});
+
+        // ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+        //     content: const Text("No Internet Connection"),
+        //     actions: [
+        //       TextButton(onPressed: () {}, child: const Text("Try again"))
+        //     ]));
       } else if (event == ConnectivityResult.wifi) {
-        ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+        showBanner = false;
+        setState(() {});
+
+        // ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
 
         if (isFirstTime) {
           _checkStartedTrip();
         }
         isFirstTime = false;
       } else if (event == ConnectivityResult.mobile) {
+        showBanner = false;
+        isFirstTime = false;
+
+        setState(() {});
+
         if (isFirstTime) {
           _checkStartedTrip();
         }
-        isFirstTime = false;
-        ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+        // ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
       }
     });
   }
