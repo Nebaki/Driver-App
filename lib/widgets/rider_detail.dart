@@ -81,7 +81,7 @@ class RiderDetail extends StatelessWidget {
               }
               if (state is DirectionLoadSuccess) {
                 return Text(
-                  '${(state.direction.distanceValue / 1000).truncate()} Km',
+                  '${(state.direction.distanceValue / 1000).toStringAsFixed(1)} Km',
                   style: _textStyle,
                 );
               }
