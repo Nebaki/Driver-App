@@ -3,9 +3,12 @@ import 'dart:ffi';
 import 'dart:math';
 
 import 'package:driverapp/models/trip/trip.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../helper/helper.dart';
 import '../../utils/session.dart';
+import '../auth/auth.dart';
 import '../database/database.dart';
 import '../header/header.dart';
 
@@ -29,10 +32,11 @@ class HistoryDataProvider {
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
       Session().logSession("sz-trans $size", response.body);
-      return HistoryDB()
+      /*return HistoryDB()
           .insertTrips(trips)
           .then((value) => "updated $value History");
-      //return "Unable to update history";
+      */
+      return response.statusCode.toString();
       //return CreditStore.fromJson(jsonDecode(response.body));
     } else {
       Session().logSession("s-trans", response.statusCode.toString());
@@ -70,13 +74,13 @@ class HistoryDataProvider {
         trips.add(trip);
         i++;
       }
-      return "Skiped";
+      return response.statusCode.toString();
       //return HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
       //return trips;
     }
   }
 
-  Future<List<Trip>> loadTripHistoryDB(String user) async {
+  Future<List<Trip>> loadTripHistoryDB(BuildContext context) async {
     //return HistoryDB().trips();
     final http.Response response = await http.get(
         Uri.parse(
@@ -95,6 +99,9 @@ class HistoryDataProvider {
       //return "Unable to update history";
       //return CreditStore.fromJson(jsonDecode(response.body));
     } else {
+      if(response.statusCode == 401){
+        _refreshToken(loadTripHistoryDB, context);
+      }
       Session().logSession("s-trans", response.statusCode.toString());
       Trip trip;
       List<Trip> trips = [];
@@ -131,6 +138,16 @@ class HistoryDataProvider {
       //return trips;
     }
   }
+  _refreshToken(Function function, BuildContext context) async {
+    final res =
+    await AuthDataProvider(httpClient: http.Client()).refreshToken();
+    if (res.statusCode == 200) {
+      return function();
+    } else {
+      gotoSignIn(context);
+    }
+  }
+
 
   String getRandNum() {
     var rng = Random();
@@ -152,9 +169,8 @@ class HistoryDataProvider {
           DailyEarning(totalEarning: totalEarning, trips: trips);
       return dailyEarning;
     } else {
-      String totalEarning = "0 ${response.statusCode}";
       List<Trip> trips = [];
-      return DailyEarning(totalEarning: totalEarning.toString(), trips: trips);
+      return DailyEarning(totalEarning: response.statusCode.toString(), trips: trips);
     }
   }
 

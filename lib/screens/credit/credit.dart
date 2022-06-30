@@ -4,11 +4,14 @@ import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/credit/list_builder.dart';
 import 'package:driverapp/screens/credit/transfer_form.dart';
+import 'package:flutter_animarker/helpers/extensions.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../dataprovider/auth/auth.dart';
+import '../../helper/helper.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import 'toast_message.dart';
@@ -31,6 +34,7 @@ class _WaletState extends State<Walet> {
   int _currentThemeIndex = 2;
 
   late ThemeProvider themeProvider;
+
   @override
   void initState() {
     _isBalanceLoading = true;
@@ -106,13 +110,14 @@ class _WaletState extends State<Walet> {
                             padding: EdgeInsets.only(top: 20),
                             child: Text(
                               "Credit balance",
-                              style: TextStyle(fontSize: 16, color: Colors.grey),
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.grey),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: _isBalanceLoading
-                                ?  SpinKitThreeBounce(
+                                ? SpinKitThreeBounce(
                                     color: themeProvider.getColor,
                                     size: 30,
                                   )
@@ -130,7 +135,7 @@ class _WaletState extends State<Walet> {
                           Card(
                               elevation: 0,
                               child: Container(
-                                decoration:  BoxDecoration(
+                                decoration: BoxDecoration(
                                     color: themeProvider.getColor,
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
@@ -241,14 +246,28 @@ class _WaletState extends State<Walet> {
 
   void reloadBalance() {
     var confirm = transfer.loadBalance();
-    confirm
-        .then((value) => {
+    confirm.then((value) => {
+          if (value.code == "401")
+            {
+              refreshToken(reloadBalance)
+            }
+          else
+            {
               setState(() {
                 _isBalanceLoading = false;
                 balance = value.message + " ETB";
               })
-            })
-        .onError((error, stackTrace) =>
-            {ShowMessage(context, "Balance", error.toString())});
+            }
+        });
+  }
+
+  void refreshToken(Function function) async {
+    final res =
+        await AuthDataProvider(httpClient: http.Client()).refreshToken();
+    if (res.statusCode == 200) {
+      function();
+    } else {
+      gotoSignIn(context);
+    }
   }
 }
