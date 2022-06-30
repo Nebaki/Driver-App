@@ -53,10 +53,7 @@ class _TransferState extends State<TransferMoney> {
           const TextInputType.numberWithOptions(signed: true, decimal: true),
       controller: amountController,
       decoration: const InputDecoration(
-          focusedBorder: OutlineInputBorder(
-            borderSide:
-            BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
-          ),
+         
           alignLabelWithHint: true,
           labelText: "Amount",
           hintStyle:
@@ -97,10 +94,7 @@ class _TransferState extends State<TransferMoney> {
         enabled: phoneEnabled,
         controller: phoneController,
         decoration: InputDecoration(
-            focusedBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
-            ),
+            
             counterText: "",
             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
             alignLabelWithHint: true,

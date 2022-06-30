@@ -19,8 +19,7 @@ class Arrived extends StatefulWidget {
 }
 
 class _ArrivedState extends State<Arrived> {
-    bool isButtonDisabled = false;
-
+  bool isButtonDisabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +27,21 @@ class _ArrivedState extends State<Arrived> {
       onWillPop: () async => false,
       child: BlocConsumer<RideRequestBloc, RideRequestState>(
         listener: (context, state) {
+          if (state is RideRequestTokentExpired) {
+            gotoSignIn(context);
+          }
           if (state is RideRequesChanged) {
-            
             context
                 .read<CurrentWidgetCubit>()
-                .changeWidget(const WaitingPassenger(formPassenger: true,fromOnline: true,));
+                .changeWidget(const WaitingPassenger(
+                  formPassenger: true,
+                  fromOnline: true,
+                ));
 
             // widget.callback!(WaitingPassenger(widget.callback, true));
           }
           if (state is RideRequestOperationFailur) {
-           
-                          isButtonDisabled = false;
-
+            isButtonDisabled = false;
           }
         },
         builder: (context, state) {
@@ -63,9 +65,8 @@ class _ArrivedState extends State<Arrived> {
                 children: [
                   RiderDetail(text: 'Picking up'),
                   BlocBuilder<RideRequestBloc, RideRequestState>(
-                       builder: (context, state) {
+                      builder: (context, state) {
                     if (state is RideRequestLoading) {
-            
                       return const Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -77,8 +78,8 @@ class _ArrivedState extends State<Arrived> {
                       );
                     }
                     return Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
                         width: MediaQuery.of(context).size.width,
                         child: const Divider());
                   }),
@@ -111,7 +112,7 @@ class _ArrivedState extends State<Arrived> {
                               text: "Cancel Trip", icon: Icons.clear_outlined))
                     ],
                   ),
-                   Container(
+                  Container(
                       width: MediaQuery.of(context).size.width,
                       height: 65,
                       padding: const EdgeInsets.only(
@@ -138,14 +139,13 @@ class _ArrivedState extends State<Arrived> {
                           ),
                           disable: isButtonDisabled,
                           action: () {
-                              isButtonDisabled = true;
+                            isButtonDisabled = true;
                             RideRequestEvent requestEvent =
                                 RideRequestChangeStatus(
                                     requestId, "Arrived", passengerFcm);
                             BlocProvider.of<RideRequestBloc>(context)
                                 .add(requestEvent);
                           })),
-                
                 ],
               ),
             ),

@@ -1,4 +1,3 @@
-
 import 'package:driverapp/functions/functions.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:flutter/material.dart';
@@ -28,18 +27,20 @@ class _SigninScreenState extends State<SigninScreen>
   String password = "1111";
   late String phoneNumber;
   late String pass;
-
   late ThemeProvider themeProvider;
+  late bool _visiblePassword;
+  late IconData icon;
 
   @override
   void initState() {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _loadPreTheme();
+    _visiblePassword = true;
+    icon = Icons.visibility;
     super.initState();
   }
 
-  _loadPreTheme() {
-  }
+  _loadPreTheme() {}
 
   final Map<String, dynamic> _auth = {};
 
@@ -153,8 +154,7 @@ class _SigninScreenState extends State<SigninScreen>
                       CreateText(text: "Sign In", size: 1, weight: 2).build(),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.only(left: 15, right: 15, top: 10),
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
                   child: TextFormField(
                     autofocus: true,
                     maxLength: 9,
@@ -166,10 +166,7 @@ class _SigninScreenState extends State<SigninScreen>
                     enabled: phoneEnabled,
                     decoration: InputDecoration(
                       labelStyle: TextStyle(color: themeProvider.getColor),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: themeProvider.getColor, width: 2.0),
-                      ),
+                     
                       /*enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.red, width: 5.0),
                         ),*/
@@ -223,7 +220,7 @@ class _SigninScreenState extends State<SigninScreen>
                       left: 15, right: 15, top: 10, bottom: 10),
                   child: TextFormField(
                     maxLength: 25,
-                    obscureText: true,
+                    obscureText: _visiblePassword,
                     enableSuggestions: false,
                     autocorrect: false,
                     cursorColor: themeProvider.getColor,
@@ -231,26 +228,32 @@ class _SigninScreenState extends State<SigninScreen>
                     decoration: InputDecoration(
                         counterText: "",
                         labelStyle: TextStyle(color: themeProvider.getColor),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: themeProvider.getColor, width: 2.0),
-                        ),
+                      
                         alignLabelWithHint: true,
                         //hintText: "Password",
                         labelText: "Password",
                         hintStyle: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black45),
+                            fontWeight: FontWeight.bold, color: Colors.black45),
                         prefixIcon: Icon(
                           Icons.vpn_key,
                           color: themeProvider.getColor,
                           size: 22,
                         ),
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _visiblePassword = !_visiblePassword;
+
+                                icon = _visiblePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off;
+                              });
+                            },
+                            icon: Icon(icon)),
                         fillColor: Colors.white,
                         filled: true,
                         border: const OutlineInputBorder(
-                            borderSide:
-                                 BorderSide(style: BorderStyle.solid))),
+                            borderSide: BorderSide(style: BorderStyle.solid))),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter Your Password';

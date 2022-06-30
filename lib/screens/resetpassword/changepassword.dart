@@ -1,4 +1,5 @@
 import 'package:driverapp/bloc/bloc.dart';
+import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,9 @@ class ChangePassword extends StatelessWidget {
         body: BlocConsumer<UserBloc, UserState>(
             builder: (context, state) => form(context),
             listener: (context, state) {
+              if (state is UserUnAuthorised) {
+                gotoSignIn(context);
+              }
               if (state is UserPasswordChanged) {
                 _isLoading = false;
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -195,7 +199,6 @@ class ChangePassword extends StatelessWidget {
                                       if (form!.validate()) {
                                         form.save();
                                         changePassword(context);
-
                                       }
                                     },
                               child: Row(

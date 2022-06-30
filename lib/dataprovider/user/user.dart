@@ -3,9 +3,6 @@ import 'dart:convert';
 // import 'package:dio/dio.dart';
 import 'package:driverapp/helper/api_end_points.dart';
 import 'package:driverapp/helper/constants.dart';
-import 'package:image_picker/image_picker.dart';
-
-import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/dataprovider/auth/auth.dart';
 import 'package:driverapp/models/models.dart';
@@ -24,10 +21,17 @@ class UserDataProvider {
       'x-access-token': '${await authDataProvider.getToken()}',
     });
 
-
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       return User.fromJson(responseData);
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return getDriverById(id);
+      } else {
+        throw Exception(response.statusCode);
+      }
     } else {
       throw Exception('Failed to get driver.');
     }
@@ -54,32 +58,32 @@ class UserDataProvider {
     }
   }
 
-  Future uploadImage(XFile file) async {
-    final request = http.MultipartRequest(
-        'POST', Uri.parse('$_baseUrl/update-profile-image'));
-    request.headers['x-access-token'] = '${await authDataProvider.getToken()}';
-    request.files.add(await http.MultipartFile.fromPath(
-      "profile_image",
-      file.path.toString(),
-      contentType: MediaType('image', 'jpg'),
-    ));
-    final response = await request.send();
+  // Future uploadImage(XFile file) async {
+  //   final request = http.MultipartRequest(
+  //       'POST', Uri.parse('$_baseUrl/update-profile-image'));
+  //   request.headers['x-access-token'] = '${await authDataProvider.getToken()}';
+  //   request.files.add(await http.MultipartFile.fromPath(
+  //     "profile_image",
+  //     file.path.toString(),
+  //     contentType: MediaType('image', 'jpg'),
+  //   ));
+  //   final response = await request.send();
 
-    if (response.statusCode == 200) {
-       response.stream.transform(utf8.decoder).listen((value) async {
-        final data = jsonDecode(value);
-        await authDataProvider.updateProfile(data['driver']['profile_image']);
-      });
+  //   if (response.statusCode == 200) {
+  //     await response.stream.transform(utf8.decoder).listen((value) async {
+  //       final data = jsonDecode(value);
+  //       await authDataProvider.updateProfile(data['driver']['profile_image']);
+  //     });
 
-      // var resp = await response.stream.transform(utf8.decoder).listen.;
-      // print(resp);
+  //     // var resp = await response.stream.transform(utf8.decoder).listen.;
+  //     // print(resp);
 
-      //final data = jsonDecode(response.);
-      //return User.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to upload image.');
-    }
-  }
+  //     //final data = jsonDecode(response.);
+  //     //return User.fromJson(jsonDecode(response.body));
+  //   } else {
+  //     throw Exception('Failed to upload image.');
+  //   }
+  // }
 
   Future<void> deletedriver(String id) async {
     final http.Response response = await httpClient.delete(
@@ -114,8 +118,14 @@ class UserDataProvider {
     if (response.statusCode == 200) {
       authDataProvider.updateUserData(user);
       return User.fromJson(jsonDecode(response.body));
-    } else if (response.statusCode != 204) {
-      throw Exception('204 Failed to update user.');
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return updatedriver(user);
+      } else {
+        throw Exception(response.statusCode);
+      }
     } else {
       throw Exception('Failed to update user.');
     }
@@ -157,7 +167,18 @@ class UserDataProvider {
               "confirm_password": passwordInfo['confirm_password']
             }));
     if (response.statusCode != 200) {
-      throw 'Unable to change password';
+      if (response.statusCode == 401) {
+        final res =
+            await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+        if (res.statusCode == 200) {
+          return changePassword(passwordInfo);
+        } else {
+          throw Exception(response.statusCode);
+        }
+      } else {
+        throw 'Unable to change password';
+      }
     }
   }
 
@@ -170,6 +191,14 @@ class UserDataProvider {
     );
     if (response.statusCode == 200) {
       return true;
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return checkPhoneNumber(phoneNumber);
+      } else {
+        throw Exception(response.statusCode);
+      }
     } else if (response.statusCode == 404) {
       return false;
     } else {
@@ -188,7 +217,18 @@ class UserDataProvider {
               'newPassword': forgetPasswordInfo['new_password']
             }));
     if (response.statusCode != 200) {
-      throw 'Unable to rest password';
+      if (response.statusCode == 401) {
+        final res =
+            await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+        if (res.statusCode == 200) {
+          return forgetPassword(forgetPasswordInfo);
+        } else {
+          throw Exception(response.statusCode);
+        }
+      } else {
+        throw 'Unable to rest password';
+      }
     }
   }
 }

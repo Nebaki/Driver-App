@@ -82,22 +82,25 @@ void main() async {
   //           balanceRepository: balanceRepository,
   //         )),
   //     blocObserver: SimpleBlocObserver());
-  const secureStorage =  FlutterSecureStorage();
-  String? theme = await secureStorage.read(key:"theme");
-  runApp(ChangeNotifierProvider(create: (BuildContext context)=>ThemeProvider(theme: int.parse(theme ??"3")),child:MyApp(
-    placeDetailRepository: placeDetailRepository,
-    directionRepository: directionRepository,
-    authRepository: authRepository,
-    userRepository: userRepository,
-    reverseLocationRepository: reverseLocationRepository,
-    rideRequestRepository: rideRequestRepository,
-    locationPredictionRepository: locationPredictionRepository,
-    emergencyReportRepository: emergencyReportRepository,
-    passengerRepository: passengerRepository,
-    balanceRepository: balanceRepository,
-    ratingRepository: ratingRepository,
-    settingsRepository: settingsRepository,
-  )));
+  const secureStorage = FlutterSecureStorage();
+  String? theme = await secureStorage.read(key: "theme");
+  runApp(ChangeNotifierProvider(
+      create: (BuildContext context) =>
+          ThemeProvider(theme: int.parse(theme ?? "3")),
+      child: MyApp(
+        placeDetailRepository: placeDetailRepository,
+        directionRepository: directionRepository,
+        authRepository: authRepository,
+        userRepository: userRepository,
+        reverseLocationRepository: reverseLocationRepository,
+        rideRequestRepository: rideRequestRepository,
+        locationPredictionRepository: locationPredictionRepository,
+        emergencyReportRepository: emergencyReportRepository,
+        passengerRepository: passengerRepository,
+        balanceRepository: balanceRepository,
+        ratingRepository: ratingRepository,
+        settingsRepository: settingsRepository,
+      )));
 }
 
 class MyApp extends StatelessWidget {
@@ -202,6 +205,14 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                 title: 'SafeWay',
                 theme: ThemeData(
+                    inputDecorationTheme: InputDecorationTheme(
+                      suffixIconColor: themeProvider.getColor,
+                      prefixIconColor: themeProvider.getColor,
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: themeProvider.getColor, width: 2.0),
+                        ),
+                        focusColor: themeProvider.getColor),
                     floatingActionButtonTheme: FloatingActionButtonThemeData(
                         backgroundColor: Colors.white,
                         sizeConstraints:

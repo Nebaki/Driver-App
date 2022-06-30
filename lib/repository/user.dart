@@ -23,9 +23,9 @@ class UserRepository {
     await dataProvider.deletedriver(id);
   }
 
-  Future uploadProfilePicture(XFile file) async {
-    await dataProvider.uploadImage(file);
-  }
+  // Future uploadProfilePicture(XFile file) async {
+  //   await dataProvider.uploadImage(file);
+  // }
 
   Future<User> getUserById(String id) async {
     return await dataProvider.getDriverById(id);

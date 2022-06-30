@@ -1,5 +1,6 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
@@ -36,9 +37,12 @@ class _CompleteTripState extends State<CompleteTrip> {
       onWillPop: () async => false,
       child: BlocConsumer<RideRequestBloc, RideRequestState>(
         listener: (context, state) {
+          if (state is RideRequestTokentExpired) {
+            gotoSignIn(context);
+          }
           if (state is RideRequestCompleted) {
             startingTime = null;
-            
+
             BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
 
             // BlocProvider.of<CurrentWidgetCubit>(context)
@@ -55,7 +59,6 @@ class _CompleteTripState extends State<CompleteTrip> {
           }
 
           if (state is RideRequestOperationFailur) {
-            
             setState(() {
               isButtonDisabled = false;
             });
@@ -82,7 +85,7 @@ class _CompleteTripState extends State<CompleteTrip> {
                 children: [
                   RiderDetail(text: 'Trip Started'),
                   BlocBuilder<RideRequestBloc, RideRequestState>(
-                    builder: (context, state) {
+                      builder: (context, state) {
                     if (state is RideRequestLoading) {
                       return const Padding(
                         padding:
@@ -95,8 +98,8 @@ class _CompleteTripState extends State<CompleteTrip> {
                       );
                     }
                     return Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
                         width: MediaQuery.of(context).size.width,
                         child: const Divider());
                   }),
@@ -115,8 +118,20 @@ class _CompleteTripState extends State<CompleteTrip> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(" PickUp Address: $pickUpAddress",style: Theme.of(context).textTheme.overline!.copyWith(fontSize: 13),maxLines: 1,overflow: TextOverflow.ellipsis),
-                        Text(" DropOff Address: $droppOffAddress",style: Theme.of(context).textTheme.overline!.copyWith(fontSize: 13),maxLines: 1,overflow: TextOverflow.ellipsis),
+                        Text(" PickUp Address: $pickUpAddress",
+                            style: Theme.of(context)
+                                .textTheme
+                                .overline!
+                                .copyWith(fontSize: 13),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                        Text(" DropOff Address: $droppOffAddress",
+                            style: Theme.of(context)
+                                .textTheme
+                                .overline!
+                                .copyWith(fontSize: 13),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
                       ],
                     ),
                   ),
@@ -163,7 +178,6 @@ class _CompleteTripState extends State<CompleteTrip> {
       ),
     );
   }
-
 
   void resetData() {
     currentPrice = 75;

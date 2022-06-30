@@ -1,3 +1,5 @@
+import 'package:driverapp/screens/screens.dart';
+import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Future<void> _launchInBrowser(String url) async {
@@ -88,4 +90,12 @@ Future<void> sendTextMessage(String phoneNumber) async {
     path: phoneNumber,
   );
   await launch(launchUri.toString());
+}
+
+void gotoSignIn(BuildContext context) {
+  Navigator.pushNamedAndRemoveUntil(
+    context,
+    SigninScreen.routeName,
+    ((Route<dynamic> route) => false),
+  );
 }
