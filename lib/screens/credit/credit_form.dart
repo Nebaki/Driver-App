@@ -4,9 +4,11 @@ import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../../dataprovider/auth/auth.dart';
 import '../../dataprovider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
 
+import '../../helper/helper.dart';
 import '../../utils/colors.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
@@ -190,7 +192,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
 
   var sender = TeleBirrDataProvider(httpClient: http.Client());
 
-  void startTelebirr(String amount) {
+  startTelebirr(String amount) {
     var res = sender.initTelebirr("0922877115");
     res
         .then((value) => {
@@ -200,6 +202,8 @@ class _TeleBirrDataState extends State<TeleBirrData> {
               value.totalAmount = amount,
               if (value.code == 200)
                 validateTeleBirr(value)
+              else if(value.code == 401)
+                _refreshToken(startTelebirr(amount))
               else
                 ShowMessage(context, "Recharge", value.message)
             })
@@ -258,5 +262,15 @@ class _TeleBirrDataState extends State<TeleBirrData> {
     var message = json['MSG'];
     var result = Result(code.toString(), false, message);
     return result;
+  }
+
+  _refreshToken(Function function) async {
+    final res =
+    await AuthDataProvider(httpClient: http.Client()).refreshToken();
+    if (res.statusCode == 200) {
+      return function();
+    } else {
+      gotoSignIn(context);
+    }
   }
 }

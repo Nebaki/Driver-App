@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
+import '../../dataprovider/auth/auth.dart';
 import '../../dataprovider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
 
+import '../../helper/helper.dart';
 import '../../route.dart';
 import '../../utils/colors.dart';
 import '../../utils/painter.dart';
@@ -53,7 +55,6 @@ class _TransferState extends State<TransferMoney> {
           const TextInputType.numberWithOptions(signed: true, decimal: true),
       controller: amountController,
       decoration: const InputDecoration(
-         
           alignLabelWithHint: true,
           labelText: "Amount",
           hintStyle:
@@ -94,7 +95,6 @@ class _TransferState extends State<TransferMoney> {
         enabled: phoneEnabled,
         controller: phoneController,
         decoration: InputDecoration(
-            
             counterText: "",
             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
             alignLabelWithHint: true,
@@ -280,7 +280,7 @@ class _TransferState extends State<TransferMoney> {
 
   var transfer = CreditDataProvider(httpClient: http.Client());
 
-  void startTelebirr(String phone, String amount) {
+  startTelebirr(String phone, String amount) {
     var res = transfer.transferCredit(phone, amount);
     res
         .then((value) => {
@@ -288,7 +288,10 @@ class _TransferState extends State<TransferMoney> {
                 _isLoading = false;
               }),
               ShowMessage(context, "Transaction", value.message),
-              //if (value.code == "200") reloadBalance()
+              if (value.code == "200") reloadBalance(),
+              if (value.code == "401") {
+                _refreshToken(startTelebirr(phone,amount))
+              }
             })
         .onError((error, stackTrace) => {
               ShowMessage(context, "Transaction", "Error happened: $error"),
@@ -298,12 +301,21 @@ class _TransferState extends State<TransferMoney> {
             });
   }
 
-/*void reloadBalance() {
+  void reloadBalance() {
     var confirm = transfer.loadBalance();
     confirm
         .then((value) => {ShowMessage(context, "Balance", value.message)})
         .onError((error, stackTrace) =>
             {ShowMessage(context, "Balance", error.toString())});
   }
-  */
+
+  _refreshToken(Function function) async {
+    final res =
+        await AuthDataProvider(httpClient: http.Client()).refreshToken();
+    if (res.statusCode == 200) {
+      return function();
+    } else {
+      gotoSignIn(context);
+    }
+  }
 }

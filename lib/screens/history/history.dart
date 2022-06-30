@@ -9,8 +9,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import '../../dataprovider/auth/auth.dart';
 import '../../dataprovider/database/database.dart';
 import '../../dataprovider/history/history.dart';
+import '../../helper/helper.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import 'history_builder.dart';
 
@@ -41,7 +43,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   void prepareRequest(BuildContext context) {
     var sender = HistoryDataProvider(httpClient: http.Client());
-    var res = sender.loadTripHistoryDB("0922877115");
+    var res = sender.loadTripHistoryDB(context);
     res.then((value) => {
           setState(() {
             _isMessageLoading = false;
@@ -56,6 +58,15 @@ class _HistoryPageState extends State<HistoryPage> {
         ShowToast(context,value).show(),
         prepareRequest(context),
     });
+  }
+  _refreshToken(Function function) async {
+    final res =
+    await AuthDataProvider(httpClient: http.Client()).refreshToken();
+    if (res.statusCode == 200) {
+      return function();
+    } else {
+      gotoSignIn(context);
+    }
   }
 
 
