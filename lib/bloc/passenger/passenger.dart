@@ -15,8 +15,12 @@ class PassengerBloc extends Bloc<PassengerEvent, PassengerState> {
       try {
         final passenger = await passengerRepository.getAvailablePassengers();
         yield LoadAvailablePassengersSuccess(passenger);
-      } catch (_) {
-        yield PassengerOperationFailure();
+      } catch (e) {
+         if (e.toString().split(" ")[1] == "401") {
+          yield PassengerAvailablityUnAuthorised();
+        } else {
+          yield PassengerOperationFailure();
+        }
       }
     }
   }
@@ -52,3 +56,5 @@ class LoadAvailablePassengersSuccess extends PassengerState {
 }
 
 class PassengerOperationFailure extends PassengerState {}
+
+class PassengerAvailablityUnAuthorised extends PassengerState {}

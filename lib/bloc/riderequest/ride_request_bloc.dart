@@ -15,8 +15,12 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         final request =
             await rideRequestRepository.createRequest(event.rideRequest);
         yield RideRequestSuccess(request);
-      } catch (_) {
-        yield RideRequestOperationFailur();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield RideRequestTokentExpired();
+        } else {
+          yield RideRequestOperationFailur();
+        }
       }
     }
 
@@ -26,8 +30,12 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
       try {
         await rideRequestRepository.deleteRequest(event.id);
         yield RideRequestDeleteSuccess();
-      } catch (_) {
-        yield RideRequestOperationFailur();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield RideRequestTokentExpired();
+        } else {
+          yield RideRequestOperationFailur();
+        }
       }
     }
 
@@ -38,8 +46,12 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         await rideRequestRepository.changeRequestStatus(
             event.id, event.status, event.passengerFcm);
         yield RideRequesChanged();
-      } catch (_) {
-        yield RideRequestOperationFailur();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield RideRequestTokentExpired();
+        } else {
+          yield RideRequestOperationFailur();
+        }
       }
     }
 
@@ -49,8 +61,12 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
       try {
         await rideRequestRepository.acceptRequest(event.id, event.passengerFcm);
         yield RideRequestAccepted();
-      } catch (_) {
-        yield RideRequestOperationFailur();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield RideRequestTokentExpired();
+        } else {
+          yield RideRequestOperationFailur();
+        }
       }
     }
 
@@ -60,8 +76,12 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
       try {
         await rideRequestRepository.startTrip(event.id, event.passengerFcm);
         yield RideRequestStarted();
-      } catch (_) {
-        yield RideRequestOperationFailur();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield RideRequestTokentExpired();
+        } else {
+          yield RideRequestOperationFailur();
+        }
       }
     }
 
@@ -71,8 +91,12 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         await rideRequestRepository.cancelRideRequest(event.id,
             event.cancelReason, event.passengerFcm, event.sendRequest);
         yield RideRequestCancelled();
-      } catch (_) {
-        yield RideRequestOperationFailur();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield RideRequestTokentExpired();
+        } else {
+          yield RideRequestOperationFailur();
+        }
       }
     }
 
@@ -82,8 +106,12 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         await rideRequestRepository.completeTrip(
             event.id, event.price, event.passengerFcm);
         yield RideRequestCompleted();
-      } catch (_) {
-        yield RideRequestOperationFailur();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield RideRequestTokentExpired();
+        } else {
+          yield RideRequestOperationFailur();
+        }
       }
     }
 
@@ -93,8 +121,12 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         await rideRequestRepository.passRequest(
             event.driverFcm, event.nextDrivers);
         yield RideRequestPassed();
-      } catch (_) {
-        yield RideRequestOperationFailur();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield RideRequestTokentExpired();
+        } else {
+          yield RideRequestOperationFailur();
+        }
       }
     }
 
@@ -105,11 +137,10 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         final rideRequest = await rideRequestRepository.checkStartedTrip();
         yield RideRequestStartedTripChecked(rideRequest);
       } catch (_) {
-        if(_.toString().split(" ")[1]=="401"){
+        if (_.toString().split(" ")[1] == "401") {
           yield RideRequestTokentExpired();
-        }else {
+        } else {
           yield RideRequestOperationFailur();
-
         }
       }
     }
@@ -120,8 +151,12 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
       try {
         await rideRequestRepository.timeOutRequest(event.id);
         yield RideRequestTimeOuted();
-      } catch (_) {
-        RideRequestOperationFailur();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield RideRequestTokentExpired();
+        } else {
+          yield RideRequestOperationFailur();
+        }
       }
     }
   }

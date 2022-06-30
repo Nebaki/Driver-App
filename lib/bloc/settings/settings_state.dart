@@ -25,3 +25,4 @@ class SettingsUnAuthorised extends SettingsState {
     @override
   List<Object?> get props => [];
 }
+

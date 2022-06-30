@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/widgets/custome_backarrow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +23,6 @@ class _EditProfileState extends State<EditProfile> {
   bool _isLoading = false;
   final Map<String, dynamic> _user = {};
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,11 +30,13 @@ class _EditProfileState extends State<EditProfile> {
       body: BlocConsumer<UserBloc, UserState>(builder: (context, state) {
         return _buildProfileForm();
       }, listener: (context, state) {
+        if (state is UserUnAuthorised) {
+          gotoSignIn(context);
+        }
         if (state is ImageUploadSuccess) {
           BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
         }
-        if (state is UserLoading) {
-        }
+        if (state is UserLoading) {}
         if (state is UsersLoadSuccess) {
           _isLoading = false;
 
@@ -56,7 +58,6 @@ class _EditProfileState extends State<EditProfile> {
       }),
     );
   }
-
 
   Widget _buildProfileForm() {
     return Form(
@@ -111,7 +112,8 @@ class _EditProfileState extends State<EditProfile> {
                                     ),
                                     placeholder: (context, url) =>
                                         const CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) => const Icon(
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(
                                       Icons.person,
                                       size: 70,
                                       color: Colors.black,

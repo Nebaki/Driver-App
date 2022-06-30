@@ -15,8 +15,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       try {
         final users = await userRepository.createPassenger(event.user);
         yield UsersLoadSuccess(users);
-      } catch (_) {
-        yield UserOperationFailure();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield UserUnAuthorised();
+        } else {
+          yield UserOperationFailure();
+        }
       }
     }
 
@@ -25,8 +29,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       try {
         final passenger = await userRepository.updatePassenger(event.user);
         yield UsersLoadSuccess(passenger);
-      } catch (_) {
-        yield UserOperationFailure();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield UserUnAuthorised();
+        } else {
+          yield UserOperationFailure();
+        }
       }
     }
 
@@ -49,16 +57,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
     }
 
-    if (event is UploadProfile) {
-      yield UserLoading();
+    // if (event is UploadProfile) {
+    //   yield UserLoading();
 
-      try {
-        await userRepository.uploadProfilePicture(event.file);
-        yield ImageUploadSuccess();
-      } catch (_) {
-        yield UserOperationFailure();
-      }
-    }
+    //   try {
+    //     await userRepository.uploadProfilePicture(event.file);
+    //     yield ImageUploadSuccess();
+    //   } catch (_) {
+    //     yield UserOperationFailure();
+    //   }
+    // }
 
     if (event is UserLoadById) {
       yield UserLoading();
@@ -66,8 +74,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       try {
         final user = await userRepository.getUserById(event.id);
         yield UsersLoadSuccess(user);
-      } catch (_) {
-        yield UserOperationFailure();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield UserUnAuthorised();
+        } else {
+          yield UserOperationFailure();
+        }
       }
     }
 
@@ -77,8 +89,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       try {
         await userRepository.changePassword(event.passwordInfo);
         yield UserPasswordChanged();
-      } catch (_) {
-        yield UserOperationFailure();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield UserUnAuthorised();
+        } else {
+          yield UserOperationFailure();
+        }
       }
     }
     if (event is UserForgetPassword) {
@@ -87,8 +103,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       try {
         await userRepository.forgetPassword(event.forgetPasswordInfo);
         yield UserPasswordChanged();
-      } catch (_) {
-        yield UserOperationFailure();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield UserUnAuthorised();
+        } else {
+          yield UserOperationFailure();
+        }
       }
     }
 
@@ -99,8 +119,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         final phoneNumberExist =
             await userRepository.checkPhoneNumber(event.phoneNumber);
         yield UserPhoneNumbeChecked(phoneNumberExist);
-      } catch (_) {
-        yield UserOperationFailure();
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield UserUnAuthorised();
+        } else {
+          yield UserOperationFailure();
+        }
       }
     }
   }

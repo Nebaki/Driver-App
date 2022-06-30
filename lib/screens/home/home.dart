@@ -456,6 +456,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           .getColor)),
                                             ),
                                         listener: (context, state) {
+                                          if (state
+                                              is BalanceLoadUnAuthorised) {
+                                            gotoSignIn(context);
+                                          }
                                           if (state is BalanceLoadSuccess) {
                                             if (state.balance > 0) {
                                               hasBalance = true;
@@ -571,6 +575,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                         listener: (context, state) {
+                          if (state is EmergencyReportUnAuthorised) {
+                            gotoSignIn(context);
+                          }
                           if (state is EmergencyReportCreating) {
                             showDialog(
                                 barrierDismissible: false,
@@ -669,6 +676,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               listener: (context, state) {
+                                if (state is PassengerAvailablityUnAuthorised) {
+                                  gotoSignIn(context);
+                                }
                                 if (state is PassengerOperationFailure) {
                                   Navigator.pop(context);
                                   ScaffoldMessenger.of(context)
@@ -1007,6 +1017,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
         listener: (context, state) {
+          if (state is RideRequestTokentExpired) {
+            gotoSignIn(context);
+          }
           if (state is RideRequestSuccess) {
             fromCreateManualTrip = false;
             passengerName = state.request.passenger!.name;
@@ -1464,10 +1477,13 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.pop(context);
             if (isFirstTime) {
               Geolocator.getCurrentPosition().then((value) {
-                currentLat = value.latitude;currentLng = value.longitude;
+                currentLat = value.latitude;
+                currentLng = value.longitude;
                 // pickupLatLng = currentLatLng;
                 _myController.animateCamera(CameraUpdate.newCameraPosition(
-                    CameraPosition(zoom: 16.1746, target: LatLng(value.latitude,value.longitude))));
+                    CameraPosition(
+                        zoom: 16.1746,
+                        target: LatLng(value.latitude, value.longitude))));
               });
             }
             isFirstTime = false;

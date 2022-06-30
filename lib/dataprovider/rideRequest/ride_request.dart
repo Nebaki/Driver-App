@@ -44,7 +44,7 @@ class RideRequestDataProvider {
       } else {
         throw Exception(response.statusCode);
       }
-    }  else {
+    } else {
       throw Exception(response.statusCode);
     }
   }
@@ -76,7 +76,6 @@ class RideRequestDataProvider {
         'distance': double.parse(request.distance!)
       }),
     );
-
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -121,6 +120,14 @@ class RideRequestDataProvider {
           sendNotification(passengerFcm, status);
         }
       }
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return changeRequestStatus(id, status, passengerFcm);
+      } else {
+        throw Exception(response.statusCode);
+      }
     } else {
       throw Exception('Failed to respond to the request.');
     }
@@ -138,6 +145,14 @@ class RideRequestDataProvider {
 
     if (response.statusCode == 200) {
       sendNotification(passengerFcm, "Accepted");
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return acceptRequest(id, passengerFcm);
+      } else {
+        throw Exception(response.statusCode);
+      }
     } else {
       throw Exception('Failed to respond to the request.');
     }
@@ -158,6 +173,14 @@ class RideRequestDataProvider {
         startedNotification(passengerFcm);
       }
       // sendNotification(passengerFcm, "Accepted");
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return startTrip(id, passengerFcm);
+      } else {
+        throw Exception(response.statusCode);
+      }
     } else {
       throw Exception('Failed to respond to the request.');
     }
@@ -253,6 +276,14 @@ class RideRequestDataProvider {
       if (sendRequest && fcmId != null) {
         cancelNotification(fcmId);
       }
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return cancelRideRequest(id, cancelReason, fcmId, sendRequest);
+      } else {
+        throw Exception(response.statusCode);
+      }
     } else {
       throw 'Unable to cancel the request';
     }
@@ -270,6 +301,14 @@ class RideRequestDataProvider {
     if (response.statusCode == 200) {
       if (fcmId != null) {
         completeNotification(fcmId);
+      }
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return completeTrip(id, price, fcmId);
+      } else {
+        throw Exception(response.statusCode);
       }
     } else {
       throw 'Unable to cancel the request';
@@ -341,7 +380,6 @@ class RideRequestDataProvider {
 
     // dxGQlHGETnWjGYmlVy8Utn:APA91bErJaqPmsqfQOcStX6MYcBxfIAMr9kofXqF7bOBhftlZ3qo327e3PQ1jinm6o7FmtTy1LX4e0SE-dCUc2NwcyL6OJqKW7dagp6uTs8k-m6ynhp7NBotpPMaioTNxBuJFPz_RUif
 
-
     if (response.statusCode == 200) {
       // final data = (response.body);
       //return NotificationRequest.fromJson(data);
@@ -359,6 +397,14 @@ class RideRequestDataProvider {
         });
     if (response.statusCode == 200) {
       timeOutNotification('fcmId');
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return timoutRequest(id);
+      } else {
+        throw Exception(response.statusCode);
+      }
     } else {
       throw 'Unable to time out the request';
     }
