@@ -142,9 +142,7 @@ class _EditProfileState extends State<EditProfile> {
                                 isDense: true,
                                 hintText: "Full Name",
                                 focusColor: Colors.blue,
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.6, color: Colors.orange)),
+                                
                                 hintStyle: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black45),
@@ -194,9 +192,7 @@ class _EditProfileState extends State<EditProfile> {
                                 isDense: true,
                                 hintText: "Last Name",
                                 focusColor: Colors.blue,
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.6, color: Colors.orange)),
+                               
                                 hintStyle: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black45),
@@ -247,9 +243,7 @@ class _EditProfileState extends State<EditProfile> {
                                 isDense: true,
                                 hintText: "Phone Number",
                                 focusColor: Colors.blue,
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.6, color: Colors.orange)),
+                               
                                 hintStyle: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black45),
@@ -297,9 +291,7 @@ class _EditProfileState extends State<EditProfile> {
                                 isDense: true,
                                 hintText: "Email",
                                 focusColor: Colors.blue,
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.6, color: Colors.orange)),
+                                
                                 hintStyle: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black45),
@@ -342,9 +334,7 @@ class _EditProfileState extends State<EditProfile> {
                                 isDense: true,
                                 hintText: "Emergency Contact Number",
                                 focusColor: Colors.blue,
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.6, color: Colors.orange)),
+                                
                                 hintStyle: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black45),

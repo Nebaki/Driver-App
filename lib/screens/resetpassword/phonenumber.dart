@@ -192,10 +192,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                           decoration: InputDecoration(
                               labelStyle:
                                   TextStyle(color: themeProvider.getColor),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: themeProvider.getColor, width: 2.0),
-                              ),
+                             
                               counterText: "",
                               prefixIconConstraints:
                                   const BoxConstraints(minWidth: 0, minHeight: 0),

@@ -44,10 +44,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
             const TextInputType.numberWithOptions(signed: true, decimal: true),
         controller: amountController,
         decoration: const InputDecoration(
-            focusedBorder: OutlineInputBorder(
-              borderSide:
-              BorderSide(color: Colors.deepOrangeAccent, width: 2.0),
-            ),
+            
             alignLabelWithHint: true,
             labelText: "Amount",
             prefixIcon: Icon(
