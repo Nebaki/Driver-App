@@ -194,8 +194,8 @@ class _TripDetailState extends State<TripDetail>{
     );
   }
   String _formatedDate(String utcDate){
-    var str = "2019-04-05T14:00:51.000Z";
-    var newStr = str.substring(0,10) + ' ' + str.substring(11,23);
+    //var str = "2019-04-05T14:00:51.000Z";
+    var newStr = utcDate.substring(0,10) + ' ' + utcDate.substring(11,23);
     DateTime dt = DateTime.parse(newStr);
     var date = DateFormat("EEE, d MMM yyyy HH:mm:ss").format(dt);
     return date;
