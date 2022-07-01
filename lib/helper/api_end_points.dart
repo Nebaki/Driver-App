@@ -6,6 +6,12 @@ class CreditEndPoints {
   }
 }
 
+class WeeklyEarningEndPoints {
+  static String getWeeklyEarningEndPoint(DateTime from,DateTime to){
+    return '$baseUrl/ride-requests/';
+  }
+}
+
 class SettingsEndPoint {
   static String getSettingsEndPoint() {
     return "$baseUrl/settings/get-setting";
