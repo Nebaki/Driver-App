@@ -1,6 +1,8 @@
+import 'package:driverapp/bloc/weekly_report/weekly_earning_bloc.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
@@ -69,73 +71,29 @@ class _WeeklySummaryTabState extends State<WeeklySummaryTab> {
         SingleChildScrollView(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 200,
-                        child: CustomScrollView(
-                          slivers: <Widget>[
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                                  if (index == 0) {
-                                    return Container(
-                                      //  margin:
-                                      //     EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-                                      // decoration: BoxDecoration(
-                                      //   color: Colors.white,
-                                      //   boxShadow: [
-                                      //     BoxShadow(
-                                      //       color: Colors.black12,
-                                      //       offset: Offset(0, 2),
-                                      //       blurRadius: 6.0,
-                                      //     ),
-                                      //   ],
-                                      //   borderRadius: BorderRadius.circular(10.0),
-                                      // ),
-                                      child: WeeklyEarningBarChart(
-                                          [8, 12, 3, 14, 5, 16, 7],themeProvider.getColor),
-                                    );
-                                  }
-                                },
-                                childCount: 1 + 7,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 0),
-                        child: Divider(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: const [Text("15"), Text("Trips")],
-                            ),
-                            const VerticalDivider(),
-                            Column(
-                              children: const [Text("8:30"), Text("Online hrs")],
-                            ),
-                            const VerticalDivider(),
-                            Column(
-                              children: const [Text("\$22.48"), Text("Cash Trips")],
-                            ),
-                          ],
-                        ),
+              SizedBox(
+                height: 200,
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                         (BuildContext context, int index) {
+                          if (index == 0) {
+                            return 
+                            BlocBuilder<WeeklyEarningBloc,WeeklyEarningState>(builder: (context, state) {
+                              if (state is WeeklyEarningLoadSuccess) {
+                                return  WeeklyEarningBarChart( 
+                                state.weeklyEarning,isEarning: false,);
+                              }
+                              return Container();
+                            },) ;
+                          }
+                        },
+                        childCount: 1 + 7,
+                      )
                       ),
                     ],
                   ),
-                ),
               ),
               const SizedBox(
                 height: 20,

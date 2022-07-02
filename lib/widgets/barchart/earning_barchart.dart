@@ -1,18 +1,34 @@
+import 'package:driverapp/models/models.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 class WeeklyEarningBarChart extends StatelessWidget {
-  final List<double> expenses;
+  final List<WeeklyEarning> expenses;
+  final bool isEarning;
 
-  const WeeklyEarningBarChart(this.expenses, Color getColor, {Key? key}) : super(key: key);
+  const WeeklyEarningBarChart(this.expenses,
+      {Key? key, required this.isEarning})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     double mostExpensive = 0;
-    expenses.forEach((double price) {
-      if (price > mostExpensive) {
-        mostExpensive = price;
-      }
-    });
+    if (isEarning) {
+      expenses.forEach((WeeklyEarning weeklyEarning) {
+        print("Onee is ${weeklyEarning.earning}");
+        if (weeklyEarning.earning > mostExpensive) {
+          mostExpensive = weeklyEarning.earning;
+        }
+      });
+    } else {
+      expenses.forEach((WeeklyEarning weeklyEarning) {
+        print("Onee is ${weeklyEarning.trips}");
+        if (weeklyEarning.trips > mostExpensive) {
+          mostExpensive = weeklyEarning.trips.toDouble();
+        }
+      });
+    }
+
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Column(
@@ -24,38 +40,45 @@ class WeeklyEarningBarChart extends StatelessWidget {
             children: <Widget>[
               Bar(
                 label: 'M',
-                amountSpent: expenses[0],
+                amountSpent: _earningOf("Mon"),
                 mostExpensive: mostExpensive,
+                isEarning: isEarning,
               ),
               Bar(
                 label: 'T',
-                amountSpent: expenses[1],
+                amountSpent: _earningOf("Tue"),
                 mostExpensive: mostExpensive,
+                isEarning: isEarning,
               ),
               Bar(
                 label: 'W',
-                amountSpent: expenses[2],
+                amountSpent: _earningOf("Wed"),
                 mostExpensive: mostExpensive,
+                isEarning: isEarning,
               ),
               Bar(
                 label: 'T',
-                amountSpent: expenses[3],
+                amountSpent: _earningOf("Thu"),
                 mostExpensive: mostExpensive,
+                isEarning: isEarning,
               ),
               Bar(
                 label: 'F',
-                amountSpent: expenses[4],
+                amountSpent: _earningOf("Fri"),
                 mostExpensive: mostExpensive,
+                isEarning: isEarning,
               ),
               Bar(
                 label: 'S',
-                amountSpent: expenses[5],
+                amountSpent: _earningOf("Sat"),
                 mostExpensive: mostExpensive,
+                isEarning: isEarning,
               ),
               Bar(
                 label: 'S',
-                amountSpent: expenses[6],
+                amountSpent: _earningOf("Sun"),
                 mostExpensive: mostExpensive,
+                isEarning: isEarning,
               ),
             ],
           ),
@@ -63,19 +86,50 @@ class WeeklyEarningBarChart extends StatelessWidget {
       ),
     );
   }
+
+  double _earningOf(String day) {
+    if (isEarning) {
+      return expenses
+              .where((element) =>
+                  DateFormat.yMEd().format(element.date).split(",")[0] == day)
+              .isNotEmpty
+          ? expenses
+              .where((element) =>
+                  DateFormat.yMEd().format(element.date).split(",")[0] == day)
+              .first
+              .earning
+          : 0.0;
+    } else {
+      return expenses
+              .where((element) =>
+                  DateFormat.yMEd().format(element.date).split(",")[0] == day)
+              .isNotEmpty
+          ? expenses
+              .where((element) =>
+                  DateFormat.yMEd().format(element.date).split(",")[0] == day)
+              .first
+              .trips
+              .toDouble()
+          : 0.0;
+    }
+  }
 }
 
 class Bar extends StatelessWidget {
   final String label;
   final double amountSpent;
   final double mostExpensive;
+  final bool isEarning;
 
   final double _maxBarHeight = 100.0;
 
   const Bar(
-      {Key? key, required this.label,
+      {Key? key,
+      required this.label,
       required this.amountSpent,
-      required this.mostExpensive}) : super(key: key);
+      required this.mostExpensive,
+      required this.isEarning})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +137,10 @@ class Bar extends StatelessWidget {
     return Column(
       children: <Widget>[
         Text(
-          amountSpent.toStringAsFixed(0),
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-          ),
+          isEarning
+              ? '${amountSpent.toStringAsFixed(0)} ETB'
+              : amountSpent.toString(),
+          style: Theme.of(context).textTheme.overline,
         ),
         const SizedBox(height: 6.0),
         Container(

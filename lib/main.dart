@@ -68,6 +68,11 @@ void main() async {
   final SettingsRepository settingsRepository = SettingsRepository(
       settingsDataProvider: SettingsDataProvider(httpClient: http.Client()));
 
+  final WeeklyEarningRepository weeklyEarningRepository =
+      WeeklyEarningRepository(
+          weeklyEarningDataProvider:
+              WeeklyEarningDataProvider(httpClient: http.Client()));
+
   // BlocOverrides.runZoned(
   //     () => runApp(MyApp(
   //           placeDetailRepository: placeDetailRepository,
@@ -82,25 +87,22 @@ void main() async {
   //           balanceRepository: balanceRepository,
   //         )),
   //     blocObserver: SimpleBlocObserver());
-  const secureStorage = FlutterSecureStorage();
-  String? theme = await secureStorage.read(key: "theme");
-  runApp(ChangeNotifierProvider(
-      create: (BuildContext context) =>
-          ThemeProvider(theme: int.parse(theme ?? "3")),
-      child: MyApp(
-        placeDetailRepository: placeDetailRepository,
-        directionRepository: directionRepository,
-        authRepository: authRepository,
-        userRepository: userRepository,
-        reverseLocationRepository: reverseLocationRepository,
-        rideRequestRepository: rideRequestRepository,
-        locationPredictionRepository: locationPredictionRepository,
-        emergencyReportRepository: emergencyReportRepository,
-        passengerRepository: passengerRepository,
-        balanceRepository: balanceRepository,
-        ratingRepository: ratingRepository,
-        settingsRepository: settingsRepository,
-      )));
+
+  runApp(MyApp(
+    placeDetailRepository: placeDetailRepository,
+    directionRepository: directionRepository,
+    authRepository: authRepository,
+    userRepository: userRepository,
+    reverseLocationRepository: reverseLocationRepository,
+    rideRequestRepository: rideRequestRepository,
+    locationPredictionRepository: locationPredictionRepository,
+    emergencyReportRepository: emergencyReportRepository,
+    passengerRepository: passengerRepository,
+    balanceRepository: balanceRepository,
+    ratingRepository: ratingRepository,
+    settingsRepository: settingsRepository,
+    weeklyEarningRepository: weeklyEarningRepository,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -116,6 +118,7 @@ class MyApp extends StatelessWidget {
   final BalanceRepository balanceRepository;
   final RatingRepository ratingRepository;
   final SettingsRepository settingsRepository;
+  final WeeklyEarningRepository weeklyEarningRepository;
 
   const MyApp(
       {Key? key,
@@ -130,7 +133,8 @@ class MyApp extends StatelessWidget {
       required this.passengerRepository,
       required this.balanceRepository,
       required this.ratingRepository,
-      required this.settingsRepository})
+      required this.settingsRepository,
+      required this.weeklyEarningRepository})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -147,7 +151,8 @@ class MyApp extends StatelessWidget {
           RepositoryProvider.value(value: passengerRepository),
           RepositoryProvider.value(value: balanceRepository),
           RepositoryProvider.value(value: ratingRepository),
-          RepositoryProvider.value(value: settingsRepository)
+          RepositoryProvider.value(value: settingsRepository),
+          RepositoryProvider.value(value: weeklyEarningRepository)
         ],
         child: MultiBlocProvider(
             providers: [
@@ -198,6 +203,11 @@ class MyApp extends StatelessWidget {
               ),
               BlocProvider(
                 create: (context) => StartedTripDataCubit(),
+              ),
+              BlocProvider(
+                create: (context) => WeeklyEarningBloc(
+                    weeklyEarningRepository: weeklyEarningRepository)
+                  ..add(WeeklyEarningLoad()),
               )
             ],
             child: Consumer<ThemeProvider>(

@@ -10,28 +10,30 @@ class WeeklyEarningDataProvider {
   const WeeklyEarningDataProvider({required this.httpClient});
 
   Future<List<WeeklyEarning>> getWeeklyEarning(
-      DateTime from, DateTime to) async {
+      ) async {
+        DateTime today = DateTime.now();
+        DateTime weekDay = today.subtract(Duration(days: today.weekday-1));
     http.Response response = await httpClient.get(
         Uri.parse(
-            api.WeeklyEarningEndPoints.getWeeklyEarningEndPoint(from, to)),
+            api.WeeklyEarningEndPoints.getWeeklyEarningEndPoint(weekDay, today)),
         headers: <String, String>{
           'Content-Type': 'application/json',
           'x-access-token':
               '${await AuthDataProvider(httpClient: httpClient).getToken()}'
         });
-
+    print("response ${response.statusCode} resposebody${response.body}");
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body) as List;
       return json.map((e) => WeeklyEarning.fromJson(e)).toList();
     } else if (response.statusCode == 200) {
       final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
       if (res.statusCode == 200) {
-        return getWeeklyEarning(from, to);
+        return getWeeklyEarning();
       } else {
         throw Exception(res.statusCode);
       }
     } else {
-      throw Exception(response.statusCode);
+      throw "error";
     }
   }
 }

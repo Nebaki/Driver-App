@@ -10,7 +10,7 @@ class WeeklyEarning extends Equatable {
 
   factory WeeklyEarning.fromJson(Map<String, dynamic> json) {
     return WeeklyEarning(
-        date: json['date'], earning: json['earning'], trips: json['trips']);
+        date: DateTime.parse(json['date']), earning: double.parse(json['total'].toString()), trips: json['total_trips']);
   }
   @override
   List<Object?> get props => [];

@@ -8,7 +8,7 @@ class CreditEndPoints {
 
 class WeeklyEarningEndPoints {
   static String getWeeklyEarningEndPoint(DateTime from,DateTime to){
-    return '$baseUrl/ride-requests/';
+    return '$baseUrl/ride-requests/get-my-grouped-earnings?filter[0].[field]=createdAt&filter[0].[operator]=between&filter[0].[value][0]=$from&filter[0].[value][1]=$to&filter[0].[type]=date';
   }
 }
 
