@@ -15,10 +15,3 @@ const int unknownErrorC = 00;
 const String unknownErrorM = "Server Error";
 const int requestTimeoutC = 408;
 const String requestTimeoutM = "Unable To Confirm Payment: Timeout";
-
-
-const String passwordError = "Incorrect Phone or Password";
-
-
-const String weWillSendCode = "We will send a verification code to ";
-const String cantCheckPhone = "Unable to check the phone number.";

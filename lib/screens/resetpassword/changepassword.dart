@@ -4,6 +4,8 @@ import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../utils/constants/error_messages.dart';
+
 class ChangePassword extends StatelessWidget {
   static const routeName = '/changepassword';
   final _formkey = GlobalKey<FormState>();
@@ -100,7 +102,11 @@ class ChangePassword extends StatelessWidget {
                                       borderSide: BorderSide.none)),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please enter The Old password';
+                                  return enterPhoneE;
+                                } else if (value.length < 9) {
+                                  return phoneLengthE;
+                                } else if (value.length > 9) {
+                                  return phoneExceedE;
                                 }
                                 return null;
                               },
@@ -137,7 +143,11 @@ class ChangePassword extends StatelessWidget {
                                       borderSide: BorderSide.none)),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please enter The New Password';
+                                  return enterPhoneE;
+                                } else if (value.length < 9) {
+                                  return phoneLengthE;
+                                } else if (value.length > 9) {
+                                  return phoneExceedE;
                                 }
                                 return null;
                               },
@@ -176,7 +186,11 @@ class ChangePassword extends StatelessWidget {
                                   return 'Password must match';
                                 }
                                 if (value!.isEmpty) {
-                                  return 'Please confirm the password';
+                                  return enterPhoneE;
+                                } else if (value.length < 9) {
+                                  return phoneLengthE;
+                                } else if (value.length > 9) {
+                                  return phoneExceedE;
                                 }
                                 return null;
                               },

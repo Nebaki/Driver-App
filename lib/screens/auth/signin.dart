@@ -8,6 +8,7 @@ import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:provider/provider.dart';
 
+import '../../utils/constants/error_messages.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import '../../utils/ui_tool/text_view.dart';
@@ -196,11 +197,11 @@ class _SigninScreenState extends State<SigninScreen>
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter Your Phone number';
+                        return enterPhoneE;
                       } else if (value.length < 9) {
-                        return 'Phone no. length must not be less than 8 digits';
+                        return phoneLengthE;
                       } else if (value.length > 9) {
-                        return 'Phone no. length must not be greater than 9 digits';
+                        return phoneExceedE;
                       }
                       return null;
                     },
@@ -256,11 +257,11 @@ class _SigninScreenState extends State<SigninScreen>
                             borderSide: BorderSide(style: BorderStyle.solid))),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter Your Password';
+                        return enterPhoneE;
                       } else if (value.length < 4) {
-                        return 'Password length must not be less than 4';
+                        return passwordLengthE;
                       } else if (value.length > 25) {
-                        return 'Password length must not be greater than 25';
+                        return passwordExceedE;
                       }
                       return null;
                     },

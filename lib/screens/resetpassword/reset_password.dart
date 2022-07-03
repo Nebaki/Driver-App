@@ -6,6 +6,7 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/route.dart';
 
 import '../../utils/colors.dart';
+import '../../utils/constants/error_messages.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 
@@ -195,7 +196,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   borderSide: BorderSide.none)),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Please enter new password';
+                              return enterPhoneE;
+                            } else if (value.length < 9) {
+                              return phoneLengthE;
+                            } else if (value.length > 9) {
+                              return phoneExceedE;
                             }
                             return null;
                           },
@@ -232,12 +237,16 @@ class _ResetPasswordState extends State<ResetPassword> {
                               border: OutlineInputBorder(
                                   borderSide: BorderSide.none)),
                           validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please confirm Your Password';
-                            } else if (value !=
+                            if (value !=
                                 newPasswordController.value.text) {
                                 return 'Password dose not match';
-
+                            }
+                            if (value!.isEmpty) {
+                              return enterPhoneE;
+                            } else if (value.length < 9) {
+                              return phoneLengthE;
+                            } else if (value.length > 9) {
+                              return phoneExceedE;
                             }
                             return null;
                           },

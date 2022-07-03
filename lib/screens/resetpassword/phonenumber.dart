@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../route.dart';
-import '../../utils/constants/constants.dart';
+import '../../utils/constants/net_status.dart';
+import '../../utils/constants/error_messages.dart';
+import '../../utils/constants/info_message.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 
@@ -170,8 +172,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                       const Padding(
                         padding:  EdgeInsets.only(
                             left: 15, right: 10, top: 150),
-                        child: Text(
-                          "Enter mobile number",
+                        child: Text(enterPhoneI,
                           style: TextStyle(
                               fontFamily: 'Sifonn',
                               fontWeight: FontWeight.bold,
@@ -221,11 +222,11 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                        BorderSide(style: BorderStyle.solid))),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Please enter Your Phone number';
+                              return enterPhoneE;
                             } else if (value.length < 9) {
-                              return 'Phone no. length must not be less than 8 digits';
+                              return phoneLengthE;
                             } else if (value.length > 9) {
-                              return 'Phone no. length must not be greater than 9 digits';
+                              return phoneExceedE;
                             }
                             return null;
                           },
@@ -315,7 +316,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                                           fontSize: 20),
                                                     ),
                                                     content: Text.rich(TextSpan(
-                                                        text: weWillSendCode,
+                                                        text: weWillSendCodeI,
                                                         style: const TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
@@ -419,7 +420,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                               });
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
-                                content: const Text(cantCheckPhone),
+                                content: const Text(cantCheckPhoneE),
                                 backgroundColor: Colors.red.shade900,
                               ));
                             }
