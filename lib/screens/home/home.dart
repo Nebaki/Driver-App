@@ -852,6 +852,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return String.fromCharCodes(list);
   }
 
+
   void startStopTimer() {
     // print("yow starting function");
 
@@ -957,6 +958,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isRequestingDirection = false;
     }
   }
+
 
   void getPlaceDetail(String placeId) {
     PlaceDetailEvent event = PlaceDetailLoad(placeId: placeId);

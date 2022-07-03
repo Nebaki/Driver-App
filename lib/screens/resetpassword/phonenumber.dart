@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../route.dart';
+import '../../utils/constants/constants.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 
@@ -314,8 +315,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                                           fontSize: 20),
                                                     ),
                                                     content: Text.rich(TextSpan(
-                                                        text:
-                                                            "We will send a verification code to ",
+                                                        text: weWillSendCode,
                                                         style: const TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
@@ -419,8 +419,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                               });
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
-                                content: const Text(
-                                    "Unable to check the phone number."),
+                                content: const Text(cantCheckPhone),
                                 backgroundColor: Colors.red.shade900,
                               ));
                             }
