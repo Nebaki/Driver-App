@@ -102,6 +102,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
           }, listener: (_, state) {
             if (state is AuthDataLoadSuccess) {
               if (state.auth.token != null) {
+                categoryId = state.auth.categoryId!;
                 myId = state.auth.id!;
                 myAvgRate = state.auth.avgRate!;
                 myPictureUrl = state.auth.profilePicture!;

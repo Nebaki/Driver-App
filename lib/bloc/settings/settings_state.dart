@@ -4,6 +4,11 @@ abstract class SettingsState extends Equatable {
   
  
 }
+
+class SettingsInitState extends SettingsState {
+  @override
+  List<Object?> get props => [];
+}
 class SettingsLoading extends SettingsState {
   @override
   List<Object?> get props => [];

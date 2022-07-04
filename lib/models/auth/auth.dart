@@ -21,6 +21,7 @@ class Auth extends Equatable {
   final int? perKiloMeterCost;
   final int? perMinuteCost;
   final int? initialFare;
+  final String? categoryId;
 
   const Auth({
     this.id,
@@ -41,6 +42,7 @@ class Auth extends Equatable {
     this.perKiloMeterCost,
     this.perMinuteCost,
     this.initialFare,
+    this.categoryId
   });
 
   @override
@@ -70,6 +72,7 @@ class Auth extends Equatable {
             storage.containsKey('balance') ? double.parse(storage['balance'].toString()) : 0,
         perMinuteCost: int.parse(storage['per_minute_cost']),
         perKiloMeterCost: int.parse(storage['per_killo_meter_cost']),
+        categoryId: storage['category_id'],
         initialFare: int.parse(storage['initial_fare']));
   }
 

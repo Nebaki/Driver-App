@@ -32,6 +32,7 @@ late String distance;
 late String duration;
 late String price;
 late double balance;
+String categoryId = '';
 String? passengerProfilePictureUrl;
 final player = AssetsAudioPlayer();
 bool isAccepted = false;

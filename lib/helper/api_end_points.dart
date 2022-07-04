@@ -1,5 +1,14 @@
 import 'package:driverapp/helper/constants.dart';
 
+
+
+class CategoryEndPoints {
+  static String getCategoriesEndPoint(String id) {
+   
+    return '$baseUrl/categories/get-category/$id';
+  }
+}
+
 class CreditEndPoints {
   static String getMyBalanceEndpoint() {
     return '$baseUrl/credits/get-my-credit';

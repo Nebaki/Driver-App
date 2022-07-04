@@ -14,3 +14,4 @@ export 'history/history.dart';
 export 'credit/credit.dart';
 export 'telebir/telebirr.dart';
 export 'weekly_earning/weekly_earning.dart';
+export 'category/categoty.dart';

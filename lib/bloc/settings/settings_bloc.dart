@@ -9,7 +9,7 @@ part 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final SettingsRepository settingsRepository;
-  SettingsBloc({required this.settingsRepository}) : super(SettingsLoading());
+  SettingsBloc({required this.settingsRepository}) : super(SettingsInitState());
 
   @override
   Stream<SettingsState> mapEventToState(SettingsEvent event) async* {
