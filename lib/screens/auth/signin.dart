@@ -9,6 +9,7 @@ import 'package:driverapp/screens/screens.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/constants/error_messages.dart';
+import '../../utils/constants/ui_strings.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import '../../utils/ui_tool/text_view.dart';
@@ -25,8 +26,8 @@ class SigninScreen extends StatefulWidget {
 class _SigninScreenState extends State<SigninScreen>
     with SingleTickerProviderStateMixin {
   String number = "+251934540217";
-  String password = "1111";
-  late String phoneNumber;
+  String passwordVal = "1111";
+  late String phoneNumberVal;
   late String pass;
   late ThemeProvider themeProvider;
   late bool _visiblePassword;
@@ -122,7 +123,7 @@ class _SigninScreenState extends State<SigninScreen>
         _isLoading = false;
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text("Incorrect Phone Number or Password"),
+          content: const Text(incorrectCredential),
           backgroundColor: Colors.red.shade900,
         ));
       }
@@ -152,7 +153,7 @@ class _SigninScreenState extends State<SigninScreen>
                 Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15, top: 150),
                   child:
-                      CreateText(text: "Sign In", size: 1, weight: 2).build(),
+                      CreateText(text: signin, size: 1, weight: 2).build(),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
@@ -176,7 +177,7 @@ class _SigninScreenState extends State<SigninScreen>
                           const BoxConstraints(minWidth: 0, minHeight: 0),
                       alignLabelWithHint: true,
                       //hintText: "Phone number",
-                      labelText: "Phone number",
+                      labelText: phoneNumber,
                       hintStyle: const TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.black45),
                       prefixIcon: Padding(
@@ -232,7 +233,7 @@ class _SigninScreenState extends State<SigninScreen>
                       
                         alignLabelWithHint: true,
                         //hintText: "Password",
-                        labelText: "Password",
+                        labelText: password,
                         hintStyle: const TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.black45),
                         prefixIcon: Icon(
@@ -289,7 +290,7 @@ class _SigninScreenState extends State<SigninScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Spacer(),
-                          const Text("Sign In",
+                          const Text(signin,
                               style: TextStyle(
                                   fontFamily: 'Sifonn', color: Colors.white)),
                           const Spacer(),
@@ -318,8 +319,7 @@ class _SigninScreenState extends State<SigninScreen>
                           Navigator.pushNamed(
                               context, CheckPhoneNumber.routeName);
                         },
-                        child: const Text(
-                          "Forgot Password",
+                        child: const Text(forgetPassword,
                           style: TextStyle(
                               color: Color.fromRGBO(39, 49, 110, 1),
                               fontWeight: FontWeight.bold),

@@ -8,6 +8,7 @@ const String phoneExceedE = 'Phone no. length must not be greater than 9 digits'
 const String enterPasswordE = 'Please enter Your Password';
 const String passwordLengthE = 'Password length must not be less than 4';
 const String passwordExceedE = 'Password length must not be greater than 25';
+const String passwordNotMatch = 'Password dose not match';
 
 //sign in
 const String passwordErrorE = "Incorrect Phone or Password";
