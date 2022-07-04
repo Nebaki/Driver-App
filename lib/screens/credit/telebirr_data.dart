@@ -78,7 +78,7 @@ class TelePack {
   Map<String, dynamic> toJson() =>
       {
         'code': '$code',
-        'message': '$message',
+        'message': message,
         'totalAmount': '$totalAmount',
         'appId': '$appId',
         'receiverName': '$receiverName',

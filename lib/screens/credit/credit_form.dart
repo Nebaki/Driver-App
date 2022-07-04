@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:driverapp/screens/credit/toast_message.dart';
+import 'package:driverapp/utils/constants/error_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 import '../../helper/helper.dart';
 import '../../utils/colors.dart';
+import '../../utils/constants/ui_strings.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import 'telebirr_data.dart';
@@ -48,7 +50,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
         decoration: const InputDecoration(
             
             alignLabelWithHint: true,
-            labelText: "Amount",
+            labelText: amountU,
             prefixIcon: Icon(
               Icons.money,
               size: 19,
@@ -60,9 +62,9 @@ class _TeleBirrDataState extends State<TeleBirrData> {
         ),
         validator: (value) {
           if (value!.isEmpty) {
-            return 'Please enter Amount';
-          } else if (int.parse(value) < 0) {
-            return 'Minimum Amount is 1.ETB';
+            return enterAmountE;
+          } else if (int.parse(value) < 00) {
+            return minAmountE;
           }
           return null;
         },
@@ -84,7 +86,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(),
-            const Text("Start", style: TextStyle(color: Colors.white)),
+            const Text(startU, style: TextStyle(color: Colors.white)),
             const Spacer(),
             Align(
               alignment: Alignment.centerRight,
@@ -106,7 +108,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: CreditAppBar(
-            key: _appBar, title: "Recharge", appBar: AppBar(), widgets: []),
+            key: _appBar, title: rechargeU, appBar: AppBar(), widgets: []),
         body: Stack(
           children: [
             Opacity(
@@ -205,10 +207,10 @@ class _TeleBirrDataState extends State<TeleBirrData> {
               else if(value.code == 401)
                 _refreshToken(startTelebirr(amount))
               else
-                ShowMessage(context, "Recharge", value.message)
+                ShowMessage(context, rechargeU, value.message)
             })
         .onError((error, stackTrace) => {
-              ShowMessage(context, "Recharge", "Error happened: $error"),
+              ShowMessage(context, rechargeU, "Error happened: $error"),
               setState(() {
                 _isLoading = false;
               })
@@ -229,12 +231,12 @@ class _TeleBirrDataState extends State<TeleBirrData> {
       var confirm = sender.confirmTransaction(outTradeNumber!);
       confirm
           .then((value) => {
-            ShowMessage(context, "Recharge", value.message)}
+            ShowMessage(context, rechargeU, value.message)}
       )
           .onError((error, stackTrace) =>
-              {ShowMessage(context, "Recharge", error.toString())});
+              {ShowMessage(context, rechargeU, error.toString())});
     } else {
-      ShowMessage(context, "Recharge", result.message);
+      ShowMessage(context, rechargeU, result.message);
     }
   }
 

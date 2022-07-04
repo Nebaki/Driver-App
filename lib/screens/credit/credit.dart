@@ -4,6 +4,8 @@ import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/credit/list_builder.dart';
 import 'package:driverapp/screens/credit/transfer_form.dart';
+import 'package:driverapp/utils/constants/net_status.dart';
+import 'package:driverapp/utils/constants/ui_strings.dart';
 import 'package:flutter_animarker/helpers/extensions.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
@@ -108,8 +110,7 @@ class _WaletState extends State<Walet> {
                         children: [
                           const Padding(
                             padding: EdgeInsets.only(top: 20),
-                            child: Text(
-                              "Credit balance",
+                            child: Text(creditBalanceU,
                               style:
                                   TextStyle(fontSize: 16, color: Colors.grey),
                             ),
@@ -148,8 +149,7 @@ class _WaletState extends State<Walet> {
                                   children: [
                                     Center(
                                         child: InkWell(
-                                      child: Text(
-                                        "TRANSFER",
+                                      child: Text(transferU,
                                         style: _inkweltextStyle,
                                       ),
                                       onTap: () {
@@ -174,8 +174,7 @@ class _WaletState extends State<Walet> {
                                                 barrierDismissible: false);*/
                                               //PaymentBox();
                                             },
-                                            child: Text(
-                                              "ADD CREDIT",
+                                            child: Text(addCreditU,
                                               style: _inkweltextStyle,
                                             ))),
                                   ],
@@ -187,8 +186,7 @@ class _WaletState extends State<Walet> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 20, left: 20, bottom: 10),
-                    child: Text(
-                      "Transaction logs",
+                    child: Text(transferLogsU,
                       style: TextStyle(color: themeProvider.getColor),
                     ),
                   ),
@@ -241,13 +239,13 @@ class _WaletState extends State<Walet> {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
-  var transfer = CreditDataProvider(httpClient: http.Client());
+  var creditProvider = CreditDataProvider(httpClient: http.Client());
   var balance = "loading...";
 
   void reloadBalance() {
-    var confirm = transfer.loadBalance();
+    var confirm = creditProvider.loadBalance();
     confirm.then((value) => {
-          if (value.code == "401")
+          if (value.code == anAuthorizedC.toString())
             {
               refreshToken(reloadBalance)
             }
@@ -255,7 +253,7 @@ class _WaletState extends State<Walet> {
             {
               setState(() {
                 _isBalanceLoading = false;
-                balance = value.message + " ETB";
+                balance = value.message + etbU;
               })
             }
         });

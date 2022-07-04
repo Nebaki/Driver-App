@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:driverapp/dataprovider/credit/credit.dart';
+import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/models/credit/credit.dart';
 import 'package:driverapp/screens/credit/toast_message.dart';
+import 'package:driverapp/utils/constants/error_messages.dart';
+import 'package:driverapp/utils/constants/ui_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -56,7 +59,7 @@ class _TransferState extends State<TransferMoney> {
       controller: amountController,
       decoration: const InputDecoration(
           alignLabelWithHint: true,
-          labelText: "Amount",
+          labelText: amountU,
           hintStyle:
               TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
           prefixIcon: Icon(
@@ -69,12 +72,12 @@ class _TransferState extends State<TransferMoney> {
               borderSide: BorderSide(style: BorderStyle.solid))),
       validator: (value) {
         if (value!.isEmpty) {
-          return 'Please enter Amount';
+          return enterAmountE;
         } else if (int.parse(value) < 1) {
-          return 'Please enter valid amount';
+          return notValidAmountE;
         } else if (int.parse(value) >
             int.parse(widget.balance.balance.split(".")[0])) {
-          return 'Insufficient balance, please recharge';
+          return insufficientBalance;
         }
         return null;
       },
@@ -99,7 +102,7 @@ class _TransferState extends State<TransferMoney> {
             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
             alignLabelWithHint: true,
             //hintText: "9--------",
-            labelText: "Phone number",
+            labelText: phoneNumberU,
             hintStyle: const TextStyle(
                 fontWeight: FontWeight.bold, color: Colors.black45),
             prefixIcon: const Padding(
@@ -119,11 +122,11 @@ class _TransferState extends State<TransferMoney> {
                 borderSide: BorderSide(style: BorderStyle.solid))),
         validator: (value) {
           if (value!.isEmpty) {
-            return 'Please enter Receiver Phone number';
+            return enterPhoneE;
           } else if (value.length < 9) {
-            return 'Phone no. length must not be less than 9 digits';
+            return phoneLengthE;
           } else if (value.length > 9) {
-            return 'Phone no. length must not be greater than 9 digits';
+            return phoneExceedE;
           }
           return null;
         },
@@ -186,7 +189,7 @@ class _TransferState extends State<TransferMoney> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: CreditAppBar(
-            key: _appBarKey, title: "Transfer", appBar: AppBar(), widgets: []),
+            key: _appBarKey, title: transferU, appBar: AppBar(), widgets: []),
         body: Stack(
           children: [
             Opacity(
@@ -304,9 +307,9 @@ class _TransferState extends State<TransferMoney> {
   void reloadBalance() {
     var confirm = transfer.loadBalance();
     confirm
-        .then((value) => {ShowMessage(context, "Balance", value.message)})
+        .then((value) => {ShowMessage(context, balanceU, value.message)})
         .onError((error, stackTrace) =>
-            {ShowMessage(context, "Balance", error.toString())});
+            {ShowMessage(context, balanceU, error.toString())});
   }
 
   _refreshToken(Function function) async {

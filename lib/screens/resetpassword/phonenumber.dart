@@ -451,8 +451,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            content: const Text(
-                "There is no user registered by this phone number",
+            content: const Text(phoneNotRegisteredE,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             actions: [
               TextButton(

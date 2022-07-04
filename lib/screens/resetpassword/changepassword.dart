@@ -1,10 +1,12 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/helper.dart';
+import 'package:driverapp/utils/constants/info_message.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../utils/constants/error_messages.dart';
+import '../../utils/constants/ui_strings.dart';
 
 class ChangePassword extends StatelessWidget {
   static const routeName = '/changepassword';
@@ -27,14 +29,14 @@ class ChangePassword extends StatelessWidget {
               if (state is UserPasswordChanged) {
                 _isLoading = false;
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text('Password Changed'),
+                    content: const Text(passwordChangedI),
                     backgroundColor: Colors.green.shade900));
                 Navigator.pop(context);
               }
               if (state is UserOperationFailure) {
                 _isLoading = false;
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text('Operation Failure'),
+                    content: const Text(operationFailedE),
                     backgroundColor: Colors.red.shade900));
               }
             }));
@@ -68,13 +70,12 @@ class ChangePassword extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Change Password",
+                          Text(changePasswordU,
                               style: Theme.of(context).textTheme.headlineSmall),
                           const SizedBox(
                             height: 10,
                           ),
-                          const Text(
-                              "you have to have your old password in order to change new password. lorem ipsum text to add the new."),
+                          const Text(changePasswordInfoU),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.1,
                           ),
@@ -88,7 +89,7 @@ class ChangePassword extends StatelessWidget {
                             ]),
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                  hintText: "Old Password",
+                                  hintText: oldPasswordU,
                                   hintStyle: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black45),
@@ -102,11 +103,11 @@ class ChangePassword extends StatelessWidget {
                                       borderSide: BorderSide.none)),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return enterPhoneE;
-                                } else if (value.length < 9) {
-                                  return phoneLengthE;
-                                } else if (value.length > 9) {
-                                  return phoneExceedE;
+                                  return enterPasswordE;
+                                } else if (value.length < 4) {
+                                  return passwordLengthE;
+                                } else if (value.length > 25) {
+                                  return passwordExceedE;
                                 }
                                 return null;
                               },
@@ -129,7 +130,7 @@ class ChangePassword extends StatelessWidget {
                             child: TextFormField(
                               controller: passwordController,
                               decoration: const InputDecoration(
-                                  hintText: "New Password",
+                                  hintText: newPasswordU,
                                   hintStyle: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black45),
@@ -143,11 +144,11 @@ class ChangePassword extends StatelessWidget {
                                       borderSide: BorderSide.none)),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return enterPhoneE;
-                                } else if (value.length < 9) {
-                                  return phoneLengthE;
-                                } else if (value.length > 9) {
-                                  return phoneExceedE;
+                                  return enterPasswordE;
+                                } else if (value.length < 4) {
+                                  return passwordLengthE;
+                                } else if (value.length > 25) {
+                                  return passwordExceedE;
                                 }
                                 return null;
                               },
@@ -169,7 +170,7 @@ class ChangePassword extends StatelessWidget {
                             ]),
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                  hintText: "Confirm Password",
+                                  hintText: confirmPasswordU,
                                   hintStyle: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black45),
@@ -183,14 +184,14 @@ class ChangePassword extends StatelessWidget {
                                       borderSide: BorderSide.none)),
                               validator: (value) {
                                 if (value != passwordController.text) {
-                                  return 'Password must match';
+                                  return passwordNotMatchE;
                                 }
                                 if (value!.isEmpty) {
-                                  return enterPhoneE;
-                                } else if (value.length < 9) {
-                                  return phoneLengthE;
-                                } else if (value.length > 9) {
-                                  return phoneExceedE;
+                                  return enterPasswordE;
+                                } else if (value.length < 4) {
+                                  return passwordLengthE;
+                                } else if (value.length > 25) {
+                                  return passwordExceedE;
                                 }
                                 return null;
                               },
@@ -219,7 +220,7 @@ class ChangePassword extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const Spacer(),
-                                  const Text("Change Password",
+                                  const Text(changePasswordU,
                                       style: TextStyle(color: Colors.white)),
                                   const Spacer(),
                                   Align(

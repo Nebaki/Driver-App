@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/credit/credit.dart';
+import '../../utils/constants/ui_strings.dart';
 
 class ListBuilder extends StatelessWidget {
   List<Credit> items;
@@ -16,7 +17,7 @@ class ListBuilder extends StatelessWidget {
             itemBuilder: (context, item) {
               return _buildListItems(context, items[item], item);
             })
-        : const Center(child: Text('No Message'));
+        : const Center(child: Text(noMessageU));
   }
 
   Widget _buildListItems(BuildContext context, Credit credit, int item) {
@@ -93,9 +94,9 @@ class ListBuilder extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Text(
+                                const Text(
                                   "Payed with: ",
-                                  style: const TextStyle(color: Colors.black),
+                                  style: TextStyle(color: Colors.black),
                                 ),
                                 Text(
                                   credit.paymentMethod!,
@@ -105,9 +106,9 @@ class ListBuilder extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                Text(
+                                const Text(
                                   "status: ",
-                                  style: const TextStyle(color: Colors.black),
+                                  style: TextStyle(color: Colors.black),
                                 ),
                                 Text(
                                   credit.status!,

@@ -123,7 +123,7 @@ class _SigninScreenState extends State<SigninScreen>
         _isLoading = false;
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text(incorrectCredential),
+          content: const Text(incorrectCredentialU),
           backgroundColor: Colors.red.shade900,
         ));
       }
@@ -153,7 +153,7 @@ class _SigninScreenState extends State<SigninScreen>
                 Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15, top: 150),
                   child:
-                      CreateText(text: signin, size: 1, weight: 2).build(),
+                      CreateText(text: signInU, size: 1, weight: 2).build(),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
@@ -177,7 +177,7 @@ class _SigninScreenState extends State<SigninScreen>
                           const BoxConstraints(minWidth: 0, minHeight: 0),
                       alignLabelWithHint: true,
                       //hintText: "Phone number",
-                      labelText: phoneNumber,
+                      labelText: phoneNumberU,
                       hintStyle: const TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.black45),
                       prefixIcon: Padding(
@@ -233,7 +233,7 @@ class _SigninScreenState extends State<SigninScreen>
                       
                         alignLabelWithHint: true,
                         //hintText: "Password",
-                        labelText: password,
+                        labelText: passwordU,
                         hintStyle: const TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.black45),
                         prefixIcon: Icon(
@@ -258,7 +258,7 @@ class _SigninScreenState extends State<SigninScreen>
                             borderSide: BorderSide(style: BorderStyle.solid))),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return enterPhoneE;
+                        return enterPasswordE;
                       } else if (value.length < 4) {
                         return passwordLengthE;
                       } else if (value.length > 25) {
@@ -290,9 +290,9 @@ class _SigninScreenState extends State<SigninScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Spacer(),
-                          const Text(signin,
+                          const Text(signInU,
                               style: TextStyle(
-                                  fontFamily: 'Sifonn', color: Colors.white)),
+                                  fontFamily: fontFamilyU, color: Colors.white)),
                           const Spacer(),
                           Align(
                             alignment: Alignment.centerRight,
@@ -319,7 +319,7 @@ class _SigninScreenState extends State<SigninScreen>
                           Navigator.pushNamed(
                               context, CheckPhoneNumber.routeName);
                         },
-                        child: const Text(forgetPassword,
+                        child: const Text(forgetPasswordU,
                           style: TextStyle(
                               color: Color.fromRGBO(39, 49, 110, 1),
                               fontWeight: FontWeight.bold),
