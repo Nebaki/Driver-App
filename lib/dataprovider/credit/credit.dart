@@ -76,14 +76,21 @@ class CreditDataProvider {
 
   Future<CreditStore> loadCreditHistory(String user) async {
     final http.Response response = await http.get(
-      Uri.parse('$_baseUrl/get-driver-credit-transactions?driver_id = $user'),
+      Uri.parse('$_baseUrl/get-driver-credit-transactions?'
+          'driver_id=$user&orderBy[0].[field]=createdAt&orderBy[0].[direction]=desc'),
       headers: await RequestHeader().authorisedHeader(),
     );
 
-    if (response.statusCode != 200) {
+    Session().logSession("history", response.statusCode.toString());
+    if (response.statusCode == 200) {
       Session().logSession("history", "success");
       Credit credit;
-      DepositedBy depo = DepositedBy(
+
+      final List maps = jsonDecode(response.body)['items'];
+      final int size = jsonDecode(response.body)['total'];
+      List<Credit> credits = maps.map((job) => Credit.fromJson(job)).toList();
+
+      /*DepositedBy depo = DepositedBy(
           id: "mera", name: "winux", email: "@mera", phone: "0922877115");
       List<Credit> credits = [];
       int i = 0;
@@ -107,7 +114,7 @@ class CreditDataProvider {
         );
         credits.add(credit);
         i++;
-      }
+      }*/
       Session().logSession("trans", response.body);
       return CreditStore(trips: credits);
       //return CreditStore.fromJson(jsonDecode(response.body));
@@ -130,7 +137,7 @@ class CreditDataProvider {
             type: type,
             amount: "$money.ETB",
             date: "Today");
-        credits.add(credit);
+        //credits.add(credit);
         i++;
       }
       return CreditStore(trips: credits);

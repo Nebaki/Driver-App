@@ -60,7 +60,7 @@ class _WaletState extends State<Walet> {
             child: ClipPath(
               clipper: WaveClipper(),
               child: Container(
-                height: 250,
+                height: MediaQuery.of(context).size.height,
                 color: themeProvider.getColor,
               ),
             ),
@@ -184,15 +184,15 @@ class _WaletState extends State<Walet> {
                       ),
                     ),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(top: 20, left: 20, bottom: 10),
                     child: Text(transferLogsU,
-                      style: TextStyle(color: themeProvider.getColor),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                   Container(
                     decoration: const BoxDecoration(
-                        color: Colors.white,
+                        //color: Colors.white,
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10))),
@@ -208,7 +208,7 @@ class _WaletState extends State<Walet> {
                                 color: themeProvider.getColor,
                               ),
                             ))
-                        : ListBuilder(_items!),
+                        : ListBuilder(_items!,themeProvider.getColor),
                   ),
                 ],
               ),
