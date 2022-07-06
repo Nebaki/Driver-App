@@ -108,11 +108,11 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             SingleChildScrollView(
                 child: Padding(
-              padding: const EdgeInsets.only(top: 20, left: 5, right: 5),
+              padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 15.0),
+                    padding: const EdgeInsets.only(top: 5.0),
                     child: Profile(
                       id: state.auth.id,
                       emergencyContact: state.auth.emergencyContact,
@@ -273,9 +273,9 @@ class _SettingScreenState extends State<SettingScreen> {
                   //   ),
                   // ),
                   Card(
-                    elevation: 2,
+                    elevation: 1.0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(5.0),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -336,9 +336,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     ),
                   ),
                   Card(
-                    elevation: 2,
+                    elevation: 1.0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(5.0),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -635,16 +635,16 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
     List profileItems = [
-      {'count': '$balance.ETB', 'name': 'Balance'},
-      {'count': rating.toString(), 'name': 'Rating'},
+      {'count': '$balance ETB', 'name': 'Balance'},
+      {'count':  rating?.toStringAsFixed(1) , 'name': 'Rating'},
       /* {'count': '267', 'name': 'Track'},
   {'count': '39', 'name': 'Coupons'},*/
     ];
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(25.0),
+        borderRadius: BorderRadius.circular(5.0),
       ),
-      elevation: 2.0,
+      elevation: 1.0,
       child: Container(
         height: deviceSize.height * 0.3,
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -838,8 +838,8 @@ class ProfileImage extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: themeProvider.getColor,
-        image: const DecorationImage(
-          image: NetworkImage("devMausam"),
+        image: DecorationImage(
+          image: NetworkImage(imgUrl),
           fit: BoxFit.contain,
         ),
         border: Border.all(
