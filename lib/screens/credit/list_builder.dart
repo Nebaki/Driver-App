@@ -77,54 +77,64 @@ class ListBuilder extends StatelessWidget {
                   trailing:
                       Text(credit.amount!, style: const TextStyle(color: Colors.red)),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    credit.message!,
-                    style: const TextStyle(color: Colors.black),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      credit.message!,
+                      style: const TextStyle(color: Colors.black),
+                    ),
                   ),
                 ),
                 Expanded(
                   child: Align(
                     alignment: Alignment.bottomRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const Divider(height: 3,),
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Payed with: ",
-                                  style: TextStyle(color: Colors.black),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      "Payed with: ",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    Text(
+                                      credit.paymentMethod!,
+                                      style: const TextStyle(color: Colors.deepOrangeAccent),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  credit.paymentMethod!,
-                                  style: const TextStyle(color: Colors.deepOrangeAccent),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text(
-                                  "status: ",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                Text(
-                                  credit.status!,
-                                  style: const TextStyle(color: Colors.deepOrangeAccent),
-                                ),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      "status: ",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    Text(
+                                      credit.status!,
+                                      style: const TextStyle(color: Colors.deepOrangeAccent),
+                                    ),
 
+                                  ],
+                                ),
+                                /*Row(
+                                  children: [
+                                    Text("Status: ${credit.paymentMethod!},"
+                                        " ${credit.status!}, ${credit.depositedBy!.name!}"),
+                                  ],
+                                ),*/
                               ],
                             ),
-                            /*Row(
-                              children: [
-                                Text("Status: ${credit.paymentMethod!},"
-                                    " ${credit.status!}, ${credit.depositedBy!.name!}"),
-                              ],
-                            ),*/
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
 
                   ),
