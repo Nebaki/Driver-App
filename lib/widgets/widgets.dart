@@ -11,3 +11,4 @@ export 'rider_detail.dart';
 export 'onmap/arrived.dart';
 export 'barchart/earning_barchart.dart';
 export 'onmap/on_driver_status/on_driver_status.dart';
+export 'barchart/shimmer_bar_chart.dart';

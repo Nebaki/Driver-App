@@ -201,7 +201,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                 // distance = st.rideRequest.distance!;
                 context.read<StartedTripDataCubit>().getStartedTripData();
                 Navigator.pushReplacementNamed(context, HomeScreen.routeName,
-                    arguments: HomeScreenArgument(
+                    arguments: HomeScreenArgument(status: st.rideRequest.status,
                         isSelected: true,
                         encodedPts: st.rideRequest.direction,
                         isOnline: false));
@@ -247,7 +247,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
       isFirstTime = true;
       showBanner = true;
       setState(() {});
-
 
       // ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
       //     content: const Text("No Internet Connection"),

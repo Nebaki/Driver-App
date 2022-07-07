@@ -1,8 +1,9 @@
 import 'package:driverapp/bloc/bloc.dart';
-import 'package:driverapp/screens/screens.dart';
+import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 class WeeklyEarningTab extends StatelessWidget {
   const WeeklyEarningTab({Key? key}) : super(key: key);
@@ -44,7 +45,7 @@ class WeeklyEarningTab extends StatelessWidget {
                                   );
                                 }
                                 if (state is WeeklyEarningLoading) {
-                                  // return const ShimmerWeeklyEarningBarChart();
+                                  return const ShimmerWeeklyEarningBarChart();
                                 }
                                 if (state is WeeklyEarningOperationFailure) {
                                   return Column(
@@ -96,62 +97,94 @@ class WeeklyEarningTab extends StatelessWidget {
                 child: Divider(),
               ),
               BlocBuilder<WeeklyEarningBloc, WeeklyEarningState>(
-                  builder: (context, state) {
-
-                    if (state is WeeklyEarningLoadSuccess) {
-                      double cashtrips = 0;
-                      state.weeklyEarning.forEach((element) {
-                        cashtrips += element.earning;
-                      });
-                      return SizedBox(
-                        height: 50,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: [
-                                Text(state.weeklyEarning.length.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black)),
-                                Text(
-                                  "Trips",
-                                  style: Theme.of(context).textTheme.overline,
-                                )
-                              ],
-                            ),
-                            const VerticalDivider(),
-                            Column(
-                              children: [
-                                const Text("8:30"),
-                                Text("Online hrs",
-                                    style: Theme.of(context).textTheme.overline)
-                              ],
-                            ),
-                            const VerticalDivider(),
-                            Column(
-                              children: [
-                                Text('${cashtrips.toStringAsFixed(2)} ETB',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black)),
-                                Text("Cash Trips",
-                                    style: Theme.of(context).textTheme.overline)
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    return Container();
-                  },
-                )
+                builder: (context, state) {
+                  if (state is WeeklyEarningLoadSuccess) {
+                    double cashtrips = 0;
+                    state.weeklyEarning.forEach((element) {
+                      cashtrips += element.earning;
+                    });
+                    return SizedBox(
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            children: [
+                              Text(state.weeklyEarning.length.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black)),
+                              Text(
+                                "Trips",
+                                style: Theme.of(context).textTheme.overline,
+                              )
+                            ],
+                          ),
+                          const VerticalDivider(),
+                          Column(
+                            children: [
+                              const Text("8:30"),
+                              Text("Online hrs",
+                                  style: Theme.of(context).textTheme.overline)
+                            ],
+                          ),
+                          const VerticalDivider(),
+                          Column(
+                            children: [
+                              Text('${cashtrips.toStringAsFixed(2)} ETB',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black)),
+                              Text("Cash Trips",
+                                  style: Theme.of(context).textTheme.overline)
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return Shimmer(
+                    gradient: shimmerGradient,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Container(
+                            height: 30,
+                            width: 60,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(24),
+                                color: Colors.black),
+                          ),
+                          const VerticalDivider(),
+                          Container(
+                            height: 30,
+                            width: 60,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(24),
+                                color: Colors.black),
+                          ),
+                          const VerticalDivider(),
+                          Container(
+                            height: 30,
+                            width: 60,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(24),
+                                color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              )
             ],
           ),
         ),

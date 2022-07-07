@@ -66,12 +66,12 @@ class AppRoute {
     if (settings.name == Summary.routeName) {
       return MaterialPageRoute(builder: (context) =>  Summary());
     }
-    if (settings.name == PersonalDocument.routeName) {
-      return MaterialPageRoute(builder: (context) => PersonalDocument());
-    }
-    if (settings.name == VehicleDocument.routeName) {
-      return MaterialPageRoute(builder: (context) => VehicleDocument());
-    }
+    // if (settings.name == PersonalDocument.routeName) {
+    //   return MaterialPageRoute(builder: (context) => PersonalDocument());
+    // }
+    // if (settings.name == VehicleDocument.routeName) {
+    //   return MaterialPageRoute(builder: (context) => VehicleDocument());
+    // }
     if (settings.name == CheckPhoneNumber.routeName) {
       return MaterialPageRoute(builder: (context) => const CheckPhoneNumber());
     }
@@ -143,8 +143,9 @@ class HomeScreenArgument {
   bool isSelected = false;
   bool isOnline;
   String? encodedPts;
+  final String? status;
   HomeScreenArgument(
-      {required this.isSelected, this.encodedPts, required this.isOnline});
+      {required this.isSelected, this.encodedPts, required this.isOnline,this.status});
 }
 
 class EditProfileArgument {

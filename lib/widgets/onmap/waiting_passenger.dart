@@ -50,7 +50,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
               BlocProvider.of<DirectionBloc>(context).add(event);
             } else {
               if (widget.fromOnline) {
-                homeScreenStreamSubscription.cancel().then((value) {
+                homeScreenStreamSubscription!.cancel().then((value) {
                   Geofire.removeLocation(firebaseKey);
                 });
               }

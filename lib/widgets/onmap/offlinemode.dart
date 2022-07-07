@@ -38,10 +38,11 @@ class OfflineMode extends StatelessWidget {
                       backgroundColor: Colors.white,
                       onPressed: () {
                         isDriverOnline = true;
+                        context.read<UserBloc>().add(const UserUpdateStatus(status: true));
                         getLiveLocation();
                         context
                             .read<CurrentWidgetCubit>()
-                            .changeWidget( OnlinMode());
+                            .changeWidget( const OnlinMode());
                         // callback!(OnlinMode(callback, setDriverStatus));
                       },
                       child: Container(

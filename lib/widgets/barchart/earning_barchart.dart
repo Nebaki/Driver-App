@@ -39,52 +39,63 @@ class WeeklyEarningBarChart extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Bar(
-                label: 'M',
+                label: 'Mon',
                 amountSpent: _earningOf("Mon"),
                 mostExpensive: mostExpensive,
                 isEarning: isEarning,
+                percent: _getPercent(mostExpensive, _earningOf("Mon")),
               ),
               Bar(
-                label: 'T',
+                label: 'Tue',
                 amountSpent: _earningOf("Tue"),
                 mostExpensive: mostExpensive,
                 isEarning: isEarning,
+                percent: _getPercent(mostExpensive, _earningOf("Tue")),
               ),
               Bar(
-                label: 'W',
+                label: 'Wed',
                 amountSpent: _earningOf("Wed"),
                 mostExpensive: mostExpensive,
                 isEarning: isEarning,
+                percent: _getPercent(mostExpensive, _earningOf("Wed")),
               ),
               Bar(
-                label: 'T',
+                label: 'Thu',
                 amountSpent: _earningOf("Thu"),
                 mostExpensive: mostExpensive,
                 isEarning: isEarning,
+                percent: _getPercent(mostExpensive, _earningOf("Thu")),
               ),
               Bar(
-                label: 'F',
+                label: 'Fri',
                 amountSpent: _earningOf("Fri"),
                 mostExpensive: mostExpensive,
                 isEarning: isEarning,
+                percent: _getPercent(mostExpensive, _earningOf("Fri")),
               ),
               Bar(
-                label: 'S',
+                label: 'Sat',
                 amountSpent: _earningOf("Sat"),
                 mostExpensive: mostExpensive,
                 isEarning: isEarning,
+                percent: _getPercent(mostExpensive, _earningOf("Sat")),
               ),
               Bar(
-                label: 'S',
+                label: 'Sun',
                 amountSpent: _earningOf("Sun"),
                 mostExpensive: mostExpensive,
                 isEarning: isEarning,
+                percent: _getPercent(mostExpensive, _earningOf("Sun")),
               ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  double _getPercent(double mostExpensive, double value) {
+    return (value * 100) / mostExpensive;
   }
 
   double _earningOf(String day) {
@@ -120,26 +131,36 @@ class Bar extends StatelessWidget {
   final double amountSpent;
   final double mostExpensive;
   final bool isEarning;
+  final double percent;
 
   final double _maxBarHeight = 100.0;
+  Color getColor(BuildContext context, double percent) {
+    if (percent >= 75) {
+      return Colors.green;
+    } else if (percent >= 25) {
+      return Colors.orange;
+    }
+    return Colors.red;
+  }
 
   const Bar(
       {Key? key,
       required this.label,
       required this.amountSpent,
       required this.mostExpensive,
-      required this.isEarning})
+      required this.isEarning,
+      required this.percent})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final barHeight = amountSpent / mostExpensive * _maxBarHeight;
+    final barHeight = amountSpent / mostExpensive * _maxBarHeight+1;
     return Column(
       children: <Widget>[
         Text(
           isEarning
               ? '${amountSpent.toStringAsFixed(0)} ETB'
-              : amountSpent.toString(),
+              : amountSpent.toStringAsFixed(0),
           style: Theme.of(context).textTheme.overline,
         ),
         const SizedBox(height: 6.0),
@@ -147,7 +168,7 @@ class Bar extends StatelessWidget {
           height: barHeight,
           width: 32.0,
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
+            color: getColor(context, percent),
             borderRadius: BorderRadius.circular(6.0),
           ),
         ),

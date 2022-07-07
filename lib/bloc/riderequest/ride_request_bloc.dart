@@ -9,6 +9,24 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
 
   @override
   Stream<RideRequestState> mapEventToState(RideRequestEvent event) async* {
+
+    if (event is RideRequestLoadWeekly){
+      yield RideRequestLoading();
+      try {
+        final request =
+            await rideRequestRepository.getWeeklyRideRequests();
+            print("Requestttttttttttt $request");
+        yield RideRequestLoadSuccess(request);
+      } catch (e) {
+        if (e.toString().split(" ")[1] == "401") {
+          yield RideRequestTokentExpired();
+        } else {
+          yield RideRequestOperationFailur();
+        }
+      }
+    }
+
+
     if (event is RideRequestCreate) {
       yield RideRequestLoading();
       try {

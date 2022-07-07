@@ -50,10 +50,11 @@ class _OnlinModeState extends State<OnlinMode> {
                     return FloatingActionButton(
                       backgroundColor: themeProvider.getColor ,
                       onPressed: () {
-                        homeScreenStreamSubscription.cancel().then((value) {});
+                        homeScreenStreamSubscription!.cancel().then((value) {});
                         // homeScreenStreamSubscription.cancel();
 
                         // setDriverStatus(false);
+                        context.read<UserBloc>().add(const UserUpdateStatus(status: false));
 
                         isDriverOnline = false;
                         context
@@ -128,7 +129,7 @@ class _OnlinModeState extends State<OnlinMode> {
                   child: const Text('No')),
               TextButton(
                   onPressed: () {
-                    homeScreenStreamSubscription.cancel().then((value) {
+                    homeScreenStreamSubscription!.cancel().then((value) {
                       Geofire.removeLocation(firebaseKey).then((value) {
                         SystemNavigator.pop();
                       });

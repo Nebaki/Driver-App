@@ -20,6 +20,16 @@ class RideRequestSuccess extends RideRequestState {
   List<Object> get props => [request];
 }
 
+class RideRequestLoadSuccess extends RideRequestState {
+  final List<RideRequest?> request;
+
+  const RideRequestLoadSuccess(this.request);
+
+  @override
+  List<Object> get props => [request];
+}
+
+
 class RideRequestOperationFailur extends RideRequestState {}
 
 class RideRequesChanged extends RideRequestState {}

@@ -137,9 +137,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     super.initState();
     _listenBackGroundMessege();
-    context
-        .read<CurrentWidgetCubit>()
-        .changeWidget(widget.args.isOnline ? const OnlinMode() : OfflineMode());
+    if (!widget.args.isSelected) {
+      context.read<CurrentWidgetCubit>().changeWidget(
+          widget.args.isOnline ? const OnlinMode() : OfflineMode());
+    }
     // _currentWidget = ;
     _checkLocationServiceOnInit();
     _toggleLocationServiceStatusStream();
@@ -191,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       key: _scaffoldKey,
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       body: Stack(
         children: [
           stopNotficationListner
@@ -881,8 +882,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     driverStreamSubscription = Geolocator.getPositionStream(
             locationSettings: const LocationSettings(
-                timeLimit: Duration(seconds: 10),
-                distanceFilter: 10,
+                // timeLimit: Duration(seconds: 10),
+                distanceFilter: 5,
                 accuracy: LocationAccuracy.best))
         .listen((event) {
       // animate camera based on the new position
@@ -972,9 +973,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   final form = _formKey.currentState;
                   if (form!.validate()) {
                     if (droppOffLocationNode.hasFocus) {
-                      homeScreenStreamSubscription.cancel().then((value) {
-                        Geofire.removeLocation(firebaseKey);
-                      });
+                      if (homeScreenStreamSubscription != null) {
+                        homeScreenStreamSubscription!.cancel().then((value) {
+                          Geofire.removeLocation(firebaseKey);
+                        });
+                      }
+
                       getPlaceDetail(prediction.placeId);
                       settingDropOffDialog(con);
                     } else if (pickupLocationNode.hasFocus) {
@@ -1429,9 +1433,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.pop(context);
 
                       _getPolyline(widget.args.encodedPts!);
-                      context
-                          .read<CurrentWidgetCubit>()
-                          .changeWidget(const CompleteTrip());
 
                       // _currentWidget = CompleteTrip();
                       destination = droppOffLocation;
@@ -1769,6 +1770,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void loadStartedTrip() {
     if (widget.args.isSelected) {
+      switch (widget.args.status) {
+        case "Accepted":
+          context.read<CurrentWidgetCubit>().changeWidget(const Arrived());
+          break;
+        case "Arrived":
+          context
+              .read<CurrentWidgetCubit>()
+              .changeWidget(const WaitingPassenger(
+                formPassenger: true,
+                fromOnline: true,
+              ));
+          break;
+        case "Started":
+          context.read<CurrentWidgetCubit>().changeWidget(const CompleteTrip());
+          break;
+        default:
+          widget.args.isOnline ? OfflineMode() : const OnlinMode();
+      }
+
+      ///started trip map
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _getPolyline(widget.args.encodedPts!);
         _addMarker(

@@ -1,6 +1,7 @@
 import 'package:driverapp/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 @immutable
@@ -39,7 +40,7 @@ class RideRequest extends Equatable {
       this.cancelReason,
       this.pickUpAddress,
       this.droppOffAddress,
-      required this.driverId,
+      this.driverId,
       this.pickupLocation,
       this.dropOffLocation,
       this.passenger});
@@ -51,7 +52,6 @@ class RideRequest extends Equatable {
   factory RideRequest.fromJson(Map<String, dynamic> json) {
     return RideRequest(
         id: json["id"],
-        driverId: json["driver_id"] ?? '',
         pickupLocation:
             LatLng(json["pickup_location"][0], json["pickup_location"][1]),
         dropOffLocation:
@@ -64,9 +64,11 @@ class RideRequest extends Equatable {
         distance: json['distance'].toString(),
         passenger: json.containsKey('passenger')
             ? Passenger.fromJson(json['passenger'])
-            : const Passenger(name: 'Uknown Customer'));
+            : Passenger(name: 'Uknown Customer'),
+        date: DateFormat.yMMMEd().format(DateTime.parse(json['created_at'])),
+        time: DateFormat.jm().format(DateTime.parse(json['created_at'])));
   }
 
   @override
-  String toString() => 'RideRequest {DriverId: $driverId }';
+  String toString() => 'RideRequest {DriverId: $id }';
 }
