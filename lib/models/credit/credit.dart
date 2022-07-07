@@ -88,15 +88,11 @@ class DepositedBy {
 
 class CreditStore {
   List<Credit>? trips;
+  int total;
+  CreditStore({required this.trips,required this.total});
 
-  CreditStore({required this.trips});
-
-  CreditStore.fromJson(List<dynamic> parsedJson) {
+  CreditStore.fromJson(List<dynamic> parsedJson,this.total) {
     trips = parsedJson.map((i) => Credit.fromStringObject(i)).toList();
-  }
-
-  CreditStore.getList() {
-    trips;
   }
 
   String toJson() {
