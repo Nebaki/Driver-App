@@ -8,55 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:176908248309:android:81081fea49a7c91bbb91bc",
+        "mobilesdk_app_id": "1:176908248309:android:0e0dc8a8b9102e6bbb91bc",
         "android_client_info": {
-          "package_name": "com.example.driverapp"
+          "package_name": "com.mobiletransport.provider"
         }
       },
       "oauth_client": [
         {
-          "client_id": "176908248309-49ji5pt7rga1c2qrqar87f7140cju27f.apps.googleusercontent.com",
+          "client_id": "176908248309-7pvp96khvg90q5oiiarroh2bn5erbj0k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.driverapp",
-            "certificate_hash": "619339c4b919d1961fab17971379d6adfc65501d"
-          }
-        },
-        {
-          "client_id": "176908248309-trfe55h5atu2121c53l39o19m0o4msoj.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA0bhPe056gyJDV3DFEuF4Olf7cC1tzV2w"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "176908248309-trfe55h5atu2121c53l39o19m0o4msoj.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:176908248309:android:cbb9b1461bb310acbb91bc",
-        "android_client_info": {
-          "package_name": "com.example.passengerapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "176908248309-iahi6am8j45olau5fe8c38glugl8is6r.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.passengerapp",
-            "certificate_hash": "619339c4b919d1961fab17971379d6adfc65501d"
+            "package_name": "com.mobiletransport.provider",
+            "certificate_hash": "3420e2d3f1988bca75680a3a33c92414039027b4"
           }
         },
         {
