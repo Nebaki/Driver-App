@@ -1,6 +1,8 @@
+import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class Earning extends StatefulWidget {
@@ -17,6 +19,11 @@ class _EarningState extends State<Earning> {
 
   final _appBarKey = GlobalKey<FormState>();
 
+  @override
+  void initState() {
+    context.read<WeeklyEarningBloc>().add(WeeklyEarningLoad());
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

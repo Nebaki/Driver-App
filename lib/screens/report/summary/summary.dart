@@ -12,6 +12,7 @@ class Summary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<WeeklyEarningBloc>().add(WeeklyEarningLoad());
       context.read<RideRequestBloc>().add(RideRequestLoadWeekly());
     });
     return DefaultTabController(

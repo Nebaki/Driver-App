@@ -87,22 +87,25 @@ void main() async {
   //           balanceRepository: balanceRepository,
   //         )),
   //     blocObserver: SimpleBlocObserver());
-
-  runApp(MyApp(
-    placeDetailRepository: placeDetailRepository,
-    directionRepository: directionRepository,
-    authRepository: authRepository,
-    userRepository: userRepository,
-    reverseLocationRepository: reverseLocationRepository,
-    rideRequestRepository: rideRequestRepository,
-    locationPredictionRepository: locationPredictionRepository,
-    emergencyReportRepository: emergencyReportRepository,
-    passengerRepository: passengerRepository,
-    balanceRepository: balanceRepository,
-    ratingRepository: ratingRepository,
-    settingsRepository: settingsRepository,
-    weeklyEarningRepository: weeklyEarningRepository,
-  ));
+  const secureStorage = FlutterSecureStorage();
+  String? theme = await secureStorage.read(key: "theme");
+  runApp(ChangeNotifierProvider(
+      create: (context) => ThemeProvider(theme: int.parse(theme ?? "3")),
+      child: MyApp(
+        placeDetailRepository: placeDetailRepository,
+        directionRepository: directionRepository,
+        authRepository: authRepository,
+        userRepository: userRepository,
+        reverseLocationRepository: reverseLocationRepository,
+        rideRequestRepository: rideRequestRepository,
+        locationPredictionRepository: locationPredictionRepository,
+        emergencyReportRepository: emergencyReportRepository,
+        passengerRepository: passengerRepository,
+        balanceRepository: balanceRepository,
+        ratingRepository: ratingRepository,
+        settingsRepository: settingsRepository,
+        weeklyEarningRepository: weeklyEarningRepository,
+      )));
 }
 
 class MyApp extends StatelessWidget {
@@ -206,8 +209,7 @@ class MyApp extends StatelessWidget {
               ),
               BlocProvider(
                 create: (context) => WeeklyEarningBloc(
-                    weeklyEarningRepository: weeklyEarningRepository)
-                  ..add(WeeklyEarningLoad()),
+                    weeklyEarningRepository: weeklyEarningRepository),
               )
             ],
             child: Consumer<ThemeProvider>(
@@ -215,10 +217,11 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                 title: 'SafeWay',
                 theme: ThemeData(
+                  
                     inputDecorationTheme: InputDecorationTheme(
-                      suffixIconColor: themeProvider.getColor,
-                      prefixIconColor: themeProvider.getColor,
-                      focusedBorder: OutlineInputBorder(
+                        suffixIconColor: themeProvider.getColor,
+                        prefixIconColor: themeProvider.getColor,
+                        focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                               color: themeProvider.getColor, width: 2.0),
                         ),

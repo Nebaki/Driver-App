@@ -74,110 +74,171 @@ class _WeeklySummaryTabState extends State<WeeklySummaryTab> {
         ),
         SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(25)),
                 height: 200,
                 child: CustomScrollView(
                   slivers: <Widget>[
                     SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          if (index == 0) {
-                            return BlocBuilder<WeeklyEarningBloc,
-                                WeeklyEarningState>(
-                              builder: (context, state) {
-                                if (state is WeeklyEarningLoadSuccess) {
-                                  return WeeklyEarningBarChart(
-                                    state.weeklyEarning,
-                                    isEarning: false,
-                                  );
-                                }
-                                return const ShimmerWeeklyEarningBarChart();
-                              },
-                            );
-                          }
-                        },
-                        childCount: 1 + 7,
-                      )
-                      ),
-                    ],
-                  ),
+                        delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        if (index == 0) {
+                          return BlocBuilder<WeeklyEarningBloc,
+                              WeeklyEarningState>(
+                            builder: (context, state) {
+                              if (state is WeeklyEarningLoadSuccess) {
+                                return WeeklyEarningBarChart(
+                                  state.weeklyEarning,
+                                  isEarning: false,
+                                );
+                              }
+                              return const ShimmerWeeklyEarningBarChart();
+                            },
+                          );
+                        }
+                      },
+                      childCount: 1 + 7,
+                    )),
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 20,
               ),
-              BlocBuilder<WeeklyEarningBloc, WeeklyEarningState>(
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  elevation: 0.0,
+                  child: BlocBuilder<WeeklyEarningBloc, WeeklyEarningState>(
+                    builder: (context, state) {
+                      if (state is WeeklyEarningLoadSuccess) {
+                        int numberOfTrips = 0;
+                        double totalCash = 0;
+                        for (WeeklyEarning weeklyEarning
+                            in state.weeklyEarning) {
+                          numberOfTrips += weeklyEarning.trips;
+                          totalCash += weeklyEarning.earning;
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(numberOfTrips.toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black)),
+                                  Text(
+                                    "Trips",
+                                    style: Theme.of(context).textTheme.overline,
+                                  )
+                                ],
+                              ),
+                              const VerticalDivider(),
+                              Column(
+                                children: [
+                                  const Text("8:30"),
+                                  Text("Online hrs",
+                                      style:
+                                          Theme.of(context).textTheme.overline)
+                                ],
+                              ),
+                              const VerticalDivider(),
+                              Column(
+                                children: [
+                                  Text('${totalCash.toStringAsFixed(2)} ETB',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black)),
+                                  Text("Cash Trips",
+                                      style:
+                                          Theme.of(context).textTheme.overline)
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      if (state is WeeklyEarningLoading) {
+                        return Shimmer(
+                          gradient: shimmerGradient,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Container(
+                                  height: 30,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(24),
+                                      color: Colors.black),
+                                ),
+                                const VerticalDivider(),
+                                Container(
+                                  height: 30,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(24),
+                                      color: Colors.black),
+                                ),
+                                const VerticalDivider(),
+                                Container(
+                                  height: 30,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(24),
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 40),
+                child: Text("Trips"),
+              ),
+              BlocBuilder<RideRequestBloc, RideRequestState>(
                 builder: (context, state) {
-                  if (state is WeeklyEarningLoadSuccess) {
-                    int numberOfTrips = 0;
-                    double totalCash = 0;
-                    for (WeeklyEarning weeklyEarning in state.weeklyEarning) {
-                      numberOfTrips += weeklyEarning.trips;
-                      totalCash += weeklyEarning.earning;
+                  if (state is RideRequestLoadSuccess) {
+                    if (state.request.isNotEmpty) {
+                      return Column(
+                        children: List.generate(
+                            state.request.length,
+                            (index) => _buildTrips(
+                                context: context,
+                                time: state.request[index]!.time!,
+                                location:
+                                    state.request[index]!.droppOffAddress!,
+                                price: state.request[index]!.price!)),
+                      );
                     }
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Column(
-                            children: [
-                              Text(numberOfTrips.toString(),style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold, color: Colors.black)),
-                               Text("Trips",style: Theme.of(context).textTheme.overline,)
-                            ],
-                          ),
-                          const VerticalDivider(),
-                          Column(
-                            children:  [const Text("8:30"), Text("Online hrs",style: Theme.of(context).textTheme.overline)],
-                          ),
-                          const VerticalDivider(),
-                          Column(
-                            children: [
-                              Text('${totalCash.toStringAsFixed(2)} ETB',style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold, color: Colors.black)),
-                               Text("Cash Trips",style: Theme.of(context).textTheme.overline)
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
                   }
-                  if (state is WeeklyEarningLoading) {
-                    return Shimmer(
-                      gradient: shimmerGradient,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Container(
-                              height: 30,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(24),
-                                  color: Colors.black),
-                            ),
-                            const VerticalDivider(),
-                            Container(
-                              height: 30,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(24),
-                                  color: Colors.black),
-                            ),
-                            const VerticalDivider(),
-                            Container(
-                              height: 30,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(24),
-                                  color: Colors.black),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  return Container();
+                  return Column(
+                    children: List.generate(
+                        10, (index) => _buildShimmerTrips(context)),
+                  );
                 },
               )
             ],
@@ -186,31 +247,6 @@ class _WeeklySummaryTabState extends State<WeeklySummaryTab> {
         const SizedBox(
           height: 20,
         ),
-        const Padding(
-          padding: EdgeInsets.only(left: 40),
-          child: Text("Trips"),
-        ),
-        BlocBuilder<RideRequestBloc, RideRequestState>(
-          builder: (context, state) {
-            if (state is RideRequestLoadSuccess) {
-              if (state.request.isNotEmpty) {
-                return Column(
-                  children: List.generate(
-                      state.request.length,
-                      (index) => _buildTrips(
-                          context: context,
-                          time: state.request[index]!.time!,
-                          location: state.request[index]!.droppOffAddress!,
-                          price: state.request[index]!.price!)),
-                );
-              }
-            }
-            return Column(
-              children:
-                  List.generate(10, (index) => _buildShimmerTrips(context)),
-            );
-          },
-        )
       ],
     );
   }
@@ -222,25 +258,36 @@ class _WeeklySummaryTabState extends State<WeeklySummaryTab> {
       required String price}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          ListTile(
-            leading:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text(
-                time,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        elevation: 0.0,
+        child: Column(
+          children: [
+            ListTile(
+              leading: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      time,
+                      style: Theme.of(context).textTheme.overline,
+                    )
+                  ]),
+              title: Text(location),
+              subtitle: Text(
+                "Paid in Cash",
                 style: Theme.of(context).textTheme.overline,
-              )
-            ]),
-            title: Text(location),
-            subtitle:  Text("Paid in Cash",style: Theme.of(context).textTheme.overline,),
-            trailing: Text("$price ETB",style: Theme.of(context).textTheme.overline),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 50, right: 10),
-            child: Divider(),
-          )
-        ],
+              ),
+              trailing: Text("$price ETB",
+                  style: Theme.of(context).textTheme.overline),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 50, right: 10),
+              child: Divider(),
+            )
+          ],
+        ),
       ),
     );
   }

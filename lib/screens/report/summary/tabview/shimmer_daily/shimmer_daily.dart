@@ -10,8 +10,10 @@ class ShimmerDailySummary extends StatelessWidget {
     return ListView(
       children: [
         Container(
+          decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(25)),
           padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-          color: Colors.white,
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
@@ -48,19 +50,25 @@ class ShimmerDailySummary extends StatelessWidget {
                       Container(
                         height: 30,
                         width: 60,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(24),color: Colors.black),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            color: Colors.black),
                       ),
                       const VerticalDivider(),
                       Container(
                         height: 30,
                         width: 60,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(24),color: Colors.black),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            color: Colors.black),
                       ),
                       const VerticalDivider(),
                       Container(
                         height: 30,
                         width: 60,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(24),color: Colors.black),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            color: Colors.black),
                       ),
                     ],
                   ),
@@ -91,7 +99,8 @@ class ShimmerDailySummary extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              decoration:  BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(24) ),
+              decoration: BoxDecoration(
+                  color: Colors.black, borderRadius: BorderRadius.circular(24)),
               height: 80,
               width: MediaQuery.of(context).size.width,
             ),
