@@ -11,6 +11,7 @@ import '../../dataprovider/database/database.dart';
 import '../../models/trip/trip.dart';
 
 import 'package:http/http.dart' as http;
+/*
 
 class HistoryBuilder extends StatelessWidget {
   List<Trip> items;
@@ -135,9 +136,12 @@ class HistoryBuilder extends StatelessWidget {
         "maptype=roadmap&"
         "markers=color:green%7Clabel:S%7C${trip.pickUpLocation?.latitude},${trip.pickUpLocation?.longitude}&"
         "markers=color:red%7Clabel:E%7C${trip.dropOffLocation?.latitude},${trip.dropOffLocation?.longitude}&"
-        "key=$googleAPiKey" /*"signature=YOUR_SIGNATURE"*/;
+        "key=$googleAPiKey" */
+/*"signature=YOUR_SIGNATURE"*//*
+;
   }
 }
+*/
 
 Future<void> downloadImage(Trip trip) async {
   String googleAPiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";

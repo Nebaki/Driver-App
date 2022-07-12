@@ -245,10 +245,12 @@ class WaletState extends State<Walet> {
             ),
             // when the _loadMore function is running
             if (_isLoadMoreRunning == true)
-              const Padding(
-                padding: EdgeInsets.only(top: 10, bottom: 20),
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 20),
                 child: Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: theme,
+                  ),
                 ),
               ),
           ],

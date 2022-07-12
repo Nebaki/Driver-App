@@ -80,21 +80,22 @@ class HistoryDataProvider {
     }
   }
 
-  Future<List<Trip>> loadTripHistoryDB(BuildContext context) async {
+  Future<TripStore> loadTripHistoryDB(BuildContext context,page, limit) async {
     //return HistoryDB().trips();
     final http.Response response = await http.get(
         Uri.parse(
-            '$_baseUrl/get-driver-trips?orderby[0][field]=createdAt&orderby[0][direction]=desc'),
+            '$_baseUrl/get-driver-trips?orderby[0][field]=createdAt&orderby[0][direction]=desc'
+                '&top=$limit&skip=$page'),
         headers: await RequestHeader().authorisedHeader());
 
     if (response.statusCode == 200) {
       final List maps = jsonDecode(response.body)['items'];
-      final int size = jsonDecode(response.body)['total'];
+      final int total = jsonDecode(response.body)['total'];
 
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
-      Session().logSession("sz-trans $size", response.body);
-      return trips;
+      Session().logSession("sz-trans $total", response.body);
+      return TripStore(trips: trips, total: total);
       //return HistoryDB().insertTrips(trips).then((value) => "updated $value History");
       //return "Unable to update history";
       //return CreditStore.fromJson(jsonDecode(response.body));
@@ -133,7 +134,7 @@ class HistoryDataProvider {
         trips.add(trip);
         i++;
       }*/
-      return trips;
+      return TripStore(trips: trips, total: 0);
       //return HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
       //return trips;
     }
