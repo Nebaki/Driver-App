@@ -84,8 +84,8 @@ class HistoryDataProvider {
     //return HistoryDB().trips();
     final http.Response response = await http.get(
         Uri.parse(
-            '$_baseUrl/get-driver-trips?orderby[0][field]=createdAt&orderby[0][direction]=desc'
-                '&top=$limit&skip=$page'),
+            '$_baseUrl/get-driver-trips?orderBy[0].[field]=createdAt&'
+                'orderBy[0].[direction]=desc&top=$limit&skip=$page'),
         headers: await RequestHeader().authorisedHeader());
 
     if (response.statusCode == 200) {
