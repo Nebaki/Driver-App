@@ -25,3 +25,22 @@ const String startU = "Start";
 const String rechargeU = "Recharge";
 const String noMessageU = 'No Message';
 const String balanceU = "Balance";
+const String loadingU = "loading...";
+const String unknownU = "Unknown";
+const String sampleUtcU = "2022-04-20T11:47:17.092Z";
+const String failedU = "Failed";
+const String canceledU = "Canceled";
+const String completedU = "Completed";
+const String pendingU = "Pending";
+const String timeoutU = "Timeout";
+const String successfulU = "Successful";
+const String dateFormatU = "EEE, d MMM yyyy HH:mm:ss";
+const String sendMoneyU = "Send Money";
+//history
+const String statusU = "Status:";
+const String feeU = "Fee:";
+const String originU = "Origin:";
+const String destinationU = "Destination:";
+//appBar
+const String creditU = "Credit";
+const String tripHistoryU = "Trip History";

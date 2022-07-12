@@ -93,7 +93,7 @@ class _HistoryPageState extends State<HistoryPage> {
     };
     return Scaffold(
       appBar: CreditAppBar(
-          key: _appBar, title: "Trip History", appBar: AppBar(), widgets: []),
+          key: _appBar, title: tripHistoryU, appBar: AppBar(), widgets: []),
       body: Container(
         padding: const EdgeInsets.all(5),
         decoration: const BoxDecoration(
@@ -221,38 +221,38 @@ class _HistoryPageState extends State<HistoryPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(2.0),
-                    child: Text("Status:", style: TextStyle(color: theme)),
+                    child: Text(statusU, style: TextStyle(color: theme)),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(trip.status ?? "loading"),
+                    child: Text(trip.status ?? loadingU),
                   ),
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.all(3.0),
-                child: Text("Fee: ${trip.price!.split(",")[0] + " ETB"}"),
+                child: Text("$feeU ${trip.price!.split(",")[0] + etbU}"),
               )
             ],
           ),
           Padding(
             padding: const EdgeInsets.all(2.0),
-            child: Text("Origin:", style: TextStyle(color: theme)),
+            child: Text(originU, style: TextStyle(color: theme)),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(trip.pickUpAddress ?? "Loading"),
+            child: Text(trip.pickUpAddress ?? loadingU),
           ),
           Padding(
             padding: const EdgeInsets.all(2.0),
             child: Text(
-              "Destination:",
+              destinationU,
               style: TextStyle(color: theme),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(trip.dropOffAddress ?? "Loading"),
+            child: Text(trip.dropOffAddress ?? loadingU),
           ),
         ],
       ),

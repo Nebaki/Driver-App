@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../../models/trip/trip.dart';
 import '../../route.dart';
+import '../../utils/constants/ui_strings.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import '../credit/toast_message.dart';
@@ -198,7 +199,7 @@ class _TripDetailState extends State<TripDetail>{
     if(utcDate != "null"){
       var newStr = utcDate.substring(0,10) + ' ' + utcDate.substring(11,23);
       DateTime dt = DateTime.parse(newStr);
-      var date = DateFormat("EEE, d MMM yyyy HH:mm:ss").format(dt);
+      var date = DateFormat(dateFormatU).format(dt);
       return date;
     }else{
       return "Unavailable";
@@ -232,7 +233,7 @@ class _TripDetailState extends State<TripDetail>{
 
   var transfer = CreditDataProvider(httpClient: http.Client());
 
-  var balance = "loading...";
+  var balance = loadingU;
 
   var _isLoading = false;
   void reloadBalance() {
@@ -241,7 +242,7 @@ class _TripDetailState extends State<TripDetail>{
         .then((value) => {
               setState(() {
                 _isLoading = false;
-                balance = value.message+".ETB";
+                balance = value.message + etbU;
               })
             })
         .onError((error, stackTrace) => {ShowMessage(context, "Balance", error.toString())});

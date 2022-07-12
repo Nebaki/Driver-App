@@ -5,6 +5,7 @@ import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/credit/transfer_form.dart';
+import 'package:driverapp/utils/constants/info_message.dart';
 import 'package:driverapp/utils/constants/net_status.dart';
 import 'package:driverapp/utils/constants/ui_strings.dart';
 import 'package:flutter_animarker/helpers/extensions.dart';
@@ -53,12 +54,13 @@ class WaletState extends State<Walet> {
   @override
   Widget build(BuildContext context) {
     // When nothing else to load
-    if (_hasNextPage == false)
-      ShowToast(context, 'You have fetched all of the content').show();
+    if (_hasNextPage == false) {
+      ShowToast(context, fetchedAllI).show();
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CreditAppBar(
-          key: _appBar, title: "Credit", appBar: AppBar(), widgets: []),
+          key: _appBar, title: creditU, appBar: AppBar(), widgets: []),
       body: Stack(
         children: [
           Opacity(
@@ -291,7 +293,7 @@ class WaletState extends State<Walet> {
   }
 
   var creditProvider = CreditDataProvider(httpClient: http.Client());
-  var balance = "loading...";
+  var balance = loadingU;
 
   void reloadBalance() {
     var confirm = creditProvider.loadBalance();
@@ -340,7 +342,7 @@ class WaletState extends State<Walet> {
                     Row(
                       children: [
                         Text(
-                          credit.paymentMethod ?? "Unknown",
+                          credit.paymentMethod ?? unknownU,
                           style: const TextStyle(
                               color: Colors.black,
                               fontSize: 18,
@@ -366,7 +368,7 @@ class WaletState extends State<Walet> {
                               )),
                         ),
                         Text(
-                          "${credit.amount} ETB",
+                          "${credit.amount}$etbU",
                           style: const TextStyle(color: Colors.black),
                         ),
                       ],
@@ -385,7 +387,7 @@ class WaletState extends State<Walet> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        credit.message ?? "Unknown",
+                        credit.message ?? unknownU,
                         style: const TextStyle(color: Colors.black),
                       ),
                     ],
@@ -403,7 +405,7 @@ class WaletState extends State<Walet> {
                         children: [
                           Text(
                             _formatedDate(
-                                credit.date ?? "2022-04-20T11:47:17.092Z"),
+                                credit.date ?? sampleUtcU),
                             style: const TextStyle(color: Colors.black),
                           ),
                         ],
@@ -419,14 +421,14 @@ class WaletState extends State<Walet> {
                                       color: theme,
                                     ),
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(20))),
-                                child: SizedBox(
+                                        const BorderRadius.all(Radius.circular(20))),
+                                child: const SizedBox(
                                   width: 5,
                                   height: 5,
                                 )),
                           ),
                           Text(
-                            _status(credit.status ?? "Unknown"),
+                            _status(credit.status ?? unknownU),
                             style: const TextStyle(color: Colors.black),
                           ),
                         ],
@@ -445,17 +447,17 @@ class WaletState extends State<Walet> {
   String _status(String tar) {
     switch (tar) {
       case "1":
-        return "Pending";
+        return pendingU;
       case "2":
-        return "Successful";
+        return successfulU;
       case "3":
-        return "Timeout";
+        return timeoutU;
       case "4":
-        return "Canceled";
+        return canceledU;
       case "5":
-        return "Failed";
+        return failedU;
       default:
-        return "Unknown";
+        return unknownU;
     }
   }
 
@@ -463,7 +465,7 @@ class WaletState extends State<Walet> {
     //var str = "2019-04-05T14:00:51.000Z";
     var newStr = utcDate.substring(0, 10) + ' ' + utcDate.substring(11, 23);
     DateTime dt = DateTime.parse(newStr);
-    var date = DateFormat("EEE, d MMM yyyy HH:mm:ss").format(dt);
+    var date = DateFormat(dateFormatU).format(dt);
     return date;
   }
 

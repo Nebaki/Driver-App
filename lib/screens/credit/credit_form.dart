@@ -42,7 +42,6 @@ class _TeleBirrDataState extends State<TeleBirrData> {
 
   TextEditingController amountController = TextEditingController();
   bool _isLoading = false;
-  final String title = "Wallet";
   Widget _amountBox() => TextFormField(
         keyboardType:
             const TextInputType.numberWithOptions(signed: true, decimal: true),

@@ -252,7 +252,7 @@ class _TransferState extends State<TransferMoney> {
                               padding:
                                   EdgeInsets.only(left: 40, right: 40, top: 10),
                               child: Text(
-                                "Send Money",
+                                sendMoneyU,
                                 style: TextStyle(fontSize: 25),
                               )),
                           _phoneBox(),
