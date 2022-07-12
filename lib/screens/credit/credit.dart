@@ -258,7 +258,7 @@ class WaletState extends State<Walet> {
         : const Center(child: Text(noMessageU));
   }
 
-  List<Credit>? _items = [];
+  final List<Credit>? _items = [];
   var _isBalanceLoading = false;
   var _isMessageLoading = false;
 
