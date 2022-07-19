@@ -1,6 +1,12 @@
+import 'package:driverapp/bloc/riderequest/bloc.dart';
+import 'package:driverapp/bloc/weekly_report/weekly_earning_bloc.dart';
+import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/models/models.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
@@ -68,113 +74,241 @@ class _WeeklySummaryTabState extends State<WeeklySummaryTab> {
         ),
         SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 200,
-                        child: CustomScrollView(
-                          slivers: <Widget>[
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                                  if (index == 0) {
-                                    return Container(
-                                      //  margin:
-                                      //     EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-                                      // decoration: BoxDecoration(
-                                      //   color: Colors.white,
-                                      //   boxShadow: [
-                                      //     BoxShadow(
-                                      //       color: Colors.black12,
-                                      //       offset: Offset(0, 2),
-                                      //       blurRadius: 6.0,
-                                      //     ),
-                                      //   ],
-                                      //   borderRadius: BorderRadius.circular(10.0),
-                                      // ),
-                                      child: WeeklyEarningBarChart(
-                                          [8, 12, 3, 14, 5, 16, 7],themeProvider.getColor),
-                                    );
-                                  }
-                                },
-                                childCount: 1 + 7,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 0),
-                        child: Divider(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: const [Text("15"), Text("Trips")],
-                            ),
-                            const VerticalDivider(),
-                            Column(
-                              children: const [Text("8:30"), Text("Online hrs")],
-                            ),
-                            const VerticalDivider(),
-                            Column(
-                              children: const [Text("\$22.48"), Text("Cash Trips")],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(25)),
+                height: 200,
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        if (index == 0) {
+                          return BlocBuilder<WeeklyEarningBloc,
+                              WeeklyEarningState>(
+                            builder: (context, state) {
+                              if (state is WeeklyEarningLoadSuccess) {
+                                return WeeklyEarningBarChart(
+                                  state.weeklyEarning,
+                                  isEarning: false,
+                                );
+                              }
+                              return const ShimmerWeeklyEarningBarChart();
+                            },
+                          );
+                        }
+                      },
+                      childCount: 1 + 7,
+                    )),
+                  ],
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  elevation: 0.0,
+                  child: BlocBuilder<WeeklyEarningBloc, WeeklyEarningState>(
+                    builder: (context, state) {
+                      if (state is WeeklyEarningLoadSuccess) {
+                        int numberOfTrips = 0;
+                        double totalCash = 0;
+                        for (WeeklyEarning weeklyEarning
+                            in state.weeklyEarning) {
+                          numberOfTrips += weeklyEarning.trips;
+                          totalCash += weeklyEarning.earning;
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(numberOfTrips.toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black)),
+                                  Text(
+                                    "Trips",
+                                    style: Theme.of(context).textTheme.overline,
+                                  )
+                                ],
+                              ),
+                              const VerticalDivider(),
+                              Column(
+                                children: [
+                                  const Text("8:30"),
+                                  Text("Online hrs",
+                                      style:
+                                          Theme.of(context).textTheme.overline)
+                                ],
+                              ),
+                              const VerticalDivider(),
+                              Column(
+                                children: [
+                                  Text('${totalCash.toStringAsFixed(2)} ETB',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black)),
+                                  Text("Cash Trips",
+                                      style:
+                                          Theme.of(context).textTheme.overline)
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      if (state is WeeklyEarningLoading) {
+                        return Shimmer(
+                          gradient: shimmerGradient,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Container(
+                                  height: 30,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(24),
+                                      color: Colors.black),
+                                ),
+                                const VerticalDivider(),
+                                Container(
+                                  height: 30,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(24),
+                                      color: Colors.black),
+                                ),
+                                const VerticalDivider(),
+                                Container(
+                                  height: 30,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(24),
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
+                ),
+              ),
               const Padding(
                 padding: EdgeInsets.only(left: 40),
                 child: Text("Trips"),
               ),
-              Column(
-                children: List.generate(
-                    8,
-                    (index) => _buildTrips(
-                        time: "3:32", location: "AratKillo", price: "40")),
+              BlocBuilder<RideRequestBloc, RideRequestState>(
+                builder: (context, state) {
+                  if (state is RideRequestLoadSuccess) {
+                    if (state.request.isNotEmpty) {
+                      return Column(
+                        children: List.generate(
+                            state.request.length,
+                            (index) => _buildTrips(
+                                context: context,
+                                time: state.request[index]!.time!,
+                                location:
+                                    state.request[index]!.droppOffAddress!,
+                                price: state.request[index]!.price!)),
+                      );
+                    }
+                  }
+                  return Column(
+                    children: List.generate(
+                        10, (index) => _buildShimmerTrips(context)),
+                  );
+                },
               )
             ],
           ),
+        ),
+        const SizedBox(
+          height: 20,
         ),
       ],
     );
   }
 
   Widget _buildTrips(
-      {required String time, required String location, required String price}) {
+      {required BuildContext context,
+      required String time,
+      required String location,
+      required String price}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(20.0),
         ),
+        elevation: 0.0,
         child: Column(
           children: [
             ListTile(
               leading: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text(time), Text("AM")]),
+                  children: [
+                    Text(
+                      time,
+                      style: Theme.of(context).textTheme.overline,
+                    )
+                  ]),
               title: Text(location),
-              subtitle: Text("Paid in Cash"),
-              trailing: Text("\$$price"),
+              subtitle: Text(
+                "Paid in Cash",
+                style: Theme.of(context).textTheme.overline,
+              ),
+              trailing: Text("$price ETB",
+                  style: Theme.of(context).textTheme.overline),
             ),
+            const Padding(
+              padding: EdgeInsets.only(left: 50, right: 10),
+              child: Divider(),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerTrips(BuildContext context) {
+    return Shimmer(
+      gradient: shimmerGradient,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.black, borderRadius: BorderRadius.circular(24)),
+              height: 80,
+              width: MediaQuery.of(context).size.width,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 50, right: 10),
+              child: Divider(),
+            )
           ],
         ),
       ),

@@ -46,3 +46,7 @@ class UserPhoneNumbeChecked extends UserState {
 }
 
 class UserUnAuthorised extends UserState {}
+
+class UserStatusUpdated extends UserState {}
+
+class UserStatusUpdateFailed extends UserState {}

@@ -10,6 +10,10 @@ class RideRequestRepository {
     return await dataProvider.createRequest(request);
   }
 
+  Future<List<RideRequest?>> getWeeklyRideRequests() async {
+    return await dataProvider.getWeeklyRideRequests();
+  }
+
   Future deleteRequest(String id) async {
     return await dataProvider.deleteRequest(id);
   }

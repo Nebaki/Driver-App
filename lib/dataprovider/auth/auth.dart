@@ -96,6 +96,11 @@ class AuthDataProvider {
           value: output["driver"]['vehicle']['category']['initial_fare']
               .toString());
 
+       await secureStorage.write(
+          key: "category_id",
+          value: output["driver"]['vehicle']['category']['id']
+              .toString());
+
       await secureStorage.write(
           key: "vehicle_type",
           value: output["driver"]['vehicle']['type'] ?? "");

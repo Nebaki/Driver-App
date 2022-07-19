@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/cubits/cubits.dart';
+import 'package:driverapp/cubits/rating_cubit/rating_cubit.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/models/models.dart';
@@ -15,7 +16,6 @@ import 'package:driverapp/notifications/pushNotification.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/home/dialogs/insufficent_balance.dart';
 import 'package:driverapp/screens/screens.dart';
-import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +32,6 @@ import 'package:driverapp/route.dart';
 import 'dart:async';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as toolkit;
-import 'package:provider/provider.dart';
 
 import 'dialogs/circular_progress_indicator_dialog.dart';
 
@@ -89,10 +88,12 @@ class _HomeScreenState extends State<HomeScreen> {
   bool hasBalance = false;
   late int stopDuration;
   Timer? stopingtimer;
-  late var themeProvider;
+  double speed = 0;
 
   late bool isReverseLocationLoadingDialog;
   double pathDistance = 0;
+
+  // late LatLngBounds latLngBounds;
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -121,8 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-
     stopDuration = 0;
     counter = 0;
     loadStartedTrip();
@@ -137,9 +136,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     super.initState();
     _listenBackGroundMessege();
-    context
-        .read<CurrentWidgetCubit>()
-        .changeWidget(widget.args.isOnline ? const OnlinMode() : OfflineMode());
+    if (!widget.args.isSelected) {
+      context.read<CurrentWidgetCubit>().changeWidget(
+          widget.args.isOnline ? const OnlinMode() : OfflineMode());
+    }
     // _currentWidget = ;
     _checkLocationServiceOnInit();
     _toggleLocationServiceStatusStream();
@@ -191,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       key: _scaffoldKey,
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       body: Stack(
         children: [
           stopNotficationListner
@@ -382,9 +382,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                             placeholder: (context, url) =>
                                 const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => Icon(
+                            errorWidget: (context, url, error) =>const Icon(
                                   Icons.person,
-                                  color: themeProvider.getColor,
+                                  color: Colors.black,
+                                  // color: Colors.indigo.shade900,
                                   size: 30,
                                 )),
                       )),
@@ -410,9 +411,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () {
                               makePhoneCall("9495");
                             },
-                            child: Icon(
+                            child: const Icon(
                               Icons.call,
-                              color: themeProvider.getColor,
                               size: 30,
                             )),
                       ),
@@ -445,14 +445,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       const EdgeInsets.all(2),
                                                   decoration: BoxDecoration(
                                                       border: Border.all(
-                                                          color: themeProvider
-                                                              .getColor,
+                                                          // color: Colors
+                                                          //     .indigo.shade900,
                                                           width: 1.5),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10)),
-                                                  child: Icon(Icons.trip_origin,
-                                                      color: themeProvider.getColor)),
+                                                  child: const Icon(Icons.trip_origin,
+                                                    )),
                                             ),
                                         listener: (context, state) {
                                           if (state
@@ -546,8 +546,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   : CameraUpdate.newLatLngBounds(
                                       latLngBounds, 100));
                             },
-                            child: Icon(Icons.gps_fixed,
-                                color: themeProvider.getColor, size: 30)),
+                            child: const Icon(Icons.gps_fixed,
+                                 size: 30)),
                       ),
                     ),
                     BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
@@ -561,10 +561,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                     onPressed: () {
                                       createEmergencyReport();
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       'SOS',
                                       style: TextStyle(
-                                          color: themeProvider.getColor,
+                                          // color: Colors.indigo.shade900,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18),
 
@@ -670,7 +670,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           showNearbyOpportunity
                                               ? Icons.golf_course
                                               : Icons.close,
-                                          color: themeProvider.getColor,
+                                          // color: Colors.red.shade900,
                                           size: 30)),
                                 ),
                               ),
@@ -739,15 +739,44 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               )),
-          Positioned(
-              top: 10,
-              right: 10,
-              child: ElevatedButton(
-                  onPressed: () {
-                    context.read<CurrentWidgetCubit>().state.key ==
-                        const OnlinMode().key;
-                  },
-                  child: const Text("Maintenance")))
+          Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "${speed.toStringAsFixed(2)} m/s",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(60),
+                        bottomRight: Radius.circular(60))),
+              )),
+          Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: Text(
+                    "$stopDuration s",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(60),
+                        bottomRight: Radius.circular(60))),
+              )),
+
+// Positioned(
+          //     top: 10,
+          //     right: 10,
+          //     child: ElevatedButton(
+          //         onPressed: () {
+          //           showDriversOnMap();
+          //         },
+          //         child: const Text("Maintenance")))
         ],
       ),
     );
@@ -850,7 +879,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return String.fromCharCodes(list);
   }
 
-
   void startStopTimer() {
     // print("yow starting function");
 
@@ -880,8 +908,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     driverStreamSubscription = Geolocator.getPositionStream(
             locationSettings: const LocationSettings(
-                timeLimit: Duration(seconds: 10),
-                distanceFilter: 10,
+                // timeLimit: Duration(seconds: 10),
+                distanceFilter: 5,
                 accuracy: LocationAccuracy.best))
         .listen((event) {
       // animate camera based on the new position
@@ -897,6 +925,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Marker marker = Marker(
           markerId: markerId, position: driverPosition, icon: carMarkerIcon!);
       setState(() {
+        speed = event.speed;
         markers[markerId] = marker;
       });
 
@@ -957,7 +986,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   void getPlaceDetail(String placeId) {
     PlaceDetailEvent event = PlaceDetailLoad(placeId: placeId);
     BlocProvider.of<PlaceDetailBloc>(context).add(event);
@@ -972,9 +1000,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   final form = _formKey.currentState;
                   if (form!.validate()) {
                     if (droppOffLocationNode.hasFocus) {
-                      homeScreenStreamSubscription.cancel().then((value) {
-                        Geofire.removeLocation(firebaseKey);
-                      });
+                      if (homeScreenStreamSubscription != null) {
+                        homeScreenStreamSubscription!.cancel().then((value) {
+                          Geofire.removeLocation(firebaseKey);
+                        });
+                      }
+
                       getPlaceDetail(prediction.placeId);
                       settingDropOffDialog(con);
                     } else if (pickupLocationNode.hasFocus) {
@@ -1204,7 +1235,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _buildSheet(String address) {
     showModalBottomSheet(
-        backgroundColor: themeProvider.getColor,
+        backgroundColor: Colors.black,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30), topRight: Radius.circular(30))),
@@ -1221,9 +1252,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     padding: const EdgeInsets.only(
                         top: 20, left: 20, right: 20, bottom: 10),
-                    decoration:  BoxDecoration(
-                        color: themeProvider.getColor,
-                        borderRadius: const BorderRadius.only(
+                    decoration: const BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(30),
                             topRight: Radius.circular(30))),
                     child: Row(
@@ -1429,16 +1460,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.pop(context);
 
                       _getPolyline(widget.args.encodedPts!);
-                      context
-                          .read<CurrentWidgetCubit>()
-                          .changeWidget(const CompleteTrip());
 
                       // _currentWidget = CompleteTrip();
                       destination = droppOffLocation;
 
+                      setState(() {});
                       showDriversOnMap();
                       updateRideDetails();
-                      setState(() {});
 
                       // DirectionEvent event =
                       //     DirectionDistanceDurationLoad(
@@ -1769,6 +1797,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void loadStartedTrip() {
     if (widget.args.isSelected) {
+      switch (widget.args.status) {
+        case "Accepted":
+          context.read<CurrentWidgetCubit>().changeWidget(const Arrived());
+          break;
+        case "Arrived":
+          context
+              .read<CurrentWidgetCubit>()
+              .changeWidget(const WaitingPassenger(
+                formPassenger: true,
+                fromOnline: true,
+              ));
+          break;
+        case "Started":
+          context.read<CurrentWidgetCubit>().changeWidget(const CompleteTrip());
+          break;
+        default:
+          widget.args.isOnline ? OfflineMode() : const OnlinMode();
+      }
+
+      ///started trip map
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _getPolyline(widget.args.encodedPts!);
         _addMarker(

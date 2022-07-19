@@ -7,6 +7,9 @@ class UserRepository {
 
   UserRepository({required this.dataProvider});
 
+  Future updateDriverStatus(bool status) async{
+    return await dataProvider.updateDriverStatus(status);
+  }
   Future<User> createPassenger(User user) async {
     return await dataProvider.createdriver(user);
   }

@@ -9,3 +9,5 @@ export 'emergency_report.dart';
 export 'balance.dart';
 export 'rating.dart';
 export 'settings.dart';
+export 'weekly_earning/weekly_earning.dart';
+export 'category.dart';

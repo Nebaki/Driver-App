@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:driverapp/repository/repositories.dart';
 import 'bloc.dart';
 
@@ -126,6 +125,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           yield UserOperationFailure();
         }
       }
+    }
+
+    if (event is UserUpdateStatus) {
+      await userRepository.updateDriverStatus(event.status);
     }
   }
 }

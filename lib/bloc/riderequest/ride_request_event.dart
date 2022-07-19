@@ -7,6 +7,10 @@ class RideRequestEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class RideRequestLoadWeekly extends RideRequestEvent {
+  
+}
+
 class RideRequestCreate extends RideRequestEvent {
   final RideRequest rideRequest;
 

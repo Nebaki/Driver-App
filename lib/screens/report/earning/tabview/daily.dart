@@ -2,16 +2,21 @@ import 'package:driverapp/dataprovider/dataproviders.dart';
 import 'package:driverapp/models/trip/trip.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:driverapp/bloc/weekly_report/weekly_earning_bloc.dart';
+import 'package:driverapp/models/models.dart';
+import 'package:driverapp/screens/report/earning/tabview/shimmer_daily/shimmer_daily.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../helper/helper.dart';
 import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
-import '../../../credit/toast_message.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:http/http.dart' as http;
 
 class DailyEarningTab extends StatefulWidget {
+  const DailyEarningTab({Key? key}) : super(key: key);
+
   @override
   State<DailyEarningTab> createState() => _DailyEarningTabState();
 }
@@ -84,85 +89,89 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                           const EdgeInsets.only(top: 20, left: 20, right: 20),
                       color: Colors.white,
                       width: MediaQuery.of(context).size.width,
-                      child: Column(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(top: 20),
-                            child: Text(
-                              "Credit",
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.grey),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: _isLoading
-                                ? SpinKitThreeBounce(
-                                    color: themeProvider.getColor,
-                                    size: 30,
-                                  )
-                                : Text(
-                                    balance,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 34),
-                                  ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Divider(),
-                          ),
-                          Container(
-                            height: 50,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      child: BlocBuilder<WeeklyEarningBloc, WeeklyEarningState>(
+              builder: (context, state) {
+                if (state is WeeklyEarningLoadSuccess) {
+                  double cashtrips = 0;
+                  final _dailyEarning = state.weeklyEarning
+                      .where(
+                          (element) => element.date.day == DateTime.now().day)
+                      .toList();
+                  _dailyEarning.forEach((element) {
+                    cashtrips += element.earning;
+                  });
+                  return Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: Text(
+                          "Total balance",
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                      ),
+                       Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          "${cashtrips.toStringAsFixed(2)} ETB",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 34),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Divider(),
+                      ),
+                      SizedBox(
+                        height: 50,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(
                               children: [
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(trips.toString(),
-                                        style: TextStyle(
-                                            color: themeProvider.getColor)),
-                                    Text(
-                                      "Trips",
-                                      style: TextStyle(color: Colors.grey),
-                                    )
-                                  ],
-                                ),
-                                const VerticalDivider(),
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text("8:30",
-                                        style: TextStyle(
-                                            color: themeProvider.getColor)),
-                                    Text(
-                                      "Online hrs",
-                                      style: TextStyle(color: Colors.grey),
-                                    )
-                                  ],
-                                ),
-                                const VerticalDivider(),
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text("\$22.48",
-                                        style: TextStyle(
-                                            color: themeProvider.getColor)),
-                                    Text(
-                                      "Cash Trips",
-                                      style: TextStyle(color: Colors.grey),
-                                    )
-                                  ],
-                                ),
+                                Text(_dailyEarning.length.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black)),
+                                Text(
+                                  "Trips",
+                                  style: Theme.of(context).textTheme.overline,
+                                )
                               ],
                             ),
-                          ),
-                        ],
-                      ),
+                            const VerticalDivider(),
+                            Column(
+                              children: [
+                                const Text("8:30"),
+                                Text("Online hrs",
+                                    style: Theme.of(context).textTheme.overline)
+                              ],
+                            ),
+                            const VerticalDivider(),
+                            Column(
+                              children: [
+                                Text('${cashtrips.toStringAsFixed(2)} ETB',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black)),
+                                Text("Cash Trips",
+                                    style: Theme.of(context).textTheme.overline)
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  );
+                }
+                return const ShimmerDailyEarning();
+              },
+            ),
                     ),
                   ),
                 ),

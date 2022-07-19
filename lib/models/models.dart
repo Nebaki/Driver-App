@@ -13,3 +13,6 @@ export 'settings/settings.dart';
 export 'started_trip/started_trip_data.dart';
 export 'credit/credit.dart';
 export 'trip/trip.dart';
+export 'weekly_earning/weekly_earning.dart';
+export 'category/category.dart';
+

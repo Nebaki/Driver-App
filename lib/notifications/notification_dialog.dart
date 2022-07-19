@@ -342,7 +342,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
             _isLoading = false;
           });
 
-          homeScreenStreamSubscription.cancel().then((value) {
+          homeScreenStreamSubscription!.cancel().then((value) {
             Geofire.removeLocation(firebaseKey);
 
             value;

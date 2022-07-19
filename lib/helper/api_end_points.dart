@@ -1,8 +1,20 @@
 import 'package:driverapp/helper/constants.dart';
 
+class CategoryEndPoints {
+  static String getCategoriesEndPoint(String id) {
+    return '$baseUrl/categories/get-category/$id';
+  }
+}
+
 class CreditEndPoints {
   static String getMyBalanceEndpoint() {
     return '$baseUrl/credits/get-my-credit';
+  }
+}
+
+class WeeklyEarningEndPoints {
+  static String getWeeklyEarningEndPoint(DateTime from, DateTime to) {
+    return '$baseUrl/ride-requests/get-my-grouped-earnings?filter[0].[field]=createdAt&filter[0].[operator]=between&filter[0].[value][0]=$from&filter[0].[value][1]=$to&filter[0].[type]=date';
   }
 }
 
@@ -15,6 +27,8 @@ class SettingsEndPoint {
 class UserEndPoints {
   static String middle = 'drivers';
   static String getMyRatingEndPoint() => '$baseUrl/drivers/get-my-rate';
+
+  static changeStatusEndPoint(bool status) => '$baseUrl/$middle/update-status';
 
   static String createDriverEndPoint() {
     return '$baseUrl/$middle/create-driver';
@@ -53,6 +67,10 @@ class RideRequestEndPoints {
   static String middle = "ride-requests";
   static String checkDriverStartedTripEndPoint() {
     return '$baseUrl/$middle/check-driver-started-trip';
+  }
+
+  static String getWeeklyRideRequestsEndPoint(DateTime from, DateTime to) {
+    return '$baseUrl/ride-requests/get-driver-trips?filter[0].[field]=createdAt&filter[0].[operator]=between&filter[0].[value][0]=$from&filter[0].[value][1]=$to&filter[0].[type]=date';
   }
 
   static String createManualRideRequestEndPoint() {

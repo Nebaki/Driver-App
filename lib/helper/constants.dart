@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 bool? isDriverOnline;
-late StreamSubscription<Position> homeScreenStreamSubscription;
+StreamSubscription<Position>? homeScreenStreamSubscription;
 late StreamSubscription<Position> driverStreamSubscription;
 
 late String firebaseKey;
@@ -32,6 +32,7 @@ late String distance;
 late String duration;
 late String price;
 late double balance;
+String categoryId = '';
 String? passengerProfilePictureUrl;
 final player = AssetsAudioPlayer();
 bool isAccepted = false;

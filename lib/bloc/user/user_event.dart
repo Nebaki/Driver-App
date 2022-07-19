@@ -11,6 +11,7 @@ class UserLoad extends UserEvent {
   List<Object> get props => [];
 }
 
+
 class UserCreate extends UserEvent {
   final User user;
 
@@ -99,4 +100,11 @@ class UserCheckPhoneNumber extends UserEvent {
   const UserCheckPhoneNumber(this.phoneNumber);
   @override
   List<Object?> get props => [phoneNumber];
+}
+
+class UserUpdateStatus extends UserEvent {
+  const UserUpdateStatus({required this.status});
+  final bool status;
+  @override
+  List<Object?> get props => [status];
 }

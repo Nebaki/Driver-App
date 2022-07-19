@@ -4,6 +4,7 @@ import 'package:driverapp/helper/api_end_points.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:http/http.dart' as http;
+import 'package:driverapp/helper/api_end_points.dart' as api;
 import 'package:driverapp/models/models.dart';
 
 class RideRequestDataProvider {
@@ -34,13 +35,42 @@ class RideRequestDataProvider {
           : RideRequest(
               pickUpAddress: null,
               droppOffAddress: null,
-              driverId: null,
             );
     } else if (response.statusCode == 401) {
       final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
 
       if (res.statusCode == 200) {
         return checkStartedTrip();
+      } else {
+        throw Exception(response.statusCode);
+      }
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+
+  Future<List<RideRequest?>> getWeeklyRideRequests() async {
+    DateTime today = DateTime.now();
+    DateTime weekDay = today.subtract(Duration(days: today.weekday - 1));
+    final http.Response response = await http.get(
+        Uri.parse(api.RideRequestEndPoints.getWeeklyRideRequestsEndPoint(
+            weekDay, today)),
+        headers: <String, String>{
+          'Content-Type': "application/json",
+          'x-access-token': '${await authDataProvider.getToken()}'
+        });
+
+    if (response.statusCode == 200) {
+
+      final data = json.decode(response.body)['items'] as List;
+      return data.isNotEmpty
+          ? data.map((e) => RideRequest.fromJson(e)).toList()
+          : [];
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return getWeeklyRideRequests();
       } else {
         throw Exception(response.statusCode);
       }
@@ -102,8 +132,6 @@ class RideRequestDataProvider {
 
   Future<void> changeRequestStatus(
       String id, String status, String? passengerFcm) async {
-   
-
     final response =
         await http.post(Uri.parse('$_baseUrl/set-ride-request-status/$id'),
             headers: <String, String>{
@@ -334,7 +362,6 @@ class RideRequestDataProvider {
 
     if (response.statusCode == 200) {
       // final data = (response.body);
-
     } else {
       throw Exception('Failed to send notification.');
     }

@@ -1,18 +1,31 @@
 import 'dart:convert';
-
 // import 'package:dio/dio.dart';
 import 'package:driverapp/helper/api_end_points.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/dataprovider/auth/auth.dart';
 import 'package:driverapp/models/models.dart';
+import 'package:driverapp/helper/api_end_points.dart' as api;
 
 class UserDataProvider {
   final _baseUrl = 'https://safeway-api.herokuapp.com/api/drivers';
   final http.Client httpClient;
   AuthDataProvider authDataProvider =
       AuthDataProvider(httpClient: http.Client());
-  UserDataProvider({required this.httpClient}) ;
+  UserDataProvider({required this.httpClient});
+
+  Future updateDriverStatus(bool status) async {
+    final http.Response response = await httpClient.post(
+        Uri.parse(api.UserEndPoints.changeStatusEndPoint(status)),
+        body: json.encode({"status": status}),
+        headers: <String, String>{
+          'Content-Type': "application/json",
+          'x-access-token': '${await authDataProvider.getToken()}',
+        });
+    if (response.statusCode != 200) {
+      throw Exception(response.statusCode);
+    }
+  }
 
   Future<User> getDriverById(String id) async {
     final response = await http

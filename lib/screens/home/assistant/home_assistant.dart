@@ -19,7 +19,7 @@ void getLiveLocation() async {
           : Geofire.removeLocation(firebaseKey);
 
       if (!isDriverOnline!) {
-        homeScreenStreamSubscription.cancel().then((value) {
+        homeScreenStreamSubscription!.cancel().then((value) {
         });
       }
     }
