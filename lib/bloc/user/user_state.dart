@@ -44,3 +44,5 @@ class UserPhoneNumbeChecked extends UserState {
   @override
   List<Object> get props => [phoneNumberExist];
 }
+
+class UserUnAuthorised extends UserState {}

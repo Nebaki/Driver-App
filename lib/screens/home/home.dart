@@ -215,11 +215,9 @@ class _HomeScreenState extends State<HomeScreen> {
           BlocConsumer<DirectionBloc, DirectionState>(
               builder: (context, state) {
             return Animarker(
-              rippleRadius: 0.5,
-              rippleColor: Colors.teal,
-              rippleDuration: const Duration(milliseconds: 2500),
-              curve: Curves.ease,
+              curve: Curves.bounceInOut,
               shouldAnimateCamera: false,
+              // useRotation: true,
               mapId: _controller.future.then((value) => value.mapId),
               markers: Set<Marker>.of(markers.values),
               child: GoogleMap(
@@ -447,7 +445,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       const EdgeInsets.all(2),
                                                   decoration: BoxDecoration(
                                                       border: Border.all(
-                                                          color: themeProvider.getColor,
+                                                          color: themeProvider
+                                                              .getColor,
                                                           width: 1.5),
                                                       borderRadius:
                                                           BorderRadius.circular(
@@ -456,6 +455,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       color: themeProvider.getColor)),
                                             ),
                                         listener: (context, state) {
+                                          if (state
+                                              is BalanceLoadUnAuthorised) {
+                                            gotoSignIn(context);
+                                          }
                                           if (state is BalanceLoadSuccess) {
                                             if (state.balance > 0) {
                                               hasBalance = true;
@@ -571,6 +574,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                         listener: (context, state) {
+                          if (state is EmergencyReportUnAuthorised) {
+                            gotoSignIn(context);
+                          }
                           if (state is EmergencyReportCreating) {
                             showDialog(
                                 barrierDismissible: false,
@@ -669,6 +675,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               listener: (context, state) {
+                                if (state is PassengerAvailablityUnAuthorised) {
+                                  gotoSignIn(context);
+                                }
                                 if (state is PassengerOperationFailure) {
                                   Navigator.pop(context);
                                   ScaffoldMessenger.of(context)
@@ -841,6 +850,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return String.fromCharCodes(list);
   }
 
+
   void startStopTimer() {
     // print("yow starting function");
 
@@ -864,18 +874,37 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void showDriversOnMap() {
-    // Map<MarkerId, Marker> newMarker = {};
     MarkerId markerId = MarkerId(generateRandomId());
-    LatLng initialDriverPosition = const LatLng(0, 0);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
+    // LatLng initialDriverPosition = const LatLng(0, 0);
     LatLng updatedLocation = LatLng(currentLat, currentLng);
+
     driverStreamSubscription = Geolocator.getPositionStream(
             locationSettings: const LocationSettings(
-                distanceFilter: 10, accuracy: LocationAccuracy.best))
+                timeLimit: Duration(seconds: 10),
+                distanceFilter: 10,
+                accuracy: LocationAccuracy.best))
         .listen((event) {
-      print("yow your speed is this:${event.speed} stope ${stopDuration}");
+      // animate camera based on the new position
+      _myController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          zoom: 16.4746,
+          bearing: event.heading,
+          target: LatLng(event.latitude, event.longitude))));
+
+      print("yow your speed is this:${event.speed} stope $stopDuration");
+
+      // update marker position
+      LatLng driverPosition = LatLng(event.latitude, event.longitude);
+      Marker marker = Marker(
+          markerId: markerId, position: driverPosition, icon: carMarkerIcon!);
+      setState(() {
+        markers[markerId] = marker;
+      });
+
+      // update firebase collection based on the new provided location
 
       ref.child(myId).set({'lat': event.latitude, 'lng': event.longitude});
+
+      // calculate estimated price
       if (startingTime != null) {
         if (event.speed <= 2) {
           startStopTimer();
@@ -883,37 +912,24 @@ class _HomeScreenState extends State<HomeScreen> {
           stopStopTimer();
         }
         context.read<EstiMatedCostCubit>().updateEstimatedCost(
-            // LatLng(currentLat, currentLng),
             updatedLocation,
             LatLng(event.latitude, event.longitude),
             stopDuration,
             pathDistance);
-        updatedLocation = LatLng(event.latitude, event.longitude);
-        print("event issssssssssss $event");
 
-        pathDistance += getDistance(
-          updatedLocation,
-          LatLng(event.latitude, event.longitude),
-        );
+        if (event.speed >= 5) {
+          pathDistance += getDistance(
+            updatedLocation,
+            LatLng(event.latitude, event.longitude),
+          );
+
+          updatedLocation = LatLng(event.latitude, event.longitude);
+        }
       }
 
-      myPosition = event;
-      LatLng driverPosition = LatLng(event.latitude, event.longitude);
-      Marker marker = Marker(
-          rotation: getMarkerRotation(initialDriverPosition.latitude,
-              initialDriverPosition.longitude, event.latitude, event.longitude),
-          markerId: markerId,
-          position: driverPosition,
-          icon: carMarkerIcon!);
-
-      markers.removeWhere((key, value) => key == markerId);
-      setState(() {
-        markers[markerId] = marker;
-      });
-      // });
-
-      initialDriverPosition = driverPosition;
-      updateRideDetails();
+      if (event.speed >= 20) {
+        updateRideDetails();
+      }
     });
   }
 
@@ -941,6 +957,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
   void getPlaceDetail(String placeId) {
     PlaceDetailEvent event = PlaceDetailLoad(placeId: placeId);
     BlocProvider.of<PlaceDetailBloc>(context).add(event);
@@ -955,6 +972,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   final form = _formKey.currentState;
                   if (form!.validate()) {
                     if (droppOffLocationNode.hasFocus) {
+                      homeScreenStreamSubscription.cancel().then((value) {
+                        Geofire.removeLocation(firebaseKey);
+                      });
                       getPlaceDetail(prediction.placeId);
                       settingDropOffDialog(con);
                     } else if (pickupLocationNode.hasFocus) {
@@ -997,6 +1017,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
         listener: (context, state) {
+          if (state is RideRequestTokentExpired) {
+            gotoSignIn(context);
+          }
           if (state is RideRequestSuccess) {
             fromCreateManualTrip = false;
             passengerName = state.request.passenger!.name;
@@ -1069,9 +1092,11 @@ class _HomeScreenState extends State<HomeScreen> {
               }
 
               if (state is PlaceDetailOperationFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Colors.red.shade900,
-                    content: const Text("Unable To set the Dropoff.")));
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red.shade900,
+                      content: const Text("Unable To set the Dropoff.")));
+                });
               }
               return AlertDialog(
                 content: Row(
@@ -1151,7 +1176,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void changeCameraView() {
     // LatLngBounds latLngBounds;
 
-    final destinationLatLng = droppOffLocation;
+    final destinationLatLng = destination;
 
     final pickupLatLng = pickupLocation;
     if (pickupLatLng.latitude > destinationLatLng.latitude &&
@@ -1411,8 +1436,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       // _currentWidget = CompleteTrip();
                       destination = droppOffLocation;
 
-                      setState(() {});
                       showDriversOnMap();
+                      updateRideDetails();
+                      setState(() {});
 
                       // DirectionEvent event =
                       //     DirectionDistanceDurationLoad(
@@ -1453,10 +1479,11 @@ class _HomeScreenState extends State<HomeScreen> {
               Geolocator.getCurrentPosition().then((value) {
                 currentLat = value.latitude;
                 currentLng = value.longitude;
-                // LatLng(value.latitude, value.longitude);
-                pickupLocation = LatLng(value.latitude, value.longitude);
+                // pickupLatLng = currentLatLng;
                 _myController.animateCamera(CameraUpdate.newCameraPosition(
-                    CameraPosition(zoom: 16.1746, target: pickupLocation)));
+                    CameraPosition(
+                        zoom: 16.1746,
+                        target: LatLng(value.latitude, value.longitude))));
               });
             }
             isFirstTime = false;
@@ -1477,12 +1504,19 @@ class _HomeScreenState extends State<HomeScreen> {
       _connectivitySubscription ==
           _connectivity.onConnectivityChanged.listen((event) {
             if (event == ConnectivityResult.none) {
+              debugPrint("yow none");
+
               internetServiceButtomSheet();
+              internetServiceStatus = true;
             } else if (event == ConnectivityResult.wifi) {
+              debugPrint("yow wifi");
+
               if (internetServiceStatus != null) {
                 internetServiceStatus! ? Navigator.pop(context) : null;
               }
             } else if (event == ConnectivityResult.mobile) {
+              debugPrint("yow mobile");
+
               if (internetServiceStatus != null) {
                 internetServiceStatus! ? Navigator.pop(context) : null;
               }
@@ -1571,7 +1605,6 @@ class _HomeScreenState extends State<HomeScreen> {
         isDismissible: false,
         context: context,
         builder: (BuildContext context) {
-          internetServiceStatus = true;
           return WillPopScope(
             onWillPop: () async => false,
             child: Container(

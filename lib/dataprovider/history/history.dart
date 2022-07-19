@@ -3,9 +3,12 @@ import 'dart:ffi';
 import 'dart:math';
 
 import 'package:driverapp/models/trip/trip.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../helper/helper.dart';
 import '../../utils/session.dart';
+import '../auth/auth.dart';
 import '../database/database.dart';
 import '../header/header.dart';
 
@@ -29,10 +32,11 @@ class HistoryDataProvider {
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
       Session().logSession("sz-trans $size", response.body);
-      return HistoryDB()
+      /*return HistoryDB()
           .insertTrips(trips)
           .then((value) => "updated $value History");
-      //return "Unable to update history";
+      */
+      return response.statusCode.toString();
       //return CreditStore.fromJson(jsonDecode(response.body));
     } else {
       Session().logSession("s-trans", response.statusCode.toString());
@@ -70,31 +74,35 @@ class HistoryDataProvider {
         trips.add(trip);
         i++;
       }
-      return "Skiped";
+      return response.statusCode.toString();
       //return HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
       //return trips;
     }
   }
 
-  Future<List<Trip>> loadTripHistoryDB(String user) async {
+  Future<TripStore> loadTripHistoryDB(BuildContext context,page, limit) async {
     //return HistoryDB().trips();
     final http.Response response = await http.get(
         Uri.parse(
-            '$_baseUrl/get-driver-trips?orderby[0][field]=createdAt&orderby[0][direction]=desc'),
+            '$_baseUrl/get-driver-trips?orderBy[0].[field]=createdAt&'
+                'orderBy[0].[direction]=desc&top=$limit&skip=$page'),
         headers: await RequestHeader().authorisedHeader());
 
     if (response.statusCode == 200) {
       final List maps = jsonDecode(response.body)['items'];
-      final int size = jsonDecode(response.body)['total'];
+      final int total = jsonDecode(response.body)['total'];
 
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
-      Session().logSession("sz-trans $size", response.body);
-      return trips;
+      Session().logSession("sz-trans $total", response.body);
+      return TripStore(trips: trips, total: total);
       //return HistoryDB().insertTrips(trips).then((value) => "updated $value History");
       //return "Unable to update history";
       //return CreditStore.fromJson(jsonDecode(response.body));
     } else {
+      if(response.statusCode == 401){
+        _refreshToken(loadTripHistoryDB, context);
+      }
       Session().logSession("s-trans", response.statusCode.toString());
       Trip trip;
       List<Trip> trips = [];
@@ -126,11 +134,21 @@ class HistoryDataProvider {
         trips.add(trip);
         i++;
       }*/
-      return trips;
+      return TripStore(trips: trips, total: 0);
       //return HistoryDB().insertTrips(trips).then((value) => "updated: $value Items");
       //return trips;
     }
   }
+  _refreshToken(Function function, BuildContext context) async {
+    final res =
+    await AuthDataProvider(httpClient: http.Client()).refreshToken();
+    if (res.statusCode == 200) {
+      return function();
+    } else {
+      gotoSignIn(context);
+    }
+  }
+
 
   String getRandNum() {
     var rng = Random();
@@ -152,9 +170,8 @@ class HistoryDataProvider {
           DailyEarning(totalEarning: totalEarning, trips: trips);
       return dailyEarning;
     } else {
-      String totalEarning = "0 ${response.statusCode}";
       List<Trip> trips = [];
-      return DailyEarning(totalEarning: totalEarning.toString(), trips: trips);
+      return DailyEarning(totalEarning: response.statusCode.toString(), trips: trips);
     }
   }
 

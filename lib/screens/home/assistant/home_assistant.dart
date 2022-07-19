@@ -10,7 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 void getLiveLocation() async {
 
   homeScreenStreamSubscription = Geolocator.getPositionStream(
-          locationSettings: const LocationSettings(distanceFilter: 5))
+          locationSettings: const LocationSettings(distanceFilter: 20))
       .listen((event) {
 
     if (isDriverOnline != null) {

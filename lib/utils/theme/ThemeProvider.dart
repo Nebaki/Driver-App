@@ -101,4 +101,5 @@ class ThemeProvider extends ChangeNotifier {
       // status bar color
     ));
   }
+
 }

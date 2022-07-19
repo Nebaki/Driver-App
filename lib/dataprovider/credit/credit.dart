@@ -8,11 +8,14 @@ import 'package:http/http.dart' as http;
 import 'package:driverapp/models/models.dart';
 
 import '../../screens/credit/telebirr_data.dart';
+import '../auth/auth.dart';
 
 class CreditDataProvider {
   final _baseUrl = RequestHeader.baseURL + 'credits';
   final http.Client httpClient;
 
+  AuthDataProvider authDataProvider =
+  AuthDataProvider(httpClient: http.Client());
   CreditDataProvider({required this.httpClient});
 
   Future<User> rechargeCredit(User user) async {
@@ -74,42 +77,25 @@ class CreditDataProvider {
   }
 
 
-  Future<CreditStore> loadCreditHistory(String user) async {
+  Future<CreditStore> loadCreditHistory(page, limit) async {
+    String user = await authDataProvider.getUserId() ?? "null";
     final http.Response response = await http.get(
-      Uri.parse('$_baseUrl/get-driver-credit-transactions?driver_id = $user'),
+      Uri.parse('$_baseUrl/get-driver-credit-transactions?'
+          'driver_id=$user&orderBy[0].[field]=createdAt&'
+          'orderBy[0].[direction]=desc&top=$limit&skip=$page'),
       headers: await RequestHeader().authorisedHeader(),
     );
-
-    if (response.statusCode != 200) {
+    Session().logSession("history", "user: $user -> ${response.statusCode.toString()}");
+    if (response.statusCode == 200) {
       Session().logSession("history", "success");
       Credit credit;
-      DepositedBy depo = DepositedBy(
-          id: "mera", name: "winux", email: "@mera", phone: "0922877115");
-      List<Credit> credits = [];
-      int i = 0;
-      while (i < 10) {
-        var rng = Random();
-        int money = rng.nextInt(100) * i + 237;
-        var type = i % 2 == 0 ? 'Gift' : 'Message';
-        if (i == 4 || i == 8) {
-          type = "Message";
-        }
-        credit = Credit(
-          id: "$i vic",
-          title: "Money Received $i",
-          message: "Hello! you received nothing, Thanks",
-          type: type,
-          amount: "$money.ETB",
-          date: "Today",
-          status: "pending",
-          depositedBy: depo,
-          paymentMethod: "Telebirr",
-        );
-        credits.add(credit);
-        i++;
-      }
+
+      final List maps = jsonDecode(response.body)['items'];
+      final int size = jsonDecode(response.body)['total'];
+      List<Credit> credits = maps.map((job) => Credit.fromJson(job)).toList();
+
       Session().logSession("trans", response.body);
-      return CreditStore(trips: credits);
+      return CreditStore(trips: credits,total: size);
       //return CreditStore.fromJson(jsonDecode(response.body));
     } else {
       Session().logSession("history", "failure");
@@ -130,10 +116,20 @@ class CreditDataProvider {
             type: type,
             amount: "$money.ETB",
             date: "Today");
-        credits.add(credit);
+        //credits.add(credit);
         i++;
       }
-      return CreditStore(trips: credits);
+      if(response.statusCode == 401){
+        _refreshToken(loadCreditHistory);
+      }
+      return CreditStore(trips: credits,total: 10);
+    }
+  }
+  _refreshToken(Function function) async {
+    final res =
+    await AuthDataProvider(httpClient: http.Client()).refreshToken();
+    if (res.statusCode == 200) {
+      return function();
     }
   }
 }

@@ -24,7 +24,15 @@ class PassengerDataprovider {
       if (responseData.isNotEmpty) {
         return responseData.map((e) => Passenger.fromJson(e)).toList();
       }
-    } else {
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return getAvailablePassengers();
+      } else {
+        throw Exception(response.statusCode);
+      }
+    }  else {
       throw Exception('Failed to get driver.');
     }
   }

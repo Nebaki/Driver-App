@@ -1,4 +1,3 @@
-
 import 'package:driverapp/functions/functions.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,8 @@ import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:provider/provider.dart';
 
+import '../../utils/constants/error_messages.dart';
+import '../../utils/constants/ui_strings.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import '../../utils/ui_tool/text_view.dart';
@@ -25,21 +26,23 @@ class SigninScreen extends StatefulWidget {
 class _SigninScreenState extends State<SigninScreen>
     with SingleTickerProviderStateMixin {
   String number = "+251934540217";
-  String password = "1111";
-  late String phoneNumber;
+  String passwordVal = "1111";
+  late String phoneNumberVal;
   late String pass;
-
   late ThemeProvider themeProvider;
+  late bool _visiblePassword;
+  late IconData icon;
 
   @override
   void initState() {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _loadPreTheme();
+    _visiblePassword = true;
+    icon = Icons.visibility;
     super.initState();
   }
 
-  _loadPreTheme() {
-  }
+  _loadPreTheme() {}
 
   final Map<String, dynamic> _auth = {};
 
@@ -120,7 +123,7 @@ class _SigninScreenState extends State<SigninScreen>
         _isLoading = false;
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text("Incorrect Phone Number or Password"),
+          content: const Text(incorrectCredentialU),
           backgroundColor: Colors.red.shade900,
         ));
       }
@@ -150,11 +153,10 @@ class _SigninScreenState extends State<SigninScreen>
                 Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15, top: 150),
                   child:
-                      CreateText(text: "Sign In", size: 1, weight: 2).build(),
+                      CreateText(text: signInU, size: 1, weight: 2).build(),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.only(left: 15, right: 15, top: 10),
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
                   child: TextFormField(
                     autofocus: true,
                     maxLength: 9,
@@ -166,10 +168,7 @@ class _SigninScreenState extends State<SigninScreen>
                     enabled: phoneEnabled,
                     decoration: InputDecoration(
                       labelStyle: TextStyle(color: themeProvider.getColor),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: themeProvider.getColor, width: 2.0),
-                      ),
+
                       /*enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.red, width: 5.0),
                         ),*/
@@ -178,7 +177,7 @@ class _SigninScreenState extends State<SigninScreen>
                           const BoxConstraints(minWidth: 0, minHeight: 0),
                       alignLabelWithHint: true,
                       //hintText: "Phone number",
-                      labelText: "Phone number",
+                      labelText: phoneNumberU,
                       hintStyle: const TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.black45),
                       prefixIcon: Padding(
@@ -199,11 +198,11 @@ class _SigninScreenState extends State<SigninScreen>
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter Your Phone number';
+                        return enterPhoneE;
                       } else if (value.length < 9) {
-                        return 'Phone no. length must not be less than 8 digits';
+                        return phoneLengthE;
                       } else if (value.length > 9) {
-                        return 'Phone no. length must not be greater than 9 digits';
+                        return phoneExceedE;
                       }
                       return null;
                     },
@@ -223,7 +222,7 @@ class _SigninScreenState extends State<SigninScreen>
                       left: 15, right: 15, top: 10, bottom: 10),
                   child: TextFormField(
                     maxLength: 25,
-                    obscureText: true,
+                    obscureText: _visiblePassword,
                     enableSuggestions: false,
                     autocorrect: false,
                     cursorColor: themeProvider.getColor,
@@ -231,33 +230,39 @@ class _SigninScreenState extends State<SigninScreen>
                     decoration: InputDecoration(
                         counterText: "",
                         labelStyle: TextStyle(color: themeProvider.getColor),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: themeProvider.getColor, width: 2.0),
-                        ),
+
                         alignLabelWithHint: true,
                         //hintText: "Password",
-                        labelText: "Password",
+                        labelText: passwordU,
                         hintStyle: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black45),
+                            fontWeight: FontWeight.bold, color: Colors.black45),
                         prefixIcon: Icon(
                           Icons.vpn_key,
                           color: themeProvider.getColor,
                           size: 22,
                         ),
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _visiblePassword = !_visiblePassword;
+
+                                icon = _visiblePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off;
+                              });
+                            },
+                            icon: Icon(icon)),
                         fillColor: Colors.white,
                         filled: true,
                         border: const OutlineInputBorder(
-                            borderSide:
-                                 BorderSide(style: BorderStyle.solid))),
+                            borderSide: BorderSide(style: BorderStyle.solid))),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter Your Password';
+                        return enterPasswordE;
                       } else if (value.length < 4) {
-                        return 'Password length must not be less than 4';
+                        return passwordLengthE;
                       } else if (value.length > 25) {
-                        return 'Password length must not be greater than 25';
+                        return passwordExceedE;
                       }
                       return null;
                     },
@@ -285,9 +290,9 @@ class _SigninScreenState extends State<SigninScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Spacer(),
-                          const Text("Sign In",
+                          const Text(signInU,
                               style: TextStyle(
-                                  fontFamily: 'Sifonn', color: Colors.white)),
+                                  fontFamily: fontFamilyU, color: Colors.white)),
                           const Spacer(),
                           Align(
                             alignment: Alignment.centerRight,
@@ -314,8 +319,7 @@ class _SigninScreenState extends State<SigninScreen>
                           Navigator.pushNamed(
                               context, CheckPhoneNumber.routeName);
                         },
-                        child: const Text(
-                          "Forgot Password",
+                        child: const Text(forgetPasswordU,
                           style: TextStyle(
                               color: Color.fromRGBO(39, 49, 110, 1),
                               fontWeight: FontWeight.bold),

@@ -1,14 +1,22 @@
+import 'dart:convert';
+
 import 'package:driverapp/dataprovider/credit/credit.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
-import 'package:driverapp/screens/credit/list_builder.dart';
 import 'package:driverapp/screens/credit/transfer_form.dart';
+import 'package:driverapp/utils/constants/info_message.dart';
+import 'package:driverapp/utils/constants/net_status.dart';
+import 'package:driverapp/utils/constants/ui_strings.dart';
+import 'package:flutter_animarker/helpers/extensions.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:intl/intl.dart';
+import '../../dataprovider/auth/auth.dart';
+import '../../helper/helper.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import 'toast_message.dart';
@@ -19,10 +27,10 @@ class Walet extends StatefulWidget {
   const Walet({Key? key}) : super(key: key);
 
   @override
-  State<Walet> createState() => _WaletState();
+  State<Walet> createState() => WaletState();
 }
 
-class _WaletState extends State<Walet> {
+class WaletState extends State<Walet> {
   final _appBar = GlobalKey<FormState>();
   final _inkweltextStyle = const TextStyle(
     color: Colors.white,
@@ -31,22 +39,28 @@ class _WaletState extends State<Walet> {
   int _currentThemeIndex = 2;
 
   late ThemeProvider themeProvider;
+
   @override
   void initState() {
     _isBalanceLoading = true;
     _isMessageLoading = true;
     reloadBalance();
-    prepareRequest(context);
+    prepareRequest(context, 1, _limit);
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    _controller = ScrollController()..addListener(_loadMore);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    // When nothing else to load
+    if (_hasNextPage == false) {
+      ShowToast(context, fetchedAllI).show();
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CreditAppBar(
-          key: _appBar, title: "Credit", appBar: AppBar(), widgets: []),
+          key: _appBar, title: creditU, appBar: AppBar(), widgets: []),
       body: Stack(
         children: [
           Opacity(
@@ -54,7 +68,7 @@ class _WaletState extends State<Walet> {
             child: ClipPath(
               clipper: WaveClipper(),
               child: Container(
-                height: 250,
+                height: MediaQuery.of(context).size.height,
                 color: themeProvider.getColor,
               ),
             ),
@@ -105,14 +119,15 @@ class _WaletState extends State<Walet> {
                           const Padding(
                             padding: EdgeInsets.only(top: 20),
                             child: Text(
-                              "Credit balance",
-                              style: TextStyle(fontSize: 16, color: Colors.grey),
+                              creditBalanceU,
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.grey),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: _isBalanceLoading
-                                ?  SpinKitThreeBounce(
+                                ? SpinKitThreeBounce(
                                     color: themeProvider.getColor,
                                     size: 30,
                                   )
@@ -130,7 +145,7 @@ class _WaletState extends State<Walet> {
                           Card(
                               elevation: 0,
                               child: Container(
-                                decoration:  BoxDecoration(
+                                decoration: BoxDecoration(
                                     color: themeProvider.getColor,
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
@@ -144,7 +159,7 @@ class _WaletState extends State<Walet> {
                                     Center(
                                         child: InkWell(
                                       child: Text(
-                                        "TRANSFER",
+                                        transferU,
                                         style: _inkweltextStyle,
                                       ),
                                       onTap: () {
@@ -170,7 +185,7 @@ class _WaletState extends State<Walet> {
                                               //PaymentBox();
                                             },
                                             child: Text(
-                                              "ADD CREDIT",
+                                              addCreditU,
                                               style: _inkweltextStyle,
                                             ))),
                                   ],
@@ -180,16 +195,16 @@ class _WaletState extends State<Walet> {
                       ),
                     ),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(top: 20, left: 20, bottom: 10),
                     child: Text(
-                      "Transaction logs",
-                      style: TextStyle(color: themeProvider.getColor),
+                      transferLogsU,
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                   Container(
                     decoration: const BoxDecoration(
-                        color: Colors.white,
+                        //color: Colors.white,
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10))),
@@ -205,7 +220,8 @@ class _WaletState extends State<Walet> {
                                 color: themeProvider.getColor,
                               ),
                             ))
-                        : ListBuilder(_items!),
+                        //: ListBuilder(_items!,themeProvider.getColor),
+                        : listHolder(_items!, themeProvider.getColor),
                   ),
                 ],
               ),
@@ -216,18 +232,58 @@ class _WaletState extends State<Walet> {
     );
   }
 
-  List<Credit>? _items;
+  Widget listHolder(items, theme) {
+    return items.isNotEmpty
+        ? Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                  controller: _controller,
+                  itemCount: items.length,
+                  padding: const EdgeInsets.all(0.0),
+                  itemBuilder: (context, item) {
+                    return inboxItem(context, items[item], item, theme);
+                  }),
+            ),
+            // when the _loadMore function is running
+            if (_isLoadMoreRunning == true)
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 20),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: theme,
+                  ),
+                ),
+              ),
+          ],
+        )
+        : const Center(child: Text(noMessageU));
+  }
+
+  final List<Credit>? _items = [];
   var _isBalanceLoading = false;
   var _isMessageLoading = false;
 
-  void prepareRequest(BuildContext context) {
+  void prepareRequest(BuildContext context, _page, _limit) {
     var sender = CreditDataProvider(httpClient: http.Client());
-    var res = sender.loadCreditHistory("62470378119128ad2ce6ab9f");
+    var res = sender.loadCreditHistory(_page, _limit);
     res.then((value) => {
-          setState(() {
-            _isMessageLoading = false;
-            _items = value.trips!;
-          })
+          if (value.trips!.isNotEmpty)
+            {
+              setState(() {
+                _isMessageLoading = false;
+                _isLoadMoreRunning = false;
+                _items?.addAll(value.trips ?? []);
+              })
+            }
+          else
+            {
+              setState(() {
+                _isMessageLoading = false;
+                _hasNextPage = false;
+                _isLoadMoreRunning = false;
+              })
+            }
         });
   }
 
@@ -236,19 +292,209 @@ class _WaletState extends State<Walet> {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
-  var transfer = CreditDataProvider(httpClient: http.Client());
-  var balance = "loading...";
+  var creditProvider = CreditDataProvider(httpClient: http.Client());
+  var balance = loadingU;
 
   void reloadBalance() {
-    var confirm = transfer.loadBalance();
-    confirm
-        .then((value) => {
+    var confirm = creditProvider.loadBalance();
+    confirm.then((value) => {
+          if (value.code == anAuthorizedC.toString())
+            {refreshToken(reloadBalance)}
+          else
+            {
               setState(() {
                 _isBalanceLoading = false;
-                balance = value.message + " ETB";
+                balance = value.message + etbU;
               })
-            })
-        .onError((error, stackTrace) =>
-            {ShowMessage(context, "Balance", error.toString())});
+            }
+        });
   }
+
+  void refreshToken(Function function) async {
+    final res =
+        await AuthDataProvider(httpClient: http.Client()).refreshToken();
+    if (res.statusCode == 200) {
+      function();
+    } else {
+      gotoSignIn(context);
+    }
+  }
+
+  Widget inboxItem(BuildContext context, Credit credit, int item, theme) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.18,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            //crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            //mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          credit.paymentMethod ?? unknownU,
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  color: theme,
+                                  border: Border.all(
+                                    color: theme,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              child: SizedBox(
+                                width: 5,
+                                height: 5,
+                              )),
+                        ),
+                        Text(
+                          "${credit.amount}$etbU",
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                color: theme,
+                height: 3,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        credit.message ?? unknownU,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            _formatedDate(
+                                credit.date ?? sampleUtcU),
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    color: theme,
+                                    border: Border.all(
+                                      color: theme,
+                                    ),
+                                    borderRadius:
+                                        const BorderRadius.all(Radius.circular(20))),
+                                child: const SizedBox(
+                                  width: 5,
+                                  height: 5,
+                                )),
+                          ),
+                          Text(
+                            _status(credit.status ?? unknownU),
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _status(String tar) {
+    switch (tar) {
+      case "1":
+        return pendingU;
+      case "2":
+        return successfulU;
+      case "3":
+        return timeoutU;
+      case "4":
+        return canceledU;
+      case "5":
+        return failedU;
+      default:
+        return unknownU;
+    }
+  }
+
+  String _formatedDate(String utcDate) {
+    //var str = "2019-04-05T14:00:51.000Z";
+    var newStr = utcDate.substring(0, 10) + ' ' + utcDate.substring(11, 23);
+    DateTime dt = DateTime.parse(newStr);
+    var date = DateFormat(dateFormatU).format(dt);
+    return date;
+  }
+
+  // At the beginning, we fetch the first 20 posts
+  int _page = 1;
+  int _limit = 20;
+
+  // There is next page or not
+  bool _hasNextPage = true;
+
+  // Used to display loading indicators when _loadMore function is running
+  bool _isLoadMoreRunning = false;
+
+  // This function will be triggered whenver the user scroll
+  // to near the bottom of the list view
+  void _loadMore() async {
+    if (_hasNextPage == true &&
+        _isMessageLoading == false &&
+        _isLoadMoreRunning == false &&
+        _controller.position.extentAfter < 20) {
+      setState(() {
+        _isLoadMoreRunning = true; // Display a progress indicator at the bottom
+      });
+      _page += 10; // Increase _page by 1
+        prepareRequest(context, _page, _limit);
+
+    }
+  }
+
+  // The controller for the ListView
+  late ScrollController _controller;
 }

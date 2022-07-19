@@ -16,7 +16,9 @@ class WaitingPassenger extends StatefulWidget {
   final bool formPassenger;
   final bool fromOnline;
 
-  const WaitingPassenger({Key? key,required this.formPassenger, required this.fromOnline}):super(key: key);
+  const WaitingPassenger(
+      {Key? key, required this.formPassenger, required this.fromOnline})
+      : super(key: key);
 
   @override
   State<WaitingPassenger> createState() => _WaitingPassengerState();
@@ -25,17 +27,18 @@ class WaitingPassenger extends StatefulWidget {
 class _WaitingPassengerState extends State<WaitingPassenger> {
   bool isButtonDisabled = false;
 
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
       child: BlocConsumer<RideRequestBloc, RideRequestState>(
         listener: (context, state) {
+          if (state is RideRequestTokentExpired) {
+            gotoSignIn(context);
+          }
           if (state is RideRequestStarted) {
             startingTime = DateTime.now();
 
-            
             context.read<CurrentWidgetCubit>().changeWidget(CompleteTrip());
             if (widget.formPassenger) {
               //to be removed
@@ -55,7 +58,6 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
           }
 
           if (state is RideRequestOperationFailur) {
-           
             setState(() {
               isButtonDisabled = false;
             });
@@ -86,7 +88,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                     child: RiderDetail(text: 'Picking up'),
                   ),
                   BlocBuilder<RideRequestBloc, RideRequestState>(
-                       builder: (context, state) {
+                      builder: (context, state) {
                     if (state is RideRequestLoading) {
                       // showDialog(
                       //     barrierDismissible: false,
@@ -105,8 +107,8 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                       );
                     }
                     return Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
                         width: MediaQuery.of(context).size.width,
                         child: const Divider());
                   }),
@@ -175,7 +177,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                                 disable: isButtonDisabled,
                                 action: () {
                                   isButtonDisabled = true;
-                      
+
                                   // homeScreenStreamSubscription.cancel();
                                   RideRequestEvent requestEvent =
                                       RideRequestStart(requestId, passengerFcm);
@@ -201,23 +203,21 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                       ),
                       !widget.formPassenger
                           ? Flexible(
-                            flex: 2,
-                            child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, CancelReason.routeName,
-                                      arguments: CancelReasonArgument(
-                                          sendRequest: true));
-                          
-                                  // callback!(CancelTrip(callback));
-                                },
-                                child: _buildItems(
-                                    text: "Cancel Trip",
-                                    icon: Icons.clear_outlined)),
-                          )
-                          : Container(
-                            
-                          )
+                              flex: 2,
+                              child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, CancelReason.routeName,
+                                        arguments: CancelReasonArgument(
+                                            sendRequest: true));
+
+                                    // callback!(CancelTrip(callback));
+                                  },
+                                  child: _buildItems(
+                                      text: "Cancel Trip",
+                                      icon: Icons.clear_outlined)),
+                            )
+                          : Container()
                     ],
                   )
                 ],

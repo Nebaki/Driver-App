@@ -1,4 +1,6 @@
 import 'package:driverapp/screens/screens.dart';
+import 'package:driverapp/utils/constants/info_message.dart';
+import 'package:driverapp/utils/constants/ui_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/route.dart';
 
 import '../../utils/colors.dart';
+import '../../utils/constants/error_messages.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 
@@ -55,7 +58,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         elevation: 0.3,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text("Reset Password"),
+        title: const Text(resetPasswordU),
         centerTitle: true,
       ),
       body: BlocConsumer<UserBloc, UserState>(
@@ -65,7 +68,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               _isLoading = false;
 
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: const Text('Password Changed'),
+                  content: const Text(passwordChangedI),
                   backgroundColor: Colors.green.shade900));
 
               Navigator.pushReplacementNamed(context, SigninScreen.routeName);
@@ -74,7 +77,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             if (state is UserOperationFailure) {
               _isLoading = false;
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: const Text('Operation Failure'),
+                  content: const Text(operationFailedE),
                   backgroundColor: Colors.red.shade900));
             }
           }),
@@ -156,9 +159,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                         padding: const EdgeInsets.only(
                             left: 15, right: 15, top: 150),
                         child: Text(
-                          "Reset Password",
+                          resetPasswordU,
                           style: TextStyle(
-                              fontFamily: 'Sifonn',
+                              fontFamily: fontFamilyU,
                               fontWeight: FontWeight.bold,
                               fontSize: 24.0),
                         ),
@@ -180,8 +183,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                                 borderSide: BorderSide(
                                     color: themeProvider.getColor, width: 2.0),
                               ),
-                              labelText: "New Password",
-                              hintStyle: TextStyle(
+                              labelText: newPasswordU,
+                              hintStyle: const TextStyle(
+                                fontFamily: fontFamilyU,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black45),
                               prefixIcon: Icon(
@@ -191,11 +195,15 @@ class _ResetPasswordState extends State<ResetPassword> {
                               ),
                               fillColor: Colors.white,
                               filled: true,
-                              border: OutlineInputBorder(
+                              border: const OutlineInputBorder(
                                   borderSide: BorderSide.none)),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Please enter new password';
+                              return enterPasswordE;
+                            } else if (value.length < 4) {
+                              return passwordLengthE;
+                            } else if (value.length > 25) {
+                              return passwordExceedE;
                             }
                             return null;
                           },
@@ -218,8 +226,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                                 borderSide: BorderSide(
                                     color: themeProvider.getColor, width: 2.0),
                               ),
-                              labelText: "Confirm Password",
-                              hintStyle: TextStyle(
+                              labelText: confirmPasswordU,
+                              hintStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black45),
                               prefixIcon: Icon(
@@ -229,15 +237,19 @@ class _ResetPasswordState extends State<ResetPassword> {
                               ),
                               fillColor: Colors.white,
                               filled: true,
-                              border: OutlineInputBorder(
+                              border: const OutlineInputBorder(
                                   borderSide: BorderSide.none)),
                           validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please confirm Your Password';
-                            } else if (value !=
+                            if (value !=
                                 newPasswordController.value.text) {
-                                return 'Password dose not match';
-
+                                return passwordNotMatchE;
+                            }
+                            if (value!.isEmpty) {
+                              return enterPasswordE;
+                            } else if (value.length < 4) {
+                              return passwordLengthE;
+                            } else if (value.length > 25) {
+                              return passwordExceedE;
                             }
                             return null;
                           },
@@ -263,9 +275,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                               children: [
                                 const Spacer(),
                                 const Text(
-                                  "Reset Password",
+                                  resetPasswordU,
                                   style: TextStyle(
-                                    fontFamily: 'Sifonn',),
+                                    fontFamily: fontFamilyU,),
                                 ),
                                 const Spacer(),
                                 Align(

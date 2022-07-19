@@ -19,6 +19,14 @@ class BalanceDataProvider {
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       return double.parse((jsonResponse['balance']).toString());
+    } else if (response.statusCode == 401) {
+      final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
+
+      if (res.statusCode == 200) {
+        return getMyBalance();
+      } else {
+        throw Exception(response.statusCode);
+      }
     } else {
       throw Exception('Unable To Load Balance');
     }

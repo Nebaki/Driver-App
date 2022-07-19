@@ -15,7 +15,11 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
         final balance = await balanceRepository.getMyBalance();
         yield BalanceLoadSuccess(balance);
       } catch (e) {
-        BalanceOperationFailure();
+        if (e.toString().split(" ")[1] == "401") {
+          yield BalanceLoadUnAuthorised();
+        } else {
+          yield BalanceOperationFailure();
+        }
       }
     }
   }
@@ -44,5 +48,7 @@ class BalanceLoadSuccess extends BalanceState {
   @override
   List<Object?> get props => [balance];
 }
+
+class BalanceLoadUnAuthorised extends BalanceState {}
 
 class BalanceOperationFailure extends BalanceState {}

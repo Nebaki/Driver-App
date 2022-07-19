@@ -3,6 +3,7 @@ import 'package:driverapp/models/trip/trip.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../helper/helper.dart';
 import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
 import '../../../credit/toast_message.dart';
@@ -20,7 +21,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
   @override
   void initState() {
     _isLoading = true;
-    reloadBalance();
+    dailyReport();
     //prepareRequest(context);
     super.initState();
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
@@ -195,7 +196,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                           const Divider(),
                           _reportItems(
                               data: "Total Earnings",
-                              price: price.toString(),
+                              price: price.toStringAsFixed(2),
                               color: themeProvider.getColor),
                         ],
                       ),
@@ -245,19 +246,31 @@ class _DailyEarningTabState extends State<DailyEarningTab>
 
   var _isLoading = false;
 
-  void reloadBalance() {
+  void dailyReport() {
     var confirm = transfer.dailyEarning();
-    confirm
-        .then((value) => {
+    confirm.then((value) => {
+          if (value.totalEarning == "401")
+            {refreshToken(dailyReport)}
+          else
+            {
               setState(() {
                 _isLoading = false;
                 balance = value.totalEarning + " ETB";
                 trips = value.trips.length;
               }),
               _calculateCommission(value.trips)
-            })
-        .onError((error, stackTrace) =>
-            {ShowMessage(context, "Balance", error.toString())});
+            }
+        });
+  }
+
+  void refreshToken(Function function) async {
+    final res =
+        await AuthDataProvider(httpClient: http.Client()).refreshToken();
+    if (res.statusCode == 200) {
+      function();
+    } else {
+      gotoSignIn(context);
+    }
   }
 
   var commission = 0.0;

@@ -10,7 +10,7 @@ class Credit {
   String? amount;
   String? type;
   String? date;
-  String? status;
+  String? status;//-1 failed, 0 pending, 1 success
   String? paymentMethod;
   DepositedBy? depositedBy;
 
@@ -21,15 +21,21 @@ class Credit {
 
   factory Credit.fromJson(Map<String, dynamic> json) {
     return Credit(
-      id: json["id"] ? null: "unknown",
-      title: json["name"] ? null: "unknown",
-      type: json["type"] ? null: "unknown",
-      message: json["message"] ? null: "unknown",
-      amount: json["amount"] ? null: "unknown",
-      date: json["updated_at"] ? null: "unknown",
-      status: json["status"] ? null: "unknown",
-      paymentMethod: json["payment_method"] ? null: "unknown",
-      depositedBy: json["deposited_by"],
+      id: json["id"] ?? "unknown",
+      title: json["name"] ?? "unknown",
+      type: json["type"] ?? "unknown",
+      message: json["reason"] ?? "unknown",
+      amount: json["amount"] ?? "unknown",
+      date: json["updated_at"] ?? "unknown",
+      status: json["status"] ?? "unknown",
+      paymentMethod: json["payment_method"] ?? "unknown",
+      depositedBy: DepositedBy.fromJson(json["deposited_by"])
+        /*(
+        id: json["deposited_by"]["id"],
+        name: json["deposited_by"]["name"],
+        email: json["deposited_by"]["email"],
+        phone: json["deposited_by"]["phone"]
+      ),*/
     );
   }
 
@@ -44,7 +50,7 @@ class Credit {
       'status: $status,'
       'paymentMethod: $paymentMethod,'
       'depositedBy: ${depositedBy.toString()},'
-      ' }';
+      '}';
 
   Credit.fromStringObject(List<dynamic> parsedJson) {
     parsedJson.map((i) => Credit.fromJson(i)).toList();
@@ -61,10 +67,10 @@ class DepositedBy {
 
   factory DepositedBy.fromJson(Map<String, dynamic> json) {
     return DepositedBy(
-        id: json["id"] ? null: "unknown",
-        name: json["name"] ? null: "unknown",
-        email: json["email"] ? null: "unknown",
-        phone: json["phone"] ? null: "unknown");
+        id: json["id"] ?? "unknown",
+        name: json["name"] ?? "unknown",
+        email: json["email"] ?? "unknown",
+        phone: json["phone"] ?? "unknown");
   }
 
   @override
@@ -82,15 +88,11 @@ class DepositedBy {
 
 class CreditStore {
   List<Credit>? trips;
+  int total;
+  CreditStore({required this.trips,required this.total});
 
-  CreditStore({required this.trips});
-
-  CreditStore.fromJson(List<dynamic> parsedJson) {
+  CreditStore.fromJson(List<dynamic> parsedJson,this.total) {
     trips = parsedJson.map((i) => Credit.fromStringObject(i)).toList();
-  }
-
-  CreditStore.getList() {
-    trips;
   }
 
   String toJson() {
@@ -98,3 +100,4 @@ class CreditStore {
     return data;
   }
 }
+

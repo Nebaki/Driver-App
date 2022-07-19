@@ -1,5 +1,5 @@
 import '../../screens/credit/telebirr_data.dart';
-import '../../utils/constants/constants.dart';
+import '../../utils/constants/net_status.dart';
 import '../../utils/session.dart';
 import '../auth/auth.dart';
 
@@ -30,18 +30,18 @@ class RequestResult{
   }
   String _prepareResult(code){
     switch(code){
-      case Constants.anAuthorizedC:
-        return Constants.anAuthorizedM;
-      case Constants.accessForbiddenC:
-        return Constants.accessForbiddenM;
-      case Constants.notFoundC:
-        return Constants.notFoundM;
-      case Constants.serverErrorC:
-        return Constants.serverErrorM;
-      case Constants.requestTimeoutC:
-        return Constants.requestTimeoutM;
+      case anAuthorizedC:
+        return anAuthorizedM;
+      case accessForbiddenC:
+        return accessForbiddenM;
+      case notFoundC:
+        return notFoundM;
+      case serverErrorC:
+        return serverErrorM;
+      case requestTimeoutC:
+        return requestTimeoutM;
       default:
-        return Constants.unknownErrorM;
+        return unknownErrorM;
     }
   }
 }

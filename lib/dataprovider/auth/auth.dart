@@ -143,6 +143,10 @@ class AuthDataProvider {
   Future<String?> getToken() async {
     return await secureStorage.read(key: "token");
   }
+  Future<String?> getUserId() async {
+    return await secureStorage.read(key: "id");
+  }
+
 
   Future<String?> getImageUrl() async {
     return await secureStorage.read(key: "profile_image");

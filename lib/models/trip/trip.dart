@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:driverapp/models/models.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Trip {
@@ -99,6 +101,9 @@ class Trip {
             double.parse(json["drop_off_location"][1].toString())),
         picture: null,
       );
+  Trip.fromStringObject(List<dynamic> parsedJson) {
+    parsedJson.map((i) => Trip.fromJson(i)).toList();
+  }
 }
 
 class LatLngConverter {
@@ -120,3 +125,18 @@ class DailyEarning {
 
   DailyEarning({required this.totalEarning, required this.trips});
 }
+class TripStore {
+  List<Trip>? trips;
+  int total;
+  TripStore({required this.trips,required this.total});
+
+  TripStore.fromJson(List<dynamic> parsedJson,this.total) {
+    trips = parsedJson.map((i) => Trip.fromStringObject(i)).toList();
+  }
+
+  String toJson() {
+    String data = jsonEncode(trips?.map((i) => i.toString()).toList());
+    return data;
+  }
+}
+
