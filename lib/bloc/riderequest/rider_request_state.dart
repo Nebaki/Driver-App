@@ -21,7 +21,7 @@ class RideRequestSuccess extends RideRequestState {
 }
 
 class RideRequestLoadSuccess extends RideRequestState {
-  final List<RideRequest?> request;
+  final List<RideRequest> request;
 
   const RideRequestLoadSuccess(this.request);
 

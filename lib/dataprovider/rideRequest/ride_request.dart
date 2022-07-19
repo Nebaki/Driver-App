@@ -49,7 +49,7 @@ class RideRequestDataProvider {
     }
   }
 
-  Future<List<RideRequest?>> getWeeklyRideRequests() async {
+  Future<List<RideRequest>> getWeeklyRideRequests() async {
     DateTime today = DateTime.now();
     DateTime weekDay = today.subtract(Duration(days: today.weekday - 1));
     final http.Response response = await http.get(

@@ -59,9 +59,9 @@ class DailySummaryTab extends StatelessWidget {
               double totalCash = 0;
               final _dailyTrips = state.request
                   .where((element) =>
-                      element!.date ==
+                      element.date ==
                       DateFormat.yMMMEd().format(DateTime.now()))
-                  .toList() as List<RideRequest>;
+                  .toList();
 
               for (RideRequest rideRequest in _dailyTrips) {
                 totalCash += double.parse(rideRequest.price!);

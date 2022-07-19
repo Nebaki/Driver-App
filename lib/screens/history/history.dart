@@ -54,7 +54,7 @@ class _HistoryPageState extends State<HistoryPage> {
             setState(() {
               _isMessageLoading = false;
               _isLoadMoreRunning = false;
-              _items?.addAll(value.trips ?? []);
+              _items.addAll(value.trips ?? []);
             })
           else
             {
@@ -119,7 +119,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     color: themeProvider.getColor,
                   ),
                 ))
-            : listHolder(_items!, themeProvider.getColor),
+            : listHolder(_items, themeProvider.getColor),
       ),
     );
   }

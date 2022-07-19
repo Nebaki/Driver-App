@@ -228,10 +228,10 @@ class _WeeklySummaryTabState extends State<WeeklySummaryTab> {
                             state.request.length,
                             (index) => _buildTrips(
                                 context: context,
-                                time: state.request[index]!.time!,
+                                time: state.request[index].time!,
                                 location:
-                                    state.request[index]!.droppOffAddress!,
-                                price: state.request[index]!.price!)),
+                                    state.request[index].droppOffAddress!,
+                                price: state.request[index].price!)),
                       );
                     }
                   }
