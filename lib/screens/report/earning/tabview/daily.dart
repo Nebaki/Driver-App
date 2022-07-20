@@ -81,7 +81,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-                  elevation: 0.0,
+                  elevation: 2.0,
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Container(
@@ -105,7 +105,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                       const Padding(
                         padding: EdgeInsets.only(top: 20),
                         child: Text(
-                          "Total balance",
+                          "Net Earning",
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                       ),
@@ -185,7 +185,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-                  elevation: 0.0,
+                  elevation: 3.0,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -193,7 +193,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                       child: Column(
                         children: [
                           _reportItems(
-                              data: "Trip fares",
+                              data: "Net Earning",
                               price: netPrice.toStringAsFixed(2)),
                           _reportItems(
                               data: "Commission",
@@ -204,7 +204,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                           //_reportItems(data: "Discount(-)", price: "20.00"),
                           const Divider(),
                           _reportItems(
-                              data: "Total Earnings",
+                              data: "Total",
                               price: price.toStringAsFixed(2),
                               color: themeProvider.getColor),
                         ],
@@ -239,7 +239,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                   size: 18,
                 )
               : Text(
-                  '\$$price',
+                  '$price ETB',
                   style: TextStyle(
                       color: color, fontWeight: FontWeight.bold, fontSize: 16),
                 ),

@@ -37,7 +37,7 @@ class _HistoryPageState extends State<HistoryPage> {
     _isMessageLoading = true;
     _controller = ScrollController()..addListener(_loadMore);
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    prepareRequest(context, 1, _limit);
+    prepareRequest(context, 0, _limit);
     //syncHistory();
     super.initState();
   }

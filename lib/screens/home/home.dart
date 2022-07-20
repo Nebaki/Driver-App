@@ -13,6 +13,7 @@ import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/notifications/notification_dialog.dart';
 import 'package:driverapp/notifications/pushNotification.dart';
+import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/home/dialogs/insufficent_balance.dart';
 import 'package:driverapp/screens/screens.dart';
@@ -859,6 +860,11 @@ class _HomeScreenState extends State<HomeScreen> {
       polylines.clear();
       availablePassengersMarkers.clear();
     });
+    if(markers.isEmpty){
+      ShowToast(context,"cleared").show();
+    }else{
+      ShowToast(context,"not cleared").show();
+    }
   }
 
   void createMarkerIcon() {

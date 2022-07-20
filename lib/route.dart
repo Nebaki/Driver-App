@@ -47,7 +47,7 @@ class AppRoute {
               ));
     }
     if (settings.name == AwardScreen.routeName){
-      return MaterialPageRoute(builder: (context) => const AwardScreen(),);
+      return MaterialPageRoute(builder: (context) => AwardScreen(),);
     }
     if (settings.name == CollectedCash.routeName) {
       CollectedCashScreenArgument argument =
