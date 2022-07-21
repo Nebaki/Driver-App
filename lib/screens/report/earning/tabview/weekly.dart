@@ -167,7 +167,6 @@ class _WeeklyEarningTabState extends State<WeeklyEarningTab> {
                         state.weeklyEarning.forEach((element) {
                           trips += element.trips;
                         });
-
                         return SizedBox(
                           height: 50,
                           child: Row(

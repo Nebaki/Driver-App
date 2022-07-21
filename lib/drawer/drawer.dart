@@ -8,9 +8,27 @@ import 'package:driverapp/screens/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-class NavDrawer extends StatelessWidget {
+import '../dataprovider/auth/auth.dart';
+import '../models/auth/auth.dart';
+import '../route.dart';
+import '../utils/colors.dart';
+import 'package:http/http.dart' as http;
+
+import '../utils/session.dart';
+
+class NavDrawer extends StatefulWidget {
   const NavDrawer({Key? key}) : super(key: key);
 
+  @override
+  State<NavDrawer> createState() => _NavDrawerState();
+}
+
+class _NavDrawerState extends State<NavDrawer> {
+  @override
+  void initState() {
+    _loadProfile();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: false);
@@ -58,55 +76,107 @@ class NavDrawer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: height * 0.25,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: height * 0.08, left: 40),
-                        child: Column(
-                          // mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        height: height * 0.25,
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CircleAvatar(
-                                radius: 40,
-                                backgroundColor: Colors.grey.shade300,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: CachedNetworkImage(
-                                      imageUrl: myPictureUrl,
-                                      imageBuilder: (context, imageProvider) =>
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover,
-                                                //colorFilter:
-                                                //     const ColorFilter.mode(
-                                                //   Colors.red,
-                                                //   BlendMode.colorBurn,
-                                                // ),
-                                              ),
-                                            ),
-                                          ),
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) {
-                                        return const Icon(
-                                          Icons.person,
-                                          size: 50,
-                                          color: Colors.black,
-                                        );
-                                      }),
-                                )),
-                            SizedBox(
-                              height: height * 0.015,
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(top: height * 0.08, left: 10),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                // mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                      radius: 30,
+                                      backgroundColor: Colors.grey.shade300,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        child: CachedNetworkImage(
+                                            imageUrl: myPictureUrl,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover,
+                                                          //colorFilter:
+                                                          //     const ColorFilter.mode(
+                                                          //   Colors.red,
+                                                          //   BlendMode.colorBurn,
+                                                          // ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                            placeholder: (context, url) =>
+                                                const CircularProgressIndicator(),
+                                            errorWidget: (context, url, error) {
+                                              return const Icon(
+                                                Icons.person,
+                                                size: 50,
+                                                color: Colors.black,
+                                              );
+                                            }),
+                                      )),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 3.0, top: 10),
+                                        child: Text(
+                                          myName,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: Text(
+                                          "0922877115",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              myName,
-                              style: Theme.of(context).textTheme.headlineSmall,
-                            )
+                            Positioned(
+                              top: 0.0,
+                              right: 0.0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  width: 40.0,
+                                  height: 40.0,
+                                  decoration: new BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                      icon: Icon(
+                                        Icons.mode_edit_rounded,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      onPressed: () {
+                                        _editProfile();
+                                      }),
+                                ),
+                              ),
+                            ),
                           ],
-                        ),
-                      ),
-                    ),
+                        )),
                     // SizedBox(
                     //   height: height * 0.02,
                     // ),
@@ -163,7 +233,7 @@ class NavDrawer extends StatelessWidget {
                                   icon: Icons.person,
                                   text: "Earning"),
                             ),
-                            GestureDetector(
+                            /*GestureDetector(
                               onTap: () {
                                 Navigator.pushNamed(context, Summary.routeName);
                               },
@@ -172,7 +242,7 @@ class NavDrawer extends StatelessWidget {
                                   context: context,
                                   icon: Icons.person,
                                   text: "Summary"),
-                            ),
+                            ),*/
 
                             // GestureDetector(
                             //   onTap: () {
@@ -277,6 +347,7 @@ class NavDrawer extends StatelessWidget {
                                 ),
                               ),
                             ),
+/*
                             Card(
                               elevation: 1,
                               child: Padding(
@@ -306,6 +377,174 @@ class NavDrawer extends StatelessWidget {
                                 ),
                               ),
                             ),
+*/
+
+                            Container(
+                              padding: const EdgeInsets.only(
+                                  left: 10, bottom: 20, top: 10),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          themeProvider.changeTheme(3);
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          //color: ColorProvider().primaryDeepOrange,
+                                          height: 40,
+                                          width: 40,
+                                          decoration: new BoxDecoration(
+                                            color: ColorProvider()
+                                                .primaryDeepOrange,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          themeProvider.changeTheme(4);
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          //color: ColorProvider().primaryDeepBlue,
+                                          height: 40,
+                                          width: 40,
+                                          decoration: new BoxDecoration(
+                                            color:
+                                                ColorProvider().primaryDeepBlue,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          themeProvider.changeTheme(6);
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          //color: ColorProvider().primaryDeepTeal,
+                                          height: 40,
+                                          width: 40,
+                                          decoration: new BoxDecoration(
+                                            color:
+                                                ColorProvider().primaryDeepTeal,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              /*child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(0);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepGreen,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(1);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepRed,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(2);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepPurple,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(3);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepOrange,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(4);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepBlue,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(5);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepBlack,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    themeProvider.changeTheme(6);
+                                  },
+                                  child: Container(
+                                    color: ColorProvider().primaryDeepTeal,
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                            */
+                            ),
                           ]),
                     ),
                   ],
@@ -331,10 +570,37 @@ class NavDrawer extends StatelessWidget {
       hoverColor: hoverColor,
     );
   }
+
+  var fullName = "loading...";
+  var phoneNumber = "loading...";
+
+  _loadProfile() {
+    var data = AuthDataProvider(httpClient: http.Client());
+    data.getUserData().then((value) => {
+          setState(() {
+            fullName = '${value.name} ${value.lastName}';
+            phoneNumber = value.phoneNumber;
+          })
+        });
+  }
+
+  _editProfile() {
+    var data = AuthDataProvider(httpClient: http.Client());
+    data.getUserData().then((value) => {
+          setState(() {}),
+          Navigator.pushNamed(context, EditProfile.routeName,
+              arguments: EditProfileArgument(
+                  auth: Auth(
+                      phoneNumber: value.phoneNumber,
+                      id: value.id,
+                      name: value.name,
+                      lastName: value.lastName,
+                      email: value.email,
+                      emergencyContact: value.emergencyContact,
+                      profilePicture: value.profilePicture)))
+        });
+  }
 }
-
-
-
 
 // CustomPaint(
 //         painter: DrawerBackGround(),

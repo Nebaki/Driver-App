@@ -154,7 +154,10 @@ class Bar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final barHeight = amountSpent / mostExpensive * _maxBarHeight+1;
+    var barHeight = amountSpent / mostExpensive * _maxBarHeight+1;
+    if (barHeight.isNaN) {
+      barHeight = 0;
+    }
     return Column(
       children: <Widget>[
         Text(

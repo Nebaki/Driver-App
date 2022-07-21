@@ -646,7 +646,7 @@ class Profile extends StatelessWidget {
       ),
       elevation: 1.0,
       child: Container(
-        height: deviceSize.height * 0.3,
+        height: deviceSize.height * 0.5,
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         decoration: const BoxDecoration(
           //color: profile_info_background,
@@ -727,27 +727,87 @@ class Profile extends StatelessWidget {
             const SizedBox(
               height: 15.0,
             ),
+            Divider(
+              thickness: 1.5,
+            ),
             Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(3.0),
-                  child: Icon(
-                    Icons.phone,
-                    color: Colors.black,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Text(
-                    phone,
-                    style: const TextStyle(
-                      //color: Colors.white,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Balance:",style: TextStyle(fontSize: 10),),
                     ),
-                  ),
+                    Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(3.0),
+                          child: Icon(
+                            Icons.money,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text(
+                            '$balance ETB',
+                            style: const TextStyle(
+                              //color: Colors.white,
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
+            ),
+            Divider(
+              thickness: 1.5,
+            ),
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Phone:",style: TextStyle(fontSize: 10),),
+                    ),
+                    Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(3.0),
+                          child: Icon(
+                            Icons.phone,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text(
+                            phone,
+                            style: const TextStyle(
+                              //color: Colors.white,
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Divider(
+              //color: themeProvider.getColor,
+              thickness: 1.5,
             ),
             const SizedBox(
               height: 5.0,
@@ -814,6 +874,7 @@ class Profile extends StatelessWidget {
             Row()
           ],
         ),
+
       ),
     );
   }

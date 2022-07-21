@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:driverapp/utils/session.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -113,6 +114,7 @@ class AuthDataProvider {
           key: "balance",
           value: output['driver']['credit']['balance'].toString());
     } else {
+      Session().logError("login", response.statusCode.toString());
       throw Exception('Failed to login.');
     }
   }

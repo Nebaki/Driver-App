@@ -43,4 +43,5 @@ const String originU = "Origin:";
 const String destinationU = "Destination:";
 //appBar
 const String creditU = "Credit";
+const String updateAccountU = "Update Account";
 const String tripHistoryU = "Trip History";

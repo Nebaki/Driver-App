@@ -8,8 +8,7 @@ class Session{
     logSession("error-"+tag, message);
   }
   void logSession(String tag, String message){
-    developer.log(message,name: "session-"+tag,error: message,
-        stackTrace: StackTrace.fromString(message));
-    print('$tag: $message');
+    developer.log(message,name: "session-"+tag);
+    //print('$tag: $message');
   }
 }
