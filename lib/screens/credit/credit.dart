@@ -229,6 +229,16 @@ class WaletState extends State<Walet> {
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: themeProvider.getColor,
+        //backgroundColor: Colors.transparent,
+        mini: true,
+        onPressed: (){
+          ShowToast(context,"Credit Request").show();
+        },
+        tooltip: 'Credit',
+        child: const Icon(Icons.credit_card,color: Colors.white,),
+      ),
     );
   }
 
