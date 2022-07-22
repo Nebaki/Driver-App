@@ -36,7 +36,6 @@ class WaletState extends State<Walet> {
     color: Colors.white,
     fontWeight: FontWeight.bold,
   );
-  int _currentThemeIndex = 2;
 
   late ThemeProvider themeProvider;
 

@@ -15,4 +15,6 @@ export 'credit/credit.dart';
 export 'trip/trip.dart';
 export 'weekly_earning/weekly_earning.dart';
 export 'category/category.dart';
+export 'lottery/award.dart';
+export 'lottery/ticket.dart';
 

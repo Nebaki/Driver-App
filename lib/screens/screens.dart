@@ -25,7 +25,7 @@ export 'resetpassword/changepassword.dart';
 export 'locationchanger/location_changer.dart';
 export 'locationchanger/predicted_address-list.dart';
 export 'locationchanger/setting_location_dialog.dart';
-export 'award/award.dart';
+export 'award/tickets.dart';
 export 'credit/transfer_form.dart';
 export 'history/trip_detail.dart';
 export 'credit/credit.dart';

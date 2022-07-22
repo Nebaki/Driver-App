@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/screens/award/lottery.dart';
 import 'package:driverapp/utils/painter.dart';
 import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 import '../dataprovider/auth/auth.dart';
 import '../models/auth/auth.dart';
 import '../route.dart';
+import '../screens/award/awards.dart';
 import '../utils/colors.dart';
 import 'package:http/http.dart' as http;
 
@@ -282,7 +284,7 @@ class _NavDrawerState extends State<NavDrawer> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.popAndPushNamed(
-                                    context, AwardScreen.routeName);
+                                    context, LotteryScreen.routeName);
                               },
                               child: _menuItem(
                                   divider: true,

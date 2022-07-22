@@ -1,3 +1,5 @@
+import 'package:driverapp/screens/award/awards.dart';
+import 'package:driverapp/screens/award/lottery.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +48,8 @@ class AppRoute {
                 arg: argument,
               ));
     }
-    if (settings.name == AwardScreen.routeName){
-      return MaterialPageRoute(builder: (context) => AwardScreen(),);
+    if (settings.name == LotteryScreen.routeName){
+      return MaterialPageRoute(builder: (context) => LotteryScreen(),);
     }
     if (settings.name == CollectedCash.routeName) {
       CollectedCashScreenArgument argument =

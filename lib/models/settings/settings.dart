@@ -2,13 +2,13 @@ import 'package:equatable/equatable.dart';
 
 class Settings extends Equatable {
   final SearchRadius radius;
-  final Award award;
+  final Awards award;
   const Settings({required this.radius, required this.award});
 
   factory Settings.fromJson(Map<String, dynamic> json) {
     return Settings(
         radius: SearchRadius.fromJson(json['radius']),
-        award: Award.fromJson(json['award_point']));
+        award: Awards.fromJson(json['award_point']));
   }
   @override
   List<Object?> get props => [radius];
@@ -28,13 +28,13 @@ class SearchRadius extends Equatable {
   List<Object?> get props => [taxiRadius, truckRadius];
 }
 
-class Award extends Equatable {
+class Awards extends Equatable {
   final double taxiPoint;
   final double truckPoint;
-  const Award({required this.taxiPoint, required this.truckPoint});
+  const Awards({required this.taxiPoint, required this.truckPoint});
 
-  factory Award.fromJson(Map<String, dynamic> json) {
-    return Award(
+  factory Awards.fromJson(Map<String, dynamic> json) {
+    return Awards(
         taxiPoint: double.parse(json['taxi'].toString()),
         truckPoint: double.parse(json['truck'].toString()));
   }
