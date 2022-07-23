@@ -132,4 +132,21 @@ class CreditDataProvider {
       return function();
     }
   }
+  Future<Result> requestCredit(String amount) async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/request-credit'),
+      headers: await RequestHeader().authorisedHeader(),
+      body: json.encode({
+        'amount': amount,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return Result(response.statusCode.toString(), true, "done");
+    } else {
+      var message = jsonDecode(response.body)["message"];
+      return RequestResult()
+          .requestResult(response.statusCode.toString(), message);
+    }
+  }
 }

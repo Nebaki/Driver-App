@@ -77,11 +77,16 @@ class LotteryDataProvider {
 
 
   Future<AwardStore> loadLotteryAwards(page, limit) async {
-    String user = await authDataProvider.getUserId() ?? "null";
+    String id = await authDataProvider.getUserId() ?? "null";
+    Auth user = await authDataProvider.getUserData();
+    Session().logSession("category", "user: ${user.vehicleType}");
+
     final http.Response response = await http.get(
       Uri.parse('$_baseUrlA/get-award-types?'
-          'driver_id=$user&orderBy[0].[field]=createdAt&'
-          'orderBy[0].[direction]=desc&top=$limit&skip=$page'),
+          'driver_id=$id&orderBy[0].[field]=createdAt&'
+          'orderBy[0].[direction]=desc&top=$limit&skip=$page'
+          //'&type=${user.vehicleCategory}'
+      ),
       headers: await RequestHeader().authorisedHeader(),
     );
     Session().logSession("lottery", "user: $user -> ${response.statusCode.toString()}");

@@ -22,6 +22,7 @@ const String etbU = " ETB";
 const String fontFamilyU = 'Sifonn';
 const String amountU = "Amount";
 const String startU = "Start";
+const String requestU = "Request";
 const String rechargeU = "Recharge";
 const String noMessageU = 'No Message';
 const String balanceU = "Balance";

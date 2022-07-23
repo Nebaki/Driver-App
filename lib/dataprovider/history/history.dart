@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:driverapp/models/trip/trip.dart';
@@ -181,7 +180,7 @@ class HistoryDataProvider {
         headers: await RequestHeader().authorisedHeader());
     if (response.statusCode == 200) {
       final List maps = jsonDecode(response.body)['items'];
-      final Double totalEarning = jsonDecode(response.body)['totalEarning'];
+      final double totalEarning = jsonDecode(response.body)['totalEarning'];
 
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
