@@ -18,7 +18,9 @@ import '../../utils/theme/ThemeProvider.dart';
 import 'telebirr_data.dart';
 
 class CreditRequest extends StatefulWidget {
-  static const routeName = "/telebirrForm";
+  static const routeName = "/credit_request";
+
+  const CreditRequest({Key? key}) : super(key: key);
 
   @override
   State<CreditRequest> createState() => _CreditRequestState();
@@ -63,8 +65,8 @@ class _CreditRequestState extends State<CreditRequest> {
         validator: (value) {
           if (value!.isEmpty) {
             return enterAmountE;
-          } else if (int.parse(value) < 00) {
-            return minAmountE;
+          } else if (int.parse(value) < 1) {
+            return minAmountReqE;
           }
           return null;
         },
@@ -79,7 +81,9 @@ class _CreditRequestState extends State<CreditRequest> {
                     _isLoading = true;
                   });
                   form.save();
-                  startTelebirr(amountController.value.text);
+                  if(int.parse(amountController.value.text) > 0){
+                    requestCredit(amountController.value.text);
+                  }
                 }
               },
         child: Row(
@@ -108,7 +112,7 @@ class _CreditRequestState extends State<CreditRequest> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: CreditAppBar(
-            key: _appBar, title: rechargeU, appBar: AppBar(), widgets: []),
+            key: _appBar, title: requestU, appBar: AppBar(), widgets: []),
         body: Stack(
           children: [
             Opacity(
@@ -194,7 +198,7 @@ class _CreditRequestState extends State<CreditRequest> {
 
   var sender = CreditDataProvider(httpClient: http.Client());
 
-  startTelebirr(String amount) {
+  requestCredit(String amount) {
     var res = sender.requestCredit(amount);
     res
         .then((value) => {
@@ -202,14 +206,14 @@ class _CreditRequestState extends State<CreditRequest> {
                 _isLoading = false;
               }),
               if (value.code == "200")
-                ShowMessage(context, rechargeU, value.message)
+                ShowMessage(context, requestU, value.message)
               else if(value.code == "401")
-                _refreshToken(startTelebirr(amount))
+                _refreshToken(requestCredit(amount))
               else
-                ShowMessage(context, rechargeU, value.message)
+                ShowMessage(context, requestU, value.message)
             })
         .onError((error, stackTrace) => {
-              ShowMessage(context, rechargeU, "Error happened: $error"),
+              ShowMessage(context, requestU, "Error happened: $error"),
               setState(() {
                 _isLoading = false;
               })

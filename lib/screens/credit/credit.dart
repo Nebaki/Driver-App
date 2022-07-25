@@ -4,6 +4,7 @@ import 'package:driverapp/dataprovider/credit/credit.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
+import 'package:driverapp/screens/credit/credit_request.dart';
 import 'package:driverapp/screens/credit/transfer_form.dart';
 import 'package:driverapp/utils/constants/info_message.dart';
 import 'package:driverapp/utils/constants/net_status.dart';
@@ -233,7 +234,8 @@ class WaletState extends State<Walet> {
         //backgroundColor: Colors.transparent,
         mini: true,
         onPressed: (){
-          ShowToast(context,"Credit Request").show();
+          Navigator.pushNamed(context,
+              CreditRequest.routeName);
         },
         tooltip: 'Credit',
         child: const Icon(Icons.credit_card,color: Colors.white,),
@@ -277,23 +279,31 @@ class WaletState extends State<Walet> {
     var sender = CreditDataProvider(httpClient: http.Client());
     var res = sender.loadCreditHistory(_page, _limit);
     res.then((value) => {
-          if (value.trips!.isNotEmpty)
-            {
-              setState(() {
-                _isMessageLoading = false;
-                _isLoadMoreRunning = false;
-                _items?.addAll(value.trips ?? []);
-              })
-            }
-          else
-            {
-              setState(() {
-                _isMessageLoading = false;
-                _hasNextPage = false;
-                _isLoadMoreRunning = false;
-              })
-            }
-        });
+      if (value.trips!.isNotEmpty)
+        {
+          setState(() {
+            _isMessageLoading = false;
+            _isLoadMoreRunning = false;
+            _items?.addAll(value.trips ?? []);
+          })
+        }
+      else
+        {
+          setState(() {
+            _isMessageLoading = false;
+            _hasNextPage = false;
+            _isLoadMoreRunning = false;
+          })
+        }
+    });
+  }
+
+  void creaditRequest(BuildContext context) {
+    var sender = CreditDataProvider(httpClient: http.Client());
+    var res = sender.requestCredit("50");
+    res.then((value) => {
+      showMessage(context, value.message)
+    });
   }
 
   void showMessage(BuildContext context, String message) {

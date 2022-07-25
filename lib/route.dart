@@ -1,6 +1,7 @@
 import 'package:driverapp/screens/award/awards.dart';
 import 'package:driverapp/screens/award/lottery.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
+import 'package:driverapp/screens/credit/credit_request.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -123,6 +124,10 @@ class AppRoute {
     if (settings.name == TeleBirrData.routeName) {
       return MaterialPageRoute(builder: (context) => TeleBirrData());
     }
+    if (settings.name == CreditRequest.routeName) {
+      return MaterialPageRoute(builder: (context) => CreditRequest());
+    }
+
 
 
 

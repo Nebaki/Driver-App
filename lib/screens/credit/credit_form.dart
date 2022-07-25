@@ -62,7 +62,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
         validator: (value) {
           if (value!.isEmpty) {
             return enterAmountE;
-          } else if (int.parse(value) < 00) {
+          } else if (int.parse(value) < 10) {
             return minAmountE;
           }
           return null;

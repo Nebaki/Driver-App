@@ -79,17 +79,19 @@ class LotteryDataProvider {
   Future<AwardStore> loadLotteryAwards(page, limit) async {
     String id = await authDataProvider.getUserId() ?? "null";
     Auth user = await authDataProvider.getUserData();
-    Session().logSession("category", "user: ${user.vehicleType}");
+    var driverTypeR = user.vehicleType;
+    var driverType = '${driverTypeR?.toLowerCase()}_driver';
+    Session().logSession("award", "driver_type: $driverType");
 
     final http.Response response = await http.get(
-      Uri.parse('$_baseUrlA/get-award-types?'
+      Uri.parse('$_baseUrlA/get-award-types-by-type?'
           'driver_id=$id&orderBy[0].[field]=createdAt&'
           'orderBy[0].[direction]=desc&top=$limit&skip=$page'
-          //'&type=${user.vehicleCategory}'
+          '&type=$driverType'
       ),
       headers: await RequestHeader().authorisedHeader(),
     );
-    Session().logSession("lottery", "user: $user -> ${response.statusCode.toString()}");
+    Session().logSession("award", "user: $user -> ${response.statusCode.toString()}");
     if (response.statusCode == 200) {
       Session().logSession("award", "success");
       Credit credit;
@@ -98,7 +100,7 @@ class LotteryDataProvider {
       final int size = jsonDecode(response.body)['total'];
       List<Award> awards = maps.map((job) => Award.fromJson(job)).toList();
 
-      Session().logSession("award", response.body);
+      Session().logSession("award", 'size $size');
       return AwardStore(awards: awards,total: size);
       //return CreditStore.fromJson(jsonDecode(response.body));
     } else {

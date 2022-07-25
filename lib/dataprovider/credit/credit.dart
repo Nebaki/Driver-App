@@ -142,11 +142,12 @@ class CreditDataProvider {
     );
 
     if (response.statusCode == 200) {
-      return Result(response.statusCode.toString(), true, "done");
+      var message = jsonDecode(response.body)["message"];
+      return Result(response.statusCode.toString(), true, message ?? "Request Sent");
     } else {
       var message = jsonDecode(response.body)["message"];
       return RequestResult()
-          .requestResult(response.statusCode.toString(), message);
+          .requestResult(response.statusCode.toString(), message ?? "error");
     }
   }
 }

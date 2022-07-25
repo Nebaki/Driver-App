@@ -855,8 +855,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
       isAccepted = false;
       context.read<CurrentWidgetCubit>().changeWidget(const OnlinMode());
-
+      print("MarkerData is ${markers.values}");
       markers.clear();
+      print("MarkerData is ${markers.values}");
+
       polylines.clear();
       availablePassengersMarkers.clear();
     });

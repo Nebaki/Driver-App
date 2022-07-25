@@ -16,6 +16,7 @@ const String cantCheckPhoneE = "Unable to check the phone number.";
 //credit
 const String enterAmountE = 'Please enter Amount';
 const String minAmountE = 'Minimum Amount is 10 ETB';
+const String minAmountReqE = 'Minimum Amount is 10 ETB';
 const String notValidAmountE = 'Please enter valid amount';
 const String insufficientBalance = 'Insufficient balance, please recharge';
 //reset password
