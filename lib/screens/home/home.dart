@@ -17,6 +17,7 @@ import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/home/dialogs/insufficent_balance.dart';
 import 'package:driverapp/screens/screens.dart';
+import 'package:driverapp/utils/session.dart';
 import 'package:driverapp/widgets/rider_detail_constatnts.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -259,6 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return isDirectionLoading;
           }, listener: (context, state) {
             if (state is DirectionInitialState) {
+              Session().logSession("markers-init", "markers ${markers.length}");
               resetScreen(state.isBalanceSufficient, state.isFromOnlineMode);
             }
 
@@ -855,18 +857,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
       isAccepted = false;
       context.read<CurrentWidgetCubit>().changeWidget(const OnlinMode());
-      print("MarkerData is ${markers.values}");
+      Session().logSession("markers-a", "markers ${markers.length}");
       markers.clear();
-      print("MarkerData is ${markers.values}");
+      Session().logSession("markers-z", "markers ${markers.length}");
 
       polylines.clear();
       availablePassengersMarkers.clear();
     });
-    if(markers.isEmpty){
-      ShowToast(context,"cleared").show();
-    }else{
-      ShowToast(context,"not cleared").show();
-    }
   }
 
   void createMarkerIcon() {
