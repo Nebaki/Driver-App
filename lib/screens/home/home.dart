@@ -190,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     createMarkerIcon();
-
+    Session().logSession("markers", "length ${markers.length}");
     return Scaffold(
       key: _scaffoldKey,
       drawer: const NavDrawer(),
@@ -860,7 +860,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Session().logSession("markers-a", "markers ${markers.length}");
       markers.clear();
       Session().logSession("markers-z", "markers ${markers.length}");
-
       polylines.clear();
       availablePassengersMarkers.clear();
     });
@@ -908,6 +907,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void showDriversOnMap() {
     MarkerId markerId = MarkerId(generateRandomId());
+    Session().logSession("markx", markerId.toString());
     // LatLng initialDriverPosition = const LatLng(0, 0);
     LatLng updatedLocation = LatLng(currentLat, currentLng);
 
@@ -961,6 +961,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
 
+      Session().logSession("markx", 'size ${markers.length}');
       if (event.speed >= 20) {
         updateRideDetails();
       }

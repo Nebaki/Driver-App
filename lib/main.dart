@@ -217,7 +217,6 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                 title: 'SafeWay',
                 theme: ThemeData(
-                  
                     inputDecorationTheme: InputDecorationTheme(
                         suffixIconColor: themeProvider.getColor,
                         prefixIconColor: themeProvider.getColor,
