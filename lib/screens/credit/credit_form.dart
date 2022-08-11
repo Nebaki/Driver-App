@@ -42,12 +42,13 @@ class _TeleBirrDataState extends State<TeleBirrData> {
 
   TextEditingController amountController = TextEditingController();
   bool _isLoading = false;
+
   Widget _amountBox() => TextFormField(
+        autofocus: true,
         keyboardType:
             const TextInputType.numberWithOptions(signed: true, decimal: true),
         controller: amountController,
         decoration: const InputDecoration(
-            
             alignLabelWithHint: true,
             labelText: amountU,
             prefixIcon: Icon(
@@ -57,8 +58,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
             fillColor: Colors.white,
             filled: true,
             border: OutlineInputBorder(
-                borderSide: BorderSide(style: BorderStyle.solid))
-        ),
+                borderSide: BorderSide(style: BorderStyle.solid))),
         validator: (value) {
           if (value!.isEmpty) {
             return enterAmountE;
@@ -68,6 +68,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
           return null;
         },
       );
+
   Widget _startButton() => ElevatedButton(
         onPressed: _isLoading
             ? null
@@ -102,6 +103,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
           ],
         ),
       );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,46 +149,50 @@ class _TeleBirrDataState extends State<TeleBirrData> {
             Align(
               alignment: Alignment.center,
               child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height / 3,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          elevation: 1.0,
-                          child: Form(
-                              key: _formkey,
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    const Padding(
-                                        padding: EdgeInsets.only(left: 40, right: 40, top: 10),
-                                        child: Text(
-                                          "Credit Amount",
-                                          style: TextStyle(fontSize: 25),
-                                        )),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
-                                      child: _amountBox(),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 10, right: 10, top: 10),
-                                      child: SizedBox(
-                                        height: 50,
-                                        width: MediaQuery.of(context).size.width,
-                                        child: _startButton(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                        ),
-                      ),
+                padding: const EdgeInsets.all(15.0),
+                child: Container(
+                  height: MediaQuery.of(context).size.height / 3,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
                     ),
+                    elevation: 1.0,
+                    child: Form(
+                        key: _formkey,
+                        child: Center(
+                          child: Column(
+                            children: [
+                              const Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 10, right: 40, top: 10),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "Credit Amount",
+                                      style: TextStyle(fontSize: 25),
+                                    ),
+                                  )),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, top: 5),
+                                child: _amountBox(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, top: 10),
+                                child: SizedBox(
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: _startButton(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )),
+                  ),
+                ),
+              ),
             ),
-
           ],
         ));
   }
@@ -203,7 +209,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
               value.totalAmount = amount,
               if (value.code == 200)
                 validateTeleBirr(value)
-              else if(value.code == 401)
+              else if (value.code == 401)
                 _refreshToken(startTelebirr(amount))
               else
                 ShowMessage(context, rechargeU, value.message)
@@ -230,8 +236,8 @@ class _TeleBirrDataState extends State<TeleBirrData> {
       var confirm = sender.confirmTransaction(outTradeNumber!);
       confirm
           .then((value) => {
-            ShowMessage(context, rechargeU, value.message)}
-      )
+            ShowMessage(context, rechargeU, value.message),
+          })
           .onError((error, stackTrace) =>
               {ShowMessage(context, rechargeU, error.toString())});
     } else {
@@ -247,10 +253,10 @@ class _TeleBirrDataState extends State<TeleBirrData> {
       (onError) {
         var result =
             Result("0", false, "there is an error: " + onError.toString());
-        paymentProcess(result,telePack.outTradeNumber);
+        paymentProcess(result, telePack.outTradeNumber);
       },
     ).then((value) {
-      paymentProcess(value,telePack.outTradeNumber);
+      paymentProcess(value, telePack.outTradeNumber);
     }).whenComplete(() {});
   }
 
@@ -267,7 +273,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
 
   _refreshToken(Function function) async {
     final res =
-    await AuthDataProvider(httpClient: http.Client()).refreshToken();
+        await AuthDataProvider(httpClient: http.Client()).refreshToken();
     if (res.statusCode == 200) {
       return function();
     } else {

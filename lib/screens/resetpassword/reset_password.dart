@@ -152,6 +152,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               ),
               Form(
                 key: _formkey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [

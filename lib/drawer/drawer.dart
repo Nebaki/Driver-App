@@ -132,7 +132,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                         padding: const EdgeInsets.only(
                                             left: 3.0, top: 10),
                                         child: Text(
-                                          myName,
+                                          fullName,
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 20,
@@ -142,7 +142,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                       Padding(
                                         padding: const EdgeInsets.all(3.0),
                                         child: Text(
-                                          "0922877115",
+                                          phoneNumber,
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 15,
@@ -190,19 +190,6 @@ class _NavDrawerState extends State<NavDrawer> {
                         child: ListView(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           children: [
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     Navigator.pushReplacementNamed(
-                            //         context, HomeScreen.routeName,
-                            //         arguments: HomeScreenArgument(
-                            //             isSelected: false, isOnline: false));
-                            //   },
-                            //   child: _menuItem(
-                            //       divider: true,
-                            //       context: context,
-                            //       icon: Icons.home,
-                            //       text: "Home"),
-                            // ),
                             GestureDetector(
                               onTap: () {
                                 Navigator.pushNamed(context, Walet.routeName);
@@ -235,52 +222,6 @@ class _NavDrawerState extends State<NavDrawer> {
                                   icon: Icons.person,
                                   text: "Earning"),
                             ),
-                            /*GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(context, Summary.routeName);
-                              },
-                              child: _menuItem(
-                                  divider: true,
-                                  context: context,
-                                  icon: Icons.person,
-                                  text: "Summary"),
-                            ),*/
-
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     Navigator.pushNamed(context, VehicleDocument.routeName);
-                            //   },
-                            //   child: _menuItem(
-                            //       divider: true,
-                            //       context: context,
-                            //       icon: Icons.settings,
-                            //       text: "Vehicle Document"),
-                            // ),
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     print("sdfasdfa");
-                            //     Navigator.pushNamed(context, PersonalDocument.routeName);
-                            //   },
-                            //   child: _menuItem(
-                            //       divider: true,
-                            //       context: context,
-                            //       icon: Icons.settings,
-                            //       text: "Personal Document"),
-                            // ),
-
-                            //const Divider(color: Colors.grey),
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     Navigator.pushNamed(context, SettingScreen.routeName);
-                            //   },
-                            //   child: _menuItem(
-                            //       divider: true,
-                            //       context: context,
-                            //       icon: Icons.settings,
-                            //       text: "Settings"),
-                            // ),
-
-                            //const Divider(color: Colors.grey),
                             GestureDetector(
                               onTap: () {
                                 Navigator.popAndPushNamed(
@@ -294,20 +235,6 @@ class _NavDrawerState extends State<NavDrawer> {
                             ),
 
                             const SizedBox(height: 20),
-                            //Divider(color: Colors.grey.shade500),
-
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     BlocProvider.of<AuthBloc>(context).add(LogOut());
-                            //     Navigator.pushReplacementNamed(
-                            //         context, SigninScreen.routeName);
-                            //   },
-                            //   child: _menuItem(
-                            //       divider: false,
-                            //       context: context,
-                            //       icon: Icons.logout,
-                            //       text: "Logout"),
-                            // ),
                           ],
                         ),
                       ),
@@ -585,7 +512,6 @@ class _NavDrawerState extends State<NavDrawer> {
           })
         });
   }
-
   _editProfile() {
     var data = AuthDataProvider(httpClient: http.Client());
     data.getUserData().then((value) => {
@@ -603,317 +529,3 @@ class _NavDrawerState extends State<NavDrawer> {
         });
   }
 }
-
-// CustomPaint(
-//         painter: DrawerBackGround(),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Padding(
-//                 padding: const EdgeInsets.only(top: 40, left: 40),
-//                 child: Column(
-//                   // mainAxisAlignment: MainAxisAlignment.start,
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     CircleAvatar(
-//                         radius: 40,
-//                         backgroundColor: Colors.grey.shade300,
-//                         child: ClipRRect(
-//                           borderRadius: BorderRadius.circular(100),
-//                           child: CachedNetworkImage(
-//                               imageUrl: myPictureUrl,
-//                               imageBuilder: (context, imageProvider) =>
-//                                   Container(
-//                                     decoration: BoxDecoration(
-//                                       image: DecorationImage(
-//                                         image: imageProvider,
-//                                         fit: BoxFit.cover,
-//                                         //colorFilter:
-//                                         //     const ColorFilter.mode(
-//                                         //   Colors.red,
-//                                         //   BlendMode.colorBurn,
-//                                         // ),
-//                                       ),
-//                                     ),
-//                                   ),
-//                               placeholder: (context, url) =>
-//                                   const CircularProgressIndicator(),
-//                               errorWidget: (context, url, error) {
-//                                 return const Icon(
-//                                   Icons.person,
-//                                   size: 50,
-//                                   color: Colors.black,
-//                                 );
-//                               }),
-//                         )),
-//                     const SizedBox(
-//                       height: 15,
-//                     ),
-//                     Text(
-//                       myName,
-//                       style: Theme.of(context).textTheme.headlineSmall,
-//                     )
-//                   ],
-//                 )
-//                 //  BlocBuilder<AuthBloc, AuthState>(
-//                 //   builder: (_, state) {
-//                 //     if (state is AuthDataLoadSuccess) {
-//                 //       return Column(
-//                 //         // mainAxisAlignment: MainAxisAlignment.start,
-//                 //         crossAxisAlignment: CrossAxisAlignment.start,
-//                 //         children: [
-//                 //           CircleAvatar(
-//                 //               radius: 40,
-//                 //               backgroundColor: Colors.grey.shade300,
-//                 //               child: ClipRRect(
-//                 //                 borderRadius: BorderRadius.circular(100),
-//                 //                 child: CachedNetworkImage(
-//                 //                     imageUrl: state.auth.profilePicture!,
-//                 //                     imageBuilder: (context, imageProvider) =>
-//                 //                         Container(
-//                 //                           decoration: BoxDecoration(
-//                 //                             image: DecorationImage(
-//                 //                               image: imageProvider,
-//                 //                               fit: BoxFit.cover,
-//                 //                               //colorFilter:
-//                 //                               //     const ColorFilter.mode(
-//                 //                               //   Colors.red,
-//                 //                               //   BlendMode.colorBurn,
-//                 //                               // ),
-//                 //                             ),
-//                 //                           ),
-//                 //                         ),
-//                 //                     placeholder: (context, url) =>
-//                 //                         const CircularProgressIndicator(),
-//                 //                     errorWidget: (context, url, error) {
-//                 //                       return Image.asset(
-//                 //                           'assets/icons/avatar-icon.png');
-//                 //                     }),
-//                 //               )),
-//                 //           const SizedBox(
-//                 //             height: 15,
-//                 //           ),
-//                 //           Text(
-//                 //             myName,
-//                 //             style: Theme.of(context).textTheme.headlineSmall,
-//                 //           )
-//                 //         ],
-//                 //       );
-//                 //     }
-//                 //     return Container();
-//                 //   },
-//                 // ),
-//                 ),
-//             const SizedBox(
-//               height: 20,
-//             ),
-//             // Padding(
-//             //   padding: const EdgeInsets.only(top: 40),
-//             //   child: Container(
-//             //       padding: const EdgeInsets.symmetric(horizontal: 20),
-//             //       height: 110,
-//             //       decoration: const BoxDecoration(
-//             //           color: Colors.white,
-//             //           boxShadow: [
-//             //             BoxShadow(
-//             //                 color: Colors.black26,
-//             //                 blurRadius: 7,
-//             //                 spreadRadius: 3)
-//             //           ]),
-//             //       child: BlocBuilder<AuthBloc, AuthState>(
-//             //         builder: (_, state) {
-//             //           if (state is AuthDataLoadSuccess) {
-//             //             return Row(
-//             //               mainAxisAlignment: MainAxisAlignment.start,
-//             //               crossAxisAlignment: CrossAxisAlignment.center,
-//             //               children: [
-//             //                 CircleAvatar(
-//             //                     radius: 40,
-//             //                     backgroundColor: Colors.grey.shade800,
-//             //                     child: ClipRRect(
-//             //                       borderRadius: BorderRadius.circular(100),
-//             //                       child: CachedNetworkImage(
-//             //                           imageUrl: state.auth.profilePicture!,
-//             //                           imageBuilder: (context, imageProvider) =>
-//             //                               Container(
-//             //                                 decoration: BoxDecoration(
-//             //                                   image: DecorationImage(
-//             //                                     image: imageProvider,
-//             //                                     fit: BoxFit.cover,
-//             //                                     //colorFilter:
-//             //                                     //     const ColorFilter.mode(
-//             //                                     //   Colors.red,
-//             //                                     //   BlendMode.colorBurn,
-//             //                                     // ),
-//             //                                   ),
-//             //                                 ),
-//             //                               ),
-//             //                           placeholder: (context, url) =>
-//             //                               const CircularProgressIndicator(),
-//             //                           errorWidget: (context, url, error) {
-//             //                             return const Icon(Icons.error);
-//             //                           }),
-//             //                     )),
-//             //                 const SizedBox(
-//             //                   width: 10,
-//             //                 ),
-//             //                 Expanded(
-//             //                   child: Column(
-//             //                     crossAxisAlignment: CrossAxisAlignment.start,
-//             //                     mainAxisAlignment: MainAxisAlignment.center,
-//             //                     children: [
-//             //                       Text(
-//             //                         state.auth.name!,
-//             //                         style:
-//             //                             Theme.of(context).textTheme.headline6,
-//             //                       ),
-//             //                       Text(state.auth.phoneNumber,
-//             //                           style: Theme.of(context)
-//             //                               .textTheme
-//             //                               .subtitle1),
-//             //                     ],
-//             //                   ),
-//             //                 )
-//             //               ],
-//             //             );
-//             //           }
-//             //           return const Text("Loading...");
-//             //         },
-//             //       )),
-//             // ),
-//             Container(
-//               padding: const EdgeInsets.only(top: 20),
-//               height: MediaQuery.of(context).size.height - 200,
-//               child: ListView(
-//                 padding: const EdgeInsets.symmetric(horizontal: 10),
-//                 children: [
-//                   // GestureDetector(
-//                   //   onTap: () {
-//                   //     Navigator.pushReplacementNamed(
-//                   //         context, HomeScreen.routeName,
-//                   //         arguments: HomeScreenArgument(
-//                   //             isSelected: false, isOnline: false));
-//                   //   },
-//                   //   child: _menuItem(
-//                   //       divider: true,
-//                   //       context: context,
-//                   //       icon: Icons.home,
-//                   //       text: "Home"),
-//                   // ),
-//                   GestureDetector(
-//                     onTap: () {
-//                       Navigator.pushNamed(context, Walet.routeName);
-//                     },
-//                     child: _menuItem(
-//                         divider: true,
-//                         context: context,
-//                         icon: Icons.favorite,
-//                         text: "Wallet"),
-//                   ),
-//                   GestureDetector(
-//                     onTap: () {
-//                       Navigator.pushNamed(context, HistoryPage.routeName);
-//                     },
-//                     child: _menuItem(
-//                         divider: true,
-//                         context: context,
-//                         icon: Icons.history,
-//                         text: "History"),
-//                   ),
-//                   //const Divider(color: Colors.grey),
-//                   GestureDetector(
-//                     onTap: () {
-//                       Navigator.pushNamed(context, Earning.routeName);
-//                     },
-//                     child: _menuItem(
-//                         divider: true,
-//                         context: context,
-//                         icon: Icons.person,
-//                         text: "Earning"),
-//                   ),
-//                   GestureDetector(
-//                     onTap: () {
-//                       Navigator.pushNamed(context, Summary.routeName);
-//                     },
-//                     child: _menuItem(
-//                         divider: true,
-//                         context: context,
-//                         icon: Icons.person,
-//                         text: "Summary"),
-//                   ),
-
-//                   // GestureDetector(
-//                   //   onTap: () {
-//                   //     Navigator.pushNamed(context, VehicleDocument.routeName);
-//                   //   },
-//                   //   child: _menuItem(
-//                   //       divider: true,
-//                   //       context: context,
-//                   //       icon: Icons.settings,
-//                   //       text: "Vehicle Document"),
-//                   // ),
-//                   // GestureDetector(
-//                   //   onTap: () {
-//                   //     print("sdfasdfa");
-//                   //     Navigator.pushNamed(context, PersonalDocument.routeName);
-//                   //   },
-//                   //   child: _menuItem(
-//                   //       divider: true,
-//                   //       context: context,
-//                   //       icon: Icons.settings,
-//                   //       text: "Personal Document"),
-//                   // ),
-
-//                   //const Divider(color: Colors.grey),
-//                   GestureDetector(
-//                     onTap: () {
-//                       Navigator.pushNamed(context, SettingScreen.routeName);
-//                     },
-//                     child: _menuItem(
-//                         divider: true,
-//                         context: context,
-//                         icon: Icons.settings,
-//                         text: "Settings"),
-//                   ),
-
-//                   //const Divider(color: Colors.grey),
-//                   GestureDetector(
-//                     onTap: () {
-//                       Navigator.popAndPushNamed(context, AwardScreen.routeName);
-//                     },
-//                     child: _menuItem(
-//                         divider: true,
-//                         context: context,
-//                         icon: Icons.wallet_giftcard_outlined,
-//                         text: "Award"),
-//                   ),
-
-//                   const SizedBox(height: 20),
-//                   //Divider(color: Colors.grey.shade500),
-
-//                   GestureDetector(
-//                     onTap: () {
-//                       BlocProvider.of<AuthBloc>(context).add(LogOut());
-//                       Navigator.pushReplacementNamed(
-//                           context, SigninScreen.routeName);
-//                     },
-//                     child: _menuItem(
-//                         divider: false,
-//                         context: context,
-//                         icon: Icons.logout,
-//                         text: "Logout"),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             const SizedBox(
-//               height: 15,
-//               child: Center(
-//                 child: Text("Safe Way By Vintage Technologies",
-//                     style: TextStyle(
-//                         fontWeight: FontWeight.w100, color: Colors.black45)),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),

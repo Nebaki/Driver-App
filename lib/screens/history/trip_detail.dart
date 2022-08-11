@@ -39,7 +39,7 @@ class _TripDetailState extends State<TripDetail>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CreditAppBar(
-          key: _appBar, title: "Trip Detail", appBar: AppBar(), widgets: []),
+          key: _appBar, title: orderDetailU, appBar: AppBar(), widgets: []),
       body: Stack(
         children: [
           Opacity(
@@ -124,14 +124,14 @@ class _TripDetailState extends State<TripDetail>{
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Padding(
+                  /*Padding(
                     padding: const EdgeInsets.all(3.0),
                     child: Text("Estimated fee: ${trip.price!.split(",")[0]+" ETB"}"),
-                  ),
-                  Padding(
+                  ),*/
+                  trip.status != "Cancelled" ? Padding(
                     padding: const EdgeInsets.all(3.0),
                     child: Text("Net fee: ${trip.netPrice!.split(",")[0]+" ETB"}"),
-                  ),
+                  ): Container(),
                 ],
               )
             ],
@@ -160,8 +160,19 @@ class _TripDetailState extends State<TripDetail>{
 
           Padding(
             padding: const EdgeInsets.all(2.0),
+            child: Text("Distance:", style: TextStyle(
+                color: theme//,fontWeight: FontWeight.bold
+            ),),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("${trip.distance} KM"),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(2.0),
             child: Text("Trip Started Time:", style: TextStyle(
-                color: theme,fontWeight: FontWeight.bold
+                color: theme//,fontWeight: FontWeight.bold
             ),),
           ),
           Padding(
@@ -170,20 +181,8 @@ class _TripDetailState extends State<TripDetail>{
           ),
           Padding(
             padding: const EdgeInsets.all(2.0),
-            child: Text("Trip Distance:", style: TextStyle(
-                color: theme,fontWeight: FontWeight.bold
-            ),),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("${trip.distance} KM"),
-          ),
-
-
-          Padding(
-            padding: const EdgeInsets.all(2.0),
             child: Text("Trip Ended Time:", style: TextStyle(
-                color: theme
+                color: theme//,fontWeight: FontWeight.bold
             ),),
           ),
           Padding(

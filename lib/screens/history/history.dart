@@ -229,10 +229,10 @@ class _HistoryPageState extends State<HistoryPage> {
                   ),
                 ],
               ),
-              Padding(
+              trip.status != "Cancelled" ? Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: Text("$feeU ${trip.price!.split(",")[0] + etbU}"),
-              )
+              ):Container()
             ],
           ),
           Padding(

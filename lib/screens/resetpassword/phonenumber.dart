@@ -165,6 +165,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
               ),
               Form(
                 key: _formkey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -451,8 +452,9 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            title: const Text("System"),
             content: const Text(phoneNotRegisteredE,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
             actions: [
               TextButton(
                   onPressed: () {

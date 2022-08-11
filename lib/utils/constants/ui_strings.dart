@@ -4,6 +4,7 @@ const String registerU = "Sign In";
 const String forgetPasswordU = "Forgot Password";
 const String passwordU = "Password";
 const String phoneNumberU = "Phone number";
+const String receiverPhoneU = "Receiver phone";
 const String incorrectCredentialU = "Incorrect Phone Number or Password";
 //change password
 const String changePasswordU = "Change Password";
@@ -36,7 +37,7 @@ const String pendingU = "Pending";
 const String timeoutU = "Timeout";
 const String successfulU = "Successful";
 const String dateFormatU = "EEE, d MMM yyyy HH:mm:ss";
-const String sendMoneyU = "Send Money";
+const String sendMoneyU = "Transfer Credit";
 //history
 const String statusU = "Status:";
 const String feeU = "Fee:";
@@ -45,4 +46,5 @@ const String destinationU = "Destination:";
 //appBar
 const String creditU = "Credit";
 const String updateAccountU = "Update Account";
-const String tripHistoryU = "Trip History";
+const String tripHistoryU = "Order History";
+const String orderDetailU = "Order Detail";

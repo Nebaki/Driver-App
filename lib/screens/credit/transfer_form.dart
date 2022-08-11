@@ -90,6 +90,7 @@ class _TransferState extends State<TransferMoney> {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: TextFormField(
+        autofocus: true,
         maxLength: 9,
         maxLines: 1,
         keyboardType:
@@ -102,7 +103,7 @@ class _TransferState extends State<TransferMoney> {
             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
             alignLabelWithHint: true,
             //hintText: "9--------",
-            labelText: phoneNumberU,
+            labelText: receiverPhoneU,
             hintStyle: const TextStyle(
                 fontWeight: FontWeight.bold, color: Colors.black45),
             prefixIcon: const Padding(
@@ -237,6 +238,7 @@ class _TransferState extends State<TransferMoney> {
                   elevation: 1.0,
                   child: Form(
                     key: _formKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     child: Container(
                       decoration: const BoxDecoration(
                           color: Colors.white,
@@ -250,10 +252,13 @@ class _TransferState extends State<TransferMoney> {
                         children: [
                           const Padding(
                               padding:
-                                  EdgeInsets.only(left: 40, right: 40, top: 10),
-                              child: Text(
-                                sendMoneyU,
-                                style: TextStyle(fontSize: 25),
+                                  EdgeInsets.only(left: 10, right: 40, top: 10),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  sendMoneyU,
+                                  style: TextStyle(fontSize: 25),
+                                ),
                               )),
                           _phoneBox(),
                           Padding(
