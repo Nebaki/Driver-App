@@ -118,14 +118,14 @@ class _CompleteTripState extends State<CompleteTrip> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(" PickUp Address: $pickUpAddress",
+                        Text(" PickUp: $pickUpAddress",
                             style: Theme.of(context)
                                 .textTheme
                                 .overline!
                                 .copyWith(fontSize: 13),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
-                        Text(" DropOff Address: $droppOffAddress",
+                        Text(" DropOff: $droppOffAddress",
                             style: Theme.of(context)
                                 .textTheme
                                 .overline!

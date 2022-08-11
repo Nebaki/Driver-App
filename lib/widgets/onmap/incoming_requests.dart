@@ -51,7 +51,7 @@ class IncomingRequest extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: Text(
-                      "3 New Requests",
+                      "3 New Orders",
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -69,7 +69,7 @@ class IncomingRequest extends StatelessWidget {
                   color: Colors.black26.withOpacity(0.05),
                   child: const Center(
                     child: Text(
-                      "Please Accept or decline requests",
+                      "Please Accept or decline orders",
                       style: TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                   ),

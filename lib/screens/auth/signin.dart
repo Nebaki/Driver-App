@@ -136,7 +136,6 @@ class _SigninScreenState extends State<SigninScreen>
         _isLoading = true;
         AuthEvent event = AuthLogin(Auth(
             phoneNumber: _auth["phoneNumber"], password: _auth["password"]));
-
         BlocProvider.of<AuthBloc>(context).add(event);
       }
     });

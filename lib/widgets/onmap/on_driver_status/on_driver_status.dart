@@ -13,7 +13,7 @@ class OndriverStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
     return SizedBox(
       height: 100,
@@ -90,12 +90,12 @@ class OndriverStatus extends StatelessWidget {
                 if (state is BalanceLoadSuccess) {
                   return _items(
                       num: "${state.balance} ETB",
-                      text: "Wallet",
+                      text: "Credit",
                       icon: Icons.wallet_giftcard,context: context);
                 }
                 if (state is BalanceLoading) {
                   return _buildShimmer(
-                      text: "Wallet", icon: Icons.wallet_giftcard,context: context);
+                      text: "Credit", icon: Icons.wallet_giftcard,context: context);
                 }
 
                 if (state is BalanceOperationFailure) {

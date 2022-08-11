@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import '../../functions/functions.dart';
 import '../../route.dart';
 import '../../utils/constants/net_status.dart';
 import '../../utils/constants/error_messages.dart';
@@ -305,73 +306,11 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                         final form = _formkey.currentState;
                                         if (form!.validate()) {
                                           form.save();
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  AlertDialog(
-                                                    title: const Text(
-                                                      "Confirm",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 20),
-                                                    ),
-                                                    content: Text.rich(TextSpan(
-                                                        text: weWillSendCodeI,
-                                                        style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18),
-                                                        children: [
-                                                          TextSpan(
-                                                              text:
-                                                                  phoneController,
-                                                              style: const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 18))
-                                                        ])),
-                                                    actions: [
-                                                      TextButton(
-                                                          onPressed: () async {
-                                                            Navigator.pop(
-                                                                context);
-                                                            checkPhoneNumber(
-                                                                phoneController);
-
-                                                            /*Navigator
-                                                           .pushReplacementNamed(
-                                                               context,
-                                                           ResetPassword
-                                                                   .routeName);
-                                                       */
-                                                          },
-                                                          child: Text(
-                                                            "Send Code",
-                                                            style: TextStyle(
-                                                                color:
-                                                                    themeProvider
-                                                                        .getColor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          )),
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context,
-                                                                "Cancel");
-                                                          },
-                                                          child: Text("Cancel",
-                                                              style: TextStyle(
-                                                                  color: themeProvider
-                                                                      .getColor,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold))),
-                                                    ],
-                                                  ));
+                                          checkInternetConnection(context).then((value){
+                                            if(value){
+                                              confirmPhone();
+                                            }
+                                          });
                                         }
                                       },
                                 child: Row(
@@ -437,6 +376,75 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
     );
   }
 
+  void confirmPhone(){
+    showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+            AlertDialog(
+              title: const Text(
+                "Confirm",
+                style: TextStyle(
+                    fontWeight:
+                    FontWeight.bold,
+                    fontSize: 20),
+              ),
+              content: Text.rich(TextSpan(
+                  text: weWillSendCodeI,
+                  style: const TextStyle(
+                      fontWeight:
+                      FontWeight.bold,
+                      fontSize: 18),
+                  children: [
+                    TextSpan(
+                        text:
+                        phoneController,
+                        style: const TextStyle(
+                            fontWeight:
+                            FontWeight
+                                .bold,
+                            fontSize: 18))
+                  ])),
+              actions: [
+                TextButton(
+                    onPressed: () async {
+                      Navigator.pop(
+                          context);
+                      checkPhoneNumber(
+                          phoneController);
+
+                      /*Navigator
+                                                           .pushReplacementNamed(
+                                                               context,
+                                                           ResetPassword
+                                                                   .routeName);
+                                                       */
+                    },
+                    child: Text(
+                      "Send Code",
+                      style: TextStyle(
+                          color:
+                          themeProvider
+                              .getColor,
+                          fontWeight:
+                          FontWeight
+                              .bold),
+                    )),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(
+                          context,
+                          "Cancel");
+                    },
+                    child: Text("Cancel",
+                        style: TextStyle(
+                            color: themeProvider
+                                .getColor,
+                            fontWeight:
+                            FontWeight
+                                .bold))),
+              ],
+            ));
+  }
   void checkPhoneNumber(String phoneNumber) {
     setState(() {
       showLoading = true;

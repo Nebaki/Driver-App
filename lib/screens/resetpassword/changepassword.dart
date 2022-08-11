@@ -1,5 +1,6 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/helper.dart';
+import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/constants/info_message.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -149,6 +150,8 @@ class ChangePassword extends StatelessWidget {
                                   return passwordLengthE;
                                 } else if (value.length > 25) {
                                   return passwordExceedE;
+                                }else if(_passwordInfo['current_password'] == value){
+                                        return "New Password can not be same as old password";
                                 }
                                 return null;
                               },
@@ -213,7 +216,8 @@ class ChangePassword extends StatelessWidget {
                                       final form = _formkey.currentState;
                                       if (form!.validate()) {
                                         form.save();
-                                        changePassword(context);
+                                          changePassword(context);
+
                                       }
                                     },
                               child: Row(

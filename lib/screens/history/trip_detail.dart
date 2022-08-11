@@ -112,7 +112,7 @@ class _TripDetailState extends State<TripDetail>{
                   Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: Text("Status:", style: TextStyle(
-                        color: theme,fontWeight: FontWeight.bold
+                        color: theme
                     )),
                   ),
                   Padding(
@@ -140,7 +140,7 @@ class _TripDetailState extends State<TripDetail>{
           Padding(
             padding: const EdgeInsets.all(2.0),
             child: Text("Origin:", style: TextStyle(
-                color: theme,fontWeight: FontWeight.bold
+                color: theme
             )),
           ),
           Padding(
@@ -150,7 +150,7 @@ class _TripDetailState extends State<TripDetail>{
           Padding(
             padding: const EdgeInsets.all(2.0),
             child: Text("Destination:", style: TextStyle(
-                color: theme,fontWeight: FontWeight.bold
+                color: theme
             ),),
           ),
           Padding(

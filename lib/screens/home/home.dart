@@ -442,7 +442,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           .add(
                                                               const ReverseLocationLoad());
                                                     }
-                                                  : null,
+                                                  : (){
+                                                ShowToast(context, "Loading Balance...").show();
+                                              },
                                               child: Container(
                                                   padding:
                                                       const EdgeInsets.all(2),
@@ -1149,7 +1151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       width: 5,
                     ),
-                    Text("Setting up Drop Off. Please wait.."),
+                    Text("Creating an order, Please wait.."),
                   ],
                 ),
               );
@@ -1363,7 +1365,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Icons.location_on,
                                     color: Colors.black,
                                   ),
-                                  labelText: "Pick Location"),
+                                  labelText: "Destination"),
                             ),
                           ),
                           SizedBox(
@@ -1592,10 +1594,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 20,
                   ),
                   Expanded(
-                      flex: 3,
+                      flex: 4,
                       child: Text(
                           "We can't get your location because you have disabled location services. Please turn it on for better experience.",
-                          maxLines: 2,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodyText2)),
                   Expanded(
@@ -1668,7 +1670,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       flex: 3,
                       child: Text(
                           "Please enable WIFI or Mobile data to serve the app",
-                          maxLines: 2,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodyText2)),
                   // Expanded(
