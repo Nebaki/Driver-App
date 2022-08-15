@@ -29,10 +29,9 @@ class _SigninScreenState extends State<SigninScreen>
   String passwordVal = "1111";
   late String phoneNumberVal;
   late String pass;
-  late ThemeProvider themeProvider;
   late bool _visiblePassword;
   late IconData icon;
-
+  late ThemeProvider themeProvider;
   @override
   void initState() {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
