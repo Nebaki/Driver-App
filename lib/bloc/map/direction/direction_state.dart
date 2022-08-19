@@ -42,4 +42,4 @@ class DirectionDistanceDurationLoadSuccess extends DirectionState {
   List<Object> get props => [direction];
 }
 
-class DirectionDistanceDurationOperationFailur extends DirectionState {}
+class DirectionDistanceDurationOperationFailure extends DirectionState {}

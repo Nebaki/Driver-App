@@ -360,7 +360,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
         if (state is RideRequestPassed) {
           Navigator.pop(context);
         }
-        if (state is RideRequestOperationFailur) {
+        if (state is RideRequestOperationFailure) {
           setState(() {
             _isLoading = false;
           });

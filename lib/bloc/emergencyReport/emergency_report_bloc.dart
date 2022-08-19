@@ -23,7 +23,7 @@ class EmergencyReportBloc
          if (e.toString().split(" ")[1] == "401") {
           yield EmergencyReportUnAuthorised();
         } else {
-          yield EmergencyReportOperationFailur();
+          yield EmergencyReportOperationFailure();
         }
       }
     }
@@ -59,6 +59,6 @@ class EmergencyReportCreated extends EmergencyReportState {}
 
 class EmergencyInitialState extends EmergencyReportState {}
 
-class EmergencyReportOperationFailur extends EmergencyReportState {}
+class EmergencyReportOperationFailure extends EmergencyReportState {}
 
 class EmergencyReportUnAuthorised extends EmergencyReportState {}

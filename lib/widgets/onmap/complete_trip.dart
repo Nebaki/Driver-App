@@ -37,7 +37,7 @@ class _CompleteTripState extends State<CompleteTrip> {
       onWillPop: () async => false,
       child: BlocConsumer<RideRequestBloc, RideRequestState>(
         listener: (context, state) {
-          if (state is RideRequestTokentExpired) {
+          if (state is RideRequestTokenExpired) {
             gotoSignIn(context);
           }
           if (state is RideRequestCompleted) {
@@ -58,7 +58,7 @@ class _CompleteTripState extends State<CompleteTrip> {
             });
           }
 
-          if (state is RideRequestOperationFailur) {
+          if (state is RideRequestOperationFailure) {
             setState(() {
               isButtonDisabled = false;
             });
@@ -103,7 +103,7 @@ class _CompleteTripState extends State<CompleteTrip> {
                         width: MediaQuery.of(context).size.width,
                         child: const Divider());
                   }),
-                  BlocBuilder<EstiMatedCostCubit, double>(
+                  BlocBuilder<EstimatedCostCubit, double>(
                     builder: (context, state) {
                       currentPrice = state;
                       return Text(

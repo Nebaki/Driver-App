@@ -20,7 +20,7 @@ class PushNotificationService {
         if (isAccepted) {
           BlocProvider.of<DirectionBloc>(context).add(
               const DirectionChangeToInitialState(
-                  isBalanceSuffiecient: true, isFromOnlineMode: true));
+                  isBalanceSufficient: true, isFromOnlineMode: true));
           isAccepted = false;
         } else {
           Navigator.pop(context);

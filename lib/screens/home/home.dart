@@ -658,7 +658,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   );
                                 });
                           }
-                          if (state is EmergencyReportOperationFailur) {
+                          if (state is EmergencyReportOperationFailure) {
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: const Text("Reporting Failed."),
@@ -850,7 +850,7 @@ class _HomeScreenState extends State<HomeScreen> {
     stopDuration = 0;
     pathDistance = 0;
     stopStopTimer();
-    context.read<EstiMatedCostCubit>().resetEstimatedCost();
+    context.read<EstimatedCostCubit>().resetEstimatedCost();
     context.read<RatingCubit>().getMyRating();
     context.read<DisableButtonCubit>().enableButton();
     _determinePosition().then((value) {
@@ -965,7 +965,7 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           stopStopTimer();
         }
-        context.read<EstiMatedCostCubit>().updateEstimatedCost(
+        context.read<EstimatedCostCubit>().updateEstimatedCost(
             updatedLocation,
             LatLng(event.latitude, event.longitude),
             stopDuration,
@@ -1074,7 +1074,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
         listener: (context, state) {
-          if (state is RideRequestTokentExpired) {
+          if (state is RideRequestTokenExpired) {
             gotoSignIn(context);
           }
           if (state is RideRequestSuccess) {
@@ -1114,7 +1114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 //         LatLng(state.placeDetail.lat, state.placeDetail.lng));
                 // BlocProvider.of<DirectionBloc>(context).add(event);
 
-                DirectionEvent event = DirectionLoadFromDiffrentPickupLocation(
+                DirectionEvent event = DirectionLoadFromDifferentPickupLocation(
                     pickup: pickupLocation,
                     destination:
                         LatLng(state.placeDetail.lat, state.placeDetail.lng));

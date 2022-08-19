@@ -19,9 +19,9 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         yield RideRequestLoadSuccess(request);
       } catch (e) {
         if (e.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }
@@ -35,9 +35,9 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         yield RideRequestSuccess(request);
       } catch (e) {
         if (e.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }
@@ -50,9 +50,9 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         yield RideRequestDeleteSuccess();
       } catch (e) {
         if (e.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }
@@ -63,12 +63,12 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
       try {
         await rideRequestRepository.changeRequestStatus(
             event.id, event.status, event.passengerFcm);
-        yield RideRequesChanged();
+        yield RideRequestChanged();
       } catch (e) {
         if (e.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }
@@ -81,9 +81,9 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         yield RideRequestAccepted();
       } catch (e) {
         if (e.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }
@@ -96,14 +96,14 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         yield RideRequestStarted();
       } catch (e) {
         if (e.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }
 
-    if (event is RideRequestCancell) {
+    if (event is RideRequestCancel) {
       yield RideRequestLoading();
       try {
         await rideRequestRepository.cancelRideRequest(event.id,
@@ -111,9 +111,9 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         yield RideRequestCancelled();
       } catch (e) {
         if (e.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }
@@ -126,9 +126,9 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         yield RideRequestCompleted();
       } catch (e) {
         if (e.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }
@@ -141,9 +141,9 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         yield RideRequestPassed();
       } catch (e) {
         if (e.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }
@@ -156,9 +156,9 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         yield RideRequestStartedTripChecked(rideRequest);
       } catch (_) {
         if (_.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }
@@ -171,9 +171,9 @@ class RideRequestBloc extends Bloc<RideRequestEvent, RideRequestState> {
         yield RideRequestTimeOuted();
       } catch (e) {
         if (e.toString().split(" ")[1] == "401") {
-          yield RideRequestTokentExpired();
+          yield RideRequestTokenExpired();
         } else {
-          yield RideRequestOperationFailur();
+          yield RideRequestOperationFailure();
         }
       }
     }

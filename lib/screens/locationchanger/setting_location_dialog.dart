@@ -18,7 +18,7 @@ class SettingLocationDialog extends StatelessWidget {
           switch (args.fromWhere) {
             case "DroppOff":
               droppOffAddress = state.placeDetail.placeName;
-              DirectionEvent event = DirectionLoadFromDiffrentPickupLocation(
+              DirectionEvent event = DirectionLoadFromDifferentPickupLocation(
                   pickup: args.pickupLocationLatLng,
                   destination:
                       LatLng(state.placeDetail.lat, state.placeDetail.lng));
@@ -31,7 +31,7 @@ class SettingLocationDialog extends StatelessWidget {
               pickupLocation =
                   LatLng(state.placeDetail.lat, state.placeDetail.lng);
 
-              DirectionEvent event = DirectionLoadFromDiffrentPickupLocation(
+              DirectionEvent event = DirectionLoadFromDifferentPickupLocation(
                   pickup: LatLng(state.placeDetail.lat, state.placeDetail.lng),
                   destination: args.droppOffLocationLatLng);
               BlocProvider.of<DirectionBloc>(context).add(event);

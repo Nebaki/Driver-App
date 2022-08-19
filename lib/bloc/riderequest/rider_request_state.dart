@@ -30,9 +30,9 @@ class RideRequestLoadSuccess extends RideRequestState {
 }
 
 
-class RideRequestOperationFailur extends RideRequestState {}
+class RideRequestOperationFailure extends RideRequestState {}
 
-class RideRequesChanged extends RideRequestState {}
+class RideRequestChanged extends RideRequestState {}
 
 class RideRequestAccepted extends RideRequestState {}
 
@@ -55,4 +55,4 @@ class RideRequestStartedTripChecked extends RideRequestState {
 
 class RideRequestTimeOuted extends RideRequestState {}
 
-class RideRequestTokentExpired extends RideRequestState {}
+class RideRequestTokenExpired extends RideRequestState {}

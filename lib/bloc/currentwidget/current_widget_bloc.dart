@@ -4,5 +4,5 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CurrentWidgetCubit extends Cubit<Widget> {
   CurrentWidgetCubit() : super(Container());
   void changeWidget(Widget widget) => emit(widget);
-  void getcurrentWidget()=> emit(state);
+  void getCurrentWidget()=> emit(state);
 }

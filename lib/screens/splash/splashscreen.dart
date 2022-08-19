@@ -208,10 +208,10 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
               }
               // loadRideRequest();
             }
-            if (st is RideRequestTokentExpired) {
+            if (st is RideRequestTokenExpired) {
               Navigator.pushReplacementNamed(context, SigninScreen.routeName);
             }
-            if (st is RideRequestOperationFailur) {
+            if (st is RideRequestOperationFailure) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 duration: const Duration(minutes: 5),
                 backgroundColor: Colors.black,

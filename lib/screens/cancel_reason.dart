@@ -126,11 +126,11 @@ class _CancelReasonState extends State<CancelReason> {
                   isLoading = false;
                   BlocProvider.of<DirectionBloc>(context).add(
                       const DirectionChangeToInitialState(
-                          isBalanceSuffiecient: true, isFromOnlineMode: true));
+                          isBalanceSufficient: true, isFromOnlineMode: true));
                   Navigator.pop(context);
                 });
               }
-              if (state is RideRequestOperationFailur) {
+              if (state is RideRequestOperationFailure) {
                 isLoading = false;
 
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -145,7 +145,7 @@ class _CancelReasonState extends State<CancelReason> {
 // Statusss issss 200', dDZwYJszQDiZwuEkNwsqx6:APA91bFaGv472U53den4Eq5CIcoLEMZ8UCegtFkGcyNjTlZ4v5resBVvVIW9IBy66SHeM7qPx0T8BEod5dNVGADUF9onpB3nwPzbunPqQqRZ9BQAZ1LJ1yM7uKaAW-lORobQ3hcOKVOe, true
   void cancellRequest(BuildContext context) {
     isLoading = true;
-    RideRequestEvent requestEvent = RideRequestCancell(
+    RideRequestEvent requestEvent = RideRequestCancel(
         requestId, groupValue!, passengerFcm, widget.arg.sendRequest);
     BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
   }

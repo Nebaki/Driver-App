@@ -27,10 +27,10 @@ class _ArrivedState extends State<Arrived> {
       onWillPop: () async => false,
       child: BlocConsumer<RideRequestBloc, RideRequestState>(
         listener: (context, state) {
-          if (state is RideRequestTokentExpired) {
+          if (state is RideRequestTokenExpired) {
             gotoSignIn(context);
           }
-          if (state is RideRequesChanged) {
+          if (state is RideRequestChanged) {
             context
                 .read<CurrentWidgetCubit>()
                 .changeWidget(const WaitingPassenger(
@@ -40,7 +40,7 @@ class _ArrivedState extends State<Arrived> {
 
             // widget.callback!(WaitingPassenger(widget.callback, true));
           }
-          if (state is RideRequestOperationFailur) {
+          if (state is RideRequestOperationFailure) {
             isButtonDisabled = false;
           }
         },

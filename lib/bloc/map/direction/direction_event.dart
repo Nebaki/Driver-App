@@ -13,10 +13,10 @@ class DirectionLoad extends DirectionEvent {
   List<Object> get props => [];
 }
 
-class DirectionLoadFromDiffrentPickupLocation extends DirectionEvent {
+class DirectionLoadFromDifferentPickupLocation extends DirectionEvent {
   final LatLng destination;
   final LatLng pickup;
-  const DirectionLoadFromDiffrentPickupLocation(
+  const DirectionLoadFromDifferentPickupLocation(
       {required this.pickup, required this.destination});
 
   @override
@@ -32,10 +32,10 @@ class DirectionDistanceDurationLoad extends DirectionEvent {
 }
 
 class DirectionChangeToInitialState extends DirectionEvent {
-  final bool isBalanceSuffiecient;
+  final bool isBalanceSufficient;
     final bool isFromOnlineMode;
 
-  const DirectionChangeToInitialState({required this.isBalanceSuffiecient,required this.isFromOnlineMode});
+  const DirectionChangeToInitialState({required this.isBalanceSufficient,required this.isFromOnlineMode});
   @override
-  List<Object?> get props => [isBalanceSuffiecient];
+  List<Object?> get props => [isBalanceSufficient];
 }

@@ -33,7 +33,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
       onWillPop: () async => false,
       child: BlocConsumer<RideRequestBloc, RideRequestState>(
         listener: (context, state) {
-          if (state is RideRequestTokentExpired) {
+          if (state is RideRequestTokenExpired) {
             gotoSignIn(context);
           }
           if (state is RideRequestStarted) {
@@ -57,7 +57,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
             }
           }
 
-          if (state is RideRequestOperationFailur) {
+          if (state is RideRequestOperationFailure) {
             setState(() {
               isButtonDisabled = false;
             });

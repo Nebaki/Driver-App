@@ -20,7 +20,7 @@ class DirectionBloc extends Bloc<DirectionEvent, DirectionState> {
       }
     }
 
-    if (event is DirectionLoadFromDiffrentPickupLocation) {
+    if (event is DirectionLoadFromDifferentPickupLocation) {
       yield DirectionLoading();
 
       try {
@@ -40,13 +40,13 @@ class DirectionBloc extends Bloc<DirectionEvent, DirectionState> {
             await directionRepository.getDirection(event.destination);
         yield DirectionDistanceDurationLoadSuccess(direction: direction);
       } catch (_) {
-        yield DirectionDistanceDurationOperationFailur();
+        yield DirectionDistanceDurationOperationFailure();
       }
     }
 
     if (event is DirectionChangeToInitialState) {
       yield DirectionInitialState(
-          isBalanceSufficient: event.isBalanceSuffiecient, isFromOnlineMode: event.isFromOnlineMode);
+          isBalanceSufficient: event.isBalanceSufficient, isFromOnlineMode: event.isFromOnlineMode);
     }
   }
 }

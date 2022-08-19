@@ -94,11 +94,11 @@ class _CollectedCashState extends State<CollectedCash> {
                             if (state.balance > 0) {
                               BlocProvider.of<DirectionBloc>(context).add(
                                   const DirectionChangeToInitialState(
-                                      isBalanceSuffiecient: true,isFromOnlineMode: true));
+                                      isBalanceSufficient: true,isFromOnlineMode: true));
                             } else {
                               BlocProvider.of<DirectionBloc>(context).add(
                                   const DirectionChangeToInitialState(
-                                      isBalanceSuffiecient: false,isFromOnlineMode: true));
+                                      isBalanceSufficient: false,isFromOnlineMode: true));
                             }
 
                             Navigator.pop(context);

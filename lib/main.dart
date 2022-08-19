@@ -192,7 +192,7 @@ class MyApp extends StatelessWidget {
                       BalanceBloc(balanceRepository: balanceRepository)
                         ..add(BalanceLoad()))),
               BlocProvider(create: (context) => CurrentWidgetCubit()),
-              BlocProvider(create: (context) => EstiMatedCostCubit(0)),
+              BlocProvider(create: (context) => EstimatedCostCubit(0)),
               BlocProvider(create: (context) => DisableButtonCubit()),
               BlocProvider(
                 create: (context) =>
