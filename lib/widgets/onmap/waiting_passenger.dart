@@ -154,7 +154,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                             width: double.infinity,
                             height: 65,
                             padding: const EdgeInsets.only(
-                                left: 30, right: 30, top: 10, bottom: 10),
+                                left: 10, right: 0, top: 10, bottom: 10),
                             child: SliderButton(
                                 buttonColor: Provider.of<ThemeProvider>(context, listen: false).getColor,
                                 radius: 10,
@@ -203,7 +203,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                       ),
                       !widget.formPassenger
                           ? Flexible(
-                              flex: 2,
+                              flex: 1,
                               child: GestureDetector(
                                   onTap: () {
                                     Navigator.pushNamed(
@@ -213,9 +213,13 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
 
                                     // callback!(CancelTrip(callback));
                                   },
-                                  child: _buildItems(
+                                  child:
+                                  _buildItems(
                                       text: "Cancel Trip",
-                                      icon: Icons.clear_outlined)),
+                                      icon: Icons.clear_outlined,
+                                      tar: 1)
+
+                              ),
                             )
                           : Container()
                     ],
@@ -229,29 +233,29 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
     );
   }
 
-  Widget _buildItems({required String text, required IconData icon}) {
+  Widget _buildItems({required String text, required IconData icon, int? tar}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(100),
           child: Container(
-            color: Colors.grey.shade100,
+            color: tar != 1 ? Colors.grey.shade100: Colors.red,
             padding: const EdgeInsets.all(10),
             child: Icon(
               icon,
-              color: Colors.indigo.shade900,
+              color: tar != 1 ? Colors.indigo.shade900: Colors.white,
               size: 22,
             ),
           ),
         ),
-        Padding(
+        tar != 1 ? Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
             text,
             style: TextStyle(color: Colors.indigo.shade900),
           ),
-        ),
+        ): Container(),
       ],
     );
   }

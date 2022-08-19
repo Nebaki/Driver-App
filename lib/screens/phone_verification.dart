@@ -405,7 +405,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
             height: 30.0,
           ),
           Container(
-              margin: const EdgeInsets.only(left: 60.0),
+              margin: const EdgeInsets.only(left: 20.0),
               child: Row(
                 children: [
                   Text(

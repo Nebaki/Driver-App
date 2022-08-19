@@ -240,13 +240,16 @@ class MyApp extends StatelessWidget {
                     primaryColor: themeProvider.getColor,
                     textTheme: const TextTheme(
                         button: TextStyle(
+                          fontFamily: 'Sifonn',
                           color: Color.fromRGBO(254, 79, 5, 1),
                         ),
                         subtitle1:
                             TextStyle(color: Colors.black38, fontSize: 14),
                         headline5: TextStyle(
+                            fontFamily: 'Sifonn',
                             fontWeight: FontWeight.bold, fontSize: 24),
                         bodyText2: TextStyle(
+                            fontFamily: 'Sifonn',
                             color: Colors.black,
                             fontSize: 16,
                             fontWeight: FontWeight.normal)),
@@ -258,12 +261,14 @@ class MyApp extends StatelessWidget {
                       foregroundColor:
                           MaterialStateProperty.all<Color>(Colors.red),
                       textStyle: MaterialStateProperty.all<TextStyle>(
-                          const TextStyle(color: Colors.black)),
+                          const TextStyle(
+                              fontFamily: 'Sifonn',color: Colors.black)),
                     )),
                     elevatedButtonTheme: ElevatedButtonThemeData(
                       style: ButtonStyle(
                           textStyle: MaterialStateProperty.all<TextStyle>(
                               const TextStyle(
+                                  fontFamily: 'Sifonn',
                                   color: Colors.white,
                                   fontWeight: FontWeight.normal,
                                   fontSize: 20)),

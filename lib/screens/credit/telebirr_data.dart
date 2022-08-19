@@ -4,6 +4,9 @@ class Result {
   final String message;
 
   Result(this.code, this.success, this.message);
+
+  @override
+  String toString() => "{code: $code, success:$success, message:$message}";
 }
 
 

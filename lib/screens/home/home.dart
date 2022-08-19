@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:isolate';
 import 'dart:math';
 import 'dart:ui';
+
 // import 'package:app_settings/app_settings.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/bloc/bloc.dart';
@@ -43,6 +45,7 @@ class HomeScreen extends StatefulWidget {
   HomeScreenArgument args;
 
   HomeScreen({Key? key, required this.args}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -137,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
     }
     super.initState();
-    _listenBackGroundMessege();
+    _listenBackGroundMessage();
     if (!widget.args.isSelected) {
       context.read<CurrentWidgetCubit>().changeWidget(
           widget.args.isOnline ? const OnlinMode() : OfflineMode());
@@ -167,6 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   final ReceivePort _port = ReceivePort();
+
   void setDestination(LatLng dest) {
     setState(() {
       destination = dest;
@@ -189,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    createMarkerIcon();
+    //createMarkerIcon();
     Session().logSession("markers", "length ${markers.length}");
     return Scaffold(
       key: _scaffoldKey,
@@ -385,7 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                             placeholder: (context, url) =>
                                 const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>const Icon(
+                            errorWidget: (context, url, error) => const Icon(
                                   Icons.person,
                                   color: Colors.black,
                                   // color: Colors.indigo.shade900,
@@ -442,9 +446,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           .add(
                                                               const ReverseLocationLoad());
                                                     }
-                                                  : (){
-                                                ShowToast(context, "Loading Balance...").show();
-                                              },
+                                                  : () {
+                                                      ShowSnack(
+                                                              context: context,
+                                                              message:
+                                                                  "Loading Balance...")
+                                                          .show();
+                                                    },
                                               child: Container(
                                                   padding:
                                                       const EdgeInsets.all(2),
@@ -456,8 +464,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10)),
-                                                  child: const Icon(Icons.trip_origin,
-                                                    )),
+                                                  child: const Icon(
+                                                    Icons.trip_origin,
+                                                  )),
                                             ),
                                         listener: (context, state) {
                                           if (state
@@ -551,8 +560,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   : CameraUpdate.newLatLngBounds(
                                       latLngBounds, 100));
                             },
-                            child: const Icon(Icons.gps_fixed,
-                                 size: 30)),
+                            child: const Icon(Icons.gps_fixed, size: 30)),
                       ),
                     ),
                     BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
@@ -612,11 +620,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                           if (state is EmergencyReportCreated) {
                             Navigator.pop(context);
-
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0)),
+                                    title: const Text("Emergency report"),
                                     content: Row(
                                       children: const [
                                         SizedBox(
@@ -627,7 +638,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                         SizedBox(
                                           width: 5,
                                         ),
-                                        Text("Emergency report has been sent"),
+                                        Flexible(
+                                          child: Text(
+                                              "Emergency report has been sent",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black)),
+                                        ),
                                       ],
                                     ),
                                     actions: [
@@ -673,7 +691,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       },
                                       child: Icon(
                                           showNearbyOpportunity
-                                              ? Icons.golf_course
+                                              ? Icons.directions_walk
                                               : Icons.close,
                                           // color: Colors.red.shade900,
                                           size: 30)),
@@ -1243,10 +1261,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _buildSheet(String address) {
     showModalBottomSheet(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).primaryColor,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+                topLeft: Radius.circular(15), topRight: Radius.circular(15))),
         context: context,
         isScrollControlled: true,
         builder: (BuildContext ctx) {
@@ -1259,12 +1277,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.only(
-                        top: 20, left: 20, right: 20, bottom: 10),
-                    decoration: const BoxDecoration(
-                        color: Colors.black,
+                        top: 20, left: 20, right: 20, bottom: 20),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30))),
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15))),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1283,8 +1301,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30)),
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15)),
                         color: Colors.white,
                       ),
                       child: Column(
@@ -1298,7 +1316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           //             PhoneNumber(isoCode: "ET"),
                           //         onInputChanged: (value) {})),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
+                            padding: const EdgeInsets.fromLTRB(50, 5, 50, 10),
                             child: Form(
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
@@ -1317,6 +1335,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   // findPlace(value);
                                 },
                                 decoration: const InputDecoration(
+                                    border: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            style: BorderStyle.solid)),
                                     prefixIcon: Icon(
                                       Icons.phone,
                                       color: Colors.black,
@@ -1335,6 +1356,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 findPlace(value);
                               },
                               decoration: InputDecoration(
+                                  border: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(style: BorderStyle.solid)),
                                   suffixIcon: IconButton(
                                       onPressed: () {
                                         pickupController.clear();
@@ -1354,13 +1378,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
 
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                            padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
                             child: TextField(
                               focusNode: droppOffLocationNode,
                               onChanged: (value) {
                                 findPlace(value);
                               },
                               decoration: const InputDecoration(
+                                  border: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(style: BorderStyle.solid)),
                                   prefixIcon: Icon(
                                     Icons.location_on,
                                     color: Colors.black,
@@ -1448,9 +1475,15 @@ class _HomeScreenState extends State<HomeScreen> {
           return WillPopScope(
             onWillPop: () async => false,
             child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
               title: const Text("Uncompleted Trip"),
               content: const Text(
-                  "You have uncompleted trip you have to cancel or complete the trip in order to continue."),
+                  "You have uncompleted trip you have to cancel or complete the trip in order to continue.",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
               actions: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -1480,18 +1513,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       //     DirectionDistanceDurationLoad(
                       //         destination: droppOffLocation);
                       // BlocProvider.of<DirectionBloc>(context).add(event);
-                    }, child:
+                    },
+                        child:
                         BlocBuilder<StartedTripDataCubit, StartedTripDataState>(
                       builder: (context, state) {
                         if (state is StartedTripLoadSuccess) {
                           stopDuration = state.data.stopduration;
                           pathDistance = state.data.distance;
-
-                          return const Text("Proceed");
+                          return const Text(
+                            "Proceed",
+                            style: TextStyle(color: Colors.white),
+                          );
                         }
-                        return Container();
+                        return const Text("Proceed");
                       },
-                    ))
+                    )),
                   ],
                 )
               ],
@@ -1527,7 +1563,7 @@ class _HomeScreenState extends State<HomeScreen> {
           serviceStatusValue = 'enabled';
         } else {
           debugPrint("Disableddddd");
-          locationServiceButtomSheet();
+          locationServiceBottomSheet();
 
           serviceStatusValue = 'disabled';
         }
@@ -1542,7 +1578,7 @@ class _HomeScreenState extends State<HomeScreen> {
             if (event == ConnectivityResult.none) {
               debugPrint("yow none");
 
-              internetServiceButtomSheet();
+              internetServiceBottomSheet();
               internetServiceStatus = true;
             } else if (event == ConnectivityResult.wifi) {
               debugPrint("yow wifi");
@@ -1561,7 +1597,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void locationServiceButtomSheet() {
+  void locationServiceBottomSheet() {
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
@@ -1635,7 +1671,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
-  void internetServiceButtomSheet() {
+  void internetServiceBottomSheet() {
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
@@ -1683,8 +1719,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                             onPressed: () {
-                              // AppSettings.openDeviceSettings(
-                              //     asAnotherTask: true);
+                              AppSettings.openDeviceSettings(
+                                  asAnotherTask: true);
                             },
                             child: const Text("Go to Settings")),
                       )),
@@ -1717,7 +1753,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!serviceEnabled) {
         isFirstTime = true;
 
-        locationServiceButtomSheet();
+        locationServiceBottomSheet();
         serviceStatusValue = 'disabled';
 
         return Future.error("NoLocation Enabled");
@@ -1734,11 +1770,11 @@ class _HomeScreenState extends State<HomeScreen> {
     result = await _connectivity.checkConnectivity();
 
     if (result == ConnectivityResult.none) {
-      internetServiceButtomSheet();
+      internetServiceBottomSheet();
     }
   }
 
-  void _listenBackGroundMessege() {
+  void _listenBackGroundMessage() {
     IsolateNameServer.registerPortWithName(_port.sendPort, portName);
     _port.listen((message) {
       final listOfDrivers = json.decode(message.data['nextDrivers']) as List;

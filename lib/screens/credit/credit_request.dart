@@ -45,12 +45,13 @@ class _CreditRequestState extends State<CreditRequest> {
 
   TextEditingController amountController = TextEditingController();
   bool _isLoading = false;
+
   Widget _amountBox() => TextFormField(
+        style: TextStyle(fontSize: 18),
         keyboardType:
             const TextInputType.numberWithOptions(signed: true, decimal: true),
         controller: amountController,
         decoration: const InputDecoration(
-            
             alignLabelWithHint: true,
             labelText: amountU,
             prefixIcon: Icon(
@@ -60,8 +61,7 @@ class _CreditRequestState extends State<CreditRequest> {
             fillColor: Colors.white,
             filled: true,
             border: OutlineInputBorder(
-                borderSide: BorderSide(style: BorderStyle.solid))
-        ),
+                borderSide: BorderSide(style: BorderStyle.solid))),
         validator: (value) {
           if (value!.isEmpty) {
             return enterAmountE;
@@ -71,6 +71,7 @@ class _CreditRequestState extends State<CreditRequest> {
           return null;
         },
       );
+
   Widget _startButton() => ElevatedButton(
         onPressed: _isLoading
             ? null
@@ -81,7 +82,7 @@ class _CreditRequestState extends State<CreditRequest> {
                     _isLoading = true;
                   });
                   form.save();
-                  if(int.parse(amountController.value.text) > 0){
+                  if (int.parse(amountController.value.text) > 0) {
                     requestCredit(amountController.value.text);
                   }
                 }
@@ -107,6 +108,7 @@ class _CreditRequestState extends State<CreditRequest> {
           ],
         ),
       );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,46 +154,47 @@ class _CreditRequestState extends State<CreditRequest> {
             Align(
               alignment: Alignment.center,
               child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height / 3,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          elevation: 1.0,
-                          child: Form(
-                              key: _formkey,
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    const Padding(
-                                        padding: EdgeInsets.only(left: 40, right: 40, top: 10),
-                                        child: Text(
-                                          "Credit Amount",
-                                          style: TextStyle(fontSize: 25),
-                                        )),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
-                                      child: _amountBox(),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 10, right: 10, top: 10),
-                                      child: SizedBox(
-                                        height: 50,
-                                        width: MediaQuery.of(context).size.width,
-                                        child: _startButton(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                        ),
-                      ),
+                padding: const EdgeInsets.all(15.0),
+                child: Container(
+                  height: MediaQuery.of(context).size.height / 3,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
                     ),
+                    elevation: 0,
+                    child: Form(
+                        key: _formkey,
+                        child: Center(
+                          child: Column(
+                            children: [
+                              const Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 40, right: 40, top: 10),
+                                  child: Text(
+                                    "Credit Amount",
+                                    style: TextStyle(fontSize: 25),
+                                  )),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, top: 5),
+                                child: _amountBox(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, top: 10),
+                                child: SizedBox(
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: _startButton(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )),
+                  ),
+                ),
+              ),
             ),
-
           ],
         ));
   }
@@ -207,7 +210,7 @@ class _CreditRequestState extends State<CreditRequest> {
               }),
               if (value.code == "200")
                 ShowMessage(context, requestU, value.message)
-              else if(value.code == "401")
+              else if (value.code == "401")
                 _refreshToken(requestCredit(amount))
               else
                 ShowMessage(context, requestU, value.message)
@@ -222,7 +225,7 @@ class _CreditRequestState extends State<CreditRequest> {
 
   _refreshToken(Function function) async {
     final res =
-    await AuthDataProvider(httpClient: http.Client()).refreshToken();
+        await AuthDataProvider(httpClient: http.Client()).refreshToken();
     if (res.statusCode == 200) {
       return function();
     } else {

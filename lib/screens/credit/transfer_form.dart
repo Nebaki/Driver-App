@@ -15,6 +15,7 @@ import '../../dataprovider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
 
 import '../../helper/helper.dart';
+import '../../models/auth/auth.dart';
 import '../../route.dart';
 import '../../utils/colors.dart';
 import '../../utils/painter.dart';
@@ -41,27 +42,31 @@ class _TransferState extends State<TransferMoney> {
   int _currentThemeIndex = 2;
 
   late ThemeProvider themeProvider;
-
+  String phoneNumber = "";
   @override
   void initState() {
+    _loadProfile();
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _loadPreTheme();
   }
-
+  _loadProfile(){
+    AuthDataProvider(httpClient: http.Client()).getUserData().then((value) => {
+      phoneNumber = value.phoneNumber
+    });
+  }
   _loadPreTheme() {
     _currentThemeIndex = themeProvider.getThemeIndex();
   }
 
   Widget _amountBox() {
     return TextFormField(
+      style: TextStyle(fontSize: 18),
       keyboardType:
-          const TextInputType.numberWithOptions(signed: true, decimal: true),
+      const TextInputType.numberWithOptions(signed: true, decimal: true),
       controller: amountController,
       decoration: const InputDecoration(
           alignLabelWithHint: true,
           labelText: amountU,
-          hintStyle:
-              TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
           prefixIcon: Icon(
             Icons.money,
             size: 19,
@@ -94,7 +99,7 @@ class _TransferState extends State<TransferMoney> {
         maxLength: 9,
         maxLines: 1,
         keyboardType:
-            const TextInputType.numberWithOptions(signed: true, decimal: true),
+        const TextInputType.numberWithOptions(signed: true, decimal: true),
         style: TextStyle(fontSize: 18),
         enabled: phoneEnabled,
         controller: phoneController,
@@ -152,16 +157,32 @@ class _TransferState extends State<TransferMoney> {
       onPressed: _isLoading
           ? null
           : () {
-              final form = _formKey.currentState;
-              if (form!.validate()) {
-                setState(() {
-                  _isLoading = true;
-                });
-                form.save();
-                startTelebirr(
-                    phoneController.value.text, amountController.value.text);
-              }
-            },
+        final form = _formKey.currentState;
+        if (form!.validate()) {
+          setState(() {
+            _isLoading = true;
+          });
+          form.save();
+          if(phoneNumber != "0"){
+            if(phoneNumber != phoneValue){
+              startTelebirr(phoneValue, amountController.value.text);
+            }else{
+              setState(() {
+                _isLoading = false;
+              });
+              ShowSnack(context: context,message: "You can't transfer credit for your self",
+              backgroundColor: Colors.red).show();
+            }
+          }else{
+            setState(() {
+              _isLoading = false;
+            });
+            ShowSnack(context: context,
+                message: "Loading your profile, try again").show();
+            _loadProfile();
+          }
+        }
+      },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -172,12 +193,12 @@ class _TransferState extends State<TransferMoney> {
             alignment: Alignment.centerRight,
             child: _isLoading
                 ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
-                  )
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            )
                 : Container(),
           )
         ],
@@ -235,7 +256,7 @@ class _TransferState extends State<TransferMoney> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.0),
                   ),
-                  elevation: 1.0,
+                  elevation: 0,
                   child: Form(
                     key: _formKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -243,16 +264,22 @@ class _TransferState extends State<TransferMoney> {
                       decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(10))),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 2.55,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height / 2.55,
                       padding:
-                          const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      const EdgeInsets.only(left: 10, right: 10, top: 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Padding(
                               padding:
-                                  EdgeInsets.only(left: 10, right: 40, top: 10),
+                              EdgeInsets.only(left: 10, right: 40, top: 10),
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
@@ -271,7 +298,10 @@ class _TransferState extends State<TransferMoney> {
                                 left: 10, right: 10, top: 10),
                             child: SizedBox(
                               height: 50,
-                              width: MediaQuery.of(context).size.width,
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width,
                               child: _transferButton(),
                             ),
                           ),
@@ -291,22 +321,31 @@ class _TransferState extends State<TransferMoney> {
   startTelebirr(String phone, String amount) {
     var res = transfer.transferCredit(phone, amount);
     res
-        .then((value) => {
-              setState(() {
-                _isLoading = false;
-              }),
-              ShowMessage(context, "Transaction", value.message),
-              if (value.code == "200") reloadBalance(),
-              if (value.code == "401") {
-                _refreshToken(startTelebirr(phone,amount))
-              }
-            })
-        .onError((error, stackTrace) => {
-              ShowMessage(context, "Transaction", "Error happened: $error"),
-              setState(() {
-                _isLoading = false;
-              })
-            });
+        .then((value) =>
+    {
+      setState(() {
+        _isLoading = false;
+      }),
+      if(value.code == "200"){
+        ShowMessage(context, "Transaction", value.message)
+      } else
+        {
+          ShowSnack(context: context,
+              message: value.message,
+              backgroundColor: Colors.red).show()
+        },
+      if (value.code == "200") reloadBalance(),
+      if (value.code == "401") {
+        _refreshToken(startTelebirr(phone, amount))
+      }
+    })
+        .onError((error, stackTrace) =>
+    {
+      ShowMessage(context, "Transaction", "Error happened: $error"),
+      setState(() {
+        _isLoading = false;
+      })
+    });
   }
 
   void reloadBalance() {
@@ -314,12 +353,12 @@ class _TransferState extends State<TransferMoney> {
     confirm
         .then((value) => {ShowMessage(context, balanceU, value.message)})
         .onError((error, stackTrace) =>
-            {ShowMessage(context, balanceU, error.toString())});
+    {ShowMessage(context, balanceU, error.toString())});
   }
 
   _refreshToken(Function function) async {
     final res =
-        await AuthDataProvider(httpClient: http.Client()).refreshToken();
+    await AuthDataProvider(httpClient: http.Client()).refreshToken();
     if (res.statusCode == 200) {
       return function();
     } else {

@@ -55,7 +55,7 @@ class WaletState extends State<Walet> {
   Widget build(BuildContext context) {
     // When nothing else to load
     if (_hasNextPage == false) {
-      ShowToast(context, fetchedAllI).show();
+      ShowSnack(context:context, message:fetchedAllI).show();
     }
     return Scaffold(
       backgroundColor: Colors.white,
@@ -295,14 +295,6 @@ class WaletState extends State<Walet> {
             _isLoadMoreRunning = false;
           })
         }
-    });
-  }
-
-  void creaditRequest(BuildContext context) {
-    var sender = CreditDataProvider(httpClient: http.Client());
-    var res = sender.requestCredit("50");
-    res.then((value) => {
-      showMessage(context, value.message)
     });
   }
 

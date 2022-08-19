@@ -7,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
-class OndriverStatus extends StatelessWidget {
+class OnDriverStatus extends StatelessWidget {
   final bool isOnline;
-  const OndriverStatus({Key? key, required this.isOnline}) : super(key: key);
+  const OnDriverStatus({Key? key, required this.isOnline}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

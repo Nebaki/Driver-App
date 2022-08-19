@@ -130,13 +130,33 @@ class _TripDetailState extends State<TripDetail>{
                   ),*/
                   trip.status != "Cancelled" ? Padding(
                     padding: const EdgeInsets.all(3.0),
-                    child: Text("Net fee: ${trip.netPrice!.split(",")[0]+" ETB"}"),
+                    child: Text("Fee: ${trip.price!.split(",")[0]+" ETB"}"),
                   ): Container(),
                 ],
               )
             ],
           ),
 
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Text("Trip Started Time:", style: TextStyle(
+                color: theme//,fontWeight: FontWeight.bold
+            ),),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(trip.status != "Cancelled" ? formatDate(trip.startingTime!) : "Not started"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Text("Trip Ended Time:", style: TextStyle(
+                color: theme//,fontWeight: FontWeight.bold
+            ),),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(trip.status != "Cancelled" ? formatDate(trip.updatedAt!) : "Not started"),
+          ),
           Padding(
             padding: const EdgeInsets.all(2.0),
             child: Text("Origin:", style: TextStyle(
@@ -168,32 +188,11 @@ class _TripDetailState extends State<TripDetail>{
             padding: const EdgeInsets.all(8.0),
             child: Text("${trip.distance} KM"),
           ),
-
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Text("Trip Started Time:", style: TextStyle(
-                color: theme//,fontWeight: FontWeight.bold
-            ),),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(_formatedDate(trip.startingTime!)),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Text("Trip Ended Time:", style: TextStyle(
-                color: theme//,fontWeight: FontWeight.bold
-            ),),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(_formatedDate(trip.updatedAt!)),
-          ),
         ],
       ),
     );
   }
-  String _formatedDate(String utcDate){
+  String formatDate(String utcDate){
     //var str = "2019-04-05T14:00:51.000Z";
     if(utcDate != "null"){
       var newStr = utcDate.substring(0,10) + ' ' + utcDate.substring(11,23);

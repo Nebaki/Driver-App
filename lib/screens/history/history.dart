@@ -18,6 +18,7 @@ import '../../route.dart';
 import '../../utils/constants/ui_strings.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import 'history_builder.dart';
+import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
   static const routeName = "/history";
@@ -71,7 +72,7 @@ class _HistoryPageState extends State<HistoryPage> {
     var sender = HistoryDataProvider(httpClient: http.Client());
     var res = sender.loadTripHistory();
     res.then((value) => {
-          ShowToast(context, value).show(),
+          ShowSnack(context:context, message:value).show(),
           prepareRequest(context, _page, _limit),
         });
   }
@@ -209,56 +210,74 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   _listUi(Color theme, Trip trip) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Text(statusU, style: TextStyle(color: theme)),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(trip.status ?? loadingU),
-                  ),
-                ],
-              ),
-              trip.status != "Cancelled" ? Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: Text("$feeU ${trip.price!.split(",")[0] + etbU}"),
-              ):Container()
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Text(originU, style: TextStyle(color: theme)),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(trip.pickUpAddress ?? loadingU),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Text(
-              destinationU,
-              style: TextStyle(color: theme),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Text(statusU, style: TextStyle(color: theme)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(trip.status ?? loadingU),
+                ),
+              ],
             ),
+            trip.status != "Cancelled" ? Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Text("$feeU ${trip.price!.split(",")[0] + etbU}"),
+            ):Container()
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Text(dateU, style: TextStyle(color: theme)),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(formatDate(trip.startingTime ?? sampleUtcU)),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Text(originU, style: TextStyle(color: theme)),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(trip.pickUpAddress ?? loadingU),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Text(
+            destinationU,
+            style: TextStyle(color: theme),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(trip.dropOffAddress ?? loadingU),
-          ),
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(trip.dropOffAddress ?? loadingU),
+        ),
+      ],
     );
   }
-
+  String formatDate(String utcDate){
+    //var str = "2019-04-05T14:00:51.000Z";
+    if(utcDate != "null"){
+      var newStr = utcDate.substring(0,10) + ' ' + utcDate.substring(11,23);
+      DateTime dt = DateTime.parse(newStr);
+      var date = DateFormat(dateFormatU).format(dt);
+      return date;
+    }else{
+      return "Unavailable";
+    }
+  }
   void getImageBit(Trip trip) async {
     //downloadImage(trip);
     await ImageUtils.networkImageToBase64(imageUrl(trip)).then((value) => {

@@ -37,7 +37,7 @@ class CreditDataProvider {
   }
 
   Future<Result> transferCredit(String receiverPhone, String amount) async {
-    var phone = "+251" + receiverPhone.trim().replaceAll(' ', '');
+    var phone = receiverPhone.trim().replaceAll(' ', '');
     Session().logSession("phone", phone);
     final response = await http.post(
       Uri.parse('$_baseUrl/transfer-credit'),

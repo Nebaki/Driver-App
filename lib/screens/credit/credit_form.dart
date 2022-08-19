@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/constants/error_messages.dart';
+import 'package:driverapp/utils/session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
   bool _isLoading = false;
 
   Widget _amountBox() => TextFormField(
+        style: TextStyle(fontSize: 18),
         autofocus: true,
         keyboardType:
             const TextInputType.numberWithOptions(signed: true, decimal: true),
@@ -51,9 +53,10 @@ class _TeleBirrDataState extends State<TeleBirrData> {
         decoration: const InputDecoration(
             alignLabelWithHint: true,
             labelText: amountU,
+            labelStyle: TextStyle(fontSize: 15),
             prefixIcon: Icon(
               Icons.money,
-              size: 19,
+              size: 22,
             ),
             fillColor: Colors.white,
             filled: true,
@@ -156,7 +159,7 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                     ),
-                    elevation: 1.0,
+                    elevation: 0,
                     child: Form(
                         key: _formkey,
                         child: Center(
@@ -227,20 +230,25 @@ class _TeleBirrDataState extends State<TeleBirrData> {
       initTeleBirr(value);
     } else {
       print(value.message);
-      ShowToast(context, value.message).show();
+      ShowSnack(context: context, message: value.message).show();
     }
   }
 
   void paymentProcess(Result result, String? outTradeNumber) {
     if (result.code == "0") {
+      Session().logSession("telebirr", "recharge sdk success ");
       var confirm = sender.confirmTransaction(outTradeNumber!);
       confirm
           .then((value) => {
-            ShowMessage(context, rechargeU, value.message),
-          })
-          .onError((error, stackTrace) =>
-              {ShowMessage(context, rechargeU, error.toString())});
+                Session().logSession("telebirr", "recharge confirm ${value.toString()}"),
+                ShowMessage(context, rechargeU, value.message),
+              })
+          .onError((error, stackTrace) => {
+                Session().logSession("telebirr", "recharge confirm $error "),
+                ShowMessage(context, rechargeU, error.toString())
+              });
     } else {
+      Session().logSession("telebirr", "recharge sdk error ");
       ShowMessage(context, rechargeU, result.message);
     }
   }
@@ -248,7 +256,6 @@ class _TeleBirrDataState extends State<TeleBirrData> {
   static const MethodChannel channel = MethodChannel('telebirr_channel');
 
   void initTeleBirr(TelePack telePack) {
-    print("t-pack ${telePack.toString()}");
     teleBirrRequest(telePack).catchError(
       (onError) {
         var result =
@@ -262,12 +269,13 @@ class _TeleBirrDataState extends State<TeleBirrData> {
 
   Future<Result> teleBirrRequest(TelePack telePack) async {
     var data = telePack.toJson();
-    print(jsonEncode(data));
+    Session().logSession("telebirr", "recharge init sdk ${jsonEncode(data)}");
     var teleBirr = await channel.invokeMethod('initTeleBirr', {"data": data});
     var json = jsonDecode(teleBirr);
     var code = json['CODE'];
     var message = json['MSG'];
     var result = Result(code.toString(), false, message);
+    Session().logSession("telebirr", "recharge sdk res ${result.toString()}");
     return result;
   }
 

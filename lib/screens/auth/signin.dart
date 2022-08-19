@@ -320,7 +320,7 @@ class _SigninScreenState extends State<SigninScreen>
                           Navigator.pushNamed(
                               context, CheckPhoneNumber.routeName);
                         },
-                        child: const Text(forgetPasswordU + " ?",
+                        child: const Text(forgetPasswordU + "?",
                           style: TextStyle(
                               color: Color.fromRGBO(39, 49, 110, 1),
                               fontWeight: FontWeight.bold),

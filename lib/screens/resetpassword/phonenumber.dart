@@ -1,4 +1,5 @@
 import 'package:driverapp/bloc/bloc.dart';
+import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class CheckPhoneNumber extends StatefulWidget {
 class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
   ResetMobileVerficationState currentState =
       ResetMobileVerficationState.SHOW_MOBILE_FORM_STATE;
-  late String phoneController;
+  late String phoneNumber;
   bool isCorrect = false;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -71,7 +72,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
   void sendVerificationCode() async {
     await _auth.verifyPhoneNumber(
         timeout: const Duration(seconds: 60),
-        phoneNumber: phoneController,
+        phoneNumber: phoneNumber,
         verificationCompleted: (phoneAuthCredential) async {
           // setState(() {
           //   showLoading = false;
@@ -92,7 +93,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
           });
           Navigator.pushNamed(context, PhoneVerification.routeName,
               arguments: VerificationArgument(
-                  phoneNumber: phoneController,
+                  phoneNumber: phoneNumber,
                   resendingToken: resendingToken,
                   verificationId: verificationId));
         },
@@ -239,7 +240,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                             });
                           },
                           onSaved: (value) {
-                            phoneController = "+251$value";
+                            phoneNumber = "+251$value";
                           },
                         ),
                       ),
@@ -351,18 +352,16 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                                 setState(() {
                                   showLoading = false;
                                 });
-                                showPhoneNumberDoesnotExistDialog();
+                                _phoneNumberNotRegistered(phoneNumber);
+                                //showPhoneNumberDoesnotExistDialog();
                               }
                             }
                             if (state is UserOperationFailure) {
                               setState(() {
                                 showLoading = false;
                               });
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: const Text(cantCheckPhoneE),
-                                backgroundColor: Colors.red.shade900,
-                              ));
+                              ShowSnack(context: context,message: cantCheckPhoneE,
+                              backgroundColor: Colors.red).show();
                             }
                           })
                     ],
@@ -381,6 +380,9 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
         context: context,
         builder: (BuildContext context) =>
             AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius:
+                  BorderRadius.circular(20.0)),
               title: const Text(
                 "Confirm",
                 style: TextStyle(
@@ -397,7 +399,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                   children: [
                     TextSpan(
                         text:
-                        phoneController,
+                        phoneNumber,
                         style: const TextStyle(
                             fontWeight:
                             FontWeight
@@ -410,14 +412,7 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                       Navigator.pop(
                           context);
                       checkPhoneNumber(
-                          phoneController);
-
-                      /*Navigator
-                                                           .pushReplacementNamed(
-                                                               context,
-                                                           ResetPassword
-                                                                   .routeName);
-                                                       */
+                          phoneNumber);
                     },
                     child: Text(
                       "Send Code",
@@ -455,6 +450,11 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
   var textLength = 0;
   var phoneEnabled = true;
 
+  _phoneNumberNotRegistered(String phoneNumber){
+    ShowSnack(context:context,
+        message: 'There is no user register with $phoneNumber phone number',
+        backgroundColor:Colors.red).show();
+  }
   void showPhoneNumberDoesnotExistDialog() {
     showDialog(
         context: context,

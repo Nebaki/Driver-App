@@ -43,29 +43,29 @@ class TeleBirrDataProvider {
         .timeout(const Duration(seconds: 60), onTimeout: () {
       return http.Response('Error', 408); // Request Timeout response status code
     });
-    print("Statttttttttttttttt ${response.statusCode}");
+    Session().logSession("telebirr", "recharge response ${response.statusCode})");
     if (response.statusCode == 200) {
       String status = jsonDecode(response.body)["status"];
       if (status == "2") {
-        Session().logSession("recharge", "success at $exec)");
+        Session().logSession("telebirr", "recharge success at $exec)");
         wait = "Your Credit Recharged successfully";
         return Result(response.statusCode.toString(), false, wait);
       } else{
         while(exec < 3){
-          Session().logSession("recharge", "at $exec)");
+          Session().logSession("telebirr", "recharge at $exec)");
           await Future.delayed(const Duration(seconds: 5));
           exec += 1;
           confirmTransaction(otn);
         }
-        Session().logSession("recharge", "at run)");
+        Session().logSession("telebirr", "recharge at run)");
         wait = "Unable to confirm your payment";
         return Result(response.statusCode.toString(), false, wait);
       }
     } else {
-      Session().logSession("recharge", "failed ${response.statusCode}");
+      Session().logSession("telebirr", "recharge failed ${response.statusCode}");
       if(response.statusCode == 408){
         while(exec < 3){
-          Session().logSession("recharge", "at 408)");
+          Session().logSession("telebirr", "recharge at 408)");
           await Future.delayed(const Duration(seconds: 5));
           exec += 1;
           confirmTransaction(otn);

@@ -6,6 +6,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'credit/toast_message.dart';
+
 class CancelReason extends StatefulWidget {
   static const routeName = "cacelreason";
   final CancelReasonArgument arg;
@@ -18,34 +20,23 @@ class CancelReason extends StatefulWidget {
 
 class _CancelReasonState extends State<CancelReason> {
   final List<String> _reasons = [
-    "Rider isn't here",
-    "Wrong address shown",
-    "Don't charge rider",
-    "Don't charge rider",
-    "Don't charge rider",
-    "Don't charge rider"
+    "Customer Asked to Cancel",
+    "The customer is unreachable",
+    "Bad Pickup Location",
+    "Bad DropOff location",
+    "Too far",
+    "Other"
   ];
   String? groupValue;
   bool isLoading = false;
   DatabaseReference ref = FirebaseDatabase.instance.ref('bookedDrivers');
+  final _appBar = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0.3,
-          backgroundColor: Colors.white,
-          leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.clear,
-                color: Colors.black,
-              )),
-          title: const Text("Cancel Trip"),
-          centerTitle: true,
-        ),
+        appBar: CreditAppBar(
+            key: _appBar, title: "Cancel order", appBar: AppBar(), widgets: []),
         body: BlocConsumer<RideRequestBloc, RideRequestState>(
             builder: ((context, state) => Padding(
                   padding: const EdgeInsets.only(top: 20, bottom: 20),
@@ -56,40 +47,38 @@ class _CancelReasonState extends State<CancelReason> {
                         children: [
                           _builReasonItem(
                               context: context,
-                              text: "Rider isn't here",
+                              text: "Customer Asked to Cancel",
                               value: _reasons[0]),
                           _builReasonItem(
                               context: context,
-                              text: "Wrong address shown",
+                              text: "The customer is unreachable",
                               value: _reasons[1]),
                           _builReasonItem(
                               context: context,
-                              text: "Don't charge rider",
+                              text: "Bad Pickup Location",
                               value: _reasons[2]),
                           _builReasonItem(
                               context: context,
-                              text: "Don't charge rider",
+                              text: "Bad DropOff location",
                               value: _reasons[3]),
                           _builReasonItem(
                               context: context,
-                              text: "Don't charge rider",
+                              text: "Too far",
                               value: _reasons[4]),
                           _builReasonItem(
                               context: context,
-                              text: "Don't charge rider",
+                              text: "Other",
                               value: _reasons[5]),
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        padding: EdgeInsets.symmetric(horizontal: 30),
                         child: SizedBox(
-                            height: 60,
+                            height: 50,
                             width: MediaQuery.of(context).size.width,
                             child: ElevatedButton(
                               style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.green),
+                                //backgroundColor: Theme.of(context).primaryColor,
                                 shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                     RoundedRectangleBorder(

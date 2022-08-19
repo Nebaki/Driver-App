@@ -1,5 +1,7 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:driverapp/helper/helper.dart';
+import 'package:driverapp/utils/session.dart';
 import 'package:driverapp/widgets/custome_backarrow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,9 +11,11 @@ import 'package:driverapp/route.dart';
 import 'package:provider/provider.dart';
 
 import '../../repository/auth.dart';
+import '../../utils/constants/error_messages.dart';
 import '../../utils/constants/ui_strings.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
+import '../../utils/validator.dart';
 import '../credit/toast_message.dart';
 import '../resetpassword/changepassword.dart';
 
@@ -29,11 +33,16 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  final Map<String, dynamic> _user = {};
+  var emailController = TextEditingController();
+  var emergencyController = TextEditingController();
   late ThemeProvider themeProvider;
   final _appBar = GlobalKey<FormState>();
   @override
   void initState() {
+    email = widget.args.auth.email;
+    emergencyNumber = widget.args.auth.emergencyContact ?? "+251";
+    emailController.text = email ?? "";
+    emergencyController.text = emergencyNumber;
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     super.initState();
   }
@@ -49,7 +58,7 @@ class _EditProfileState extends State<EditProfile> {
               child: ClipPath(
                 clipper: WaveClipper(),
                 child: Container(
-                  height: 250,
+                  height: 150,
                   color: themeProvider.getColor,
                 ),
               ),
@@ -57,7 +66,7 @@ class _EditProfileState extends State<EditProfile> {
             ClipPath(
               clipper: WaveClipper(),
               child: Container(
-                height: 160,
+                height: 70,
                 color: themeProvider.getColor,
               ),
             ),
@@ -91,8 +100,12 @@ class _EditProfileState extends State<EditProfile> {
               if (state is UsersLoadSuccess) {
                 _isLoading = false;
 
+                isEmailUpdated = false;
+                isEmergencyUpdated = false;
+                email = emailController.text;
+                emergencyNumber = emergencyController.text;
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Update Successfull"),
+                  content: Text("Update Successful"),
                   backgroundColor: Colors.green,
                 ));
                 Future.delayed(const Duration(seconds: 1), () {
@@ -111,9 +124,14 @@ class _EditProfileState extends State<EditProfile> {
       ),
     );
   }
+  bool isEmailUpdated = false;
+  bool isEmergencyUpdated = false;
+  late String? email;
+  late String emergencyNumber;
   Widget _buildProfileForm() {
     return Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
@@ -194,12 +212,11 @@ class _EditProfileState extends State<EditProfile> {
                       } else if (value.length < 4) {
                         return 'Name length must not be less than 4';
                       } else if (value.length > 25) {
-                        return 'Nameength must not be Longer than 25';
+                        return 'Name length must not be Longer than 25';
                       }
                       return null;
                     },
                     onSaved: (value) {
-                      _user["first_name"] = value;
                     },
                   ),
                 ),
@@ -249,7 +266,6 @@ class _EditProfileState extends State<EditProfile> {
                     //   return null;
                     // },
                     onSaved: (value) {
-                      _user["last_name"] = value;
                     },
                   ),
                 ),
@@ -268,6 +284,8 @@ class _EditProfileState extends State<EditProfile> {
                     // 77352588
                     enabled: false,
                     initialValue: widget.args.auth.phoneNumber,
+                    keyboardType: const TextInputType.numberWithOptions(
+                        signed: true, decimal: true),
                     decoration: const InputDecoration(
                         alignLabelWithHint: true,
                         floatingLabelBehavior:
@@ -289,17 +307,9 @@ class _EditProfileState extends State<EditProfile> {
                         border: OutlineInputBorder(
                             borderSide: BorderSide.none)),
                     validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter Your Password';
-                      } else if (value.length < 4) {
-                        return 'Password length must not be less than 4';
-                      } else if (value.length > 25) {
-                        return 'Password length must not be greater than 25';
-                      }
                       return null;
                     },
                     onSaved: (value) {
-                      _user["phone_number"] = value;
                     },
                   ),
                 ),
@@ -315,7 +325,9 @@ class _EditProfileState extends State<EditProfile> {
                         blurStyle: BlurStyle.normal)
                   ]),
                   child: TextFormField(
-                    initialValue: widget.args.auth.email,
+                    controller: emailController,
+                    style: TextStyle(fontSize: 18),
+                    keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                         alignLabelWithHint: true,
                         floatingLabelBehavior:
@@ -338,11 +350,10 @@ class _EditProfileState extends State<EditProfile> {
                           //borderRadius: BorderRadius.all(Radius.circular(10)),
                             borderSide: BorderSide.none)),
                     validator: (value) {
-                      if (value!.isEmpty) {}
-                      return null;
+                      return Sanitizer().isEmailValid(value.toString());
                     },
                     onSaved: (value) {
-                      _user["email"] = value;
+                      Session().logSession("update-email", value ?? "empty");
                     },
                   ),
                 ),
@@ -358,14 +369,17 @@ class _EditProfileState extends State<EditProfile> {
                         blurStyle: BlurStyle.normal)
                   ]),
                   child: TextFormField(
-                    initialValue: widget.args.auth.emergencyContact,
+                    controller: emergencyController,
+                    style: TextStyle(fontSize: 18),
+                    keyboardType: const TextInputType.numberWithOptions(
+                        signed: true, decimal: true),
                     decoration: const InputDecoration(
                         alignLabelWithHint: true,
                         floatingLabelBehavior:
                         FloatingLabelBehavior.always,
                         isCollapsed: false,
                         isDense: true,
-                        hintText: "Emergency Contact Number",
+                        hintText: "Emergency Contact",
                         focusColor: Colors.blue,
 
                         hintStyle: TextStyle(
@@ -375,14 +389,26 @@ class _EditProfileState extends State<EditProfile> {
                           Icons.contact_phone_outlined,
                           size: 19,
                         ),
+                        prefixText: "+251",
+                        prefixStyle: TextStyle(color: Colors.black),
                         fillColor: Colors.white,
                         filled: true,
                         border: OutlineInputBorder(
                           //borderRadius: BorderRadius.all(Radius.circular(10)),
                             borderSide: BorderSide.none)),
+                    validator: (value){
+                      if (value!.isEmpty) {
+                        return null;
+                      } else if (value.length < 9) {
+                      return phoneLengthE;
+                      } else if (value.length > 9) {
+                      return phoneExceedE;
+                      } else if(value.length == 9){
+                      return null;
+                      }
+                    },
                     onSaved: (value) {
-                      //print("now");
-                      _user["emergency_contact"] = value;
+                      Session().logSession("update-emer", value ?? "empty");
                     },
                   ),
                 ),
@@ -399,8 +425,25 @@ class _EditProfileState extends State<EditProfile> {
                       final form = _formKey.currentState;
                       if (form!.validate()) {
                         form.save();
-
-                        updateProfile();
+                        String emailVal = "";
+                        String emergencyVal = "";
+                        Session().logSession("update-data",
+                            "email old: $email, new: ${emailController.text}");
+                        Session().logSession("update-data",
+                            "emer old: $emergencyNumber, new: ${emergencyController.text}");
+                        if(email != emailController.text){
+                          isEmailUpdated = true;
+                          emailVal = emailController.text;
+                        }
+                        if(emergencyNumber != emergencyController.text){
+                          isEmergencyUpdated = true;
+                          emergencyVal = emergencyController.text;
+                        }
+                        if(isEmailUpdated || isEmergencyUpdated){
+                          updateProfile(emailVal, emergencyVal);
+                        }else {
+                          ShowSnack(context: context,message: "Nothing to update").show();
+                        }
                       }
                     },
                     child: Row(
@@ -418,7 +461,7 @@ class _EditProfileState extends State<EditProfile> {
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(
-                              color: Colors.black,
+                              color: Colors.white,
                               strokeWidth: 1,
                             ),
                           )
@@ -829,19 +872,18 @@ class _EditProfileState extends State<EditProfile> {
   //   );
   // }
 
-  void updateProfile() {
+  void updateProfile(String email, String emergency) {
     setState(() {
       _isLoading = true;
     });
     UserEvent event = UserUpdate(User(
         firstName: widget.args.auth.name,
-        lastName: _user['last_name'],
-        phoneNumber: _user['phone_number'],
-        gender: "Male",
+        lastName: widget.args.auth.lastName,
+        phoneNumber: widget.args.auth.phoneNumber,
+        gender: 'Male',
         id: widget.args.auth.id,
-        email: _user['email'],
-        emergencyContact: _user['emergency_contact']));
-
+        email: email,
+        emergencyContact: emergency));
     BlocProvider.of<UserBloc>(context).add(event);
   }
 }

@@ -40,6 +40,7 @@ const String dateFormatU = "EEE, d MMM yyyy HH:mm:ss";
 const String sendMoneyU = "Transfer Credit";
 //history
 const String statusU = "Status:";
+const String dateU = "Date:";
 const String feeU = "Fee:";
 const String originU = "Origin:";
 const String destinationU = "Destination:";

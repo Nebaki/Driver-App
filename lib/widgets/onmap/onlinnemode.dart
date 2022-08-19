@@ -20,7 +20,7 @@ class _OnlinModeState extends State<OnlinMode> {
   void dispose() {
     super.dispose();
   }
-  late var themeProvider;
+  late ThemeProvider themeProvider;
   @override
   void initState() {
        themeProvider = Provider.of<ThemeProvider>(context, listen: false);
@@ -32,6 +32,7 @@ class _OnlinModeState extends State<OnlinMode> {
     return WillPopScope(
       onWillPop: () async {
         onCloseWarningDialog();
+        //_showCustomDialog();
         // context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
         return false;
       },
@@ -102,7 +103,7 @@ class _OnlinModeState extends State<OnlinMode> {
                     ),
                   ),
                   Divider(color: Colors.green, thickness: 1),
-                  OndriverStatus(isOnline: true,)
+                  OnDriverStatus(isOnline: true,)
                 ],
               ),
             ),
@@ -118,15 +119,20 @@ class _OnlinModeState extends State<OnlinMode> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Warning'),
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.circular(20.0)),
+            title: Text('Warning',style: TextStyle(color: themeProvider.getColor,fontSize: 20)),
             content: const Text(
-                "Are you sure you want to close the app? If you close the app assengers won't be able to see you."),
+                "Are you sure you want to close the app? If you "
+                    "close the app assengers won't be able to see you.",
+            style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
             actions: [
               TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('No')),
+                  child: const Text('No',style: TextStyle(fontSize: 18),)),
               TextButton(
                   onPressed: () {
                     homeScreenStreamSubscription!.cancel().then((value) {
@@ -136,8 +142,69 @@ class _OnlinModeState extends State<OnlinMode> {
                       SystemNavigator.pop();
                     });
                   },
-                  child: const Text('Yes')),
+                  child: const Text('Yes',style: TextStyle(fontSize: 18))),
             ],
+          );
+        });
+  }
+  _showCustomDialog(){
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.circular(20.0)), //this right here
+            child: Container(
+              height: 200,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: const [
+                        Text("Warning")
+                      ],
+                    ),
+                    const TextField(
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'What do you want to remember?'),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(color: Colors.white),
+                                )
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "Yes",
+                                  style: TextStyle(color: Colors.white),
+                                )
+                            ),
+                          ),
+
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           );
         });
   }

@@ -101,7 +101,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
           title: Column(
             children: [
               const Text(
-                "New Ride Request",
+                "New Order Request",
                 style: TextStyle(fontSize: 20),
               ),
               Text(widget.timer.toString(),

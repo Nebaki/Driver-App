@@ -32,10 +32,10 @@ class _CollectedCashState extends State<CollectedCash> {
         appBar: AppBar(
           elevation: 0.5,
           leading: Container(),
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).primaryColor,
           title: const Text(
             "Trip Completed",
-            style: TextStyle(fontWeight: FontWeight.normal),
+            style: TextStyle(fontWeight: FontWeight.normal,color: Colors.white),
           ),
           centerTitle: true,
         ),

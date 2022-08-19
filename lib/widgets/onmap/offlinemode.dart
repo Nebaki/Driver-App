@@ -95,7 +95,7 @@ class OfflineMode extends StatelessWidget {
                 Divider(
                   color: Colors.red,
                 ),
-                 OndriverStatus(isOnline: false),
+                 OnDriverStatus(isOnline: false),
                 /////////////////////////////////////
               ],
             ),
