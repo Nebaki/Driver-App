@@ -246,7 +246,6 @@ class _SigninScreenState extends State<SigninScreen>
                             onPressed: () {
                               setState(() {
                                 _visiblePassword = !_visiblePassword;
-
                                 icon = _visiblePassword
                                     ? Icons.visibility
                                     : Icons.visibility_off;

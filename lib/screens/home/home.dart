@@ -389,9 +389,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                             placeholder: (context, url) =>
                                 const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => const Icon(
+                            errorWidget: (context, url, error) => Icon(
                                   Icons.person,
-                                  //color: Colors.black,
+                                  color: Theme.of(context).primaryColor,
                                   // color: Colors.indigo.shade900,
                                   size: 30,
                                 )),

@@ -46,6 +46,7 @@ class _EditProfileState extends State<EditProfile> {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -117,7 +117,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                 EdgeInsets.only(top: 100,bottom: 50),
             child: Form(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                key: _formkey,/*
+                key: _formkey,
+                /*
                 child: Positioned(
                         top: MediaQuery.of(context).size.height * 0.12,
                         right: 10,
@@ -333,7 +334,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 icon: Icon(icon)),
                             fillColor: Colors.white,
                             filled: true,
-                            border: OutlineInputBorder(
+                            border: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Colors.white,
                                     style: BorderStyle.solid))),

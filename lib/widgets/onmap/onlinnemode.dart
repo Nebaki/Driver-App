@@ -125,7 +125,7 @@ class _OnlinModeState extends State<OnlinMode> {
             title: Text('Warning',style: TextStyle(color: themeProvider.getColor,fontSize: 20)),
             content: const Text(
                 "Are you sure you want to close the app? If you "
-                    "close the app assengers won't be able to see you.",
+                    "close the app customers won't be able to find you.",
             style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
             actions: [
               TextButton(

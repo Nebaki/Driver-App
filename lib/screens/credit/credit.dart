@@ -9,6 +9,7 @@ import 'package:driverapp/screens/credit/transfer_form.dart';
 import 'package:driverapp/utils/constants/info_message.dart';
 import 'package:driverapp/utils/constants/net_status.dart';
 import 'package:driverapp/utils/constants/ui_strings.dart';
+import 'package:driverapp/utils/ui_tool/tools.dart';
 import 'package:flutter_animarker/helpers/extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -149,7 +150,7 @@ class WaletState extends State<Walet> {
                                     size: 30,
                                   )
                                 : Text(
-                                    balance,
+                                    formatCurrency(balance),
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 34),
@@ -334,7 +335,7 @@ class WaletState extends State<Walet> {
             {
               setState(() {
                 _isBalanceLoading = false;
-                balance = value.message + etbU;
+                balance = value.message;
               })
             }
         });
@@ -398,7 +399,7 @@ class WaletState extends State<Walet> {
                               )),
                         ),
                         Text(
-                          "${credit.amount}$etbU",
+                          formatCurrency(credit.amount.toString()),
                           style: const TextStyle(color: Colors.black),
                         ),
                       ],

@@ -3,6 +3,7 @@ import 'package:driverapp/bloc/daily_earning/daily_earning_bloc.dart';
 import 'package:driverapp/cubits/cubits.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/utils/theme/ThemeProvider.dart';
+import 'package:driverapp/utils/ui_tool/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class OnDriverStatus extends StatelessWidget {
               builder: (context, state) {
                 if (state is DailyEarningLoadSuccess) {
                   return _items(
-                      num: '${state.dailyEarning.totalEarning} ETB',
+                      num: formatCurrency(state.dailyEarning.totalEarning),
                       text: "Earning",
                       icon: Icons.money,context: context);
                 }
@@ -134,7 +135,7 @@ class OnDriverStatus extends StatelessWidget {
               builder: (context, state) {
                 if (state is BalanceLoadSuccess) {
                   return _items(
-                      num: "${state.balance} ETB",
+                      num: formatCurrency(state.balance.toString()),
                       text: "Credit",
                       icon: Icons.wallet_giftcard,context: context);
                 }
@@ -157,7 +158,7 @@ class OnDriverStatus extends StatelessWidget {
                         flex: 2,
                         fit: FlexFit.tight,
                         child: Text(
-                          "errpor...",
+                          "error...",
                           maxLines: 3,
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
