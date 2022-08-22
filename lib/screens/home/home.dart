@@ -391,7 +391,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const CircularProgressIndicator(),
                             errorWidget: (context, url, error) => const Icon(
                                   Icons.person,
-                                  color: Colors.black,
+                                  //color: Colors.black,
                                   // color: Colors.indigo.shade900,
                                   size: 30,
                                 )),

@@ -10,12 +10,14 @@ import 'package:driverapp/utils/constants/info_message.dart';
 import 'package:driverapp/utils/constants/net_status.dart';
 import 'package:driverapp/utils/constants/ui_strings.dart';
 import 'package:flutter_animarker/helpers/extensions.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:intl/intl.dart';
+import '../../bloc/balance/balance.dart';
 import '../../dataprovider/auth/auth.dart';
 import '../../helper/helper.dart';
 import '../../utils/painter.dart';
@@ -44,6 +46,7 @@ class WaletState extends State<Walet> {
   void initState() {
     _isBalanceLoading = true;
     _isMessageLoading = true;
+    reloadBalance();
     prepareRequest(context, 1, _limit);
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _controller = ScrollController()..addListener(_loadMore);
@@ -52,7 +55,6 @@ class WaletState extends State<Walet> {
 
   @override
   Widget build(BuildContext context) {
-    reloadBalance();
     // When nothing else to load
     if (_hasNextPage == false) {
       //ShowSnack(context:context, message:fetchedAllI).show();
@@ -124,6 +126,21 @@ class WaletState extends State<Walet> {
                                   TextStyle(fontSize: 16, color: Colors.grey),
                             ),
                           ),
+                          /*Flexible(child:
+                              BlocBuilder<BalanceBloc, BalanceState>(
+                                  builder: (context, state) {
+                                    if(state is BalanceLoading){
+
+                                    }
+                                    if(state is BalanceLoadSuccess){
+
+                                    }
+                                    if(state is BalanceOperationFailure){
+
+                                    }
+                            return Text("100");
+                          })),
+                          */
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: _isBalanceLoading
@@ -179,9 +196,9 @@ class WaletState extends State<Walet> {
                                               Navigator.pushNamed(context,
                                                   TeleBirrData.routeName);
                                               /*showDialog(
-                                                context: context,
-                                                builder: (_) => PaymentBox(),
-                                                barrierDismissible: false);*/
+                                                  context: context,
+                                                  builder: (_) => PaymentBox(),
+                                                  barrierDismissible: false);*/
                                               //PaymentBox();
                                             },
                                             child: Text(
@@ -233,12 +250,14 @@ class WaletState extends State<Walet> {
         backgroundColor: themeProvider.getColor,
         //backgroundColor: Colors.transparent,
         mini: true,
-        onPressed: (){
-          Navigator.pushNamed(context,
-              CreditRequest.routeName);
+        onPressed: () {
+          Navigator.pushNamed(context, CreditRequest.routeName);
         },
         tooltip: 'Credit',
-        child: const Icon(Icons.credit_card,color: Colors.white,),
+        child: const Icon(
+          Icons.credit_card,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -246,28 +265,28 @@ class WaletState extends State<Walet> {
   Widget listHolder(items, theme) {
     return items.isNotEmpty
         ? Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                  controller: _controller,
-                  itemCount: items.length,
-                  padding: const EdgeInsets.all(0.0),
-                  itemBuilder: (context, item) {
-                    return inboxItem(context, items[item], item, theme);
-                  }),
-            ),
-            // when the _loadMore function is running
-            if (_isLoadMoreRunning == true)
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 20),
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: theme,
+            children: [
+              Expanded(
+                child: ListView.builder(
+                    controller: _controller,
+                    itemCount: items.length,
+                    padding: const EdgeInsets.all(0.0),
+                    itemBuilder: (context, item) {
+                      return inboxItem(context, items[item], item, theme);
+                    }),
+              ),
+              // when the _loadMore function is running
+              if (_isLoadMoreRunning == true)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 20),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: theme,
+                    ),
                   ),
                 ),
-              ),
-          ],
-        )
+            ],
+          )
         : const Center(child: Text(noMessageU));
   }
 
@@ -279,23 +298,23 @@ class WaletState extends State<Walet> {
     var sender = CreditDataProvider(httpClient: http.Client());
     var res = sender.loadCreditHistory(_page, _limit);
     res.then((value) => {
-      if (value.trips!.isNotEmpty)
-        {
-          setState(() {
-            _isMessageLoading = false;
-            _isLoadMoreRunning = false;
-            _items?.addAll(value.trips ?? []);
-          })
-        }
-      else
-        {
-          setState(() {
-            _isMessageLoading = false;
-            _hasNextPage = false;
-            _isLoadMoreRunning = false;
-          })
-        }
-    });
+          if (value.trips!.isNotEmpty)
+            {
+              setState(() {
+                _isMessageLoading = false;
+                _isLoadMoreRunning = false;
+                _items?.addAll(value.trips ?? []);
+              })
+            }
+          else
+            {
+              setState(() {
+                _isMessageLoading = false;
+                _hasNextPage = false;
+                _isLoadMoreRunning = false;
+              })
+            }
+        });
   }
 
   void showMessage(BuildContext context, String message) {
@@ -415,8 +434,7 @@ class WaletState extends State<Walet> {
                       Row(
                         children: [
                           Text(
-                            _formatedDate(
-                                credit.date ?? sampleUtcU),
+                            _formatedDate(credit.date ?? sampleUtcU),
                             style: const TextStyle(color: Colors.black),
                           ),
                         ],
@@ -431,8 +449,8 @@ class WaletState extends State<Walet> {
                                     border: Border.all(
                                       color: theme,
                                     ),
-                                    borderRadius:
-                                        const BorderRadius.all(Radius.circular(20))),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(20))),
                                 child: const SizedBox(
                                   width: 5,
                                   height: 5,
@@ -501,8 +519,7 @@ class WaletState extends State<Walet> {
         _isLoadMoreRunning = true; // Display a progress indicator at the bottom
       });
       _page += 10; // Increase _page by 1
-        prepareRequest(context, _page, _limit);
-
+      prepareRequest(context, _page, _limit);
     }
   }
 
