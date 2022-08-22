@@ -1,4 +1,5 @@
 import 'package:driverapp/bloc/bloc.dart';
+import 'package:driverapp/bloc/daily_earning/daily_earning_bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
 import 'package:driverapp/route.dart';
@@ -44,6 +45,7 @@ class _CompleteTripState extends State<CompleteTrip> {
             startingTime = null;
 
             BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
+            BlocProvider.of<DailyEarningBloc>(context).add(DailyEarningLoad());
 
             // BlocProvider.of<CurrentWidgetCubit>(context)
             //     .changeWidget(OnlinMode());

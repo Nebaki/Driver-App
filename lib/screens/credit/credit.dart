@@ -44,7 +44,6 @@ class WaletState extends State<Walet> {
   void initState() {
     _isBalanceLoading = true;
     _isMessageLoading = true;
-    reloadBalance();
     prepareRequest(context, 1, _limit);
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _controller = ScrollController()..addListener(_loadMore);
@@ -53,9 +52,10 @@ class WaletState extends State<Walet> {
 
   @override
   Widget build(BuildContext context) {
+    reloadBalance();
     // When nothing else to load
     if (_hasNextPage == false) {
-      ShowSnack(context:context, message:fetchedAllI).show();
+      //ShowSnack(context:context, message:fetchedAllI).show();
     }
     return Scaffold(
       backgroundColor: Colors.white,

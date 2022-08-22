@@ -89,7 +89,7 @@ class _CancelReasonState extends State<CancelReason> {
                                   ? isLoading
                                       ? null
                                       : () {
-                                          cancellRequest(context);
+                                          cancelRequest(context);
                                         }
                                   : null,
                               child: Row(
@@ -121,6 +121,7 @@ class _CancelReasonState extends State<CancelReason> {
             listener: (context, state) {
               if (state is RideRequestCancelled) {
                 driverStreamSubscription.cancel().then((value) {
+                  ShowSnack(context: context,message: "Request has been cancelled").show();
                   ref.child(myId).remove();
 
                   isLoading = false;
@@ -143,7 +144,7 @@ class _CancelReasonState extends State<CancelReason> {
   }
 
 // Statusss issss 200', dDZwYJszQDiZwuEkNwsqx6:APA91bFaGv472U53den4Eq5CIcoLEMZ8UCegtFkGcyNjTlZ4v5resBVvVIW9IBy66SHeM7qPx0T8BEod5dNVGADUF9onpB3nwPzbunPqQqRZ9BQAZ1LJ1yM7uKaAW-lORobQ3hcOKVOe, true
-  void cancellRequest(BuildContext context) {
+  void cancelRequest(BuildContext context) {
     isLoading = true;
     RideRequestEvent requestEvent = RideRequestCancel(
         requestId, groupValue!, passengerFcm, widget.arg.sendRequest);

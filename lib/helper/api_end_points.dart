@@ -17,6 +17,12 @@ class WeeklyEarningEndPoints {
     return '$baseUrl/ride-requests/get-my-grouped-earnings?filter[0].[field]=createdAt&filter[0].[operator]=between&filter[0].[value][0]=$from&filter[0].[value][1]=$to&filter[0].[type]=date';
   }
 }
+class DailyEarningEndPoints {
+  static String getDailyEarningEndPoint() {
+    return '$baseUrl/ride-requests/get-my-todays-earning';
+  }
+}
+
 
 class SettingsEndPoint {
   static String getSettingsEndPoint() {

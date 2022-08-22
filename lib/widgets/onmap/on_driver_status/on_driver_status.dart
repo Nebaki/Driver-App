@@ -1,4 +1,5 @@
 import 'package:driverapp/bloc/bloc.dart';
+import 'package:driverapp/bloc/daily_earning/daily_earning_bloc.dart';
 import 'package:driverapp/cubits/cubits.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/utils/theme/ThemeProvider.dart';
@@ -14,7 +15,6 @@ class OnDriverStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
-
     return SizedBox(
       height: 100,
       child: Row(
@@ -23,9 +23,54 @@ class OnDriverStatus extends StatelessWidget {
           Flexible(
             flex: 2,
             fit: FlexFit.tight,
-            child: _items(
-                num: "95 ETB", text: "Earning", icon: Icons.monetization_on,context: context),
+            child: BlocBuilder<DailyEarningBloc, DailyEarningState>(
+              builder: (context, state) {
+                if (state is DailyEarningLoadSuccess) {
+                  return _items(
+                      num: '${state.dailyEarning.totalEarning} ETB',
+                      text: "Earning",
+                      icon: Icons.money,context: context);
+                }
+
+                if (state is DailyEarningLoading) {
+                  return _buildShimmer(text: "Earning", icon: Icons.money,context: context);
+                }
+                if (state is DailyEarningOperationFailure) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Flexible(
+                          flex: 2,
+                          child: Icon(
+                            Icons.error_outline_outlined,
+                            color: themeProvider.getColor,
+                          )),
+                      const Flexible(
+                        flex: 2,
+                        fit: FlexFit.tight,
+                        child: Text(
+                          "error...",
+                          maxLines: 3,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Flexible(
+                          fit: FlexFit.tight,
+                          flex: 2,
+                          child: TextButton(
+                              onPressed: () {
+                                context.read<DailyEarningBloc>().add(DailyEarningLoad());
+                              },
+                              child: const Text("Retry"))),
+                    ],
+                  );
+                }
+                return Container();
+              },
+            ),
           ),
+
           VerticalDivider(
             color: Colors.grey.shade300,
           ),
@@ -58,7 +103,7 @@ class OnDriverStatus extends StatelessWidget {
                         flex: 2,
                         fit: FlexFit.tight,
                         child: Text(
-                          "Opps something went wrong.",
+                          "error...",
                           maxLines: 3,
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
@@ -112,7 +157,7 @@ class OnDriverStatus extends StatelessWidget {
                         flex: 2,
                         fit: FlexFit.tight,
                         child: Text(
-                          "Opps something went wrong.",
+                          "errpor...",
                           maxLines: 3,
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
@@ -159,7 +204,7 @@ class OnDriverStatus extends StatelessWidget {
           ),
           Text(
             num,
-            style: const TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 14),
           ),
           Text(
             text,

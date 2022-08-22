@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
+import '../../bloc/balance/balance.dart';
 import '../../dataprovider/auth/auth.dart';
 import '../../dataprovider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +20,7 @@ import '../../models/auth/auth.dart';
 import '../../route.dart';
 import '../../utils/colors.dart';
 import '../../utils/painter.dart';
+import '../../utils/session.dart';
 import '../../utils/theme/ThemeProvider.dart';
 
 class TransferMoney extends StatefulWidget {
@@ -334,7 +336,9 @@ class _TransferState extends State<TransferMoney> {
               message: value.message,
               backgroundColor: Colors.red).show()
         },
-      if (value.code == "200") reloadBalance(),
+      if (value.code == "200") {
+        context.read<BalanceBloc>().add(BalanceLoad())
+      },
       if (value.code == "401") {
         _refreshToken(startTelebirr(phone, amount))
       }
@@ -351,9 +355,16 @@ class _TransferState extends State<TransferMoney> {
   void reloadBalance() {
     var confirm = transfer.loadBalance();
     confirm
-        .then((value) => {ShowMessage(context, balanceU, value.message)})
+        .then((value) => {
+          Session().logSuccess("balance", value.message)
+          //ShowMessage(context, balanceU, value.message)
+        })
         .onError((error, stackTrace) =>
-    {ShowMessage(context, balanceU, error.toString())});
+    {
+
+      Session().logSuccess("balance", error.toString())
+      //ShowMessage(context, balanceU, error.toString())
+    });
   }
 
   _refreshToken(Function function) async {

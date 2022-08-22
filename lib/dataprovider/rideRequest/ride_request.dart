@@ -3,6 +3,7 @@ import 'package:driverapp/dataprovider/dataproviders.dart';
 import 'package:driverapp/helper/api_end_points.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
+import 'package:driverapp/utils/session.dart';
 import 'package:http/http.dart' as http;
 import 'package:driverapp/helper/api_end_points.dart' as api;
 import 'package:driverapp/models/models.dart';
@@ -339,6 +340,9 @@ class RideRequestDataProvider {
         throw Exception(response.statusCode);
       }
     } else {
+      Session().logSession("RideRequestOperationFailure",
+          'trip id: $id, fcm id: $fcmId, price: $price');
+      Session().logSession("RideRequestOperationFailure", response.body);
       throw 'Unable to cancel the request';
     }
   }

@@ -97,9 +97,9 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                       .where(
                           (element) => element.date.day == DateTime.now().day)
                       .toList();
-                  _dailyEarning.forEach((element) {
+                  for (var element in _dailyEarning) {
                     cashtrips += element.earning;
-                  });
+                  }
                   return Column(
                     children: [
                       const Padding(
@@ -112,7 +112,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                        Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Text(
-                          "${cashtrips.toStringAsFixed(2)} ETB",
+                          "${netPrice.toStringAsFixed(2)} ETB",
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 34),
                         ),

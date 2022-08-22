@@ -1,5 +1,6 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/utils/session.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -159,6 +160,7 @@ class _WeeklyEarningTabState extends State<WeeklyEarningTab> {
                   BlocBuilder<WeeklyEarningBloc, WeeklyEarningState>(
                     builder: (context, state) {
                       if (state is WeeklyEarningLoadSuccess) {
+                        Session().logSession("weekly", "weekly loaded");
                         int trips = 0;
                         double cashtrips = 0;
                         state.weeklyEarning.forEach((element) {
@@ -214,6 +216,12 @@ class _WeeklyEarningTabState extends State<WeeklyEarningTab> {
                             ],
                           ),
                         );
+                      }
+                      if(state is WeeklyEarningOperationFailure){
+                        Session().logSession("weekly", "weekly failed");
+                      }
+                      if(state is WeeklyEarningLoading){
+                        Session().logSession("weekly", "weekly loading");
                       }
                       return Shimmer(
                         gradient: shimmerGradient,

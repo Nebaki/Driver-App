@@ -49,7 +49,7 @@ class _OnlinModeState extends State<OnlinMode> {
                 child: BlocBuilder<AuthBloc, AuthState>(builder: (_, state) {
                   if (state is AuthDataLoadSuccess) {
                     return FloatingActionButton(
-                      backgroundColor: themeProvider.getColor ,
+                      backgroundColor: Theme.of(context).primaryColor,
                       onPressed: () {
                         homeScreenStreamSubscription!.cancel().then((value) {});
                         // homeScreenStreamSubscription.cancel();

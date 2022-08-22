@@ -222,7 +222,8 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                               filled: true,
                               border: const OutlineInputBorder(
                                   borderSide:
-                                       BorderSide(style: BorderStyle.solid))),
+                                       BorderSide(style: BorderStyle.solid))
+                          ),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return enterPhoneE;

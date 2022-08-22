@@ -18,6 +18,9 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
+import 'bloc/daily_earning/daily_earning_bloc.dart';
+import 'repository/weekly_earning/daily_earning.dart';
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   final SendPort? send = IsolateNameServer.lookupPortByName(portName);
   send!.send(message);
@@ -69,9 +72,14 @@ void main() async {
       settingsDataProvider: SettingsDataProvider(httpClient: http.Client()));
 
   final WeeklyEarningRepository weeklyEarningRepository =
-      WeeklyEarningRepository(
-          weeklyEarningDataProvider:
-              WeeklyEarningDataProvider(httpClient: http.Client()));
+  WeeklyEarningRepository(
+      weeklyEarningDataProvider:
+      WeeklyEarningDataProvider(httpClient: http.Client()));
+  final DailyEarningRepository dailyEarningRepository =
+  DailyEarningRepository(
+      dailyEarningDataProvider:
+      DailyEarningDataProvider(httpClient: http.Client()));
+
 
   // BlocOverrides.runZoned(
   //     () => runApp(MyApp(
@@ -105,6 +113,7 @@ void main() async {
         ratingRepository: ratingRepository,
         settingsRepository: settingsRepository,
         weeklyEarningRepository: weeklyEarningRepository,
+        dailyEarningRepository: dailyEarningRepository,
       )));
 }
 
@@ -122,6 +131,7 @@ class MyApp extends StatelessWidget {
   final RatingRepository ratingRepository;
   final SettingsRepository settingsRepository;
   final WeeklyEarningRepository weeklyEarningRepository;
+  final DailyEarningRepository dailyEarningRepository;
 
   const MyApp(
       {Key? key,
@@ -137,7 +147,9 @@ class MyApp extends StatelessWidget {
       required this.balanceRepository,
       required this.ratingRepository,
       required this.settingsRepository,
-      required this.weeklyEarningRepository})
+      required this.weeklyEarningRepository,
+      required this.dailyEarningRepository
+      })
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -155,7 +167,8 @@ class MyApp extends StatelessWidget {
           RepositoryProvider.value(value: balanceRepository),
           RepositoryProvider.value(value: ratingRepository),
           RepositoryProvider.value(value: settingsRepository),
-          RepositoryProvider.value(value: weeklyEarningRepository)
+          RepositoryProvider.value(value: weeklyEarningRepository),
+          RepositoryProvider.value(value: dailyEarningRepository)
         ],
         child: MultiBlocProvider(
             providers: [
@@ -210,6 +223,11 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                 create: (context) => WeeklyEarningBloc(
                     weeklyEarningRepository: weeklyEarningRepository),
+              ),
+              BlocProvider(
+                create: (context) => DailyEarningBloc(
+                    dailyEarningRepository: dailyEarningRepository)
+                ..add(DailyEarningLoad()),
               )
             ],
             child: Consumer<ThemeProvider>(

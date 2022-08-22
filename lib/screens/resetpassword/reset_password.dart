@@ -54,13 +54,6 @@ class _ResetPasswordState extends State<ResetPassword> {
     late String _newPassword;
     String _confirmedPassword;
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.3,
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(resetPasswordU),
-        centerTitle: true,
-      ),
       body: BlocConsumer<UserBloc, UserState>(
           builder: (context, state) => resetPasswordForm(context),
           listener: (context, state) {
@@ -197,7 +190,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                               fillColor: Colors.white,
                               filled: true,
                               border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none)),
+                                  borderSide:
+                                  BorderSide(style: BorderStyle.solid))
+                          ),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return enterPasswordE;
@@ -239,7 +234,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                               fillColor: Colors.white,
                               filled: true,
                               border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none)),
+                                  borderSide:
+                                  BorderSide(style: BorderStyle.solid))
+                          ),
                           validator: (value) {
                             if (value !=
                                 newPasswordController.value.text) {
@@ -269,6 +266,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     final form = _formkey.currentState;
                                     if (form!.validate()) {
                                       form.save();
+
                                     }
                                   },
                             child: Row(

@@ -119,12 +119,6 @@ class LatLngConverter {
   }
 }
 
-class DailyEarning {
-  String totalEarning;
-  List<Trip> trips;
-
-  DailyEarning({required this.totalEarning, required this.trips});
-}
 class TripStore {
   List<Trip>? trips;
   int total;

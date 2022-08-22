@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late String serviceStatusValue;
   bool? internetServiceStatus;
   late LatLngBounds latLngBounds;
-  BitmapDescriptor? carMarkerIcon;
+  //BitmapDescriptor? carMarkerIcon;
   late Position myPosition;
   bool isRequestingDirection = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -458,8 +458,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       const EdgeInsets.all(2),
                                                   decoration: BoxDecoration(
                                                       border: Border.all(
-                                                          // color: Colors
-                                                          //     .indigo.shade900,
+                                                          color: Theme.of(context).primaryColor,
                                                           width: 1.5),
                                                       borderRadius:
                                                           BorderRadius.circular(
@@ -884,6 +883,7 @@ class _HomeScreenState extends State<HomeScreen> {
       availablePassengersMarkers.clear();
     });
   }
+/*
 
   void createMarkerIcon() {
     if (carMarkerIcon == null) {
@@ -896,6 +896,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+*/
 
   String generateRandomId() {
     var r = Random();
@@ -946,13 +947,14 @@ class _HomeScreenState extends State<HomeScreen> {
       print("yow your speed is this:${event.speed} stope $stopDuration");
 
       // update marker position
-      LatLng driverPosition = LatLng(event.latitude, event.longitude);
+      /*LatLng driverPosition = LatLng(event.latitude, event.longitude);
       Marker marker = Marker(
-          markerId: markerId, position: driverPosition, icon: carMarkerIcon!);
+          markerId: markerId, position: driverPosition);
       setState(() {
         speed = event.speed;
         markers[markerId] = marker;
       });
+      */
 
       // update firebase collection based on the new provided location
 
@@ -1353,7 +1355,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               // initialValue: address,
                               controller: pickupController,
                               onChanged: (value) {
-                                findPlace(value);
+                                if(value.length >= 2){
+                                  findPlace(value);
+                                }
                               },
                               decoration: InputDecoration(
                                   border: const OutlineInputBorder(
@@ -1382,7 +1386,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: TextField(
                               focusNode: droppOffLocationNode,
                               onChanged: (value) {
-                                findPlace(value);
+                                if(value.length >= 2){
+                                  findPlace(value);
+                                }
                               },
                               decoration: const InputDecoration(
                                   border: const OutlineInputBorder(

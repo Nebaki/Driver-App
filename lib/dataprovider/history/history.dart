@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../helper/helper.dart';
+import '../../models/weekly_earning/daily_earning.dart';
 import '../../utils/session.dart';
 import '../auth/auth.dart';
 import '../database/database.dart';
@@ -147,8 +148,6 @@ class HistoryDataProvider {
       gotoSignIn(context);
     }
   }
-
-
   String getRandNum() {
     var rng = Random();
     print(rng.nextInt(999));
@@ -173,6 +172,7 @@ class HistoryDataProvider {
       return DailyEarning(totalEarning: response.statusCode.toString(), trips: trips);
     }
   }
+
 
   Future<DailyEarning> weeklyEarning() async {
     final http.Response response = await httpClient.get(
