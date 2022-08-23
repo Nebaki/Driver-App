@@ -50,9 +50,10 @@ class _TeleBirrDataState extends State<TeleBirrData> {
         keyboardType:
             const TextInputType.numberWithOptions(signed: true, decimal: true),
         controller: amountController,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
             alignLabelWithHint: true,
             labelText: amountU,
+            enabled: !_isLoading,
             labelStyle: TextStyle(fontSize: 15),
             prefixIcon: Icon(
               Icons.money,
@@ -71,6 +72,8 @@ class _TeleBirrDataState extends State<TeleBirrData> {
           return null;
         },
       );
+
+  bool isButtonEnabled = true;
 
   Widget _startButton() => ElevatedButton(
         onPressed: _isLoading
@@ -206,9 +209,6 @@ class _TeleBirrDataState extends State<TeleBirrData> {
     var res = sender.initTelebirr("0922877115");
     res
         .then((value) => {
-              setState(() {
-                _isLoading = false;
-              }),
               value.totalAmount = amount,
               if (value.code == 200)
                 validateTeleBirr(value)
@@ -240,10 +240,17 @@ class _TeleBirrDataState extends State<TeleBirrData> {
       var confirm = sender.confirmTransaction(outTradeNumber!);
       confirm
           .then((value) => {
-                Session().logSession("telebirr", "recharge confirm ${value.toString()}"),
+                setState(() {
+                  _isLoading = false;
+                }),
+                Session().logSession(
+                    "telebirr", "recharge confirm ${value.toString()}"),
                 ShowMessage(context, rechargeU, value.message),
               })
           .onError((error, stackTrace) => {
+                setState(() {
+                  _isLoading = false;
+                }),
                 Session().logSession("telebirr", "recharge confirm $error "),
                 ShowMessage(context, rechargeU, error.toString())
               });

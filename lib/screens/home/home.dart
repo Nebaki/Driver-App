@@ -590,7 +590,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             gotoSignIn(context);
                           }
                           if (state is EmergencyReportCreating) {
-                            showDialog(
+                            ShowSnack(context: context,
+                                message: "Reporting...",
+                            duration: 20,
+                                textColor: Colors.white,
+                                backgroundColor: Theme.of(context).primaryColor).show();
+                            /*showDialog(
                                 barrierDismissible: false,
                                 context: context,
                                 builder: (BuildContext context) {
@@ -615,10 +620,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                   );
-                                });
+                                });*/
                           }
                           if (state is EmergencyReportCreated) {
-                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            ShowSnack(
+                                context: context,
+                                message: "Emergency report has been sent.",
+                            backgroundColor: Colors.green).show();
+                            /*Navigator.pop(context);
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -655,13 +665,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: const Text('Okay'))
                                     ],
                                   );
-                                });
+                                });*/
                           }
                           if (state is EmergencyReportOperationFailure) {
-                            Navigator.pop(context);
+                            ShowSnack(context: context,message: "Reporting Failed, Try Again",
+                            backgroundColor: Colors.red).show();
+                            /*Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: const Text("Reporting Failed."),
-                                backgroundColor: Colors.red.shade900));
+                                backgroundColor: Colors.red.shade900));*/
                           }
                         }),
                     BlocBuilder<DisableButtonCubit, bool>(

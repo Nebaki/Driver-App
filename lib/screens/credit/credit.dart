@@ -400,7 +400,7 @@ class WaletState extends State<Walet> {
                         ),
                         Text(
                           formatCurrency(credit.amount.toString()),
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black,fontSize: 12),
                         ),
                       ],
                     ),
@@ -419,7 +419,7 @@ class WaletState extends State<Walet> {
                     children: [
                       Text(
                         credit.message ?? unknownU,
-                        style: const TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black,fontSize: 12),
                       ),
                     ],
                   ),
@@ -436,7 +436,7 @@ class WaletState extends State<Walet> {
                         children: [
                           Text(
                             _formatedDate(credit.date ?? sampleUtcU),
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black,fontSize: 12),
                           ),
                         ],
                       ),
@@ -459,7 +459,7 @@ class WaletState extends State<Walet> {
                           ),
                           Text(
                             _status(credit.status ?? unknownU),
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black,fontSize: 12),
                           ),
                         ],
                       ),

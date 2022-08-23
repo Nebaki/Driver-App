@@ -8,13 +8,26 @@ class ShowSnack {
   BuildContext context;
   String message;
   Color? backgroundColor;
+  Color? textColor;
+  SnackBarAction? action;
+  int? duration;
+  ShowSnack(
+      {required this.context,
+        required this.message,
+        this.backgroundColor,
+        this.action,
+        this.duration,
+        this.textColor
+      });
 
-  ShowSnack({required this.context, required this.message, this.backgroundColor});
   void show() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(message),
+    SnackBar snackBar = SnackBar(
+      content: Text(message,style: TextStyle(color: textColor)),
       backgroundColor: backgroundColor,
-    ));
+      action: action,
+      duration: Duration(seconds: duration ?? 4)
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 
@@ -67,9 +80,8 @@ class ShowMessage {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.circular(20.0)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           title: Text(title),
           // To display the title it is optional
           content: Text(

@@ -1,5 +1,6 @@
 //phone
 const String enterPhoneE = 'Please enter Your phone number';
+const String enterRPhoneE = 'Please enter receiver phone number';
 const String phoneLengthE = 'Phone no. length must not be less than 9 digits';
 const String phoneExceedE = 'Phone no. length must not be greater than 9 digits';
 

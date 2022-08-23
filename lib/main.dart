@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
+import 'package:flutter/services.dart';
 import 'bloc/daily_earning/daily_earning_bloc.dart';
 import 'repository/weekly_earning/daily_earning.dart';
 
@@ -29,7 +30,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   Bloc.observer = SimpleBlocObserver();

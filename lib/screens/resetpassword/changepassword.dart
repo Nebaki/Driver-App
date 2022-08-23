@@ -295,218 +295,227 @@ class _ChangePasswordState extends State<ChangePassword> {
                           ),
                         ),
                       ),*/
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15, right: 15, top: 60, bottom: 10),
-                      child: TextFormField(
-                        maxLength: 25,
-                        obscureText: _visiblePassword,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        cursorColor: themeProvider.getColor,
-                        style: const TextStyle(fontSize: 20),
-                        decoration: InputDecoration(
-                            counterText: "",
-                            labelStyle: TextStyle(color: themeProvider.getColor),
-
-                            alignLabelWithHint: true,
-                            //hintText: "Password",
-                            labelText: oldPasswordU,
-                            hintStyle: const TextStyle(
-                                fontWeight: FontWeight.bold, color: Colors.black45),
-                            prefixIcon: Icon(
-                              Icons.vpn_key,
-                              color: themeProvider.getColor,
-                              size: 22,
-                            ),
-                            suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _visiblePassword = !_visiblePassword;
-
-                                    icon = _visiblePassword
-                                        ? Icons.visibility
-                                        : Icons.visibility_off;
-                                  });
-                                },
-                                icon: Icon(icon)),
-                            fillColor: Colors.white,
-                            filled: true,
-                            border: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.white,
-                                    style: BorderStyle.solid))),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return enterOldPasswordE;
-                          } else if (value.length < 4) {
-                            return passwordLengthE;
-                          } else if (value.length > 25) {
-                            return passwordExceedE;
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _passwordInfo["current_password"] = value!;
-                        },
-                      ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 50.0,left: 10,right: 10),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15, right: 15, top: 10, bottom: 10),
-                      child: TextFormField(
-                        controller: passwordController,
-                        maxLength: 25,
-                        obscureText: _visiblePassword,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        cursorColor: themeProvider.getColor,
-                        style: const TextStyle(fontSize: 20),
-                        decoration: InputDecoration(
-                            counterText: "",
-                            labelStyle: TextStyle(color: themeProvider.getColor),
+                    elevation: 0,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 10, bottom: 10),
+                          child: TextFormField(
+                            maxLength: 25,
+                            obscureText: _visiblePassword,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            cursorColor: themeProvider.getColor,
+                            style: const TextStyle(fontSize: 20),
+                            decoration: InputDecoration(
+                                counterText: "",
+                                labelStyle: TextStyle(color: themeProvider.getColor),
 
-                            alignLabelWithHint: true,
-                            //hintText: "Password",
-                            labelText: newPasswordU,
-                            hintStyle: const TextStyle(
-                                fontWeight: FontWeight.bold, color: Colors.black45),
-                            prefixIcon: Icon(
-                              Icons.vpn_key,
-                              color: themeProvider.getColor,
-                              size: 22,
-                            ),
-                            suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _visiblePassword = !_visiblePassword;
+                                alignLabelWithHint: true,
+                                //hintText: "Password",
+                                labelText: oldPasswordU,
+                                hintStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold, color: Colors.black45),
+                                prefixIcon: Icon(
+                                  Icons.vpn_key,
+                                  color: themeProvider.getColor,
+                                  size: 22,
+                                ),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _visiblePassword = !_visiblePassword;
 
-                                    icon = _visiblePassword
-                                        ? Icons.visibility
-                                        : Icons.visibility_off;
-                                  });
-                                },
-                                icon: Icon(icon)),
-                            fillColor: Colors.white,
-                            filled: true,
-                            border: const OutlineInputBorder(
-                                borderSide: BorderSide(style: BorderStyle.solid))),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return enterPasswordE;
-                          } else if (value.length < 4) {
-                            return passwordLengthE;
-                          } else if (value.length > 25) {
-                            return passwordExceedE;
-                          }else if(_passwordInfo['current_password'] == value){
-                            return "New Password can not be same as old password";
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _passwordInfo["new_password"] = value!;
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15, right: 15, top: 10, bottom: 10),
-                      child: TextFormField(
-                        maxLength: 25,
-                        obscureText: _visiblePassword,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        cursorColor: themeProvider.getColor,
-                        style: const TextStyle(fontSize: 20),
-                        decoration: InputDecoration(
-                            counterText: "",
-                            labelStyle: TextStyle(color: themeProvider.getColor),
-
-                            alignLabelWithHint: true,
-                            //hintText: "Password",
-                            labelText: confirmPasswordU,
-                            hintStyle: const TextStyle(
-                                fontWeight: FontWeight.bold, color: Colors.black45),
-                            prefixIcon: Icon(
-                              Icons.vpn_key,
-                              color: themeProvider.getColor,
-                              size: 22,
-                            ),
-                            suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _visiblePassword = !_visiblePassword;
-
-                                    icon = _visiblePassword
-                                        ? Icons.visibility
-                                        : Icons.visibility_off;
-                                  });
-                                },
-                                icon: Icon(icon)),
-                            fillColor: Colors.white,
-                            filled: true,
-                            border: const OutlineInputBorder(
-                                borderSide: BorderSide(style: BorderStyle.solid))),
-                        validator: (value) {
-                          if (value != passwordController.text) {
-                            return passwordNotMatchE;
-                          }
-                          if (value!.isEmpty) {
-                            return enterPasswordE;
-                          } else if (value.length < 4) {
-                            return passwordLengthE;
-                          } else if (value.length > 25) {
-                            return passwordExceedE;
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _passwordInfo["confirm_password"] = value!;
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _isLoading
-                              ? null
-                              : () {
-                            final form = _formkey.currentState;
-                            if (form!.validate()) {
-                              form.save();
-                              changePassword(context);
-                            }
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Spacer(),
-                              const Text(changePasswordU,
-                                  style: TextStyle(color: Colors.white)),
-                              const Spacer(),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: _isLoading
-                                    ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                )
-                                    : Container(),
-                              )
-                            ],
+                                        icon = _visiblePassword
+                                            ? Icons.visibility
+                                            : Icons.visibility_off;
+                                      });
+                                    },
+                                    icon: Icon(icon)),
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.white,
+                                        style: BorderStyle.solid))),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return enterOldPasswordE;
+                              } else if (value.length < 4) {
+                                return passwordLengthE;
+                              } else if (value.length > 25) {
+                                return passwordExceedE;
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _passwordInfo["current_password"] = value!;
+                            },
                           ),
                         ),
-                      ),
-                    )
-                  ],
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 10, bottom: 10),
+                          child: TextFormField(
+                            controller: passwordController,
+                            maxLength: 25,
+                            obscureText: _visiblePassword,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            cursorColor: themeProvider.getColor,
+                            style: const TextStyle(fontSize: 20),
+                            decoration: InputDecoration(
+                                counterText: "",
+                                labelStyle: TextStyle(color: themeProvider.getColor),
+
+                                alignLabelWithHint: true,
+                                //hintText: "Password",
+                                labelText: newPasswordU,
+                                hintStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold, color: Colors.black45),
+                                prefixIcon: Icon(
+                                  Icons.vpn_key,
+                                  color: themeProvider.getColor,
+                                  size: 22,
+                                ),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _visiblePassword = !_visiblePassword;
+
+                                        icon = _visiblePassword
+                                            ? Icons.visibility
+                                            : Icons.visibility_off;
+                                      });
+                                    },
+                                    icon: Icon(icon)),
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: const OutlineInputBorder(
+                                    borderSide: BorderSide(style: BorderStyle.solid))),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return enterPasswordE;
+                              } else if (value.length < 4) {
+                                return passwordLengthE;
+                              } else if (value.length > 25) {
+                                return passwordExceedE;
+                              }else if(_passwordInfo['current_password'] == value){
+                                return "New Password can not be same as old password";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _passwordInfo["new_password"] = value!;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 10, bottom: 10),
+                          child: TextFormField(
+                            maxLength: 25,
+                            obscureText: _visiblePassword,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            cursorColor: themeProvider.getColor,
+                            style: const TextStyle(fontSize: 20),
+                            decoration: InputDecoration(
+                                counterText: "",
+                                labelStyle: TextStyle(color: themeProvider.getColor),
+
+                                alignLabelWithHint: true,
+                                //hintText: "Password",
+                                labelText: confirmPasswordU,
+                                hintStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold, color: Colors.black45),
+                                prefixIcon: Icon(
+                                  Icons.vpn_key,
+                                  color: themeProvider.getColor,
+                                  size: 22,
+                                ),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _visiblePassword = !_visiblePassword;
+
+                                        icon = _visiblePassword
+                                            ? Icons.visibility
+                                            : Icons.visibility_off;
+                                      });
+                                    },
+                                    icon: Icon(icon)),
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: const OutlineInputBorder(
+                                    borderSide: BorderSide(style: BorderStyle.solid))),
+                            validator: (value) {
+                              if (value != passwordController.text) {
+                                return passwordNotMatchE;
+                              }
+                              if (value!.isEmpty) {
+                                return enterPasswordE;
+                              } else if (value.length < 4) {
+                                return passwordLengthE;
+                              } else if (value.length > 25) {
+                                return passwordExceedE;
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _passwordInfo["confirm_password"] = value!;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: SizedBox(
+                            height: 50,
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _isLoading
+                                  ? null
+                                  : () {
+                                final form = _formkey.currentState;
+                                if (form!.validate()) {
+                                  form.save();
+                                  changePassword(context);
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Spacer(),
+                                  const Text(changePasswordU,
+                                      style: TextStyle(color: Colors.white)),
+                                  const Spacer(),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: _isLoading
+                                        ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                        : Container(),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 )
             ),
           ),

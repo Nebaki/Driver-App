@@ -7,6 +7,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'credit/toast_message.dart';
+
 class CollectedCash extends StatefulWidget {
   static const routeName = "/collectedcash";
   final CollectedCashScreenArgument args;
@@ -22,6 +24,7 @@ class _CollectedCashState extends State<CollectedCash> {
   void dispose() {
     super.dispose();
   }
+  final _appBar = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +32,8 @@ class _CollectedCashState extends State<CollectedCash> {
       onWillPop: () async => false,
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F6F9),
-        appBar: AppBar(
-          elevation: 0.5,
-          leading: Container(),
-          backgroundColor: Theme.of(context).primaryColor,
-          title: const Text(
-            "Trip Completed",
-            style: TextStyle(fontWeight: FontWeight.normal,color: Colors.white),
-          ),
-          centerTitle: true,
-        ),
+        appBar: CreditAppBar(
+            key: _appBar, title: "Order Completed", appBar: AppBar(), widgets: []),
         body: Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 10),
           child: Column(

@@ -241,7 +241,7 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(formatDate(trip.startingTime ?? sampleUtcU)),
+          child: Text(formatDate(trip.createdAt ?? sampleUtcU)),
         ),
 
         Padding(

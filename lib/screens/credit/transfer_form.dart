@@ -130,7 +130,7 @@ class _TransferState extends State<TransferMoney> {
                 borderSide: BorderSide(style: BorderStyle.solid))),
         validator: (value) {
           if (value!.isEmpty) {
-            return enterPhoneE;
+            return enterRPhoneE;
           } else if (value.length < 9) {
             return phoneLengthE;
           } else if (value.length > 9) {
@@ -250,64 +250,66 @@ class _TransferState extends State<TransferMoney> {
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  elevation: 0,
-                  child: Form(
-                    key: _formKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height / 2.55,
-                      padding:
-                      const EdgeInsets.only(left: 10, right: 10, top: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Padding(
-                              padding:
-                              EdgeInsets.only(left: 10, right: 40, top: 10),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  sendMoneyU,
-                                  style: TextStyle(fontSize: 25),
-                                ),
-                              )),
-                          _phoneBox(),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 10, right: 10, top: 5),
-                            child: _amountBox(),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 10, right: 10, top: 10),
-                            child: SizedBox(
-                              height: 50,
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width,
-                              child: _transferButton(),
+            SingleChildScrollView(
+              child: Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0,right: 8.0,top: 100),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    elevation: 0,
+                    child: Form(
+                      key: _formKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(10))),
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height / 2.55,
+                        padding:
+                        const EdgeInsets.only(left: 10, right: 10, top: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                                padding:
+                                EdgeInsets.only(left: 10, right: 40, top: 10),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    sendMoneyU,
+                                    style: TextStyle(fontSize: 25),
+                                  ),
+                                )),
+                            _phoneBox(),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 10, top: 5),
+                              child: _amountBox(),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 10, top: 10),
+                              child: SizedBox(
+                                height: 50,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width,
+                                child: _transferButton(),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
