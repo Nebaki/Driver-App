@@ -60,12 +60,44 @@ class _PhoneVerificationState extends State<PhoneVerification> {
   @override
   void initState() {
     // _scaffoldMessenger = ScaffoldMessenger.of(context);
-    _verificationId = widget.args.verificationId;
-    _resendToken = widget.args.resendingToken!;
-    startTimer();
+    //_verificationId = widget.args.verificationId;
+    //_resendToken = widget.args.resendingToken!;
+    sendVerificationCode(widget.args.phoneNumber);
     super.initState();
   }
-
+  void sendVerificationCode(String phoneNumber) async {
+    await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: (phoneAuthCredential) async {
+          // setState(() {
+          //   showLoading = false;
+          // });
+          _getSmsAutomaticallyAndConfirm(
+              phoneAuthCredential.smsCode, phoneAuthCredential);
+        },
+        verificationFailed: (verificationFailed) async {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.red.shade900,
+              content: const Text("Incorrect Code")));
+          setState(() {
+            //showLoading = false;
+          });
+        },
+        codeSent: (verificationId, resendingToken) async {
+          setState(() {
+            codeSent = true;
+            //showLoading = false;
+            //currentState = ResetMobileVerficationState.SHOW_OTP_FORM_STATE;
+          });
+          _resendToken = resendingToken!;
+          _verificationId = verificationId!;
+          startTimer();
+          _onCodeSent(verificationId, resendingToken,false);
+        },
+        codeAutoRetrievalTimeout: (verificationId) async {});
+  }
+  bool codeSent = false;
   @override
   void dispose() {
     _timer.cancel();
@@ -104,12 +136,12 @@ class _PhoneVerificationState extends State<PhoneVerification> {
         },
         verificationFailed: (verificationFailed) async {
           ScaffoldMessenger.of(context).showSnackBar(_errorMesseageSnackBar(
-              verificationFailed.message ?? "Uknown Error"));
+              verificationFailed.message ?? "Unknown Error"));
           debugPrint("Verification failed: $verificationFailed");
           Navigator.pop(context);
         },
         codeSent: (verificationId, resendingToken) async {
-          _onCodeSent(verificationId, resendingToken!);
+          _onCodeSent(verificationId, resendingToken!,true);
         },
         forceResendingToken: token,
         codeAutoRetrievalTimeout: (verificationId) async {});
@@ -122,14 +154,16 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     );
   }
 
-  void _onCodeSent(String verificationId, int resendingToken) {
+  void _onCodeSent(String verificationId, int resendingToken,bool dismiss) {
     otp1Controller.clear();
     otp2Controller.clear();
     otp3Controller.clear();
     otp4Controller.clear();
     otp5Controller.clear();
     otp6Controller.clear();
-    Navigator.pop(context);
+    if(dismiss){
+      Navigator.pop(context);
+    }
     setState(() {
       _start = 60;
       _verificationId = verificationId;
@@ -188,7 +222,11 @@ class _PhoneVerificationState extends State<PhoneVerification> {
           Container(
               margin: const EdgeInsets.only(left: 25.0, right: 25.0),
               padding: const EdgeInsets.only(top: 100),
-              child: _buildForm(node)),
+              child: codeSent
+                  ? _buildForm(node)
+                  : Text("Sending Code...",
+                style: TextStyle(color: Colors.green[900], fontSize: 20.0),
+              )),
         ],
       ),
     );

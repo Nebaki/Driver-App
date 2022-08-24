@@ -348,7 +348,11 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                           listener: (context, state) {
                             if (state is UserPhoneNumbeChecked) {
                               if (state.phoneNumberExist) {
-                                sendVerificationCode();
+                                //sendVerificationCode();
+
+                                Navigator.pushNamed(context, PhoneVerification.routeName,
+                                    arguments: VerificationArgument(
+                                        phoneNumber: phoneNumber));
                               } else {
                                 setState(() {
                                   showLoading = false;

@@ -136,12 +136,12 @@ class AppRoute {
 }
 
 class VerificationArgument {
-  String verificationId;
+  String? verificationId;
   int? resendingToken;
   String phoneNumber;
   VerificationArgument({
-    required this.verificationId,
-    required this.resendingToken,
+    this.verificationId,
+    this.resendingToken,
     required this.phoneNumber,
   });
 }
