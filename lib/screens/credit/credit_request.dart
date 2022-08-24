@@ -37,6 +37,7 @@ class _CreditRequestState extends State<CreditRequest> {
   void initState() {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _loadPreTheme();
+    super.initState();
   }
 
   _loadPreTheme() {
