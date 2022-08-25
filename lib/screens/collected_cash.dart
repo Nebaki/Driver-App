@@ -1,9 +1,5 @@
 import 'package:driverapp/bloc/bloc.dart';
-import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/route.dart';
-import 'package:driverapp/screens/home/assistant/home_assistant.dart';
-import 'package:driverapp/screens/screens.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -97,16 +93,6 @@ class _CollectedCashState extends State<CollectedCash> {
                             }
 
                             Navigator.pop(context);
-                            // Navigator.pushNamedAndRemoveUntil(
-                            //     context,
-                            //     HomeScreen.routeName,
-                            //     ((Route<dynamic> route) => false),
-                            //     arguments: HomeScreenArgument(
-                            //         isSelected: false, isOnline: true));
-                            // Navigator.pushReplacementNamed(
-                            //     context, HomeScreen.routeName,
-                            //     arguments: HomeScreenArgument(
-                            //         isSelected: false, isOnline: true));
                           },
                           child: const Text(
                             "Done",

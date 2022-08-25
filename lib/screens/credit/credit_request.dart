@@ -1,21 +1,15 @@
-import 'dart:convert';
-
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/constants/error_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../dataprovider/auth/auth.dart';
-import '../../dataprovider/credit/credit.dart';
-import '../../dataprovider/telebir/telebirr.dart';
+import '../../dataProvider/auth/auth.dart';
+import '../../dataProvider/credit/credit.dart';
 import 'package:http/http.dart' as http;
-
 import '../../helper/helper.dart';
-import '../../utils/colors.dart';
 import '../../utils/constants/ui_strings.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
-import 'telebirr_data.dart';
 
 class CreditRequest extends StatefulWidget {
   static const routeName = "/credit_request";
@@ -29,19 +23,12 @@ class CreditRequest extends StatefulWidget {
 class _CreditRequestState extends State<CreditRequest> {
   final _formkey = GlobalKey<FormState>();
   final _appBar = GlobalKey<FormState>();
-  int _currentThemeIndex = 2;
-
   late ThemeProvider themeProvider;
 
   @override
   void initState() {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    _loadPreTheme();
     super.initState();
-  }
-
-  _loadPreTheme() {
-    _currentThemeIndex = themeProvider.getThemeIndex();
   }
 
   TextEditingController amountController = TextEditingController();

@@ -90,12 +90,6 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                   BlocBuilder<RideRequestBloc, RideRequestState>(
                       builder: (context, state) {
                     if (state is RideRequestLoading) {
-                      // showDialog(
-                      //     barrierDismissible: false,
-                      //     context: context,
-                      //     builder: (BuildContext context) {
-                      //       return const CircularProggressIndicatorDialog();
-                      //     });
                       return const Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -184,21 +178,6 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                                   BlocProvider.of<RideRequestBloc>(context)
                                       .add(requestEvent);
                                 })
-                            // ElevatedButton(
-                            //     style: TextButton.styleFrom(
-                            //         backgroundColor: Colors.indigo.shade900),
-                            //     onPressed: () {
-                            //       RideRequestEvent requestEvent =
-                            //           RideRequestChangeStatus(
-                            //               requestId, "Started", passengerFcm);
-                            //       BlocProvider.of<RideRequestBloc>(context)
-                            //           .add(requestEvent);
-                            //       // callback!(CompleteTrip(callback));
-                            //     },
-                            //     child: const Text(
-                            //       "Start",
-                            //       style: TextStyle(color: Colors.white),
-                            //     ))
                             ),
                       ),
                       !widget.formPassenger

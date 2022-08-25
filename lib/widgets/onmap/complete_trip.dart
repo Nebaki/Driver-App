@@ -12,7 +12,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'package:slider_button/slider_button.dart';
 
 class CompleteTrip extends StatefulWidget {
@@ -46,10 +45,6 @@ class _CompleteTripState extends State<CompleteTrip> {
 
             BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
             BlocProvider.of<DailyEarningBloc>(context).add(DailyEarningLoad());
-
-            // BlocProvider.of<CurrentWidgetCubit>(context)
-            //     .changeWidget(OnlinMode());
-
             driverStreamSubscription.cancel().then((value) {
               ref.child(myId).remove();
               Navigator.pushNamed(context, CollectedCash.routeName,

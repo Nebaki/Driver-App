@@ -1,28 +1,19 @@
 import 'package:driverapp/helper/helper.dart';
-import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:driverapp/bloc/bloc.dart';
-
-// import 'package:driverapp/helper/localization.dart';
-import 'package:driverapp/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:animated_background/animated_background.dart';
-
 import 'package:intl/intl.dart';
-import '../../dataprovider/auth/auth.dart';
-import '../../dataprovider/lottery/lottery.dart';
+import '../../dataProvider/auth/auth.dart';
+import '../../dataProvider/lottery/lottery.dart';
 import '../../models/lottery/ticket.dart';
 import '../../utils/constants/ui_strings.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
-import '../credit/toast_message.dart';
 import 'package:http/http.dart' as http;
 
 class TicketScreen extends StatefulWidget {
   static const routeName = '/tickets';
 
-  TicketScreen({Key? key}) : super(key: key);
+  const TicketScreen({Key? key}) : super(key: key);
 
   @override
   State<TicketScreen> createState() => _TicketScreenState();

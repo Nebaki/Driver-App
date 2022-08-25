@@ -2,7 +2,6 @@ import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../utils/colors.dart';
 
 class ShowSnack {
   BuildContext context;
@@ -83,14 +82,11 @@ class ShowMessage {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           title: Text(title),
-          // To display the title it is optional
           content: Text(
             message,
             style: const TextStyle(
                 fontWeight: FontWeight.bold, color: Colors.black),
           ),
-          // Message which will be pop up on the screen
-          // Action widget which will provide the user to acknowledge the choice
           actions: [
             TextButton(
               style: TextButton.styleFrom(

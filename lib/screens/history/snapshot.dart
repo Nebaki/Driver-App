@@ -1,11 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
-import 'package:driverapp/utils/session.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../../models/trip/trip.dart';
 
 class SnapShot{
   Uint8List image;

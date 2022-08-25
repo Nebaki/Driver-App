@@ -32,8 +32,6 @@ class _OnlinModeState extends State<OnlinMode> {
     return WillPopScope(
       onWillPop: () async {
         onCloseWarningDialog();
-        //_showCustomDialog();
-        // context.read<CurrentWidgetCubit>().changeWidget(OfflineMode());
         return false;
       },
       child: Positioned(
@@ -52,17 +50,12 @@ class _OnlinModeState extends State<OnlinMode> {
                       backgroundColor: Theme.of(context).primaryColor,
                       onPressed: () {
                         homeScreenStreamSubscription!.cancel().then((value) {});
-                        // homeScreenStreamSubscription.cancel();
-
-                        // setDriverStatus(false);
                         context.read<UserBloc>().add(const UserUpdateStatus(status: false));
 
                         isDriverOnline = false;
                         context
                             .read<CurrentWidgetCubit>()
                             .changeWidget(OfflineMode());
-                        // widget.callback!(OfflineMode(
-                        //     widget.setDriverStatus, widget.callback));
                       },
                       child: Container(
                           padding: const EdgeInsets.all(20),
@@ -144,67 +137,6 @@ class _OnlinModeState extends State<OnlinMode> {
                   },
                   child: const Text('Yes',style: TextStyle(fontSize: 18))),
             ],
-          );
-        });
-  }
-  _showCustomDialog(){
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(20.0)), //this right here
-            child: Container(
-              height: 200,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: const [
-                        Text("Warning")
-                      ],
-                    ),
-                    const TextField(
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'What do you want to remember?'),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "No",
-                                  style: TextStyle(color: Colors.white),
-                                )
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Yes",
-                                  style: TextStyle(color: Colors.white),
-                                )
-                            ),
-                          ),
-
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
           );
         });
   }

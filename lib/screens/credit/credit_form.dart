@@ -1,17 +1,14 @@
 import 'dart:convert';
-
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/constants/error_messages.dart';
 import 'package:driverapp/utils/session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../dataprovider/auth/auth.dart';
-import '../../dataprovider/telebir/telebirr.dart';
+import '../../dataProvider/auth/auth.dart';
+import '../../dataProvider/telebir/telebirr.dart';
 import 'package:http/http.dart' as http;
-
 import '../../helper/helper.dart';
-import '../../utils/colors.dart';
 import '../../utils/constants/ui_strings.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
@@ -54,14 +51,14 @@ class _TeleBirrDataState extends State<TeleBirrData> {
             alignLabelWithHint: true,
             labelText: amountU,
             enabled: !_isLoading,
-            labelStyle: TextStyle(fontSize: 15),
-            prefixIcon: Icon(
+            labelStyle: const TextStyle(fontSize: 15),
+            prefixIcon: const Icon(
               Icons.money,
               size: 22,
             ),
             fillColor: Colors.white,
             filled: true,
-            border: OutlineInputBorder(
+            border: const OutlineInputBorder(
                 borderSide: BorderSide(style: BorderStyle.solid))),
         validator: (value) {
           if (value!.isEmpty) {

@@ -8,15 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
-import '../dataprovider/auth/auth.dart';
+import '../dataProvider/auth/auth.dart';
 import '../models/auth/auth.dart';
 import '../route.dart';
-import '../screens/award/awards.dart';
 import '../utils/colors.dart';
 import 'package:http/http.dart' as http;
-
-import '../utils/session.dart';
 
 class NavDrawer extends StatefulWidget {
   const NavDrawer({Key? key}) : super(key: key);
@@ -88,7 +84,6 @@ class _NavDrawerState extends State<NavDrawer> {
                                   EdgeInsets.only(top: height * 0.08, left: 10),
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
-                                // mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CircleAvatar(
@@ -106,11 +101,6 @@ class _NavDrawerState extends State<NavDrawer> {
                                                         image: DecorationImage(
                                                           image: imageProvider,
                                                           fit: BoxFit.cover,
-                                                          //colorFilter:
-                                                          //     const ColorFilter.mode(
-                                                          //   Colors.red,
-                                                          //   BlendMode.colorBurn,
-                                                          // ),
                                                         ),
                                                       ),
                                                     ),
@@ -133,7 +123,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                             left: 3.0, top: 10),
                                         child: Text(
                                           fullName,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold),
@@ -143,7 +133,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                         padding: const EdgeInsets.all(3.0),
                                         child: Text(
                                           phoneNumber,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 13,
                                               fontWeight: FontWeight.bold),
@@ -162,7 +152,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                 child: Container(
                                   width: 40.0,
                                   height: 40.0,
-                                  decoration: new BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     color: Colors.white,
                                     shape: BoxShape.circle,
                                   ),
@@ -192,7 +182,7 @@ class _NavDrawerState extends State<NavDrawer> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(context, Walet.routeName);
+                                Navigator.pushNamed(context, Wallet.routeName);
                               },
                               child: _menuItem(
                                   divider: true,
@@ -276,38 +266,6 @@ class _NavDrawerState extends State<NavDrawer> {
                                 ),
                               ),
                             ),
-/*
-                            Card(
-                              elevation: 1,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, top: 5, bottom: 5, right: 10),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                        context, SettingScreen.routeName);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.settings,
-                                        color: themeProvider.getColor,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child: Text(
-                                          "Settings",
-                                          style: TextStyle(
-                                              color: themeProvider.getColor),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-*/
-
                             Container(
                               padding: const EdgeInsets.only(
                                   left: 10, bottom: 20, top: 10),
@@ -327,7 +285,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                           //color: ColorProvider().primaryDeepOrange,
                                           height: 40,
                                           width: 40,
-                                          decoration: new BoxDecoration(
+                                          decoration: BoxDecoration(
                                             color: ColorProvider()
                                                 .primaryDeepOrange,
                                             shape: BoxShape.circle,
@@ -343,7 +301,6 @@ class _NavDrawerState extends State<NavDrawer> {
                                           setState(() {});
                                         },
                                         child: Container(
-                                          //color: ColorProvider().primaryDeepBlue,
                                           height: 40,
                                           width: 40,
                                           decoration: new BoxDecoration(
@@ -362,10 +319,9 @@ class _NavDrawerState extends State<NavDrawer> {
                                           setState(() {});
                                         },
                                         child: Container(
-                                          //color: ColorProvider().primaryDeepTeal,
                                           height: 40,
                                           width: 40,
-                                          decoration: new BoxDecoration(
+                                          decoration: BoxDecoration(
                                             color:
                                                 ColorProvider().primaryDeepTeal,
                                             shape: BoxShape.circle,
@@ -376,103 +332,6 @@ class _NavDrawerState extends State<NavDrawer> {
                                   ],
                                 ),
                               ),
-                              /*child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    themeProvider.changeTheme(0);
-                                  },
-                                  child: Container(
-                                    color: ColorProvider().primaryDeepGreen,
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    themeProvider.changeTheme(1);
-                                  },
-                                  child: Container(
-                                    color: ColorProvider().primaryDeepRed,
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    themeProvider.changeTheme(2);
-                                  },
-                                  child: Container(
-                                    color: ColorProvider().primaryDeepPurple,
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    themeProvider.changeTheme(3);
-                                  },
-                                  child: Container(
-                                    color: ColorProvider().primaryDeepOrange,
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    themeProvider.changeTheme(4);
-                                  },
-                                  child: Container(
-                                    color: ColorProvider().primaryDeepBlue,
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    themeProvider.changeTheme(5);
-                                  },
-                                  child: Container(
-                                    color: ColorProvider().primaryDeepBlack,
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    themeProvider.changeTheme(6);
-                                  },
-                                  child: Container(
-                                    color: ColorProvider().primaryDeepTeal,
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                            */
                             ),
                           ]),
                     ),

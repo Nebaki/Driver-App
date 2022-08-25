@@ -11,9 +11,6 @@ class CustomeBackArrow extends StatelessWidget {
         height: 30,
         width: 30,
         child: TextButton(
-          //padding: EdgeInsets.zero,
-          //color: Colors.white,
-          //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
           onPressed: () {
             return Navigator.pop(context);
           },

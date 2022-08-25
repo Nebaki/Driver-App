@@ -1,4 +1,4 @@
-import 'package:driverapp/dataprovider/dataproviders.dart';
+import 'package:driverapp/dataProvider/data_providers.dart';
 import 'package:driverapp/models/trip/trip.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,12 +6,10 @@ import 'package:driverapp/bloc/weekly_report/weekly_earning_bloc.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/screens/report/earning/tabview/shimmer_daily/shimmer_daily.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../helper/helper.dart';
 import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
 import 'package:http/http.dart' as http;
 
 class DailyEarningTab extends StatefulWidget {
@@ -27,7 +25,6 @@ class _DailyEarningTabState extends State<DailyEarningTab>
   void initState() {
     _isLoading = true;
     dailyReport();
-    //prepareRequest(context);
     super.initState();
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
   }
@@ -198,10 +195,6 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                           _reportItems(
                               data: "Commission",
                               price: commission.toStringAsFixed(2)),
-                          //_reportItems(data: "+Tax", price: "400.50"),
-                          //_reportItems(data: "+Tolls", price: "400.50"),
-                          //_reportItems(data: "Surge", price: "40.25"),
-                          //_reportItems(data: "Discount(-)", price: "20.00"),
                           const Divider(),
                           _reportItems(
                               data: "Total",

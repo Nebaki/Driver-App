@@ -60,8 +60,8 @@ class AppRoute {
                 args: argument,
               ));
     }
-    if (settings.name == Walet.routeName) {
-      return MaterialPageRoute(builder: (context) => const Walet());
+    if (settings.name == Wallet.routeName) {
+      return MaterialPageRoute(builder: (context) => const Wallet());
     }
     if (settings.name == Earning.routeName) {
       return MaterialPageRoute(builder: (context) => const Earning());

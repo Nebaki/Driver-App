@@ -2,7 +2,6 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../credit/toast_message.dart';
 
 class Summary extends StatelessWidget {

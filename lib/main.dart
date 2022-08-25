@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/bloc_observer.dart';
-import 'package:driverapp/dataprovider/dataproviders.dart';
+import 'package:driverapp/dataProvider/data_providers.dart';
 import 'package:driverapp/repository/repositories.dart';
 import 'package:driverapp/route.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -83,22 +83,6 @@ void main() async {
   DailyEarningRepository(
       dailyEarningDataProvider:
       DailyEarningDataProvider(httpClient: http.Client()));
-
-
-  // BlocOverrides.runZoned(
-  //     () => runApp(MyApp(
-  //           placeDetailRepository: placeDetailRepository,
-  //           directionRepository: directionRepository,
-  //           authRepository: authRepository,
-  //           userRepository: userRepository,
-  //           reverseLocationRepository: reverseLocationRepository,
-  //           rideRequestRepository: rideRequestRepository,
-  //           locationPredictionRepository: locationPredictionRepository,
-  //           emergencyReportRepository: emergencyReportRepository,
-  //           passengerRepository: passengerRepository,
-  //           balanceRepository: balanceRepository,
-  //         )),
-  //     blocObserver: SimpleBlocObserver());
   const secureStorage = FlutterSecureStorage();
   String? theme = await secureStorage.read(key: "theme");
   runApp(ChangeNotifierProvider(
@@ -312,66 +296,3 @@ class MyApp extends StatelessWidget {
             })));
   }
 }
-
-
-// ///
-// ///
-// ///MaterialApp(
-//               title: 'SafeWay',
-//               theme: ThemeData(
-//                   floatingActionButtonTheme:
-//                       const FloatingActionButtonThemeData(
-//                           sizeConstraints:
-//                               BoxConstraints(minWidth: 80, minHeight: 80),
-//                           extendedPadding: EdgeInsets.all(50),
-//                           foregroundColor: Colors.white,
-//                           extendedTextStyle: TextStyle(
-//                               color: Colors.white,
-//                               fontSize: 26,
-//                               fontWeight: FontWeight.w300)),
-
-//                   //F48221
-//                   primaryColor: const Color.fromRGBO(254, 79, 5, 1),
-//                   textTheme: const TextTheme(
-//                       button: TextStyle(
-//                         color: Color.fromRGBO(254, 79, 5, 1),
-//                       ),
-//                       subtitle1: TextStyle(color: Colors.black38, fontSize: 14),
-//                       headline5:
-//                           TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-//                       bodyText2: TextStyle(
-//                           color: Colors.black,
-//                           fontSize: 16,
-//                           fontWeight: FontWeight.normal)),
-//                   iconTheme: const IconThemeData(
-//                     color: Colors.white,
-//                   ),
-//                   textButtonTheme: TextButtonThemeData(
-//                       style: ButtonStyle(
-//                     foregroundColor:
-//                         MaterialStateProperty.all<Color>(Colors.red),
-//                     textStyle: MaterialStateProperty.all<TextStyle>(
-//                         const TextStyle(color: Colors.black)),
-//                   )),
-//                   elevatedButtonTheme: ElevatedButtonThemeData(
-//                     style: ButtonStyle(
-//                         textStyle: MaterialStateProperty.all<TextStyle>(
-//                             const TextStyle(
-//                                 color: Colors.white,
-//                                 fontWeight: FontWeight.normal,
-//                                 fontSize: 20)),
-//                         backgroundColor: MaterialStateProperty.all<Color>(
-//                             const Color.fromRGBO(254, 79, 5, 1)),
-//                         foregroundColor:
-//                             MaterialStateProperty.all<Color>(Colors.white),
-//                         shape:
-//                             MaterialStateProperty.all<RoundedRectangleBorder>(
-//                                 RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(80),
-//                         ))),
-//                   ),
-//                   colorScheme: ColorScheme.fromSwatch(
-//                     primarySwatch: Colors.orange,
-//                   ).copyWith(secondary: Colors.grey.shade600)),
-//               onGenerateRoute: AppRoute.generateRoute,
-//             )

@@ -1,18 +1,12 @@
-import 'dart:math';
-
 import 'package:driverapp/models/trip/trip.dart';
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/screens/history/trip_detail.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import '../../dataprovider/auth/auth.dart';
-import '../../dataprovider/database/database.dart';
-import '../../dataprovider/history/history.dart';
+import '../../dataProvider/auth/auth.dart';
+import '../../dataProvider/database/database.dart';
+import '../../dataProvider/history/history.dart';
 import '../../helper/helper.dart';
 import '../../route.dart';
 import '../../utils/constants/ui_strings.dart';
@@ -39,7 +33,6 @@ class _HistoryPageState extends State<HistoryPage> {
     _controller = ScrollController()..addListener(_loadMore);
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     prepareRequest(context, 0, _limit);
-    //syncHistory();
     super.initState();
   }
 

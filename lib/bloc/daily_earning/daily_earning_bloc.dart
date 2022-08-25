@@ -1,10 +1,8 @@
 import 'package:driverapp/repository/weekly_earning/daily_earning.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-
 import '../../models/models.dart';
 import '../../models/weekly_earning/daily_earning.dart';
-
 part 'daily_earning_event.dart';
 part 'daily_earning_state.dart';
 

@@ -1,42 +1,35 @@
-import 'dart:convert';
-
-import 'package:driverapp/dataprovider/credit/credit.dart';
+import 'package:driverapp/dataProvider/credit/credit.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/route.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/credit/credit_request.dart';
 import 'package:driverapp/screens/credit/transfer_form.dart';
-import 'package:driverapp/utils/constants/info_message.dart';
 import 'package:driverapp/utils/constants/net_status.dart';
 import 'package:driverapp/utils/constants/ui_strings.dart';
 import 'package:driverapp/utils/ui_tool/tools.dart';
-import 'package:flutter_animarker/helpers/extensions.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:intl/intl.dart';
-import '../../bloc/balance/balance.dart';
-import '../../dataprovider/auth/auth.dart';
+import '../../dataProvider/auth/auth.dart';
 import '../../helper/helper.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
 import 'toast_message.dart';
 
-class Walet extends StatefulWidget {
+class Wallet extends StatefulWidget {
   static const routeName = "/credit";
 
-  const Walet({Key? key}) : super(key: key);
+  const Wallet({Key? key}) : super(key: key);
 
   @override
-  State<Walet> createState() => WaletState();
+  State<Wallet> createState() => WalletState();
 }
 
-class WaletState extends State<Walet> {
+class WalletState extends State<Wallet> {
   final _appBar = GlobalKey<FormState>();
-  final _inkweltextStyle = const TextStyle(
+  final _inkwelTextStyle = const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.bold,
   );
@@ -178,7 +171,7 @@ class WaletState extends State<Walet> {
                                         child: InkWell(
                                       child: Text(
                                         transferU,
-                                        style: _inkweltextStyle,
+                                        style: _inkwelTextStyle,
                                       ),
                                       onTap: () {
                                         Navigator.pushNamed(
@@ -204,7 +197,7 @@ class WaletState extends State<Walet> {
                                             },
                                             child: Text(
                                               addCreditU,
-                                              style: _inkweltextStyle,
+                                              style: _inkwelTextStyle,
                                             ))),
                                   ],
                                 ),

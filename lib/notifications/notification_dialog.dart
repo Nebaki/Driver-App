@@ -13,13 +13,6 @@ class NotificationDialog extends StatefulWidget {
   final List<dynamic> nextDrivers;
   final bool passRequest;
   int timer;
-  // final String pickup;
-  // final String droppOff;
-  // final String requestId;
-  // final LatLng passengerPosition;
-  // final String passengerName;
-  // final String passengerFcm;
-  // final LatLng droppOffPos;
 
   NotificationDialog(
       this.setDestination, this.nextDrivers, this.timer, this.passRequest, {Key? key}) : super(key: key);
@@ -41,8 +34,6 @@ class _NotificationDialogState extends State<NotificationDialog> {
           setState(() {
             _timer!.cancel();
           });
-          // print("Yeah right now on action");
-          // player.dispose();
           if (widget.passRequest) {
             if (widget.nextDrivers.isNotEmpty) {
               UserEvent event = UserLoadById(widget.nextDrivers[0]);
@@ -51,15 +42,8 @@ class _NotificationDialogState extends State<NotificationDialog> {
               BlocProvider.of<RideRequestBloc>(context)
                   .add(RideRequestTimeOut(requestId));
               Navigator.pop(context);
-              // Navigator.pushNamed(context, CancelReason.routeName,
-              //     arguments: CancelReasonArgument(sendRequest: true));
             }
           }
-
-          // RideRequestEvent requestEvent =
-          //     RideRequestChangeStatus(requestId, "Cancelled", passengerFcm);
-          // BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
-
         } else {
           setState(() {
             widget.timer--;
@@ -83,14 +67,6 @@ class _NotificationDialogState extends State<NotificationDialog> {
 
   @override
   Widget build(BuildContext context) {
-    // if (_start == 0) {
-    //   player.dispose();
-
-    //   RideRequestEvent requestEvent =
-    //       RideRequestChangeStatus(requestId, "Cancelled", passengerFcm);
-    //   BlocProvider.of<RideRequestBloc>(context).add(requestEvent);
-    // }
-
     return WillPopScope(
       onWillPop: () async => false,
       child: BlocConsumer<RideRequestBloc, RideRequestState>(
@@ -114,13 +90,6 @@ class _NotificationDialogState extends State<NotificationDialog> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Center(
-                //   child: Icon(
-                //     Icons.request_page,
-                //     size: 50,
-                //     color: Colors.indigo.shade900,
-                //   ),
-                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,8 +237,6 @@ class _NotificationDialogState extends State<NotificationDialog> {
                               if (timer != null) {
                                 timer!.cancel();
                               }
-                              // player.stop();
-                              // player.dispose();
                               if (widget.nextDrivers.isNotEmpty) {
                                 UserEvent event =
                                     UserLoadById(widget.nextDrivers[0]);

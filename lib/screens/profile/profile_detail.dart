@@ -14,8 +14,6 @@ class ProfileDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final double top = _appbarHeight - _profileHeight;
-
     return Scaffold(
       body: ListView(
         children: [

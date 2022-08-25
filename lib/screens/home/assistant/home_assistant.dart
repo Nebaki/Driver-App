@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/dialogs/circular_progress_indicator_dialog.dart';
 import 'package:flutter/material.dart';

@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/route.dart';
-
-import '../../utils/colors.dart';
 import '../../utils/constants/error_messages.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
@@ -26,14 +24,12 @@ class _ResetPasswordState extends State<ResetPassword> {
   final _formkey = GlobalKey<FormState>();
   final newPassword = TextEditingController();
   final Map<String, String> _forgetPasswordInfo = {};
-  bool _isLoading = false;
   final ResetPasswordArgument arg;
 
 
   final newPasswordController = TextEditingController();
 
   final confirmPasswordController = TextEditingController();
-  int _currentThemeIndex = 2;
 
   late ThemeProvider themeProvider;
 
@@ -42,23 +38,17 @@ class _ResetPasswordState extends State<ResetPassword> {
   @override
   void initState() {
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    _loadPreTheme();
+    super.initState();
   }
 
-  _loadPreTheme() {
-    _currentThemeIndex = themeProvider.getThemeIndex();
-  }
 
   @override
   Widget build(BuildContext context) {
-    late String _newPassword;
-    String _confirmedPassword;
     return Scaffold(
       body: BlocConsumer<UserBloc, UserState>(
           builder: (context, state) => resetPasswordForm(context),
           listener: (context, state) {
             if (state is UserPasswordChanged) {
-              _isLoading = false;
 
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: const Text(passwordChangedI),
@@ -68,7 +58,6 @@ class _ResetPasswordState extends State<ResetPassword> {
               // Navigator.pop(context);
             }
             if (state is UserOperationFailure) {
-              _isLoading = false;
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: const Text(operationFailedE),
                   backgroundColor: Colors.red.shade900));
@@ -78,7 +67,6 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   void forgetPassword(BuildContext context) {
-    _isLoading = true;
     BlocProvider.of<UserBloc>(context)
         .add(UserForgetPassword(_forgetPasswordInfo));
   }
@@ -129,9 +117,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                   height: 30,
                   width: 30,
                   child: GestureDetector(
-                    //padding: EdgeInsets.zero,
-                    //color: Colors.white,
-                    //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                     onTap: () {
                       return Navigator.pop(context);
                     },

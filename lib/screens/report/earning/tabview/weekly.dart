@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
 
@@ -29,7 +28,6 @@ class _WeeklyEarningTabState extends State<WeeklyEarningTab> {
 
   @override
   void initState() {
-    //prepareRequest(context);
     super.initState();
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
   }
@@ -81,9 +79,7 @@ class _WeeklyEarningTabState extends State<WeeklyEarningTab> {
             ),
             elevation: 3.0,
             child: Container(
-              //padding: const EdgeInsets.only(top: 0, left: 20, right: 20),
               color: Colors.white,
-              //width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
                   SizedBox(
@@ -296,10 +292,6 @@ class _WeeklyEarningTabState extends State<WeeklyEarningTab> {
                             ),
                             _reportItems(data: "Net Earning", price: cashtrips.toString()),
                             _reportItems(data: "Commission", price: "00"),
-                            //_reportItems(data: "+Tax", price: "400.50"),
-                            //_reportItems(data: "+Tolls", price: "400.50"),
-                            //_reportItems(data: "Surge", price: "40.25"),
-                            //_reportItems(data: "Discount(-)", price: "20.00"),
                             const Divider(),
                             _reportItems(
                                 data: "Total",
@@ -315,20 +307,6 @@ class _WeeklyEarningTabState extends State<WeeklyEarningTab> {
               return Container();
             },
           )
-
-          /* Column(
-            children: [
-              _reportItems(data: "Trip fares", price: "40.25"),
-              _reportItems(data: "YellowTaxi Fee", price: "20.00"),
-              _reportItems(data: "+Tax", price: "400.50"),
-              _reportItems(data: "+Tolls", price: "400.50"),
-              _reportItems(data: "Surge", price: "40.25"),
-              _reportItems(data: "Discount(-)", price: "20.00"),
-              const Divider(),
-              _reportItems(
-                  data: "Total Earnings", price: "460.75", color: Colors.red),
-            ],
-          )*/
         ],
       ),
     ]);

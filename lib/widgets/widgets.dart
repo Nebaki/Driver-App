@@ -1,4 +1,3 @@
-export 'phone_verification.dart';
 export 'custome_backarrow.dart';
 export 'onmap/offlinemode.dart';
 export 'onmap/onlinnemode.dart';

@@ -5,7 +5,6 @@ import 'package:driverapp/models/rideRequest/ride_request.dart';
 import 'package:driverapp/screens/report/summary/tabview/shimmer_daily/shimmer_daily.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'dart:isolate';
 import 'dart:math';
 import 'dart:ui';
-
-// import 'package:app_settings/app_settings.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -595,32 +593,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             duration: 20,
                                 textColor: Colors.white,
                                 backgroundColor: Theme.of(context).primaryColor).show();
-                            /*showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return WillPopScope(
-                                    onWillPop: () async => false,
-                                    child: AlertDialog(
-                                      content: Row(
-                                        children: const [
-                                          SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 1,
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text("Reporting.."),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                });*/
                           }
                           if (state is EmergencyReportCreated) {
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -670,10 +642,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           if (state is EmergencyReportOperationFailure) {
                             ShowSnack(context: context,message: "Reporting Failed, Try Again",
                             backgroundColor: Colors.red).show();
-                            /*Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: const Text("Reporting Failed."),
-                                backgroundColor: Colors.red.shade900));*/
                           }
                         }),
                     BlocBuilder<DisableButtonCubit, bool>(
@@ -802,15 +770,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         topRight: Radius.circular(60),
                         bottomRight: Radius.circular(60))),
               )),
-
-// Positioned(
-          //     top: 10,
-          //     right: 10,
-          //     child: ElevatedButton(
-          //         onPressed: () {
-          //           showDriversOnMap();
-          //         },
-          //         child: const Text("Maintenance")))
         ],
       ),
     );
@@ -895,21 +854,6 @@ class _HomeScreenState extends State<HomeScreen> {
       availablePassengersMarkers.clear();
     });
   }
-/*
-
-  void createMarkerIcon() {
-    if (carMarkerIcon == null) {
-      ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context, size: const Size(0.5, 1));
-      BitmapDescriptor.fromAssetImage(
-              imageConfiguration, 'assets/icons/car.png')
-          .then((value) {
-        carMarkerIcon = value;
-      });
-    }
-  }
-*/
-
   String generateRandomId() {
     var r = Random();
     final list = List.generate(3, (index) => r.nextInt(33) + 89);
@@ -917,9 +861,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void startStopTimer() {
-    // print("yow starting function");
-
-    // print("yow status is ${!timer!.isActive}")
     if (stopingtimer == null || !stopingtimer!.isActive) {
       print("yow in is active");
 
@@ -1321,13 +1262,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Padding(
-                          //     padding: const EdgeInsets.fromLTRB(
-                          //         20, 10, 20, 10),
-                          //     child: InternationalPhoneNumberInput(
-                          //         initialValue:
-                          //             PhoneNumber(isoCode: "ET"),
-                          //         onInputChanged: (value) {})),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(50, 5, 50, 10),
                             child: Form(
@@ -1505,31 +1439,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    /*ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, CancelReason.routeName,
-                            arguments: CancelReasonArgument(sendRequest: true));
-                      },
-                      child: const Text("Cancel"),
-                    ),*/
                     ElevatedButton(onPressed: () {
                       startingTime = DateTime.now();
 
                       Navigator.pop(context);
 
                       _getPolyline(widget.args.encodedPts!);
-
-                      // _currentWidget = CompleteTrip();
                       destination = droppOffLocation;
 
                       setState(() {});
                       showDriversOnMap();
                       updateRideDetails();
-
-                      // DirectionEvent event =
-                      //     DirectionDistanceDurationLoad(
-                      //         destination: droppOffLocation);
-                      // BlocProvider.of<DirectionBloc>(context).add(event);
                     },
                         child:
                         BlocBuilder<StartedTripDataCubit, StartedTripDataState>(
@@ -1726,10 +1646,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodyText2)),
-                  // Expanded(
-                  //     child: Text(
-                  //         "For better accuracy,please turn on both GPS and WIFI location services",
-                  //         style: Theme.of(context).textTheme.bodyText2)),
                   Expanded(
                       flex: 2,
                       child: SizedBox(

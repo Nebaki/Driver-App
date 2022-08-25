@@ -5,10 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
 import '../../functions/functions.dart';
 import '../../route.dart';
-import '../../utils/constants/net_status.dart';
 import '../../utils/constants/error_messages.dart';
 import '../../utils/constants/info_message.dart';
 import '../../utils/painter.dart';
@@ -74,10 +72,6 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
         timeout: const Duration(seconds: 60),
         phoneNumber: phoneNumber,
         verificationCompleted: (phoneAuthCredential) async {
-          // setState(() {
-          //   showLoading = false;
-          // });
-
           signInWithPhoneAuthCredential(phoneAuthCredential);
         },
         verificationFailed: (verificationFailed) async {
@@ -151,9 +145,6 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                   height: 30,
                   width: 30,
                   child: GestureDetector(
-                    //padding: EdgeInsets.zero,
-                    //color: Colors.white,
-                    //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                     onTap: () {
                       return Navigator.pop(context);
                     },
@@ -245,55 +236,6 @@ class _CheckPhoneNumberState extends State<CheckPhoneNumber> {
                           },
                         ),
                       ),
-                      /*Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: InternationalPhoneNumberInput(
-                        inputDecoration: const InputDecoration(
-                            hintText: "Phone Number",
-                            hintStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black45),
-                            fillColor: Colors.white,
-                            filled: true,
-                            border:
-                                OutlineInputBorder(borderSide: BorderSide.none)),
-                        onInputChanged: (PhoneNumber number) {
-                          setState(() {
-                            phoneController = number.phoneNumber!;
-                          });
-                        },
-                        onInputValidated: (bool value) {},
-                        selectorConfig: const SelectorConfig(
-                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                        ),
-                        ignoreBlank: false,
-
-                        autoValidateMode: AutovalidateMode.onUserInteraction,
-                        selectorTextStyle: const TextStyle(color: Colors.black),
-                        initialValue: PhoneNumber(isoCode: "ET"),
-                        //textFieldController: phoneController,
-                        formatInput: true,
-                        keyboardType: const TextInputType.numberWithOptions(
-                            signed: true, decimal: true),
-                        inputBorder:
-                            const OutlineInputBorder(borderSide: BorderSide.none),
-                        spaceBetweenSelectorAndTextField: 0,
-                      ),
-                    ),*/
-                      /*const Padding(
-                        padding: EdgeInsets.only(left: 30,right: 30,top: 10,bottom: 10),
-                        child: Center(
-                          child: Text(
-                            "By continuing, iconfirm that i have read & agree to the Terms & conditions and Privacypolicy",
-                            overflow: TextOverflow.fade,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w300,
-                                letterSpacing: 0),
-                          ),
-                        ),
-                      ),*/
                       Center(
                         child: Padding(
                           padding: const EdgeInsets.only(

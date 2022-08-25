@@ -1,7 +1,6 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
-import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

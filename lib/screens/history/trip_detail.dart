@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../dataprovider/credit/credit.dart';
+import '../../dataProvider/credit/credit.dart';
 import 'package:http/http.dart' as http;
-
 import '../../models/trip/trip.dart';
 import '../../route.dart';
 import '../../utils/constants/ui_strings.dart';
@@ -12,6 +10,7 @@ import '../../utils/theme/ThemeProvider.dart';
 import '../credit/toast_message.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+
 class TripDetail extends StatefulWidget {
   static const routeName = "/history_detail";
   TripDetailArgs args;

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:driverapp/cubits/cubits.dart';
 import 'package:driverapp/helper/constants.dart';
@@ -124,9 +123,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                 setState(() {
                   isSuccess = true;
                 });
-                // Navigator.pushReplacementNamed(
-                //     context, HomeScreen.routeName,
-                //     arguments: HomeScreenArgument(isSelected: false));
               } else {
                 Navigator.pushReplacementNamed(context, SigninScreen.routeName);
               }
@@ -159,8 +155,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
             return Container();
           }, listener: (context, st) async {
             if (st is RideRequestStartedTripChecked) {
-              // distanceDistance = st.rideRequest.distance!;
-
               if (st.rideRequest.pickUpAddress == null) {
                 String rootPath = '';
 
@@ -195,10 +189,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                   passengerName = st.rideRequest.name;
                 }
 
-                // DriverEvent event = DriverLoad(st.rideRequest.driverId!);
-                // BlocProvider.of<DriverBloc>(context).add(event);
-                // price = st.rideRequest.price!;
-                // distance = st.rideRequest.distance!;
                 context.read<StartedTripDataCubit>().getStartedTripData();
                 Navigator.pushReplacementNamed(context, HomeScreen.routeName,
                     arguments: HomeScreenArgument(status: st.rideRequest.status,
@@ -247,12 +237,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
       isFirstTime = true;
       showBanner = true;
       setState(() {});
-
-      // ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-      //     content: const Text("No Internet Connection"),
-      //     actions: [
-      //       TextButton(onPressed: () {}, child: const Text("Try Again"))
-      //     ]));
     } else {
       ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
 
@@ -267,16 +251,9 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
         showBanner = true;
         setState(() {});
 
-        // ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-        //     content: const Text("No Internet Connection"),
-        //     actions: [
-        //       TextButton(onPressed: () {}, child: const Text("Try again"))
-        //     ]));
       } else if (event == ConnectivityResult.wifi) {
         showBanner = false;
         setState(() {});
-
-        // ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
 
         if (isFirstTime) {
           _checkStartedTrip();
@@ -291,7 +268,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
         if (isFirstTime) {
           _checkStartedTrip();
         }
-        // ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
       }
     });
   }

@@ -1,24 +1,17 @@
 import 'dart:convert';
-
-import 'package:driverapp/dataprovider/credit/credit.dart';
-import 'package:driverapp/helper/constants.dart';
-import 'package:driverapp/models/credit/credit.dart';
+import 'package:driverapp/dataProvider/credit/credit.dart';
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/constants/error_messages.dart';
 import 'package:driverapp/utils/constants/ui_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/balance/balance.dart';
-import '../../dataprovider/auth/auth.dart';
-import '../../dataprovider/telebir/telebirr.dart';
+import '../../dataProvider/auth/auth.dart';
 import 'package:http/http.dart' as http;
 
 import '../../helper/helper.dart';
-import '../../models/auth/auth.dart';
 import '../../route.dart';
-import '../../utils/colors.dart';
 import '../../utils/painter.dart';
 import '../../utils/session.dart';
 import '../../utils/theme/ThemeProvider.dart';
@@ -41,7 +34,6 @@ class _TransferState extends State<TransferMoney> {
   TextEditingController amountController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   bool _isLoading = false;
-  int _currentThemeIndex = 2;
 
   late ThemeProvider themeProvider;
   String phoneNumber = "";
@@ -49,15 +41,12 @@ class _TransferState extends State<TransferMoney> {
   void initState() {
     _loadProfile();
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    _loadPreTheme();
+    super.initState();
   }
   _loadProfile(){
     AuthDataProvider(httpClient: http.Client()).getUserData().then((value) => {
       phoneNumber = value.phoneNumber
     });
-  }
-  _loadPreTheme() {
-    _currentThemeIndex = themeProvider.getThemeIndex();
   }
 
   Widget _amountBox() {
