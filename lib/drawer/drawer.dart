@@ -135,7 +135,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                           fullName,
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 20,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ),
@@ -145,7 +145,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                           phoneNumber,
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 15,
+                                              fontSize: 13,
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ),

@@ -1299,14 +1299,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             topRight: Radius.circular(15))),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: const [
                           Text(
                             'Create Trip',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 22),
+                                fontSize: 20),
                           ),
                         ]),
                   ),
@@ -1497,7 +1496,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(20.0)),
               title: const Text("Uncompleted Trip"),
               content: const Text(
-                  "You have uncompleted trip you have to cancel or complete the trip in order to continue.",
+                  "You have uncompleted trip you have to complete the trip in order to continue.",
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -1506,13 +1505,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
+                    /*ElevatedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, CancelReason.routeName,
                             arguments: CancelReasonArgument(sendRequest: true));
                       },
                       child: const Text("Cancel"),
-                    ),
+                    ),*/
                     ElevatedButton(onPressed: () {
                       startingTime = DateTime.now();
 
