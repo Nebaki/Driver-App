@@ -1,7 +1,7 @@
 import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
-import 'package:driverapp/route.dart';
+import 'package:driverapp/init/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:driverapp/widgets/widgets.dart';

@@ -1,4 +1,4 @@
-import 'package:driverapp/dataProvider/data_providers.dart';
+import 'package:driverapp/providers/providers.dart';
 import 'package:driverapp/models/models.dart';
 
 class UserRepository {
@@ -26,7 +26,7 @@ class UserRepository {
   }
 
   // Future uploadProfilePicture(XFile file) async {
-  //   await dataProvider.uploadImage(file);
+  //   await providers.uploadImage(file);
   // }
 
   Future<User> getUserById(String id) async {

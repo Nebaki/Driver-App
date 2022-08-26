@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:driverapp/dataProvider/credit/credit.dart';
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/constants/error_messages.dart';
 import 'package:driverapp/utils/constants/ui_strings.dart';
@@ -7,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/balance/balance.dart';
-import '../../dataProvider/auth/auth.dart';
+import '../../providers/providers.dart';
 import 'package:http/http.dart' as http;
 
 import '../../helper/helper.dart';
-import '../../route.dart';
+import '../../init/route.dart';
 import '../../utils/painter.dart';
 import '../../utils/session.dart';
 import '../../utils/theme/ThemeProvider.dart';

@@ -29,12 +29,13 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:driverapp/drawer/drawer.dart';
-import 'package:driverapp/route.dart';
+import '../drawer/drawer.dart';
+import 'package:driverapp/init/route.dart';
 import 'dart:async';
 import 'package:driverapp/widgets/widgets.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as toolkit;
 
+import 'location/location_changer.dart';
 import 'dialogs/circular_progress_indicator_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -1227,7 +1228,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.57,
+              height: MediaQuery.of(context).size.height,
               child: Stack(
                 children: [
                   Container(

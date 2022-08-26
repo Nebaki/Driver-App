@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:driverapp/bloc/bloc.dart';
-import 'package:driverapp/route.dart';
+import 'package:driverapp/init/route.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:provider/provider.dart';
 

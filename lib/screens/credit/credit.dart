@@ -1,6 +1,5 @@
-import 'package:driverapp/dataProvider/credit/credit.dart';
 import 'package:driverapp/models/models.dart';
-import 'package:driverapp/route.dart';
+import 'package:driverapp/init/route.dart';
 import 'package:driverapp/screens/credit/credit_form.dart';
 import 'package:driverapp/screens/credit/credit_request.dart';
 import 'package:driverapp/screens/credit/transfer_form.dart';
@@ -12,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../../dataProvider/auth/auth.dart';
+import '../../providers/providers.dart';
 import '../../helper/helper.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';

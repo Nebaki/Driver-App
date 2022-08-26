@@ -1,4 +1,4 @@
-import 'package:driverapp/dataProvider/data_providers.dart';
+import '../../providers/providers.dart';
 import 'package:driverapp/models/models.dart';
 
 class ReverseLocationRepository {
