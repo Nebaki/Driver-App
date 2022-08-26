@@ -303,7 +303,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                         child: Container(
                                           height: 40,
                                           width: 40,
-                                          decoration: new BoxDecoration(
+                                          decoration: BoxDecoration(
                                             color:
                                                 ColorProvider().primaryDeepBlue,
                                             shape: BoxShape.circle,

@@ -69,12 +69,6 @@ class AppRoute {
     if (settings.name == Summary.routeName) {
       return MaterialPageRoute(builder: (context) =>  Summary());
     }
-    // if (settings.name == PersonalDocument.routeName) {
-    //   return MaterialPageRoute(builder: (context) => PersonalDocument());
-    // }
-    // if (settings.name == VehicleDocument.routeName) {
-    //   return MaterialPageRoute(builder: (context) => VehicleDocument());
-    // }
     if (settings.name == CheckPhoneNumber.routeName) {
       return MaterialPageRoute(builder: (context) => const CheckPhoneNumber());
     }
@@ -127,10 +121,6 @@ class AppRoute {
     if (settings.name == CreditRequest.routeName) {
       return MaterialPageRoute(builder: (context) => CreditRequest());
     }
-
-
-
-
     return MaterialPageRoute(builder: (context) => const CustomSplashScreen());
   }
 }
