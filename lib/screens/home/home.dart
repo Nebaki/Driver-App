@@ -1226,34 +1226,12 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (BuildContext ctx) {
           return Padding(
             padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
+                bottom: MediaQuery.of(context).padding.bottom,
+            top: MediaQuery.of(context).padding.top
+            ),
             child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Stack(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(
-                        top: 20, left: 20, right: 20, bottom: 20),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15))),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Text(
-                            'Create Trip',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                          ),
-                        ]),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
+             // height: MediaQuery.of(context).size.height * 0.3,
+              child: Container(
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(15),
@@ -1261,10 +1239,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.white,
                       ),
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(50, 5, 50, 10),
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Create Trip',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
                             child: Form(
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
@@ -1295,7 +1282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: TextFormField(
                               focusNode: pickupLocationNode,
                               // initialValue: address,
@@ -1326,9 +1313,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   labelText: "Current Location"),
                             ),
                           ),
-
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                             child: TextField(
                               focusNode: droppOffLocationNode,
                               onChanged: (value) {
@@ -1348,7 +1334,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.25,
+                            height: MediaQuery.of(context).size.height * 0.6,
                             child: Container(
                                 color: Colors.white,
                                 child: BlocBuilder<LocationPredictionBloc,
@@ -1406,9 +1392,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
             ),
           );
         });
