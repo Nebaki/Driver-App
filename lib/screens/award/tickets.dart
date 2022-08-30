@@ -180,7 +180,7 @@ class _TicketScreenState extends State<TicketScreen> with AutomaticKeepAliveClie
                 ),
             ],
           )
-        : const Center(child: Text(noMessageU));
+        : const Center(child: Text("Mo Tickets"));
   }
 
   final List<Ticket>? _items = [];

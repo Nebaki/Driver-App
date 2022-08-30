@@ -190,6 +190,549 @@ class _HomeScreenState extends State<HomeScreen> {
     BlocProvider.of<RideRequestBloc>(context).add(event);
   }
 
+  GoogleMap _setupGoogleMapUi(){
+    return GoogleMap(
+      padding:
+      const EdgeInsets.only(top: 100, bottom: 250, right: 10),
+      mapType: MapType.normal,
+      myLocationButtonEnabled: false,
+      myLocationEnabled: true,
+      zoomControlsEnabled: false,
+      initialCameraPosition: _addissAbaba,
+      polylines: Set<Polyline>.of(polylines.values),
+      markers: Set<Marker>.of(availablePassengersMarkers.values),
+      onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
+        _myController = controller;
+        _determinePosition().then((value) {
+          currentLat = value.latitude;
+          currentLng = value.longitude;
+          controller.animateCamera(CameraUpdate.newCameraPosition(
+              CameraPosition(
+                  zoom: 16.4746,
+                  target: LatLng(value.latitude, value.longitude))));
+        });
+      },
+    );
+  }
+  Positioned _setupDrawerUi(){
+    return Positioned(
+        left: 25,
+        top: 43,
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(80),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey.shade400,
+                    spreadRadius: 2,
+                    blurRadius: 3,
+                    offset: const Offset(-1, 2))
+              ]),
+          child: GestureDetector(
+            onTap: () => _scaffoldKey.currentState!.openDrawer(),
+            child: CircleAvatar(
+                radius: 22,
+                backgroundColor: Colors.grey.shade300,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: CachedNetworkImage(
+                      imageUrl: myPictureUrl,
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(
+                        Icons.person,
+                        color: Theme.of(context).primaryColor,
+                        // color: Colors.indigo.shade900,
+                        size: 30,
+                      )),
+                )),
+          ),
+        ));
+  }
+  Align _contactCenterUi(){
+    return Align(
+      alignment: Alignment.centerRight,
+      child: SizedBox(
+        height: 40,
+        child: FloatingActionButton(
+            heroTag: 'makePhoneCall',
+            backgroundColor: Colors.grey.shade300,
+            onPressed: () {
+              makePhoneCall("9495");
+            },
+            child: const Icon(
+              Icons.call,
+              size: 30,
+            )),
+      ),
+    );
+  }
+  _createTripUi(){
+    return BlocBuilder<DisableButtonCubit, bool>(
+        builder: (context, state) => !state
+            ? BlocConsumer<LocationBloc, ReverseLocationState>(
+          builder: (context, state) => Align(
+            alignment: Alignment.centerRight,
+            child: SizedBox(
+              height: 45,
+              child: BlocConsumer<BalanceBloc,
+                  BalanceState>(
+                  builder: (context, state) =>
+                      FloatingActionButton(
+                        heroTag: 'createTrip',
+                        backgroundColor:
+                        Colors.grey.shade300,
+                        onPressed: hasBalance
+                            ? () {
+                          BlocProvider.of<
+                              LocationBloc>(
+                              context)
+                              .add(
+                              const ReverseLocationLoad());
+                        }
+                            : () {
+                          ShowSnack(
+                              context: context,
+                              message:
+                              "Loading Balance...")
+                              .show();
+                        },
+                        child: Container(
+                            padding:
+                            const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 1.5),
+                                borderRadius:
+                                BorderRadius.circular(
+                                    10)),
+                            child: const Icon(
+                              Icons.trip_origin,
+                            )),
+                      ),
+                  listener: (context, state) {
+                    if (state
+                    is BalanceLoadUnAuthorised) {
+                      gotoSignIn(context);
+                    }
+                    if (state is BalanceLoadSuccess) {
+                      if (state.balance > 0) {
+                        hasBalance = true;
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder:
+                                (BuildContext context) {
+                              return const InsufficentBalanceDialog();
+                            });
+                      }
+                    }
+                  }),
+            ),
+          ),
+          listener: (context, state) {
+            if (state is ReverseLocationLoading) {
+              isReverseLocationLoadingDialog = true;
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WillPopScope(
+                      onWillPop: () async {
+                        isReverseLocationLoadingDialog =
+                        false;
+                        return true;
+                      },
+                      child: const AlertDialog(
+                          content: Text(
+                              "Loading Your current Location")),
+                    );
+                  });
+            }
+            if (state is ReverseLocationLoadSuccess) {
+              Geolocator.getCurrentPosition()
+                  .then((value) {
+                pickupLocation = LatLng(
+                    value.latitude, value.longitude);
+              });
+              if (isReverseLocationLoadingDialog) {
+                Navigator.pop(context);
+              }
+              pickUpAddress = state.location.address1;
+
+              pickupController.text =
+                  state.location.address1;
+
+              _buildSheet(state.location.address1);
+            }
+
+            if (state
+            is ReverseLocationOperationFailure) {
+              if (isReverseLocationLoadingDialog) {
+                Navigator.pop(context);
+              }
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text(
+                          "Failed to get current location")));
+            }
+          },
+        )
+            : Container());
+  }
+  Align _currentLocationUi(){
+    return Align(
+      alignment: Alignment.centerRight,
+      child: SizedBox(
+        height: 45,
+        child: FloatingActionButton(
+            heroTag: 'Mylocation',
+            backgroundColor: Colors.grey.shade300,
+            onPressed: () {
+              final String _widgetName = context
+                  .read<CurrentWidgetCubit>()
+                  .state
+                  .toString();
+              _myController.animateCamera(_widgetName ==
+                  "OfflineMode" ||
+                  _widgetName == "OnlinMode"
+                  ? CameraUpdate.newCameraPosition(
+                  CameraPosition(
+                      zoom: 16.4746,
+                      target:
+                      LatLng(currentLat, currentLng)))
+                  : CameraUpdate.newLatLngBounds(
+                  latLngBounds, 100));
+            },
+            child: const Icon(Icons.gps_fixed, size: 30)),
+      ),
+    );
+  }
+  _emergencyReportUi(){
+    return BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
+        builder: (context, state) => Align(
+          alignment: Alignment.centerRight,
+          child: SizedBox(
+            height: 45,
+            child: FloatingActionButton(
+                heroTag: 'sos',
+                backgroundColor: Colors.grey.shade300,
+                onPressed: () {
+                  createEmergencyReport();
+                },
+                child: const Text(
+                  'SOS',
+                  style: TextStyle(
+                    // color: Colors.indigo.shade900,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+
+                  // color: Colors.indigo.shade900,
+                  // size: 35,
+                )),
+          ),
+        ),
+        listener: (context, state) {
+          if (state is EmergencyReportUnAuthorised) {
+            gotoSignIn(context);
+          }
+          if (state is EmergencyReportCreating) {
+            ShowSnack(context: context,
+                message: "Reporting...",
+                duration: 20,
+                textColor: Colors.white,
+                backgroundColor: Theme.of(context).primaryColor).show();
+          }
+          if (state is EmergencyReportCreated) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ShowSnack(
+                context: context,
+                message: "Emergency report has been sent.",
+                backgroundColor: Colors.green).show();
+          }
+          if (state is EmergencyReportOperationFailure) {
+            ShowSnack(context: context,message: "Reporting Failed, Try Again",
+                backgroundColor: Colors.red).show();
+          }
+        });
+  }
+  _nearByPassengerUi(){
+    return BlocBuilder<DisableButtonCubit, bool>(
+      builder: (context, state) => !state
+          ? BlocConsumer<PassengerBloc, PassengerState>(
+        builder: (context, state) => Align(
+          alignment: Alignment.centerRight,
+          child: SizedBox(
+            height: 45,
+            child: FloatingActionButton(
+                heroTag: 'neabyOpportunities',
+                backgroundColor: Colors.grey.shade300,
+                onPressed: () {
+                  if (showNearbyOpportunity) {
+                    BlocProvider.of<PassengerBloc>(
+                        context)
+                        .add(
+                        const LoadAvailablePassengers());
+                    showNearbyOpportunity = false;
+                  } else {
+                    setState(() {
+                      availablePassengersMarkers.clear();
+                      showNearbyOpportunity = true;
+                    });
+                  }
+                },
+                child: Icon(
+                    showNearbyOpportunity
+                        ? Icons.directions_walk
+                        : Icons.close,
+                    // color: Colors.red.shade900,
+                    size: 30)),
+          ),
+        ),
+        listener: (context, state) {
+          if (state is PassengerAvailablityUnAuthorised) {
+            gotoSignIn(context);
+          }
+          if (state is PassengerOperationFailure) {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(
+              content: const Text("Operation failure"),
+              backgroundColor: Colors.red.shade900,
+            ));
+          }
+          if (state is AvailablePassengersLoading) {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return WillPopScope(
+                    onWillPop: () async => false,
+                    child: Dialog(
+                        elevation: 0,
+                        insetPadding:
+                        const EdgeInsets.all(0),
+                        backgroundColor:
+                        Colors.transparent,
+                        child: Column(
+                          mainAxisAlignment:
+                          MainAxisAlignment.start,
+                          children: const [
+                            LinearProgressIndicator(
+                              minHeight: 1,
+                            ),
+                          ],
+                        )),
+                  );
+                });
+          }
+          if (state is LoadAvailablePassengersSuccess) {
+            Navigator.pop(context);
+            final icon =
+            BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen);
+              for (Passenger p in state.passenger) {
+                MarkerId markerId = MarkerId(p.ID!);
+                Marker marker = RippleMarker(
+                  markerId: markerId,
+                  position: p.location!,
+                  icon: icon,
+                  ripple: true,
+                  onTap: (){
+                    ShowSnack(context: context,message: '${p.name} : ${p.phoneNumber}').show();
+                  }
+                );
+                setState(() {
+                  availablePassengersMarkers[markerId] =
+                      marker;
+                });
+              }
+          }
+        },
+      )
+          : Container(),
+    );
+  }
+  Align _speedInfoUi(){
+    return Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "${speed.toStringAsFixed(2)} m/s",
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(60),
+                  bottomRight: Radius.circular(60))),
+        ));
+  }
+  Align _durationInfoUi(){
+    return Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          padding: const EdgeInsets.all(8.0),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 50),
+            child: Text(
+              "$stopDuration s",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(60),
+                  bottomRight: Radius.circular(60))),
+        ));
+  }
+
+  Align _userActionsUi(){
+    return Align(
+        alignment: Alignment.centerRight,
+        child: SizedBox(
+          height: 350,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _contactCenterUi(),
+              _createTripUi(),
+              _currentLocationUi(),
+              _emergencyReportUi(),
+              _nearByPassengerUi()
+            ],
+          ),
+        ));
+  }
+  _directionSetupUi(){
+    return BlocConsumer<DirectionBloc, DirectionState>(
+        builder: (context, state) {
+          return Animarker(
+            curve: Curves.bounceInOut,
+            shouldAnimateCamera: false,
+            // useRotation: true,
+            mapId: _controller.future.then((value) => value.mapId),
+            markers: Set<Marker>.of(markers.values),
+            child: _setupGoogleMapUi(),
+          );
+        }, listenWhen: (prevstate, state) {
+      bool isDirectionLoading = true;
+      if (state is DirectionDistanceDurationLoading ||
+          state is DirectionDistanceDurationLoadSuccess) {
+        isDirectionLoading = false;
+      }
+
+      if (state is DirectionLoadSuccess) {
+        isDirectionLoading = true;
+      }
+
+      return isDirectionLoading;
+    }, listener: (context, state) {
+      if (state is DirectionInitialState) {
+        Session().logSession("markers-init", "markers ${markers.length}");
+        resetScreen(state.isBalanceSufficient, state.isFromOnlineMode);
+      }
+
+      if (state is DirectionLoading) {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return WillPopScope(
+                  onWillPop: () async => false,
+                  child: const CircularProggressIndicatorDialog());
+            });
+      }
+
+      if (state is DirectionLoadSuccess) {
+        counter++;
+
+        if (counter <= 1) {
+          showDriversOnMap();
+        }
+        // isDialog = false;
+        distance =
+            (state.direction.distanceValue / 1000).toStringAsFixed(1);
+        price = (initialFare +
+            (costPerMinute * (state.direction.durationValue / 60)) +
+            (costPerKilloMeter *
+                state.direction.distanceValue /
+                1000))
+            .toStringAsFixed(1);
+
+        if (fromCreateManualTrip) {
+          directionDuration =
+          '${(state.direction.durationValue / 60).truncate().toString()} min';
+          distanceDistance =
+          '${(state.direction.distanceValue / 1000).toStringAsFixed(1)} Km';
+          RideRequestEvent event = RideRequestCreate(RideRequest(
+              driverId: myId,
+              phoneNumber: phoneNum,
+              dropOffLocation: droppOffLocation,
+              droppOffAddress: droppOffAddress,
+              pickUpAddress: pickUpAddress,
+              name: 'Kebadu',
+              direction: state.direction.encodedPoints,
+              distance: (state.direction.distanceValue / 1000)
+                  .truncate()
+                  .toString(),
+              price: price,
+              duration: (state.direction.durationValue / 60)
+                  .truncate()
+                  .toString(),
+              pickupLocation: LatLng(currentLat, currentLng)));
+          BlocProvider.of<RideRequestBloc>(context).add(event);
+        }
+
+        _addMarker(
+            droppOffLocation,
+            "destination",
+            BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed),
+            InfoWindow(
+                title: droppOffAddress,
+                onTap: fromCreateManualTrip
+                    ? () {
+                  Navigator.pushNamed(
+                      context, LocationChanger.routName,
+                      arguments: LocationChangerArgument(
+                        droppOffLocationAddressName:
+                        droppOffAddress,
+                        droppOffLocationLatLng: droppOffLocation,
+                        pickupLocationAddressName: pickUpAddress,
+                        pickupLocationLatLng: pickupLocation,
+                        fromWhere: 'DroppOff',
+                      ));
+                }
+                    : null));
+        _addMarker(
+            pickupLocation,
+            "pickupLocation",
+            BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen),
+            InfoWindow(
+              title: pickUpAddress,
+            ));
+
+        _getPolyline(state.direction.encodedPoints);
+
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          changeCameraView();
+        });
+        Navigator.pop(context);
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     //createMarkerIcon();
@@ -217,560 +760,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Container();
                   },
                 ),
-          BlocConsumer<DirectionBloc, DirectionState>(
-              builder: (context, state) {
-            return Animarker(
-              curve: Curves.bounceInOut,
-              shouldAnimateCamera: false,
-              // useRotation: true,
-              mapId: _controller.future.then((value) => value.mapId),
-              markers: Set<Marker>.of(markers.values),
-              child: GoogleMap(
-                padding:
-                    const EdgeInsets.only(top: 100, bottom: 250, right: 10),
-                mapType: MapType.normal,
-                myLocationButtonEnabled: false,
-                myLocationEnabled: true,
-                zoomControlsEnabled: false,
-                initialCameraPosition: _addissAbaba,
-                polylines: Set<Polyline>.of(polylines.values),
-                markers: Set<Marker>.of(availablePassengersMarkers.values),
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                  _myController = controller;
-                  _determinePosition().then((value) {
-                    currentLat = value.latitude;
-                    currentLng = value.longitude;
-                    controller.animateCamera(CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                            zoom: 16.4746,
-                            target: LatLng(value.latitude, value.longitude))));
-                  });
-                },
-              ),
-            );
-          }, listenWhen: (prevstate, state) {
-            bool isDirectionLoading = true;
-            if (state is DirectionDistanceDurationLoading ||
-                state is DirectionDistanceDurationLoadSuccess) {
-              isDirectionLoading = false;
-            }
-
-            if (state is DirectionLoadSuccess) {
-              isDirectionLoading = true;
-            }
-
-            return isDirectionLoading;
-          }, listener: (context, state) {
-            if (state is DirectionInitialState) {
-              Session().logSession("markers-init", "markers ${markers.length}");
-              resetScreen(state.isBalanceSufficient, state.isFromOnlineMode);
-            }
-
-            if (state is DirectionLoading) {
-              showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return WillPopScope(
-                        onWillPop: () async => false,
-                        child: const CircularProggressIndicatorDialog());
-                  });
-            }
-
-            if (state is DirectionLoadSuccess) {
-              counter++;
-
-              if (counter <= 1) {
-                showDriversOnMap();
-              }
-              // isDialog = false;
-              distance =
-                  (state.direction.distanceValue / 1000).toStringAsFixed(1);
-              price = (initialFare +
-                      (costPerMinute * (state.direction.durationValue / 60)) +
-                      (costPerKilloMeter *
-                          state.direction.distanceValue /
-                          1000))
-                  .toStringAsFixed(1);
-
-              if (fromCreateManualTrip) {
-                directionDuration =
-                    '${(state.direction.durationValue / 60).truncate().toString()} min';
-                distanceDistance =
-                    '${(state.direction.distanceValue / 1000).toStringAsFixed(1)} Km';
-                RideRequestEvent event = RideRequestCreate(RideRequest(
-                    driverId: myId,
-                    phoneNumber: phoneNum,
-                    dropOffLocation: droppOffLocation,
-                    droppOffAddress: droppOffAddress,
-                    pickUpAddress: pickUpAddress,
-                    name: 'Kebadu',
-                    direction: state.direction.encodedPoints,
-                    distance: (state.direction.distanceValue / 1000)
-                        .truncate()
-                        .toString(),
-                    price: price,
-                    duration: (state.direction.durationValue / 60)
-                        .truncate()
-                        .toString(),
-                    pickupLocation: LatLng(currentLat, currentLng)));
-                BlocProvider.of<RideRequestBloc>(context).add(event);
-              }
-
-              _addMarker(
-                  droppOffLocation,
-                  "destination",
-                  BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueRed),
-                  InfoWindow(
-                      title: droppOffAddress,
-                      onTap: fromCreateManualTrip
-                          ? () {
-                              Navigator.pushNamed(
-                                  context, LocationChanger.routName,
-                                  arguments: LocationChangerArgument(
-                                    droppOffLocationAddressName:
-                                        droppOffAddress,
-                                    droppOffLocationLatLng: droppOffLocation,
-                                    pickupLocationAddressName: pickUpAddress,
-                                    pickupLocationLatLng: pickupLocation,
-                                    fromWhere: 'DroppOff',
-                                  ));
-                            }
-                          : null));
-              _addMarker(
-                  pickupLocation,
-                  "pickupLocation",
-                  BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueGreen),
-                  InfoWindow(
-                    title: pickUpAddress,
-                  ));
-
-              _getPolyline(state.direction.encodedPoints);
-
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                changeCameraView();
-              });
-              Navigator.pop(context);
-            }
-          }),
-          Positioned(
-              left: 25,
-              top: 43,
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(80),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey.shade400,
-                          spreadRadius: 2,
-                          blurRadius: 3,
-                          offset: const Offset(-1, 2))
-                    ]),
-                child: GestureDetector(
-                  onTap: () => _scaffoldKey.currentState!.openDrawer(),
-                  child: CircleAvatar(
-                      radius: 22,
-                      backgroundColor: Colors.grey.shade300,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: CachedNetworkImage(
-                            imageUrl: myPictureUrl,
-                            imageBuilder: (context, imageProvider) => Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => Icon(
-                                  Icons.person,
-                                  color: Theme.of(context).primaryColor,
-                                  // color: Colors.indigo.shade900,
-                                  size: 30,
-                                )),
-                      )),
-                ),
-              )),
+          _directionSetupUi(),
+          _setupDrawerUi(),
           BlocBuilder<CurrentWidgetCubit, Widget>(
             builder: (context, state) => state,
           ),
-          Align(
-              alignment: Alignment.centerRight,
-              child: SizedBox(
-                height: 350,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: SizedBox(
-                        height: 40,
-                        child: FloatingActionButton(
-                            heroTag: 'makePhoneCall',
-                            backgroundColor: Colors.grey.shade300,
-                            onPressed: () {
-                              makePhoneCall("9495");
-                            },
-                            child: const Icon(
-                              Icons.call,
-                              size: 30,
-                            )),
-                      ),
-                    ),
-                    BlocBuilder<DisableButtonCubit, bool>(
-                        builder: (context, state) => !state
-                            ? BlocConsumer<LocationBloc, ReverseLocationState>(
-                                builder: (context, state) => Align(
-                                  alignment: Alignment.centerRight,
-                                  child: SizedBox(
-                                    height: 45,
-                                    child: BlocConsumer<BalanceBloc,
-                                            BalanceState>(
-                                        builder: (context, state) =>
-                                            FloatingActionButton(
-                                              heroTag: 'createTrip',
-                                              backgroundColor:
-                                                  Colors.grey.shade300,
-                                              onPressed: hasBalance
-                                                  ? () {
-                                                      BlocProvider.of<
-                                                                  LocationBloc>(
-                                                              context)
-                                                          .add(
-                                                              const ReverseLocationLoad());
-                                                    }
-                                                  : () {
-                                                      ShowSnack(
-                                                              context: context,
-                                                              message:
-                                                                  "Loading Balance...")
-                                                          .show();
-                                                    },
-                                              child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(2),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Theme.of(context).primaryColor,
-                                                          width: 1.5),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                  child: const Icon(
-                                                    Icons.trip_origin,
-                                                  )),
-                                            ),
-                                        listener: (context, state) {
-                                          if (state
-                                              is BalanceLoadUnAuthorised) {
-                                            gotoSignIn(context);
-                                          }
-                                          if (state is BalanceLoadSuccess) {
-                                            if (state.balance > 0) {
-                                              hasBalance = true;
-                                            } else {
-                                              showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return const InsufficentBalanceDialog();
-                                                  });
-                                            }
-                                          }
-                                        }),
-                                  ),
-                                ),
-                                listener: (context, state) {
-                                  if (state is ReverseLocationLoading) {
-                                    isReverseLocationLoadingDialog = true;
-                                    showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return WillPopScope(
-                                            onWillPop: () async {
-                                              isReverseLocationLoadingDialog =
-                                                  false;
-                                              return true;
-                                            },
-                                            child: const AlertDialog(
-                                                content: Text(
-                                                    "Loading Your current Location")),
-                                          );
-                                        });
-                                  }
-                                  if (state is ReverseLocationLoadSuccess) {
-                                    Geolocator.getCurrentPosition()
-                                        .then((value) {
-                                      pickupLocation = LatLng(
-                                          value.latitude, value.longitude);
-                                    });
-                                    if (isReverseLocationLoadingDialog) {
-                                      Navigator.pop(context);
-                                    }
-                                    pickUpAddress = state.location.address1;
-
-                                    pickupController.text =
-                                        state.location.address1;
-
-                                    _buildSheet(state.location.address1);
-                                  }
-
-                                  if (state
-                                      is ReverseLocationOperationFailure) {
-                                    if (isReverseLocationLoadingDialog) {
-                                      Navigator.pop(context);
-                                    }
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                "Failed to get current location")));
-                                  }
-                                },
-                              )
-                            : Container()),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: SizedBox(
-                        height: 45,
-                        child: FloatingActionButton(
-                            heroTag: 'Mylocation',
-                            backgroundColor: Colors.grey.shade300,
-                            onPressed: () {
-                              final String _widgetName = context
-                                  .read<CurrentWidgetCubit>()
-                                  .state
-                                  .toString();
-                              _myController.animateCamera(_widgetName ==
-                                          "OfflineMode" ||
-                                      _widgetName == "OnlinMode"
-                                  ? CameraUpdate.newCameraPosition(
-                                      CameraPosition(
-                                          zoom: 16.4746,
-                                          target:
-                                              LatLng(currentLat, currentLng)))
-                                  : CameraUpdate.newLatLngBounds(
-                                      latLngBounds, 100));
-                            },
-                            child: const Icon(Icons.gps_fixed, size: 30)),
-                      ),
-                    ),
-                    BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
-                        builder: (context, state) => Align(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                height: 45,
-                                child: FloatingActionButton(
-                                    heroTag: 'sos',
-                                    backgroundColor: Colors.grey.shade300,
-                                    onPressed: () {
-                                      createEmergencyReport();
-                                    },
-                                    child: const Text(
-                                      'SOS',
-                                      style: TextStyle(
-                                          // color: Colors.indigo.shade900,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-
-                                      // color: Colors.indigo.shade900,
-                                      // size: 35,
-                                    )),
-                              ),
-                            ),
-                        listener: (context, state) {
-                          if (state is EmergencyReportUnAuthorised) {
-                            gotoSignIn(context);
-                          }
-                          if (state is EmergencyReportCreating) {
-                            ShowSnack(context: context,
-                                message: "Reporting...",
-                            duration: 20,
-                                textColor: Colors.white,
-                                backgroundColor: Theme.of(context).primaryColor).show();
-                          }
-                          if (state is EmergencyReportCreated) {
-                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                            ShowSnack(
-                                context: context,
-                                message: "Emergency report has been sent.",
-                            backgroundColor: Colors.green).show();
-                            /*Navigator.pop(context);
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0)),
-                                    title: const Text("Emergency report"),
-                                    content: Row(
-                                      children: const [
-                                        SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: Icon(Icons.done,
-                                                color: Colors.green)),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Flexible(
-                                          child: Text(
-                                              "Emergency report has been sent",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black)),
-                                        ),
-                                      ],
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text('Okay'))
-                                    ],
-                                  );
-                                });*/
-                          }
-                          if (state is EmergencyReportOperationFailure) {
-                            ShowSnack(context: context,message: "Reporting Failed, Try Again",
-                            backgroundColor: Colors.red).show();
-                          }
-                        }),
-                    BlocBuilder<DisableButtonCubit, bool>(
-                      builder: (context, state) => !state
-                          ? BlocConsumer<PassengerBloc, PassengerState>(
-                              builder: (context, state) => Align(
-                                alignment: Alignment.centerRight,
-                                child: SizedBox(
-                                  height: 45,
-                                  child: FloatingActionButton(
-                                      heroTag: 'neabyOpportunities',
-                                      backgroundColor: Colors.grey.shade300,
-                                      onPressed: () {
-                                        if (showNearbyOpportunity) {
-                                          BlocProvider.of<PassengerBloc>(
-                                                  context)
-                                              .add(
-                                                  const LoadAvailablePassengers());
-                                          showNearbyOpportunity = false;
-                                        } else {
-                                          setState(() {
-                                            availablePassengersMarkers.clear();
-                                            showNearbyOpportunity = true;
-                                          });
-                                        }
-                                      },
-                                      child: Icon(
-                                          showNearbyOpportunity
-                                              ? Icons.directions_walk
-                                              : Icons.close,
-                                          // color: Colors.red.shade900,
-                                          size: 30)),
-                                ),
-                              ),
-                              listener: (context, state) {
-                                if (state is PassengerAvailablityUnAuthorised) {
-                                  gotoSignIn(context);
-                                }
-                                if (state is PassengerOperationFailure) {
-                                  Navigator.pop(context);
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: const Text("Operation failure"),
-                                    backgroundColor: Colors.red.shade900,
-                                  ));
-                                }
-                                if (state is AvailablePassengersLoading) {
-                                  showDialog(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return WillPopScope(
-                                          onWillPop: () async => false,
-                                          child: Dialog(
-                                              elevation: 0,
-                                              insetPadding:
-                                                  const EdgeInsets.all(0),
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: const [
-                                                  LinearProgressIndicator(
-                                                    minHeight: 1,
-                                                  ),
-                                                ],
-                                              )),
-                                        );
-                                      });
-                                }
-                                if (state is LoadAvailablePassengersSuccess) {
-                                  Navigator.pop(context);
-                                  final icon =
-                                      BitmapDescriptor.defaultMarkerWithHue(
-                                          BitmapDescriptor.hueGreen);
-                                  if (state.passenger != null) {
-                                    for (Passenger p in state.passenger) {
-                                      MarkerId markerId = MarkerId(p.ID!);
-                                      Marker marker = RippleMarker(
-                                        markerId: markerId,
-                                        position: p.location!,
-                                        icon: icon,
-                                        ripple: true,
-                                      );
-                                      setState(() {
-                                        availablePassengersMarkers[markerId] =
-                                            marker;
-                                      });
-                                    }
-                                  } else {}
-                                }
-                              },
-                            )
-                          : Container(),
-                    )
-                  ],
-                ),
-              )),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "${speed.toStringAsFixed(2)} m/s",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(60),
-                        bottomRight: Radius.circular(60))),
-              )),
-          Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 50),
-                  child: Text(
-                    "$stopDuration s",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ),
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(60),
-                        bottomRight: Radius.circular(60))),
-              )),
+          _userActionsUi(),
+          _speedInfoUi(),
+          _durationInfoUi(),
         ],
       ),
     );
@@ -1005,28 +1002,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   // Navigator.pop(con);
                 },
-                child: Container(
-                  color: Colors.black.withOpacity(0),
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        color: Colors.black,
-                        size: 12,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Flexible(
-                        flex: 6,
-                        child: Container(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Text(prediction.mainText)),
-                      ),
-                    ],
-                  ),
-                ),
+                child: _predictedListView(prediction),
               ),
             ),
         listener: (context, state) {
@@ -1047,7 +1023,30 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         });
   }
-
+  Container _predictedListView(LocationPrediction prediction){
+    return Container(
+      color: Colors.black.withOpacity(0),
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        children: [
+          const Icon(
+            Icons.location_on,
+            color: Colors.black,
+            size: 12,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Flexible(
+            flex: 6,
+            child: Container(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(prediction.mainText)),
+          ),
+        ],
+      ),
+    );
+  }
   void settingDropOffDialog(BuildContext? con) {
     showDialog(
         context: context,

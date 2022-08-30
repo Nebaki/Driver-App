@@ -20,7 +20,7 @@ class ProfileDetail extends StatelessWidget {
           Stack(
             children: [
               appBar(context),
-              const CustomeBackArrow(),
+              const CustomBackArrow(),
               Positioned(
                   top: 40,
                   right: 20,

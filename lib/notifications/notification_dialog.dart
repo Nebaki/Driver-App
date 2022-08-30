@@ -218,16 +218,16 @@ class _NotificationDialogState extends State<NotificationDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(
-                  width: 100,
+                  //width: 100,
                   child: ElevatedButton(
-                      style: ButtonStyle(
+                      /*style: ButtonStyle(
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10))),
                         backgroundColor: MaterialStateProperty.all<Color>(
                             const Color.fromRGBO(244, 201, 60, 1)),
-                      ),
+                      ),*/
                       onPressed: _isLoading
                           ? null
                           : () {
@@ -264,9 +264,9 @@ class _NotificationDialogState extends State<NotificationDialog> {
                   },
                 ),
                 SizedBox(
-                  width: 100,
+                  //width: 100,
                   child: ElevatedButton(
-                      style: ButtonStyle(
+                      /*style: ButtonStyle(
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -274,6 +274,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                         backgroundColor: MaterialStateProperty.all<Color>(
                             const Color.fromRGBO(244, 201, 60, 1)),
                       ),
+                      */
                       onPressed: _isLoading
                           ? null
                           : () {

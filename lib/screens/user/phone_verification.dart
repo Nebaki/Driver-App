@@ -206,7 +206,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     return Scaffold(
       body: Stack(
         children: [
-          const CustomeBackArrow(),
+          const CustomBackArrow(),
           Container(
               margin: const EdgeInsets.only(left: 25.0, right: 25.0),
               padding: const EdgeInsets.only(top: 100),
