@@ -164,7 +164,9 @@ class _HomeScreenState extends State<HomeScreen> {
     droppOffLocationNode.dispose();
     IsolateNameServer.removePortNameMapping(portName);
     _serviceStatusStreamSubscription!.cancel();
-    _connectivitySubscription!.cancel();
+    if(_connectivitySubscription != null){
+      _connectivitySubscription?.cancel();
+    }
     super.dispose();
   }
 
@@ -1117,7 +1119,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 20,
                       width: 20,
                       child: CircularProgressIndicator(
-                        strokeWidth: 1,
                         color: Colors.black,
                       ),
                     ),
