@@ -1,4 +1,3 @@
-import 'package:driverapp/dataProvider/data_providers.dart';
 import 'package:driverapp/models/trip/trip.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +6,7 @@ import 'package:driverapp/models/models.dart';
 import 'package:driverapp/screens/report/earning/tabview/shimmer_daily/shimmer_daily.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../helper/helper.dart';
+import '../../../../providers/providers.dart';
 import '../../../../utils/painter.dart';
 import '../../../../utils/theme/ThemeProvider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

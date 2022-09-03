@@ -1,4 +1,4 @@
-import 'package:driverapp/dataProvider/data_providers.dart';
+import 'package:driverapp/providers/providers.dart';
 
 class BalanceRepository {
   final BalanceDataProvider dataProvider;

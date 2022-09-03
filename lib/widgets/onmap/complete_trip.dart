@@ -2,7 +2,7 @@ import 'package:driverapp/bloc/bloc.dart';
 import 'package:driverapp/bloc/daily_earning/daily_earning_bloc.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/helper/helper.dart';
-import 'package:driverapp/route.dart';
+import 'package:driverapp/init/route.dart';
 import 'package:driverapp/screens/home/assistant/home_assistant.dart';
 import 'package:driverapp/screens/screens.dart';
 import 'package:driverapp/utils/theme/ThemeProvider.dart';

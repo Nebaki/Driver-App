@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../dataProvider/credit/credit.dart';
+import '../../providers/providers.dart';
 import 'package:http/http.dart' as http;
 import '../../models/trip/trip.dart';
-import '../../route.dart';
+import '../../init/route.dart';
 import '../../utils/constants/ui_strings.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';

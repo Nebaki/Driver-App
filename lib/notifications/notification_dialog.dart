@@ -85,132 +85,138 @@ class _NotificationDialogState extends State<NotificationDialog> {
             ],
           ),
           content: SizedBox(
-            height: 170,
+            height: 180,
             width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.grey.shade300,
-                          child: const Icon(
-                            Icons.person,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(passengerName!,
-                            style: Theme.of(context).textTheme.bodyLarge),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Duration',
-                          style: Theme.of(context).textTheme.caption,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "$duration min",
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const Divider(),
-
-                Padding(
-                  padding: const EdgeInsets.only(right: 60),
-                  child: Row(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          Text(
-                            'Distance',
-                            style: Theme.of(context).textTheme.caption,
+                          CircleAvatar(
+                            backgroundColor: Colors.grey.shade300,
+                            child: const Icon(
+                              Icons.person,
+                              color: Colors.black,
+                            ),
                           ),
                           const SizedBox(
-                            height: 5,
+                            width: 5,
                           ),
-                          Text(
-                            "$distance km",
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
+                          Text(passengerName!,
+                              style: Theme.of(context).textTheme.bodyLarge),
                         ],
                       ),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Price',
+                            'Duration',
                             style: Theme.of(context).textTheme.caption,
                           ),
                           const SizedBox(
                             height: 5,
                           ),
                           Text(
-                            "ETB $price",
+                            "$duration min",
                             style: Theme.of(context).textTheme.titleSmall,
-                          )
+                          ),
                         ],
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
+                  const Divider(),
 
-                const Divider(),
-                const SizedBox(
-                  height: 8,
-                ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.location_on,
-                      color: Colors.green,
-                      size: 15,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 60),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Distance',
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "$distance km",
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Price',
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "ETB $price",
+                              style: Theme.of(context).textTheme.titleSmall,
+                            )
+                          ],
+                        ),
+                      ],
                     ),
-                    Text(pickUpAddress,
-                        style: Theme.of(context).textTheme.caption)
-                  ],
-                ),
-                const SizedBox(height: 3),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.location_on,
-                      color: Colors.red,
-                      size: 15,
-                    ),
-                    Text(droppOffAddress,
-                        style: Theme.of(context).textTheme.caption)
-                  ],
-                ),
-                _isLoading
-                    ? const LinearProgressIndicator(
-                        minHeight: 1,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+
+                  const Divider(),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on,
+                        color: Colors.green,
+                        size: 15,
+                      ),
+                      Flexible(
+                        child: Text(pickUpAddress,
+                            style: Theme.of(context).textTheme.caption),
                       )
-                    : Container()
-              ],
+                    ],
+                  ),
+                  const SizedBox(height: 3),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on,
+                        color: Colors.red,
+                        size: 15,
+                      ),
+                      Flexible(
+                        child: Text(droppOffAddress,
+                            style: Theme.of(context).textTheme.caption),
+                      )
+                    ],
+                  ),
+                  _isLoading
+                      ? const LinearProgressIndicator(
+                          minHeight: 1,
+                        )
+                      : Container()
+                ],
+              ),
             ),
           ),
           actions: [
@@ -218,16 +224,16 @@ class _NotificationDialogState extends State<NotificationDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(
-                  width: 100,
+                  //width: 100,
                   child: ElevatedButton(
-                      style: ButtonStyle(
+                      /*style: ButtonStyle(
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10))),
                         backgroundColor: MaterialStateProperty.all<Color>(
                             const Color.fromRGBO(244, 201, 60, 1)),
-                      ),
+                      ),*/
                       onPressed: _isLoading
                           ? null
                           : () {
@@ -249,7 +255,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                             },
                       child: const Text("Skip",
                           style: TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontWeight: FontWeight.normal))),
                 ),
                 BlocConsumer<UserBloc, UserState>(
@@ -264,9 +270,9 @@ class _NotificationDialogState extends State<NotificationDialog> {
                   },
                 ),
                 SizedBox(
-                  width: 100,
+                  //width: 100,
                   child: ElevatedButton(
-                      style: ButtonStyle(
+                      /*style: ButtonStyle(
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -274,6 +280,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                         backgroundColor: MaterialStateProperty.all<Color>(
                             const Color.fromRGBO(244, 201, 60, 1)),
                       ),
+                      */
                       onPressed: _isLoading
                           ? null
                           : () {
@@ -295,7 +302,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                       child: const Text(
                         "Accept",
                         style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.normal),
+                            color: Colors.white, fontWeight: FontWeight.normal),
                       )),
                 )
               ],
