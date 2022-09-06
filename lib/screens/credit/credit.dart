@@ -6,15 +6,18 @@ import 'package:driverapp/screens/credit/transfer_form.dart';
 import 'package:driverapp/utils/constants/net_status.dart';
 import 'package:driverapp/utils/constants/ui_strings.dart';
 import 'package:driverapp/utils/ui_tool/tools.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../../bloc/balance/balance.dart';
 import '../../providers/providers.dart';
 import '../../helper/helper.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
+import '../home/dialogs/insufficent_balance.dart';
 import 'toast_message.dart';
 
 class Wallet extends StatefulWidget {
@@ -40,12 +43,35 @@ class WalletState extends State<Wallet> {
     _isBalanceLoading = true;
     _isMessageLoading = true;
     reloadBalance();
-    prepareRequest(context, 1, _limit);
+    prepareRequest(context, 0, _limit);
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _controller = ScrollController()..addListener(_loadMore);
     super.initState();
   }
 
+  bool hasBalance = false;
+  _loadBalance(){
+    return BlocConsumer<BalanceBloc,
+        BalanceState>(
+        builder: (context, state) {
+          context.read<BalanceBloc>().add(BCLoad());
+          return Container();
+        },
+        listener: (context, state) {
+          if (state
+          is BCLoadUnAuthorised) {
+            gotoSignIn(context);
+          }
+          if (state
+          is BCOperationFailure) {
+
+          }
+          if (state is BCLoadSuccess) {
+            balance = state.balanceCredit.split("|")[0];
+            credit = state.balanceCredit.split("|")[1];
+          }
+        });
+  }
   @override
   Widget build(BuildContext context) {
     // When nothing else to load
@@ -92,6 +118,7 @@ class WalletState extends State<Wallet> {
               ),
             ),
           ),
+          //_loadBalance(),
           SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
             child: Padding(
@@ -244,7 +271,8 @@ class WalletState extends State<Wallet> {
         //backgroundColor: Colors.transparent,
         mini: true,
         onPressed: () {
-          Navigator.pushNamed(context, CreditRequest.routeName);
+          Navigator.pushNamed(context, CreditRequest.routeName,
+          arguments: CreditRequestArgs(credit: credit));
         },
         tooltip: 'Credit',
         child: const Icon(
@@ -317,6 +345,7 @@ class WalletState extends State<Wallet> {
 
   var creditProvider = CreditDataProvider(httpClient: http.Client());
   var balance = loadingU;
+  var credit = "0";
 
   void reloadBalance() {
     var confirm = creditProvider.loadBalance();
@@ -327,7 +356,8 @@ class WalletState extends State<Wallet> {
             {
               setState(() {
                 _isBalanceLoading = false;
-                balance = value.message;
+                balance = value.message.split("|")[0];
+                credit = value.message.split("|")[1];
               })
             }
         });

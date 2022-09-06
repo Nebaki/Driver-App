@@ -7,4 +7,8 @@ class BalanceRepository {
   Future<double> getMyBalance() async {
     return await dataProvider.getMyBalance();
   }
+  Future<String> getBalanceCredit() async {
+    return await dataProvider.getBalanceCredit();
+  }
+
 }

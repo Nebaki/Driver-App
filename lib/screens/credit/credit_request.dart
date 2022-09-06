@@ -1,8 +1,11 @@
+import 'package:driverapp/init/route.dart';
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/constants/error_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import '../../bloc/balance/balance.dart';
 import '../../providers/providers.dart';
 import 'package:http/http.dart' as http;
 import '../../helper/helper.dart';
@@ -12,8 +15,8 @@ import '../../utils/theme/ThemeProvider.dart';
 
 class CreditRequest extends StatefulWidget {
   static const routeName = "/credit_request";
-
-  const CreditRequest({Key? key}) : super(key: key);
+  CreditRequestArgs args;
+  CreditRequest({Key? key,required this.args}) : super(key: key);
 
   @override
   State<CreditRequest> createState() => _CreditRequestState();
@@ -23,9 +26,10 @@ class _CreditRequestState extends State<CreditRequest> {
   final _formkey = GlobalKey<FormState>();
   final _appBar = GlobalKey<FormState>();
   late ThemeProvider themeProvider;
-
+  double credit = 0;
   @override
   void initState() {
+    credit = double.parse(widget.args.credit);
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     super.initState();
   }
@@ -142,6 +146,23 @@ class _CreditRequestState extends State<CreditRequest> {
               alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height / 2,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    elevation: 0,
+                    child: Text("Dear Customer, please pay your "
+                        "current debt ${widget.args.credit} before requesting a credit"),
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
                 child: Container(
                   height: MediaQuery.of(context).size.height / 3,
                   child: Card(
@@ -182,6 +203,7 @@ class _CreditRequestState extends State<CreditRequest> {
                 ),
               ),
             ),
+
           ],
         ));
   }

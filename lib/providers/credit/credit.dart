@@ -62,10 +62,13 @@ class CreditDataProvider {
         Uri.parse('$_baseUrl/get-my-credit'),
         headers: await RequestHeader().authorisedHeader());
     if (response.statusCode == 200) {
-      var balance = jsonDecode(response.body);
-      Session().logSession("balance", balance["balance"].toString());
-      return Result(
-          response.statusCode.toString(), true, balance["balance"].toString());
+      //Session().logSession("balance-res", response.body);
+      var balance = jsonDecode(response.body)["balance"];
+      var credit = jsonDecode(response.body)["credit"]['amount'];
+      Session().logSession("balance", balance);
+      Session().logSession("credit", credit.toString());
+      String data = '$balance|$credit';
+      return Result(response.statusCode.toString(), true, data);
     } else {
       return RequestResult()
           .requestResult(response.statusCode.toString(), response.body);
@@ -88,7 +91,7 @@ class CreditDataProvider {
       final int size = jsonDecode(response.body)['total'];
       List<Credit> credits = maps.map((job) => Credit.fromJson(job)).toList();
 
-      Session().logSession("trans", response.body);
+      //Session().logSession("trans", response.body);
       return CreditStore(trips: credits,total: size);
     } else {
       Session().logSession("history", "failure");

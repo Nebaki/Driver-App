@@ -119,7 +119,10 @@ class AppRoute {
       return MaterialPageRoute(builder: (context) => TeleBirrData());
     }
     if (settings.name == CreditRequest.routeName) {
-      return MaterialPageRoute(builder: (context) => CreditRequest());
+      CreditRequestArgs argument = settings.arguments as CreditRequestArgs;
+      return MaterialPageRoute(builder: (context) => CreditRequest(
+        args: argument,
+      ));
     }
     return MaterialPageRoute(builder: (context) => const CustomSplashScreen());
   }
@@ -198,4 +201,8 @@ class TransferCreditArgument {
 class TripDetailArgs{
   final Trip trip;
   TripDetailArgs({required this.trip});
+}
+class CreditRequestArgs{
+  final String credit;
+  CreditRequestArgs({required this.credit});
 }

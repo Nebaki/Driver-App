@@ -5,6 +5,7 @@ import 'package:driverapp/utils/session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../../bloc/balance/balance.dart';
 import '../../providers/providers.dart';
 import 'package:http/http.dart' as http;
 import '../../helper/helper.dart';
@@ -239,6 +240,8 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                 setState(() {
                   _isLoading = false;
                 }),
+                if (value.code == "200")
+                  {context.read<BalanceBloc>().add(BCLoad())},
                 Session().logSession(
                     "telebirr", "recharge confirm ${value.toString()}"),
                 ShowMessage(context, rechargeU, value.message),
