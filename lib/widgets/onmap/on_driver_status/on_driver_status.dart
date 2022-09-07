@@ -11,6 +11,7 @@ import 'package:shimmer/shimmer.dart';
 
 class OnDriverStatus extends StatelessWidget {
   final bool isOnline;
+
   const OnDriverStatus({Key? key, required this.isOnline}) : super(key: key);
 
   @override
@@ -30,11 +31,13 @@ class OnDriverStatus extends StatelessWidget {
                   return _items(
                       num: formatCurrency(state.dailyEarning.totalEarning),
                       text: "Earning",
-                      icon: Icons.money,context: context);
+                      icon: Icons.money,
+                      context: context);
                 }
 
                 if (state is DailyEarningLoading) {
-                  return _buildShimmer(text: "Earning", icon: Icons.money,context: context);
+                  return _buildShimmer(
+                      text: "Earning", icon: Icons.money, context: context);
                 }
                 if (state is DailyEarningOperationFailure) {
                   return Column(
@@ -61,7 +64,9 @@ class OnDriverStatus extends StatelessWidget {
                           flex: 2,
                           child: TextButton(
                               onPressed: () {
-                                context.read<DailyEarningBloc>().add(DailyEarningLoad());
+                                context
+                                    .read<DailyEarningBloc>()
+                                    .add(DailyEarningLoad());
                               },
                               child: const Text("Retry"))),
                     ],
@@ -71,7 +76,6 @@ class OnDriverStatus extends StatelessWidget {
               },
             ),
           ),
-
           VerticalDivider(
             color: Colors.grey.shade300,
           ),
@@ -84,11 +88,13 @@ class OnDriverStatus extends StatelessWidget {
                   return _items(
                       num: state.rating.score.toStringAsFixed(1),
                       text: "Rating",
-                      icon: Icons.star,context: context);
+                      icon: Icons.star,
+                      context: context);
                 }
 
                 if (state is RatingLoading) {
-                  return _buildShimmer(text: "Rating", icon: Icons.star,context: context);
+                  return _buildShimmer(
+                      text: "Rating", icon: Icons.star, context: context);
                 }
                 if (state is RatingOperationFailure) {
                   return Column(
@@ -137,11 +143,14 @@ class OnDriverStatus extends StatelessWidget {
                   return _items(
                       num: formatCurrency(state.balance.toString()),
                       text: "Credit",
-                      icon: Icons.wallet_giftcard,context: context);
+                      icon: Icons.wallet_giftcard,
+                      context: context);
                 }
                 if (state is BalanceLoading) {
                   return _buildShimmer(
-                      text: "Credit", icon: Icons.wallet_giftcard,context: context);
+                      text: "Credit",
+                      icon: Icons.wallet_giftcard,
+                      context: context);
                 }
 
                 if (state is BalanceOperationFailure) {
@@ -175,7 +184,34 @@ class OnDriverStatus extends StatelessWidget {
                     ],
                   );
                 }
-                return Container();
+                return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Flexible(
+                          flex: 2,
+                          child: Icon(
+                            Icons.error_outline_outlined,
+                            color: themeProvider.getColor,
+                          )),
+                      const Flexible(
+                        flex: 2,
+                        fit: FlexFit.tight,
+                        child: Text(
+                          "error...",
+                          maxLines: 3,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Flexible(
+                          fit: FlexFit.tight,
+                          flex: 2,
+                          child: TextButton(
+                              onPressed: () {
+                                context.read<BalanceBloc>().add(BalanceLoad());
+                              },
+                              child: const Text("Retry")))
+                    ]);
               },
             ),
           ),
@@ -185,7 +221,10 @@ class OnDriverStatus extends StatelessWidget {
   }
 
   Widget _items(
-      {required String num, required String text, required IconData icon,required BuildContext context}) {
+      {required String num,
+      required String text,
+      required IconData icon,
+      required BuildContext context}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -195,7 +234,8 @@ class OnDriverStatus extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
             child: Container(
               padding: const EdgeInsets.all(5),
-              color: Provider.of<ThemeProvider>(context, listen: false).getColor,
+              color:
+                  Provider.of<ThemeProvider>(context, listen: false).getColor,
               child: Icon(
                 icon,
                 color: Colors.white,
@@ -220,7 +260,10 @@ class OnDriverStatus extends StatelessWidget {
     );
   }
 
-  Widget _buildShimmer({required String text, required IconData icon,required BuildContext context}) {
+  Widget _buildShimmer(
+      {required String text,
+      required IconData icon,
+      required BuildContext context}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -230,7 +273,8 @@ class OnDriverStatus extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
             child: Container(
               padding: const EdgeInsets.all(5),
-              color: Provider.of<ThemeProvider>(context, listen: false).getColor,
+              color:
+                  Provider.of<ThemeProvider>(context, listen: false).getColor,
               child: Icon(
                 icon,
                 color: Colors.white,

@@ -1,8 +1,11 @@
+import 'package:driverapp/init/route.dart';
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/constants/error_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import '../../bloc/balance/balance.dart';
 import '../../providers/providers.dart';
 import 'package:http/http.dart' as http;
 import '../../helper/helper.dart';
@@ -12,8 +15,8 @@ import '../../utils/theme/ThemeProvider.dart';
 
 class CreditRequest extends StatefulWidget {
   static const routeName = "/credit_request";
-
-  const CreditRequest({Key? key}) : super(key: key);
+  CreditRequestArgs args;
+  CreditRequest({Key? key,required this.args}) : super(key: key);
 
   @override
   State<CreditRequest> createState() => _CreditRequestState();
@@ -23,9 +26,10 @@ class _CreditRequestState extends State<CreditRequest> {
   final _formkey = GlobalKey<FormState>();
   final _appBar = GlobalKey<FormState>();
   late ThemeProvider themeProvider;
-
+  double credit = 0;
   @override
   void initState() {
+    credit = double.parse(widget.args.credit);
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     super.initState();
   }
@@ -64,13 +68,18 @@ class _CreditRequestState extends State<CreditRequest> {
             ? null
             : () {
                 final form = _formkey.currentState;
-                if (form!.validate()) {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  form.save();
-                  if (int.parse(amountController.value.text) > 0) {
-                    requestCredit(amountController.value.text);
+                if(credit > 0){
+                  ShowMessage(context,"Credit","Dear Customer, please pay your "
+                      "current debt ${credit}ETB before requesting a credit");
+                }else {
+                  if (form!.validate()) {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    form.save();
+                    if (int.parse(amountController.value.text) > 0) {
+                      requestCredit(amountController.value.text);
+                    }
                   }
                 }
               },
@@ -138,6 +147,32 @@ class _CreditRequestState extends State<CreditRequest> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                      elevation: 0,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Dear Customer, please pay your "
+                              "current debt ${credit}ETB before requesting a credit"),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Align(
               alignment: Alignment.center,
               child: Padding(
@@ -182,6 +217,7 @@ class _CreditRequestState extends State<CreditRequest> {
                 ),
               ),
             ),
+
           ],
         ));
   }

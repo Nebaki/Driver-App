@@ -1,8 +1,10 @@
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:driverapp/bloc/balance/transaction.dart';
 import 'package:driverapp/cubits/cubits.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:driverapp/repository/passenger.dart';
+import 'package:driverapp/repository/transaction.dart';
 import 'package:driverapp/utils/theme/ThemeProvider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -83,6 +85,11 @@ void main() async {
   DailyEarningRepository(
       dailyEarningDataProvider:
       DailyEarningDataProvider(httpClient: http.Client()));
+  final TransactionRepository transactionRepository =
+  TransactionRepository(
+      creaditDataProvider:
+      CreditDataProvider(httpClient: http.Client()));
+
   const secureStorage = FlutterSecureStorage();
   String? theme = await secureStorage.read(key: "theme");
   runApp(ChangeNotifierProvider(
@@ -102,6 +109,7 @@ void main() async {
         settingsRepository: settingsRepository,
         weeklyEarningRepository: weeklyEarningRepository,
         dailyEarningRepository: dailyEarningRepository,
+        transactionRepository: transactionRepository,
       )));
 }
 
@@ -120,6 +128,7 @@ class MyApp extends StatelessWidget {
   final SettingsRepository settingsRepository;
   final WeeklyEarningRepository weeklyEarningRepository;
   final DailyEarningRepository dailyEarningRepository;
+  final TransactionRepository transactionRepository;
 
   const MyApp(
       {Key? key,
@@ -136,7 +145,8 @@ class MyApp extends StatelessWidget {
       required this.ratingRepository,
       required this.settingsRepository,
       required this.weeklyEarningRepository,
-      required this.dailyEarningRepository
+      required this.dailyEarningRepository,
+        required this.transactionRepository
       })
       : super(key: key);
   @override
@@ -156,7 +166,8 @@ class MyApp extends StatelessWidget {
           RepositoryProvider.value(value: ratingRepository),
           RepositoryProvider.value(value: settingsRepository),
           RepositoryProvider.value(value: weeklyEarningRepository),
-          RepositoryProvider.value(value: dailyEarningRepository)
+          RepositoryProvider.value(value: dailyEarningRepository),
+          RepositoryProvider.value(value: transactionRepository)
         ],
         child: MultiBlocProvider(
             providers: [
@@ -212,6 +223,11 @@ class MyApp extends StatelessWidget {
                 create: (context) => WeeklyEarningBloc(
                     weeklyEarningRepository: weeklyEarningRepository),
               ),
+              BlocProvider(
+                create: (context) => TransactionBloc(
+                    transactionRepository: transactionRepository),
+              ),
+
               BlocProvider(
                 create: (context) => DailyEarningBloc(
                     dailyEarningRepository: dailyEarningRepository)

@@ -212,7 +212,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                   ),
                   _isLoading
                       ? const LinearProgressIndicator(
-                          minHeight: 1,
+                          minHeight: 3,
                         )
                       : Container()
                 ],
@@ -243,6 +243,9 @@ class _NotificationDialogState extends State<NotificationDialog> {
                               if (timer != null) {
                                 timer!.cancel();
                               }
+                              setState(() {
+                                _isLoading = true;
+                              });
                               if (widget.nextDrivers.isNotEmpty) {
                                 UserEvent event =
                                     UserLoadById(widget.nextDrivers[0]);

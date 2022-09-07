@@ -211,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
           currentLng = value.longitude;
           controller.animateCamera(CameraUpdate.newCameraPosition(
               CameraPosition(
-                  zoom: 16.4746,
+                  zoom: 14.4746,
                   target: LatLng(value.latitude, value.longitude))));
         });
       },
@@ -410,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _widgetName == "OnlinMode"
                   ? CameraUpdate.newCameraPosition(
                   CameraPosition(
-                      zoom: 16.4746,
+                      zoom: 14.4746,
                       target:
                       LatLng(currentLat, currentLng)))
                   : CameraUpdate.newLatLngBounds(
@@ -893,7 +893,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .listen((event) {
       // animate camera based on the new position
       _myController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-          zoom: 16.4746,
+          zoom: 14.4746,
           bearing: event.heading,
           target: LatLng(event.latitude, event.longitude))));
 
@@ -1341,8 +1341,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         LocationPredictionState>(
                                     builder: (_, state) {
                                   if (state is LocationPredictionLoading) {
-                                    return const Center(
+                                    /*return const Center(
                                         child: CircularProgressIndicator());
+                                    */
+                                    return Container();
                                   }
                                   if (state is LocationPredictionLoadSuccess) {
                                     return ClipRRect(
@@ -1567,7 +1569,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             child: const Text(
                               "TURN ON LOCATION SERVICES",
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                             )),

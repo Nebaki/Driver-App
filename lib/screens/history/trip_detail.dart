@@ -78,25 +78,36 @@ class _TripDetailState extends State<TripDetail>{
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(3.0),
-              child: Card(elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+              child: Column(
+                children: [
+                  Card(elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            args.trip.picture != null ? Image.memory(args.trip.picture!) : Container(),
+                            _listUi(Theme.of(context).primaryColor,args.trip),
+                          ],
+                        ),
+                      )),
+                  Card(elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      child: _listUiDriver(Theme.of(context).primaryColor,args.trip)
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        args.trip.picture != null ? Image.memory(args.trip.picture!) : Container(),
-                        _listUi(Theme.of(context).primaryColor,args.trip),
-                      ],
-                    ),
-                  )),
+                ],
+              ),
             ),
           )
         ],
       ),
     );
   }
+
   _listUi(Color theme,Trip trip){
     return Container(
       child: Column(
@@ -105,34 +116,17 @@ class _TripDetailState extends State<TripDetail>{
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Text("Status:", style: TextStyle(
-                        color: theme
-                    )),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(trip.status ?? "loading"),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 3.0,top: 10,bottom: 10),
+                child: Text(trip.status ?? "loading",
+                  style: TextStyle(color: trip.status != "Completed"
+                      ? Colors.red : Colors.green),
+                ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  /*Padding(
-                    padding: const EdgeInsets.all(3.0),
-                    child: Text("Estimated fee: ${trip.price!.split(",")[0]+" ETB"}"),
-                  ),*/
-                  trip.status != "Cancelled" ? Padding(
+              trip.status != "Cancelled" ? Padding(
                     padding: const EdgeInsets.all(3.0),
                     child: Text("Fee: ${trip.price!.split(",")[0]+" ETB"}"),
                   ): Container(),
-                ],
-              )
             ],
           ),
 
@@ -191,6 +185,69 @@ class _TripDetailState extends State<TripDetail>{
       ),
     );
   }
+
+  _listUiDriver(Color theme,Trip trip){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Container(
+                    color: theme,
+                    child: SizedBox(
+                      height: 40,
+                      width: MediaQuery.of(context).size.width * 0.94,
+                      child: const Padding(
+                        padding: EdgeInsets.only(top: 13.0,left: 5),
+                        child: Text("Passenger Information", style: TextStyle(
+                            color: Colors.white
+                        )),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Text("Name:", style: TextStyle(
+                    color: theme//,fontWeight: FontWeight.bold
+                ),),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(trip.passenger?.name ?? "Unknown"),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Text("Phone No.:", style: TextStyle(
+                    color: theme
+                )),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(trip.passenger?.phoneNumber ?? ""),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   String formatDate(String utcDate){
     //var str = "2019-04-05T14:00:51.000Z";
     if(utcDate != "null"){

@@ -5,16 +5,21 @@ import 'package:driverapp/screens/credit/credit_request.dart';
 import 'package:driverapp/screens/credit/transfer_form.dart';
 import 'package:driverapp/utils/constants/net_status.dart';
 import 'package:driverapp/utils/constants/ui_strings.dart';
+import 'package:driverapp/utils/session.dart';
 import 'package:driverapp/utils/ui_tool/tools.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../../bloc/balance/balance.dart';
+import '../../bloc/balance/transaction.dart';
 import '../../providers/providers.dart';
 import '../../helper/helper.dart';
 import '../../utils/painter.dart';
 import '../../utils/theme/ThemeProvider.dart';
+import '../home/dialogs/insufficent_balance.dart';
 import 'toast_message.dart';
 
 class Wallet extends StatefulWidget {
@@ -39,13 +44,196 @@ class WalletState extends State<Wallet> {
   void initState() {
     _isBalanceLoading = true;
     _isMessageLoading = true;
-    reloadBalance();
-    prepareRequest(context, 1, _limit);
+    //reloadBalance();
+    //prepareRequest(context, 0, _limit);
+    context.read<TransactionBloc>().add(TransactionLoad(0, _limit,false));
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _controller = ScrollController()..addListener(_loadMore);
     super.initState();
   }
 
+  bool hasBalance = false;
+  _loadBalance(){
+    context.read<BalanceBloc>().add(BCLoad());
+    return BlocConsumer<BalanceBloc,
+        BalanceState>(
+        builder: (context, state) {
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25.0),
+            ),
+            elevation: 5.0,
+            child: Container(
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Text(
+                      creditBalanceU,
+                      style:
+                      TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ),
+                  /*Flexible(child:
+                              BlocBuilder<BalanceBloc, BalanceState>(
+                                  builder: (context, state) {
+                                    if(state is BalanceLoading){
+
+                                    }
+                                    if(state is BalanceLoadSuccess){
+
+                                    }
+                                    if(state is BalanceOperationFailure){
+
+                                    }
+                            return Text("100");
+                          })),
+                          */
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: _isBalanceLoading
+                        ? SpinKitThreeBounce(
+                      color: themeProvider.getColor,
+                      size: 30,
+                    )
+                        : Text(
+                      formatCurrency(balance),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 34),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Divider(),
+                  ),
+                  Card(
+                      elevation: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: themeProvider.getColor,
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                        //color: Colors.deepOrange,
+                        height: 40,
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Center(
+                                child: InkWell(
+                                  child: Text(
+                                    transferU,
+                                    style: _inkwelTextStyle,
+                                  ),
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, TransferMoney.routeName,
+                                        arguments: TransferCreditArgument(
+                                            balance: balance));
+                                  },
+                                )),
+                            const VerticalDivider(
+                              color: Colors.white,
+                              thickness: 3,
+                            ),
+                            Center(
+                                child: InkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(context,
+                                          TeleBirrData.routeName);
+                                      /*showDialog(
+                                                  context: context,
+                                                  builder: (_) => PaymentBox(),
+                                                  barrierDismissible: false);*/
+                                      //PaymentBox();
+                                    },
+                                    child: Text(
+                                      addCreditU,
+                                      style: _inkwelTextStyle,
+                                    ))),
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+            ),
+          );
+        },
+        listener: (context, state) {
+          if (state
+          is BCLoadUnAuthorised) {
+            _isBalanceLoading = false;
+            gotoSignIn(context);
+          }
+          if (state is BCOperationFailure) {
+            _isBalanceLoading = false;
+            Session().logSession("bcError", state.error);
+            ShowSnack(context: context,message: state.error);
+          }
+          if (state is BCLoadSuccess) {
+            _isBalanceLoading = false;
+            balance = state.balanceCredit.split("|")[0];
+            credit = state.balanceCredit.split("|")[1];
+          }
+        });
+  }
+  _loadTransaction(){
+    return BlocConsumer<TransactionBloc,
+        TransactionState>(
+        builder: (context, state) {
+          return Container(
+            decoration: const BoxDecoration(
+              //color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10))),
+            height: MediaQuery.of(context).size.height - 324,
+            child: _isMessageLoading
+                ? Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: themeProvider.getColor,
+                  ),
+                ))
+            //: ListBuilder(_items!,themeProvider.getColor),
+                : listHolder(_items!, themeProvider.getColor),
+          );
+        },
+        listener: (context, state) {
+          if (state
+          is TransactionLoadUnAuthorised) {
+            _isMessageLoading = false;
+            gotoSignIn(context);
+          }
+          if (state is TransactionOperationFailure) {
+            _isMessageLoading = false;
+          }
+          if (state is TransactionLoadSuccess) {
+            _isMessageLoading = false;
+            if(state.loadMore){
+              _items?.addAll(state.transaction.trips ?? []);
+              if(state.transaction.trips != null &&
+                  state.transaction.trips!.length < 20){
+                _hasNextPage = false;
+              }
+              _isLoadMoreRunning = false;
+            }else{
+              _items?.clear();
+              _items?.addAll(state.transaction.trips ?? []);
+            }
+          }
+        });
+  }
   @override
   Widget build(BuildContext context) {
     // When nothing else to load
@@ -99,112 +287,7 @@ class WalletState extends State<Wallet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                    elevation: 5.0,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      width: MediaQuery.of(context).size.width,
-                      child: Column(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(top: 20),
-                            child: Text(
-                              creditBalanceU,
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.grey),
-                            ),
-                          ),
-                          /*Flexible(child:
-                              BlocBuilder<BalanceBloc, BalanceState>(
-                                  builder: (context, state) {
-                                    if(state is BalanceLoading){
-
-                                    }
-                                    if(state is BalanceLoadSuccess){
-
-                                    }
-                                    if(state is BalanceOperationFailure){
-
-                                    }
-                            return Text("100");
-                          })),
-                          */
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: _isBalanceLoading
-                                ? SpinKitThreeBounce(
-                                    color: themeProvider.getColor,
-                                    size: 30,
-                                  )
-                                : Text(
-                                    formatCurrency(balance),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 34),
-                                  ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Divider(),
-                          ),
-                          Card(
-                              elevation: 0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: themeProvider.getColor,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                //color: Colors.deepOrange,
-                                height: 40,
-                                padding: const EdgeInsets.all(5.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Center(
-                                        child: InkWell(
-                                      child: Text(
-                                        transferU,
-                                        style: _inkwelTextStyle,
-                                      ),
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                            context, TransferMoney.routeName,
-                                            arguments: TransferCreditArgument(
-                                                balance: balance));
-                                      },
-                                    )),
-                                    const VerticalDivider(
-                                      color: Colors.white,
-                                      thickness: 3,
-                                    ),
-                                    Center(
-                                        child: InkWell(
-                                            onTap: () {
-                                              Navigator.pushNamed(context,
-                                                  TeleBirrData.routeName);
-                                              /*showDialog(
-                                                  context: context,
-                                                  builder: (_) => PaymentBox(),
-                                                  barrierDismissible: false);*/
-                                              //PaymentBox();
-                                            },
-                                            child: Text(
-                                              addCreditU,
-                                              style: _inkwelTextStyle,
-                                            ))),
-                                  ],
-                                ),
-                              )),
-                        ],
-                      ),
-                    ),
-                  ),
+                  _loadBalance(),
                   const Padding(
                     padding: EdgeInsets.only(top: 20, left: 20, bottom: 10),
                     child: Text(
@@ -212,27 +295,7 @@ class WalletState extends State<Wallet> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  Container(
-                    decoration: const BoxDecoration(
-                        //color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10))),
-                    height: MediaQuery.of(context).size.height - 324,
-                    child: _isMessageLoading
-                        ? Align(
-                            alignment: Alignment.center,
-                            child: SizedBox(
-                              height: 50,
-                              width: 50,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: themeProvider.getColor,
-                              ),
-                            ))
-                        //: ListBuilder(_items!,themeProvider.getColor),
-                        : listHolder(_items!, themeProvider.getColor),
-                  ),
+                  _loadTransaction(),
                 ],
               ),
             ),
@@ -244,7 +307,8 @@ class WalletState extends State<Wallet> {
         //backgroundColor: Colors.transparent,
         mini: true,
         onPressed: () {
-          Navigator.pushNamed(context, CreditRequest.routeName);
+          Navigator.pushNamed(context, CreditRequest.routeName,
+          arguments: CreditRequestArgs(credit: credit));
         },
         tooltip: 'Credit',
         child: const Icon(
@@ -317,6 +381,7 @@ class WalletState extends State<Wallet> {
 
   var creditProvider = CreditDataProvider(httpClient: http.Client());
   var balance = loadingU;
+  var credit = "0";
 
   void reloadBalance() {
     var confirm = creditProvider.loadBalance();
@@ -327,7 +392,8 @@ class WalletState extends State<Wallet> {
             {
               setState(() {
                 _isBalanceLoading = false;
-                balance = value.message;
+                balance = value.message.split("|")[0];
+                credit = value.message.split("|")[1];
               })
             }
         });
@@ -512,7 +578,8 @@ class WalletState extends State<Wallet> {
         _isLoadMoreRunning = true; // Display a progress indicator at the bottom
       });
       _page += 10; // Increase _page by 1
-      prepareRequest(context, _page, _limit);
+      //prepareRequest(context, _page, _limit);
+      context.read<TransactionBloc>().add(TransactionLoad(_page, _limit,true));
     }
   }
 

@@ -16,10 +16,10 @@ class Trip {
   String? commission;
   String? status;
   String? distance;
-  String? passenger;
   LatLng? pickUpLocation;
   LatLng? dropOffLocation;
   Uint8List? picture;
+  Passenger? passenger;
 
   Trip(
       {required this.id,
@@ -92,7 +92,9 @@ class Trip {
         netPrice: json["net_price"].toString(),
         status: json["status"],
         commission: json["commission"].toString(),
-        passenger: "Who?" /*json["passenger"]*/,
+        passenger: json.containsKey('passenger')
+            ? Passenger.fromJson(json['passenger'])
+            : const Passenger(name: 'Unknown Customer'),
         pickUpLocation: LatLng(
             double.parse(json["pickup_location"][0].toString()),
             double.parse(json["pickup_location"][1].toString())),
@@ -101,6 +103,7 @@ class Trip {
             double.parse(json["drop_off_location"][1].toString())),
         picture: null,
       );
+
   Trip.fromStringObject(List<dynamic> parsedJson) {
     parsedJson.map((i) => Trip.fromJson(i)).toList();
   }
@@ -122,9 +125,10 @@ class LatLngConverter {
 class TripStore {
   List<Trip>? trips;
   int total;
-  TripStore({required this.trips,required this.total});
 
-  TripStore.fromJson(List<dynamic> parsedJson,this.total) {
+  TripStore({required this.trips, required this.total});
+
+  TripStore.fromJson(List<dynamic> parsedJson, this.total) {
     trips = parsedJson.map((i) => Trip.fromStringObject(i)).toList();
   }
 
@@ -133,4 +137,3 @@ class TripStore {
     return data;
   }
 }
-

@@ -118,6 +118,10 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                         padding: EdgeInsets.only(top: 10),
                         child: Divider(),
                       ),
+
+                      const SizedBox(
+                        height: 200,
+                      ),
                       SizedBox(
                         height: 50,
                         child: Row(
@@ -141,22 +145,22 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                             const VerticalDivider(),
                             Column(
                               children: [
-                                const Text("8:30"),
-                                Text("Online hrs",
+                                Text('${commission.toStringAsFixed(2)} ETB'),
+                                Text("Commission",
                                     style: Theme.of(context).textTheme.overline)
                               ],
                             ),
                             const VerticalDivider(),
                             Column(
                               children: [
-                                Text('${cashtrips.toStringAsFixed(2)} ETB',
+                                Text('${price.toStringAsFixed(2)} ETB',
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium!
                                         .copyWith(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black)),
-                                Text("Cash Trips",
+                                Text("Total",
                                     style: Theme.of(context).textTheme.overline)
                               ],
                             ),
@@ -176,7 +180,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
               const SizedBox(
                 height: 10,
               ),
-              Padding(
+              /*Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Card(
                   shape: RoundedRectangleBorder(
@@ -206,6 +210,7 @@ class _DailyEarningTabState extends State<DailyEarningTab>
                   ),
                 ),
               )
+              */
             ],
           ),
         )

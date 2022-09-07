@@ -207,18 +207,12 @@ class _HistoryPageState extends State<HistoryPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Text(statusU, style: TextStyle(color: theme)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(trip.status ?? loadingU),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(left: 3.0,top: 10,bottom: 10),
+              child: Text(trip.status ?? "loading",
+                style: TextStyle(color: trip.status != "Completed"
+                    ? Colors.red : Colors.green),
+              ),
             ),
             trip.status != "Cancelled" ? Padding(
               padding: const EdgeInsets.all(3.0),
