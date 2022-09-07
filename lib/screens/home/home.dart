@@ -1569,7 +1569,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             child: const Text(
                               "TURN ON LOCATION SERVICES",
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                             )),

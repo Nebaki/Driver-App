@@ -32,7 +32,7 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
         if (e.toString().split(" ")[1] == "401") {
           yield BCLoadUnAuthorised();
         } else {
-          yield BCOperationFailure();
+          yield BCOperationFailure(e.toString());
         }
       }
     }
@@ -81,4 +81,9 @@ class BalanceOperationFailure extends BalanceState {}
 
 class BCLoadUnAuthorised extends BalanceState {}
 
-class BCOperationFailure extends BalanceState {}
+class BCOperationFailure extends BalanceState {
+  final String error;
+  const BCOperationFailure(this.error);
+  @override
+  List<Object?> get props => [error];
+}

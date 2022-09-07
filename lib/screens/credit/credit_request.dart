@@ -68,13 +68,18 @@ class _CreditRequestState extends State<CreditRequest> {
             ? null
             : () {
                 final form = _formkey.currentState;
-                if (form!.validate()) {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  form.save();
-                  if (int.parse(amountController.value.text) > 0) {
-                    requestCredit(amountController.value.text);
+                if(credit > 0){
+                  ShowMessage(context,"Credit","Dear Customer, please pay your "
+                      "current debt ${credit}ETB before requesting a credit");
+                }else {
+                  if (form!.validate()) {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    form.save();
+                    if (int.parse(amountController.value.text) > 0) {
+                      requestCredit(amountController.value.text);
+                    }
                   }
                 }
               },
@@ -142,19 +147,28 @@ class _CreditRequestState extends State<CreditRequest> {
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height / 2,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                      elevation: 0,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Dear Customer, please pay your "
+                              "current debt ${credit}ETB before requesting a credit"),
+                        ),
+                      ),
                     ),
-                    elevation: 0,
-                    child: Text("Dear Customer, please pay your "
-                        "current debt ${widget.args.credit} before requesting a credit"),
                   ),
                 ),
               ),

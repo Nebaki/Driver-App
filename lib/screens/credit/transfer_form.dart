@@ -1,3 +1,4 @@
+import 'package:driverapp/bloc/balance/transaction.dart';
 import 'package:driverapp/screens/credit/toast_message.dart';
 import 'package:driverapp/utils/constants/error_messages.dart';
 import 'package:driverapp/utils/constants/ui_strings.dart';
@@ -318,6 +319,8 @@ class _TransferState extends State<TransferMoney> {
         _isLoading = false;
       }),
       if(value.code == "200"){
+        context.read<BalanceBloc>().add(BCLoad()),
+        context.read<TransactionBloc>().add(const TransactionLoad(0, 20,false)),
         ShowMessage(context, "Transaction", value.message)
       } else
         {

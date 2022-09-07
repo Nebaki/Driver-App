@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/balance/balance.dart';
+import '../../bloc/balance/transaction.dart';
 import '../../providers/providers.dart';
 import 'package:http/http.dart' as http;
 import '../../helper/helper.dart';
@@ -241,7 +242,10 @@ class _TeleBirrDataState extends State<TeleBirrData> {
                   _isLoading = false;
                 }),
                 if (value.code == "200")
-                  {context.read<BalanceBloc>().add(BCLoad())},
+                  {
+                    context.read<BalanceBloc>().add(BCLoad()),
+                    context.read<TransactionBloc>().add(const TransactionLoad(0, 20,false)),
+                  },
                 Session().logSession(
                     "telebirr", "recharge confirm ${value.toString()}"),
                 ShowMessage(context, rechargeU, value.message),
