@@ -8,7 +8,7 @@ export '../widgets/complete/cancel_reason.dart';
 export '../widgets/complete/collected_cash.dart';
 export 'credit/credit.dart';
 export 'report/earning/earning.dart';
-export 'report/earning/tabview/daily.dart';
+//export 'report/earning/tabview/daily.dart';
 export 'report/earning/tabview/weekly.dart';
 export 'report/summary/summary.dart';
 export 'report/summary/tabview/daily.dart';

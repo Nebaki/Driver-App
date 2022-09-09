@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/models.dart';
+import '../screens/report/earning/earingx.dart';
 
 class AppRoute {
   static Route generateRoute(RouteSettings settings) {

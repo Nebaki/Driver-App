@@ -14,6 +14,8 @@ import '../../init/route.dart';
 import '../../utils/colors.dart';
 import 'package:http/http.dart' as http;
 
+import '../report/earning/earingx.dart';
+
 class NavDrawer extends StatefulWidget {
   const NavDrawer({Key? key}) : super(key: key);
 
