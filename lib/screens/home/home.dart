@@ -1469,6 +1469,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }).listen((serviceStatus) {
         if (serviceStatus == ServiceStatus.enabled) {
           if (serviceStatusValue == "disabled") {
+            locationErrorShown = false;
             Navigator.pop(context);
             if (isFirstTime) {
               Geolocator.getCurrentPosition().then((value) {
@@ -1477,7 +1478,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // pickupLatLng = currentLatLng;
                 _myController.animateCamera(CameraUpdate.newCameraPosition(
                     CameraPosition(
-                        zoom: 16.1746,
+                        zoom: 14.1746,
                         target: LatLng(value.latitude, value.longitude))));
               });
             }
@@ -1486,7 +1487,9 @@ class _HomeScreenState extends State<HomeScreen> {
           serviceStatusValue = 'enabled';
         } else {
           debugPrint("Disableddddd");
-          locationServiceBottomSheet();
+          if(!locationErrorShown){
+            locationServiceBottomSheet();
+          }
 
           serviceStatusValue = 'disabled';
         }
@@ -1500,20 +1503,22 @@ class _HomeScreenState extends State<HomeScreen> {
           _connectivity.onConnectivityChanged.listen((event) {
             if (event == ConnectivityResult.none) {
               debugPrint("yow none");
-
-              internetServiceBottomSheet();
+              if(!internetErrorShown){
+                internetServiceBottomSheet();
+              }
               internetServiceStatus = true;
             } else if (event == ConnectivityResult.wifi) {
               debugPrint("yow wifi");
-
               if (internetServiceStatus != null) {
                 internetServiceStatus! ? Navigator.pop(context) : null;
+                internetErrorShown = false;
               }
             } else if (event == ConnectivityResult.mobile) {
               debugPrint("yow mobile");
 
               if (internetServiceStatus != null) {
                 internetServiceStatus! ? Navigator.pop(context) : null;
+                internetErrorShown = false;
               }
             }
           });
@@ -1529,6 +1534,7 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10), topRight: Radius.circular(10))),
         builder: (BuildContext ctx) {
+          locationErrorShown = true;
           return WillPopScope(
             onWillPop: () async => false,
             child: Container(
@@ -1562,6 +1568,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                       flex: 2,
                       child: SizedBox(
+                        height: 50,
                         width: double.infinity,
                         child: ElevatedButton(
                             onPressed: () async {
@@ -1580,6 +1587,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                       flex: 2,
                       child: SizedBox(
+                        height: 50,
                         width: double.infinity,
                         child: ElevatedButton(
                             onPressed: () async {
@@ -1594,12 +1602,15 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
+  bool internetErrorShown = false;
+  bool locationErrorShown = false;
   void internetServiceBottomSheet() {
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
         context: context,
         builder: (BuildContext context) {
+          internetErrorShown = true;
           return WillPopScope(
             onWillPop: () async => false,
             child: Container(
@@ -1672,7 +1683,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!serviceEnabled) {
         isFirstTime = true;
 
-        locationServiceBottomSheet();
+        if(!locationErrorShown){
+          locationServiceBottomSheet();
+        }
         serviceStatusValue = 'disabled';
 
         return Future.error("NoLocation Enabled");
@@ -1689,7 +1702,9 @@ class _HomeScreenState extends State<HomeScreen> {
     result = await _connectivity.checkConnectivity();
 
     if (result == ConnectivityResult.none) {
-      internetServiceBottomSheet();
+      if(!internetErrorShown){
+        internetServiceBottomSheet();
+      }
     }
   }
 

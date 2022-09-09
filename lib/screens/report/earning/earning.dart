@@ -5,6 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
+class DailyEarningTab extends StatefulWidget {
+  const DailyEarningTab({Key? key}) : super(key: key);
+
+  @override
+  //State<DailyEarningTab> createState() => _DailyEarningTabState();
+  State<DailyEarningTab> createState() => _EarningState();
+}
+/*
+
 class Earning extends StatefulWidget {
   static const routeName = "/earning";
 
@@ -13,8 +22,9 @@ class Earning extends StatefulWidget {
   @override
   State<Earning> createState() => _EarningState();
 }
+*/
 
-class _EarningState extends State<Earning> {
+class _EarningState extends State<DailyEarningTab> {
   final _formkey = GlobalKey<FormState>();
 
   final _appBarKey = GlobalKey<FormState>();

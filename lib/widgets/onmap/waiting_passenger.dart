@@ -135,7 +135,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                                   // callback!(CancelTrip(callback));
                                 },
                                 child: _buildItems(
-                                    text: "Cancel Trip",
+                                    text: "Cancel",
                                     icon: Icons.clear_outlined))
                           ],
                         )
@@ -194,7 +194,7 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
                                   },
                                   child:
                                   _buildItems(
-                                      text: "Cancel Trip",
+                                      text: "Cancel",
                                       icon: Icons.clear_outlined,
                                       tar: 1)
 
