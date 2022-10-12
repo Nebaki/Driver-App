@@ -1270,7 +1270,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   // findPlace(value);
                                 },
                                 decoration: const InputDecoration(
-                                    border: const OutlineInputBorder(
+                                    border: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             style: BorderStyle.solid)),
                                     prefixIcon: Icon(
@@ -1299,7 +1299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   suffixIcon: IconButton(
                                       onPressed: () {
                                         pickupController.clear();
-                                        debugPrint("TATAT");
+                                        debugPrint("BATATAT");
                                       },
                                       icon: const Icon(
                                         Icons.clear,
@@ -1323,7 +1323,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 }
                               },
                               decoration: const InputDecoration(
-                                  border: const OutlineInputBorder(
+                                  border: OutlineInputBorder(
                                       borderSide:
                                           BorderSide(style: BorderStyle.solid)),
                                   prefixIcon: Icon(
