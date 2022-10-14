@@ -39,7 +39,8 @@ List<String> drivers = [];
 String portName = 'DRIVER_BACKGROUND_lISTENER_PORT';
 const maintenanceUrl = 'https://mobiletaxi-api.herokuapp.com/api';
 String baseUrl = 'https://safeway-api.herokuapp.com/api';
-String apiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
+//String apiKey = "AIzaSyB8z8UeyROt2-ay24jiHrrcMXaEAlPUvdQ";
+String apiKey = "AIzaSyD-zQgILyIC2sEcHn_cNrnGfbKICSC2OH0";
 
 const shimmerGradient = LinearGradient(
   colors: [

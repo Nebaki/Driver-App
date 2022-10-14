@@ -650,14 +650,14 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       if (state is DirectionLoading) {
-        showDialog(
+        /*showDialog(
             barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
               return WillPopScope(
                   onWillPop: () async => false,
                   child: const CircularProggressIndicatorDialog());
-            });
+            });*/
       }
 
       if (state is DirectionLoadSuccess) {
