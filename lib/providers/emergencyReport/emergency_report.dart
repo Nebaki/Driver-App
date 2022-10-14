@@ -21,7 +21,7 @@ class EmergencyReportDataProvider {
       body: json.encode({
         'location': [emergencyReport.location[0], emergencyReport.location[1]],
         'reported_by': "Driver",
-        'trip_id': "Driver"
+        'trip_id': emergencyReport.tripId
       }),
     );
    

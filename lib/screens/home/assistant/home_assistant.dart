@@ -39,3 +39,5 @@ late Function updateEsimatedCost;
 DateTime? startingTime;
 double currentPrice = 75;
 late LatLng destination;
+bool isOnTrip = false;
+String tripId = "";

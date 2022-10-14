@@ -295,8 +295,9 @@ class _NotificationDialogState extends State<NotificationDialog> {
                               // player.dispose();
                               setState(() {
                                 _isLoading = true;
+                                isOnTrip = true;
+                                tripId = requestId;
                               });
-
                               RideRequestEvent requestEvent =
                                   RideRequestAccept(requestId, passengerFcm!);
                               BlocProvider.of<RideRequestBloc>(context)
