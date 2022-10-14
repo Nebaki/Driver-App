@@ -438,7 +438,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                     _start != 0
                         ? 'Didn\'t receive the code?  $_start'
                         : 'Didn\'t receive the code? ',
-                    style: const TextStyle(fontSize: 17.0),
+                    style: const TextStyle(fontSize: 13.0),
                   ),
                   TextButton(
                       style: ButtonStyle(
