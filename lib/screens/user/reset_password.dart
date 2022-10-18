@@ -17,14 +17,13 @@ class ResetPassword extends StatefulWidget {
   static const routeName = "/resetpassword";
 
   @override
-  State<ResetPassword> createState() => _ResetPasswordState(arg);
+  State<ResetPassword> createState() => _ResetPasswordState();
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
   final _formkey = GlobalKey<FormState>();
   final newPassword = TextEditingController();
   final Map<String, String> _forgetPasswordInfo = {};
-  final ResetPasswordArgument arg;
 
 
   final newPasswordController = TextEditingController();
@@ -33,10 +32,9 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   late ThemeProvider themeProvider;
 
-  _ResetPasswordState(this.arg);
-
   @override
   void initState() {
+    isProcessing = false;
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     super.initState();
   }
@@ -50,6 +48,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           listener: (context, state) {
             if (state is UserPasswordChanged) {
 
+              isProcessing = false;
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: const Text(passwordChangedI),
                   backgroundColor: Colors.green.shade900));
@@ -58,6 +57,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               // Navigator.pop(context);
             }
             if (state is UserOperationFailure) {
+              isProcessing = false;
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: const Text(operationFailedE),
                   backgroundColor: Colors.red.shade900));
@@ -251,7 +251,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     final form = _formkey.currentState;
                                     if (form!.validate()) {
                                       form.save();
-
+                                      isProcessing = true;
+                                      _forgetPasswordInfo['new_password'] = newPasswordController.text;
+                                      _forgetPasswordInfo['phone_number'] = widget.arg.phoneNumber;
+                                      forgetPassword(context);
                                     }
                                   },
                             child: Row(

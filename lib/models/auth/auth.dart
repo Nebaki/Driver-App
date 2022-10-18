@@ -77,5 +77,5 @@ class Auth extends Equatable {
   }
 
   @override
-  String toString() => 'Location {Phone Number: $phoneNumber }';
+  String toString() => 'Driver {Phone Number: $phoneNumber }';
 }

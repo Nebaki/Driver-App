@@ -6,6 +6,8 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../utils/session.dart';
+
 void getLiveLocation() async {
 
   homeScreenStreamSubscription = Geolocator.getPositionStream(
@@ -13,14 +15,18 @@ void getLiveLocation() async {
       .listen((event) {
 
     if (isDriverOnline != null) {
+      Session().logSession("isDriverOnline", "not null");
       isDriverOnline!
           ? Geofire.setLocation(firebaseKey, event.latitude, event.longitude)
           : Geofire.removeLocation(firebaseKey);
 
+      Session().logSession("isDriverOnline", isDriverOnline.toString());
       if (!isDriverOnline!) {
         homeScreenStreamSubscription!.cancel().then((value) {
         });
       }
+    }else{
+      Session().logSession("isDriverOnline", "null");
     }
   });
 }

@@ -1390,8 +1390,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   if (state
                                       is LocationPredictionOperationFailure) {}
 
-                                  return const Center(
-                                    child: Text("Enter The location"),
+                                  return Center(
+                                    child: Container(),
                                   );
                                 })),
                           )
