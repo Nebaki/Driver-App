@@ -1,5 +1,6 @@
 import 'package:driverapp/functions/functions.dart';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/utils/session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:driverapp/bloc/bloc.dart';
@@ -97,7 +98,7 @@ class _SigninScreenState extends State<SigninScreen>
     }, listener: (_, state) {
       if (state is AuthDataLoadSuccess) {
         myId = state.auth.id!;
-        myPictureUrl = state.auth.profilePicture!;
+        myPictureUrl = state.auth.profilePicture ?? "";
         myName = state.auth.name!;
         myAvgRate = state.auth.avgRate!;
         balance = state.auth.balance!;
@@ -116,6 +117,7 @@ class _SigninScreenState extends State<SigninScreen>
         _isLoading = true;
       }
       if (state is AuthLoginSuccess) {
+        Session().logSession("login-rm", "success");
         BlocProvider.of<AuthBloc>(context).add(AuthDataLoad());
       }
       if (state is AuthOperationFailure) {

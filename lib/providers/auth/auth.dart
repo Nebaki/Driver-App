@@ -51,7 +51,7 @@ class AuthDataProvider {
       }),
     );
 
-    Session().logSession("fcm", response.body);
+    Session().logSession("login-res", response.body);
     if (response.statusCode == 200) {
       Map<String, dynamic> output = jsonDecode(response.body);
       updateCookie(response);
@@ -119,13 +119,12 @@ class AuthDataProvider {
         Session().logSession("data-error-perm", e.toString());
       }
       try{
-
         await secureStorage.write(
             key: 'profile_image',
             value: _imageBaseUrl + output['driver']['profile_image'] ?? "");
       }catch(e){
 
-        Session().logSession("data-error-eme", e.toString());
+        Session().logSession("data-error-ppic", e.toString());
       }
 
       try{
