@@ -121,7 +121,7 @@ class AuthDataProvider {
       try{
         await secureStorage.write(
             key: 'profile_image',
-            value: _imageBaseUrl + output['driver']['profile_image'] ?? "");
+            value: _imageBaseUrl + output['driver']['profile_image']['path']);
       }catch(e){
 
         Session().logSession("data-error-ppic", e.toString());

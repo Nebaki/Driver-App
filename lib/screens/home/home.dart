@@ -302,6 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const ReverseLocationLoad());
                         }
                             : () {
+                          context.read<BalanceBloc>().add(BalanceLoad());
                           ShowSnack(
                               context: context,
                               message:
@@ -650,14 +651,14 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       if (state is DirectionLoading) {
-        /*showDialog(
+        showDialog(
             barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
               return WillPopScope(
                   onWillPop: () async => false,
-                  child: const CircularProggressIndicatorDialog());
-            });*/
+                  child: Container(color: Colors.transparent));
+            });
       }
 
       if (state is DirectionLoadSuccess) {
@@ -901,17 +902,21 @@ class _HomeScreenState extends State<HomeScreen> {
           bearing: event.heading,
           target: LatLng(event.latitude, event.longitude))));
 
+
       print("yow your speed is this:${event.speed} stope $stopDuration");
 
       // update marker position
-      /*LatLng driverPosition = LatLng(event.latitude, event.longitude);
-      Marker marker = Marker(
-          markerId: markerId, position: driverPosition);
-      setState(() {
-        speed = event.speed;
-        markers[markerId] = marker;
-      });
-      */
+      /*try{
+        LatLng driverPosition = LatLng(event.latitude, event.longitude);
+        Marker marker = Marker(
+            markerId: markerId, position: driverPosition);
+        setState(() {
+          speed = event.speed;
+          markers[markerId] = marker;
+        });
+      }catch(e){
+        Session().logSession("marher", "error");
+      }*/
 
       // update firebase collection based on the new provided location
 
@@ -924,6 +929,7 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           stopStopTimer();
         }
+
         context.read<EstimatedCostCubit>().updateEstimatedCost(
             updatedLocation,
             LatLng(event.latitude, event.longitude),
@@ -1388,7 +1394,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   }
 
                                   if (state
-                                      is LocationPredictionOperationFailure) {}
+                                      is LocationPredictionOperationFailure) {
+
+                                  }
 
                                   return Center(
                                     child: Container(),

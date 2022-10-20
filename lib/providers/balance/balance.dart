@@ -19,7 +19,7 @@ class BalanceDataProvider {
           'Content-Type': 'application/json',
           'x-access-token': '${await authDataProvider.getToken()}'
         });
-
+    Session().logSession("getMyBalance", response.body);
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       return double.parse((jsonResponse['balance']).toString());
