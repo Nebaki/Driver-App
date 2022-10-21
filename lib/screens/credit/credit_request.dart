@@ -26,7 +26,7 @@ class _CreditRequestState extends State<CreditRequest> {
   final _formkey = GlobalKey<FormState>();
   final _appBar = GlobalKey<FormState>();
   late ThemeProvider themeProvider;
-  double credit = 0;
+  double credit = 0.0;
   @override
   void initState() {
     credit = double.parse(widget.args.credit);
@@ -147,7 +147,7 @@ class _CreditRequestState extends State<CreditRequest> {
                 ),
               ),
             ),
-            Padding(
+      credit > 0 ? Padding(
               padding: const EdgeInsets.all(8.0),
               child: Align(
                 alignment: Alignment.topCenter,
@@ -172,7 +172,7 @@ class _CreditRequestState extends State<CreditRequest> {
                   ),
                 ),
               ),
-            ),
+            ): Container(),
             Align(
               alignment: Alignment.center,
               child: Padding(

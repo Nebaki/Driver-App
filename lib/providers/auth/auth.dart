@@ -102,6 +102,12 @@ class AuthDataProvider {
         Session().logSession("data-error-cart", e.toString());
       }
       try{
+        await _saveFCMToken(output["fcm_token"]);
+      }catch(e){
+        Session().logSession("data-error-fcmt", e.toString());
+      }
+
+      try{
 
         await secureStorage.write(
             key: "per_minute_cost",
@@ -123,7 +129,6 @@ class AuthDataProvider {
             key: 'profile_image',
             value: _imageBaseUrl + output['driver']['profile_image']['path']);
       }catch(e){
-
         Session().logSession("data-error-ppic", e.toString());
       }
 
@@ -202,6 +207,21 @@ class AuthDataProvider {
 
   Future<String?> getToken() async {
     return await secureStorage.read(key: "token");
+  }
+
+  Future<String> getFCMToken() async {
+    String token = "AAAA1wmuDYY:APA91bHTgcJfuokiyKSyXsgyeS3N9Jw0Cl2dhXypRmOnU7KzljKIU2-RZszrHs_vSFlsjLqjCxJJWroemWXT7K1Vk0MTXnafQ84TaoNTYr1xqZIoOQUc7_J2QAK4yFoUhpYaJnDtueb7";
+    FirebaseMessaging fcm = FirebaseMessaging.instance;
+    return token;
+  }
+  _saveFCMToken(String token){
+    _writeToLocal("fcm_token", token);
+  }
+
+  _writeToLocal(String key, String value) async {
+    await secureStorage.write(
+        key: key,
+        value: value);
   }
   Future<String?> getUserId() async {
     return await secureStorage.read(key: "id");
