@@ -42,7 +42,10 @@ class _CompleteTripState extends State<CompleteTrip> {
           }
           if (state is RideRequestCompleted) {
             startingTime = null;
-
+            setState(() {
+              isOnTrip = false;
+              tripId = "";
+            });
             BlocProvider.of<BalanceBloc>(context).add(BalanceLoad());
             BlocProvider.of<DailyEarningBloc>(context).add(DailyEarningLoad());
             driverStreamSubscription.cancel().then((value) {

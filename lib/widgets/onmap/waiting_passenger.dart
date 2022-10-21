@@ -38,7 +38,6 @@ class _WaitingPassengerState extends State<WaitingPassenger> {
           }
           if (state is RideRequestStarted) {
             startingTime = DateTime.now();
-
             context.read<CurrentWidgetCubit>().changeWidget(CompleteTrip());
             if (widget.formPassenger) {
               //to be removed

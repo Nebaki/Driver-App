@@ -8,22 +8,23 @@ import '../header/header.dart';
 
 class WeeklyEarningDataProvider {
   final http.Client httpClient;
+
   const WeeklyEarningDataProvider({required this.httpClient});
 
-  Future<List<WeeklyEarning>> getWeeklyEarning(
-      ) async {
+  Future<List<WeeklyEarning>> getWeeklyEarning() async {
     DateTime today = DateTime.now();
-    DateTime weekDay = today.subtract(Duration(days: today.weekday-1));
+    DateTime weekDay = today.subtract(Duration(days: today.weekday - 1));
     Session().logSuccess("datez", 'today: $today, weekday: $weekDay');
     http.Response response = await httpClient.get(
-        Uri.parse(
-            api.WeeklyEarningEndPoints.getWeeklyEarningEndPoint(weekDay, today)),
+        Uri.parse(api.WeeklyEarningEndPoints.getWeeklyEarningEndPoint(
+            weekDay, today)),
         headers: <String, String>{
           'Content-Type': 'application/json',
           'x-access-token':
-          '${await AuthDataProvider(httpClient: httpClient).getToken()}'
+              '${await AuthDataProvider(httpClient: httpClient).getToken()}'
         });
-    Session().logSuccess("datez","response code: ${response.statusCode}, body: ${response.body}");
+    Session().logSuccess("datez",
+        "response code: ${response.statusCode}, body: ${response.body}");
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body) as List;
       return json.map((e) => WeeklyEarning.fromJson(e)).toList();
@@ -39,9 +40,12 @@ class WeeklyEarningDataProvider {
     }
   }
 }
+
 class DailyEarningDataProvider {
   final http.Client httpClient;
+
   const DailyEarningDataProvider({required this.httpClient});
+
   Future<DailyEarning> getDailyEarning() async {
     final http.Response response = await httpClient.get(
         Uri.parse(api.DailyEarningEndPoints.getDailyEarningEndPoint()),
@@ -54,9 +58,9 @@ class DailyEarningDataProvider {
       List<Trip> trips = maps.map((job) => Trip.fromJson(job)).toList();
 
       DailyEarning dailyEarning =
-      DailyEarning(totalEarning: totalEarning, trips: trips);
+          DailyEarning(totalEarning: totalEarning, trips: trips);
       return dailyEarning;
-    }  else if (response.statusCode == 401) {
+    } else if (response.statusCode == 401) {
       final res = await AuthDataProvider(httpClient: httpClient).refreshToken();
       if (res.statusCode == 200) {
         return getDailyEarning();
@@ -67,6 +71,4 @@ class DailyEarningDataProvider {
       throw "error";
     }
   }
-
 }
-

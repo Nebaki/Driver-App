@@ -19,7 +19,9 @@ class EmergencyReportDataProvider {
         "x-access-token": '${await authDataProvider.getToken()}'
       },
       body: json.encode({
-        'location': [emergencyReport.location[0], emergencyReport.location[1]]
+        'location': [emergencyReport.location[0], emergencyReport.location[1]],
+        'reported_by': "Driver",
+        'trip_id': emergencyReport.tripId
       }),
     );
    

@@ -4,6 +4,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utils/session.dart';
+
 class EstimatedCostCubit extends Cubit<double> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   EstimatedCostCubit(state) : super(initialFare.toDouble());
@@ -27,7 +29,7 @@ class EstimatedCostCubit extends Cubit<double> {
                 prefs.setDouble("price", cost);
                 prefs.setInt("duration",stopDuration);
                 prefs.setDouble("distance",distance);
-
+                Session().logSession("cost",cost.toString());
     return emit(cost);
   }
 }

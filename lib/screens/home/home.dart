@@ -302,6 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const ReverseLocationLoad());
                         }
                             : () {
+                          context.read<BalanceBloc>().add(BalanceLoad());
                           ShowSnack(
                               context: context,
                               message:
@@ -421,52 +422,56 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   _emergencyReportUi(){
-    return BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
-        builder: (context, state) => Align(
-          alignment: Alignment.centerRight,
-          child: SizedBox(
-            height: 45,
-            child: FloatingActionButton(
-                heroTag: 'sos',
-                backgroundColor: Colors.grey.shade300,
-                onPressed: () {
-                  createEmergencyReport();
-                },
-                child: const Text(
-                  'SOS',
-                  style: TextStyle(
-                    // color: Colors.indigo.shade900,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
+    if(isOnTrip){
+      return BlocConsumer<EmergencyReportBloc, EmergencyReportState>(
+          builder: (context, state) => Align(
+            alignment: Alignment.centerRight,
+            child: SizedBox(
+              height: 45,
+              child: FloatingActionButton(
+                  heroTag: 'sos',
+                  backgroundColor: Colors.grey.shade300,
+                  onPressed: () {
+                    createEmergencyReport();
+                  },
+                  child: const Text(
+                    'SOS',
+                    style: TextStyle(
+                      // color: Colors.indigo.shade900,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
 
-                  // color: Colors.indigo.shade900,
-                  // size: 35,
-                )),
+                    // color: Colors.indigo.shade900,
+                    // size: 35,
+                  )),
+            ),
           ),
-        ),
-        listener: (context, state) {
-          if (state is EmergencyReportUnAuthorised) {
-            gotoSignIn(context);
-          }
-          if (state is EmergencyReportCreating) {
-            ShowSnack(context: context,
-                message: "Reporting...",
-                duration: 20,
-                textColor: Colors.white,
-                backgroundColor: Theme.of(context).primaryColor).show();
-          }
-          if (state is EmergencyReportCreated) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ShowSnack(
-                context: context,
-                message: "Emergency report has been sent.",
-                backgroundColor: Colors.green).show();
-          }
-          if (state is EmergencyReportOperationFailure) {
-            ShowSnack(context: context,message: "Reporting Failed, Try Again",
-                backgroundColor: Colors.red).show();
-          }
-        });
+          listener: (context, state) {
+            if (state is EmergencyReportUnAuthorised) {
+              gotoSignIn(context);
+            }
+            if (state is EmergencyReportCreating) {
+              ShowSnack(context: context,
+                  message: "Reporting...",
+                  duration: 20,
+                  textColor: Colors.white,
+                  backgroundColor: Theme.of(context).primaryColor).show();
+            }
+            if (state is EmergencyReportCreated) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ShowSnack(
+                  context: context,
+                  message: "Emergency report has been sent.",
+                  backgroundColor: Colors.green).show();
+            }
+            if (state is EmergencyReportOperationFailure) {
+              ShowSnack(context: context,message: "Reporting Failed, Try Again",
+                  backgroundColor: Colors.red).show();
+            }
+          });
+    }else{
+      return Container();
+    }
   }
   _nearByPassengerUi(){
     return BlocBuilder<DisableButtonCubit, bool>(
@@ -652,7 +657,7 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (BuildContext context) {
               return WillPopScope(
                   onWillPop: () async => false,
-                  child: const CircularProggressIndicatorDialog());
+                  child: Container(color: Colors.transparent));
             });
       }
 
@@ -897,17 +902,21 @@ class _HomeScreenState extends State<HomeScreen> {
           bearing: event.heading,
           target: LatLng(event.latitude, event.longitude))));
 
+
       print("yow your speed is this:${event.speed} stope $stopDuration");
 
       // update marker position
-      /*LatLng driverPosition = LatLng(event.latitude, event.longitude);
-      Marker marker = Marker(
-          markerId: markerId, position: driverPosition);
-      setState(() {
-        speed = event.speed;
-        markers[markerId] = marker;
-      });
-      */
+      /*try{
+        LatLng driverPosition = LatLng(event.latitude, event.longitude);
+        Marker marker = Marker(
+            markerId: markerId, position: driverPosition);
+        setState(() {
+          speed = event.speed;
+          markers[markerId] = marker;
+        });
+      }catch(e){
+        Session().logSession("marher", "error");
+      }*/
 
       // update firebase collection based on the new provided location
 
@@ -920,6 +929,7 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           stopStopTimer();
         }
+
         context.read<EstimatedCostCubit>().updateEstimatedCost(
             updatedLocation,
             LatLng(event.latitude, event.longitude),
@@ -1270,7 +1280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   // findPlace(value);
                                 },
                                 decoration: const InputDecoration(
-                                    border: const OutlineInputBorder(
+                                    border: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             style: BorderStyle.solid)),
                                     prefixIcon: Icon(
@@ -1299,7 +1309,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   suffixIcon: IconButton(
                                       onPressed: () {
                                         pickupController.clear();
-                                        debugPrint("TATAT");
+                                        debugPrint("BATATAT");
                                       },
                                       icon: const Icon(
                                         Icons.clear,
@@ -1323,7 +1333,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 }
                               },
                               decoration: const InputDecoration(
-                                  border: const OutlineInputBorder(
+                                  border: OutlineInputBorder(
                                       borderSide:
                                           BorderSide(style: BorderStyle.solid)),
                                   prefixIcon: Icon(
@@ -1384,10 +1394,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   }
 
                                   if (state
-                                      is LocationPredictionOperationFailure) {}
+                                      is LocationPredictionOperationFailure) {
 
-                                  return const Center(
-                                    child: Text("Enter The location"),
+                                  }
+
+                                  return Center(
+                                    child: Container(),
                                   );
                                 })),
                           )
@@ -1401,7 +1413,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void createEmergencyReport() {
     BlocProvider.of<EmergencyReportBloc>(context).add(EmergencyReportCreate(
-        EmergencyReport(location: [currentLat, currentLng])));
+        EmergencyReport(location: [currentLat, currentLng],tripId: tripId)));
   }
 
   void uncompletedTripDialog() {

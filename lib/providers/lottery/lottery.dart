@@ -19,7 +19,7 @@ class LotteryDataProvider {
     final http.Response response = await http.get(
       Uri.parse('$_baseUrl/get-my-lottery-numbers?'
           'driver_id=$user&orderBy[0].[field]=createdAt&'
-          'orderBy[0].[direction]=desc&top=$limit&skip=$page'),
+          'orderBy[0].[direction]=desc&top=$limit&skip=$page&is_active=true'),
       headers: await RequestHeader().authorisedHeader(),
     );
     Session().logSession("lottery", "user: $user -> ${response.statusCode.toString()}");
@@ -62,7 +62,7 @@ class LotteryDataProvider {
       Uri.parse('$_baseUrlA/get-award-types-by-type?'
           'driver_id=$id&orderBy[0].[field]=createdAt&'
           'orderBy[0].[direction]=desc&top=$limit&skip=$page'
-          '&type=$driverType'
+          '&type=$driverType&is_active=true'
       ),
       headers: await RequestHeader().authorisedHeader(),
     );

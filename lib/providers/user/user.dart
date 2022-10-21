@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:driverapp/helper/api_end_points.dart';
 import 'package:driverapp/helper/constants.dart';
 import 'package:http/http.dart' as http;
+import '../../utils/session.dart';
 import '../auth/auth.dart';
 import 'package:driverapp/models/models.dart';
 import 'package:driverapp/helper/api_end_points.dart' as api;
@@ -14,6 +15,7 @@ class UserDataProvider {
   UserDataProvider({required this.httpClient});
 
   Future updateDriverStatus(bool status) async {
+    Session().logSession("updateDriverStatus", "init");
     final http.Response response = await httpClient.post(
         Uri.parse(api.UserEndPoints.changeStatusEndPoint(status)),
         body: json.encode({"status": status}),
@@ -22,7 +24,10 @@ class UserDataProvider {
           'x-access-token': '${await authDataProvider.getToken()}',
         });
     if (response.statusCode != 200) {
+      Session().logSession("updateDriverStatus", "error");
       throw Exception(response.statusCode);
+    }else if(response.statusCode == 200){
+      Session().logSession("updateDriverStatus", "success");
     }
   }
 

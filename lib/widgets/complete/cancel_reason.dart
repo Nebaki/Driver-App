@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../screens/credit/toast_message.dart';
+import '../../screens/home/assistant/home_assistant.dart';
 
 class CancelReason extends StatefulWidget {
   static const routeName = "cacelreason";
@@ -122,7 +123,10 @@ class _CancelReasonState extends State<CancelReason> {
                 driverStreamSubscription.cancel().then((value) {
                   ShowSnack(context: context,message: "Request has been cancelled").show();
                   ref.child(myId).remove();
-
+                  setState(() {
+                    isOnTrip = false;
+                    tripId = "";
+                  });
                   isLoading = false;
                   BlocProvider.of<DirectionBloc>(context).add(
                       const DirectionChangeToInitialState(

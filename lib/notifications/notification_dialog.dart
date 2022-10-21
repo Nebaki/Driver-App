@@ -25,6 +25,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
   List<String> drivers = [];
   Timer? _timer;
   bool _isLoading = false;
+  bool _disableButtons = false;
   void startTimer() {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
@@ -225,7 +226,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
               children: [
                 SizedBox(
                   //width: 100,
-                  child: ElevatedButton(
+                  child: !_disableButtons ? ElevatedButton(
                       /*style: ButtonStyle(
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -245,6 +246,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                               }
                               setState(() {
                                 _isLoading = true;
+                                _disableButtons = true;
                               });
                               if (widget.nextDrivers.isNotEmpty) {
                                 UserEvent event =
@@ -259,7 +261,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                       child: const Text("Skip",
                           style: TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.normal))),
+                              fontWeight: FontWeight.normal))):Container(),
                 ),
                 BlocConsumer<UserBloc, UserState>(
                   listener: (context, state) {
@@ -274,7 +276,8 @@ class _NotificationDialogState extends State<NotificationDialog> {
                 ),
                 SizedBox(
                   //width: 100,
-                  child: ElevatedButton(
+                  child: !_disableButtons ? ElevatedButton(
+
                       /*style: ButtonStyle(
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -295,8 +298,10 @@ class _NotificationDialogState extends State<NotificationDialog> {
                               // player.dispose();
                               setState(() {
                                 _isLoading = true;
+                                _disableButtons = true;
+                                isOnTrip = true;
+                                tripId = requestId;
                               });
-
                               RideRequestEvent requestEvent =
                                   RideRequestAccept(requestId, passengerFcm!);
                               BlocProvider.of<RideRequestBloc>(context)
@@ -306,7 +311,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                         "Accept",
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.normal),
-                      )),
+                      )): Container(),
                 )
               ],
             )
@@ -340,6 +345,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
         if (state is RideRequestOperationFailure) {
           setState(() {
             _isLoading = false;
+            _disableButtons = false;
           });
 
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(

@@ -14,8 +14,9 @@ class RideRequestDataProvider {
   final _maintenanceUrl =
       'https://mobiletaxi-api.herokuapp.com/api/ride-requests';
   final _fcmUrl = 'https://fcm.googleapis.com/fcm/send';
-  final token =
+  /*final token =
       "AAAAKTCNpPU:APA91bHPscWDa8pPO5MGRj11FWo6NZkpK5tRPodi_2wuMdHhDNwlTO3l4jF50tFGiU55EWMyNss0St0l_kk2H1YmKH1z4yzWPVL25xGTt-GqOFWUdh7BgjJmiNo55eVzzJgHeEOBvHtH";
+  */
   final http.Client httpClient;
   AuthDataProvider authDataProvider =
       AuthDataProvider(httpClient: http.Client());
@@ -108,6 +109,7 @@ class RideRequestDataProvider {
       }),
     );
 
+    Session().logSession("createRequest", response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
@@ -217,14 +219,14 @@ class RideRequestDataProvider {
       Uri.parse(_fcmUrl),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': 'key=$token'
+        'Authorization': 'key=${await authDataProvider.getFCMToken()}'
       },
       body: json.encode({
         "data": {'response': 'Started'},
         "to": fcmToken,
         "notification": {
           "title": "Trip Started",
-          "body": "Your trip has been Started."
+          "body": "Your trip has Started."
         }
       }),
     );
@@ -241,7 +243,7 @@ class RideRequestDataProvider {
       Uri.parse(_fcmUrl),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': 'key=$token'
+        'Authorization': 'key=${await authDataProvider.getFCMToken()}'
       },
       body: json.encode({
         "data": {'response': status, 'myId': myId},
@@ -249,9 +251,9 @@ class RideRequestDataProvider {
         //request.driverToken,
         // "dIZJlO16S6aIiFoGPAg9qf:APA91bHjrxQ0I5vRqyrBFHqbYBM90rYZfmb2llmtA6q8Ps6LmIS9WwoO3ENnBGUDaax7l1eTpzh71RK9YS4fyDdPdowyalVhZXbjWxq337ZEtDvOSGihA5pyuTJeS0dqQl0I9H5MfnFp",
         "notification": {
-          "title": "RideRequest Accepted",
+          "title": "Request Accepted",
           "body":
-              "Your rider request has been accepted. the driver will contact you."
+              "Your order request has been accepted. The provider will contact you."
         }
       }),
     );
@@ -269,14 +271,14 @@ class RideRequestDataProvider {
       Uri.parse(_fcmUrl),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': 'key=$token'
+        'Authorization': 'key=${await authDataProvider.getFCMToken()}'
       },
       body: json.encode({
         "data": {'response': 'Cancelled'},
         "to": fcmId,
         "notification": {
-          "title": "RideRequest Cancelled",
-          "body": "Your ride request has been Cancelled."
+          "title": "Request Cancelled",
+          "body": "Your order request has been Cancelled."
         }
       }),
     );
@@ -349,7 +351,7 @@ class RideRequestDataProvider {
       Uri.parse(_fcmUrl),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': 'key=$token'
+        'Authorization': 'key=${await authDataProvider.getFCMToken()}'
       },
       body: json.encode({
         "data": {'response': 'Completed', 'price': currentPrice},
@@ -373,7 +375,7 @@ class RideRequestDataProvider {
       Uri.parse(_fcmUrl),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': 'key=$token'
+        'Authorization': 'key=${await authDataProvider.getFCMToken()}'
       },
       body: json.encode({
         "data": {
@@ -398,9 +400,9 @@ class RideRequestDataProvider {
         "android": {"priority": "high"},
         "to": driverFcm,
         "notification": {
-          "title": "New RideRequest",
+          "title": "New Order Request",
           "body":
-              "You have new ride request open it by tapping the nottification."
+              "You have new order request open it by tapping the notification."
         }
       }),
     );
@@ -443,14 +445,14 @@ class RideRequestDataProvider {
       Uri.parse(_fcmUrl),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': 'key=$token'
+        'Authorization': 'key=${await authDataProvider.getFCMToken()}'
       },
       body: json.encode({
         "data": {'response': 'TimeOut'},
         "to": passengerFcm,
         "notification": {
-          "title": "RideRequest TimeOut",
-          "body": "Ride request timeout."
+          "title": "Request TimeOut",
+          "body": "Order request timeout."
         }
       }),
     );

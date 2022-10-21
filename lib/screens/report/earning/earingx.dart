@@ -161,7 +161,7 @@ class _DailyEarningTabState extends State<Earning>/*
                               children: [
                                 Column(
                                   children: [
-                                    Text(_dailyEarning.length.toString(),
+                                    Text(trips.toString(),
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleMedium!
@@ -342,15 +342,16 @@ class _DailyEarningTabState extends State<Earning>/*
                                 if (state is WeeklyEarningLoadSuccess) {
                                   Session().logSession("weekly", "weekly loaded");
                                   int trips = 0;
-                                  double cashtrips = 0;
+                                  double cashTrips = 0;
+                                  double commission = 0;
                                   for (var element in state.weeklyEarning) {
-                                    cashtrips += element.earning;
+                                    cashTrips += element.earning;
                                   }
                                   for (var element in state.weeklyEarning) {
                                     trips += element.trips;
                                   }
                                   for (var element in state.weeklyEarning) {
-                                    trips += element.trips;
+                                    commission += element.commission;
                                   }
 
                                   return SizedBox(
@@ -376,7 +377,7 @@ class _DailyEarningTabState extends State<Earning>/*
                                         const VerticalDivider(),
                                         Column(
                                           children: [
-                                            const Text("0.0"),
+                                            Text('${commission.toStringAsFixed(2)} ETB'),
                                             Text("Commission",
                                                 style:
                                                 Theme.of(context).textTheme.overline)
@@ -385,7 +386,7 @@ class _DailyEarningTabState extends State<Earning>/*
                                         const VerticalDivider(),
                                         Column(
                                           children: [
-                                            Text('${cashtrips.toStringAsFixed(2)} ETB',
+                                            Text('${cashTrips.toStringAsFixed(2)} ETB',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .titleMedium!
@@ -571,16 +572,14 @@ class _DailyEarningTabState extends State<Earning>/*
   var netPrice = 0.0;
   var price = 0.0;
 
-  var weeklyCommission = 0.0;
-
   _calculateCommission(List<Trip> trips) {
     var commission_init = 0.0;
     var netPrice_init = 0.0;
     var price_init = 0.0;
     for (Trip trip in trips) {
-      commission_init += double.parse(trip.commission ?? "0");
-      netPrice_init += double.parse(trip.netPrice ?? "0");
-      price_init += double.parse(trip.price ?? "0");
+      commission_init += double.parse(trip.commission ?? "0.0");
+      netPrice_init += double.parse(trip.netPrice ?? "0.0");
+      price_init += double.parse(trip.price ?? "0.0");
     }
     setState(() {
       commission = commission_init;

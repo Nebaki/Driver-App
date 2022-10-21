@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:driverapp/helper/constants.dart';
+import 'package:driverapp/utils/session.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -38,7 +39,7 @@ class DirectionDataProvider {
         "https://maps.googleapis.com/maps/api/directions/json?origin=${pickupLocation.latitude},${pickupLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=$apiKey";
 
     final response = await httpClient.get(Uri.parse(_directionUrl));
-
+    Session().logSession("getBlack", response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return Direction.fromJson(data);

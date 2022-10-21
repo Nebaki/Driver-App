@@ -104,7 +104,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                 categoryId = state.auth.categoryId!;
                 myId = state.auth.id!;
                 myAvgRate = state.auth.avgRate!;
-                myPictureUrl = state.auth.profilePicture!;
+                myPictureUrl = state.auth.profilePicture ?? "";
                 myName = state.auth.name!;
                 myVehicleCategory = state.auth.vehicleCategory!;
                 firebaseKey = '$myId,$myVehicleCategory';
